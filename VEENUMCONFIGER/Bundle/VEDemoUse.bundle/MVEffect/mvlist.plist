@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>cover</key>
+		<string>guanggao.png</string>
+		<key>file</key>
+		<string>guanggao.zip</string>
+		<key>id</key>
+		<string>93</string>
+		<key>name</key>
+		<string>广告</string>
+		<key>type</key>
+		<string>mv</string>
+		<key>updatetime</key>
+		<string>1529655194</string>
+	</dict>
+	<dict>
+		<key>cover</key>
+		<string>xingkong.png</string>
+		<key>file</key>
+		<string>xingkong.zip</string>
+		<key>id</key>
+		<string>100</string>
+		<key>name</key>
+		<string>星空</string>
+		<key>type</key>
+		<string>mv</string>
+		<key>updatetime</key>
+		<string>1529655194</string>
+	</dict>
+	<dict>
+		<key>cover</key>
+		<string>shuaibushuai.png</string>
+		<key>file</key>
+		<string>shuaibushuai.zip</string>
+		<key>id</key>
+		<string>103</string>
+		<key>name</key>
+		<string>帅不帅</string>
+		<key>type</key>
+		<string>mv</string>
+		<key>updatetime</key>
+		<string>1529655194</string>
+	</dict>
+	<dict>
+		<key>cover</key>
+		<string>孔明灯实景特效-icon.jpg</string>
+		<key>file</key>
+		<string>kongmingdengshijingtexiao.zip</string>
+		<key>id</key>
+		<string>104</string>
+		<key>name</key>
+		<string>孔明灯实景特效</string>
+		<key>type</key>
+		<string>mv</string>
+		<key>updatetime</key>
+		<string>1529655194</string>
+	</dict>
+</array>
+</plist>

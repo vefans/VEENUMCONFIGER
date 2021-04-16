@@ -1,0 +1,23 @@
+{
+	"ver" : 2,
+	"minCoreVer":120,
+	"color" : [23, 8, 139, 0.6],
+	"name" : "seamless",
+	"fragShader" : "frag.txt",
+	"uniformParams" : [ {
+			"paramName" : "type",
+			"type" : "int",
+			"frameArray" : [{
+					"time" : 0.000,
+					"value" : [7]
+				}
+			]
+		}
+	],
+	"textureParams" : [{
+        "paramName": "from"
+    },{
+        "paramName": "to"
+    }
+	]
+}

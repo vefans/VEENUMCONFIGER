@@ -1,0 +1,29 @@
+{
+"theme": "light",
+"file": "light",
+"fileType": "video",
+"icon": "icon.png",
+"sound": "sound.mp3",
+"musicName": "light",
+"music": {
+	"src": "music.mp3",
+	"begintime": 0,
+	"duration": 0
+},
+"fadeout": {
+	"src": "music.mp3",
+	"duration": 1
+},
+"mid": {
+	"effects": [{
+		"file": "screen",
+		"filter": "screen",
+		"src": "",
+		"repeat": 1,
+		"path": "screen.mp4",
+		"begintime": 0.0,
+		"duration": 13.38,
+		"filterType": "video"
+	}]
+}
+}

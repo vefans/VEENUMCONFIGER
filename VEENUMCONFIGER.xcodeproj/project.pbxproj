@@ -1,0 +1,713 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0953419A26292EBD006CA303 /* VEDemoUse.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0953419926292EBD006CA303 /* VEDemoUse.bundle */; };
+		097C0093260C34BE00C889AB /* VEVideoCropView.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C007D260C34BE00C889AB /* VEVideoCropView.h */; };
+		097C0094260C34BE00C889AB /* VETrackButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C007E260C34BE00C889AB /* VETrackButton.h */; };
+		097C0095260C34BE00C889AB /* VECropView.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C007F260C34BE00C889AB /* VECropView.h */; };
+		097C0096260C34BE00C889AB /* VECropRectView.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C0080260C34BE00C889AB /* VECropRectView.h */; };
+		097C0097260C34BE00C889AB /* VETrackButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C0081260C34BE00C889AB /* VETrackButton.m */; };
+		097C0098260C34BE00C889AB /* VEVideoCropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C0082260C34BE00C889AB /* VEVideoCropView.m */; };
+		097C0099260C34BE00C889AB /* VECropRectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C0083260C34BE00C889AB /* VECropRectView.m */; };
+		097C009A260C34BE00C889AB /* VECropTypeModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C0085260C34BE00C889AB /* VECropTypeModel.h */; };
+		097C009B260C34BE00C889AB /* VECropTypeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C0086260C34BE00C889AB /* VECropTypeModel.m */; };
+		097C009C260C34BE00C889AB /* VECropIconTypeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C0089260C34BE00C889AB /* VECropIconTypeCell.m */; };
+		097C009D260C34BE00C889AB /* VECropTypeView.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C008A260C34BE00C889AB /* VECropTypeView.h */; };
+		097C009E260C34BE00C889AB /* VECropTypeCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C008B260C34BE00C889AB /* VECropTypeCell.h */; };
+		097C009F260C34BE00C889AB /* VECropIconTypeCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C008C260C34BE00C889AB /* VECropIconTypeCell.h */; };
+		097C00A0260C34BE00C889AB /* VECropTypeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C008D260C34BE00C889AB /* VECropTypeView.m */; };
+		097C00A1260C34BE00C889AB /* VECropTypeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C008E260C34BE00C889AB /* VECropTypeCell.m */; };
+		097C00A2260C34BE00C889AB /* VECropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C008F260C34BE00C889AB /* VECropView.m */; };
+		097C00A3260C34BE00C889AB /* VEPlaySlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C0091260C34BE00C889AB /* VEPlaySlider.h */; };
+		097C00A4260C34BE00C889AB /* VEPlaySlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C0092260C34BE00C889AB /* VEPlaySlider.m */; };
+		097C00F7260C350A00C889AB /* VENavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C00EB260C350A00C889AB /* VENavigationController.m */; };
+		097C00F8260C350A00C889AB /* VENavBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C00EC260C350A00C889AB /* VENavBarButton.m */; };
+		097C00F9260C350A00C889AB /* VEWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C00ED260C350A00C889AB /* VEWindow.m */; };
+		097C00FA260C350A00C889AB /* VENavBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C00EE260C350A00C889AB /* VENavBarViewController.m */; };
+		097C00FB260C350A00C889AB /* VEHeaderView.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C00EF260C350A00C889AB /* VEHeaderView.h */; };
+		097C00FC260C350A00C889AB /* VENavigationController.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C00F0260C350A00C889AB /* VENavigationController.h */; };
+		097C00FD260C350A00C889AB /* VEWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C00F1260C350A00C889AB /* VEWindow.h */; };
+		097C00FE260C350A00C889AB /* VEHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C00F2260C350A00C889AB /* VEHeaderView.m */; };
+		097C00FF260C350A00C889AB /* VENavBarViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C00F3260C350A00C889AB /* VENavBarViewController.h */; };
+		097C0100260C350A00C889AB /* UIViewController+PopGestureRecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C00F4260C350A00C889AB /* UIViewController+PopGestureRecognizer.h */; };
+		097C0101260C350A00C889AB /* VENavBarButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C00F5260C350A00C889AB /* VENavBarButton.h */; };
+		097C0102260C350A00C889AB /* UIViewController+PopGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C00F6260C350A00C889AB /* UIViewController+PopGestureRecognizer.m */; };
+		0AECE38B25838FA400879809 /* VEENUMCONFIGER.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AECE38925838FA400879809 /* VEENUMCONFIGER.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		700F383A25AFED6B00943532 /* VEExportConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 700F381625AFED6A00943532 /* VEExportConfiguration.h */; };
+		700F383B25AFED6B00943532 /* VEExportConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 700F381725AFED6B00943532 /* VEExportConfiguration.m */; };
+		700F384425AFED6B00943532 /* VEEditConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 700F382225AFED6B00943532 /* VEEditConfiguration.m */; };
+		700F384525AFED6B00943532 /* VEEditConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 700F382325AFED6B00943532 /* VEEditConfiguration.h */; };
+		700F384625AFED6B00943532 /* VEENUMCONFIGER-PrefixHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 700F382425AFED6B00943532 /* VEENUMCONFIGER-PrefixHeader.h */; };
+		700F384725AFED6B00943532 /* VECameraConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 700F382625AFED6B00943532 /* VECameraConfiguration.m */; };
+		700F384825AFED6B00943532 /* VECameraConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 700F382725AFED6B00943532 /* VECameraConfiguration.h */; };
+		700F384925AFED6B00943532 /* UIImage+VEGIF.h in Headers */ = {isa = PBXBuildFile; fileRef = 700F382825AFED6B00943532 /* UIImage+VEGIF.h */; };
+		700F384A25AFED6B00943532 /* VEHelp.h in Headers */ = {isa = PBXBuildFile; fileRef = 700F382925AFED6B00943532 /* VEHelp.h */; };
+		700F384C25AFED6B00943532 /* VEHelp.m in Sources */ = {isa = PBXBuildFile; fileRef = 700F382B25AFED6B00943532 /* VEHelp.m */; };
+		700F384D25AFED6B00943532 /* VEFaceUBeautyParams.m in Sources */ = {isa = PBXBuildFile; fileRef = 700F382D25AFED6B00943532 /* VEFaceUBeautyParams.m */; };
+		700F384E25AFED6B00943532 /* VEFaceUBeautyParams.h in Headers */ = {isa = PBXBuildFile; fileRef = 700F382E25AFED6B00943532 /* VEFaceUBeautyParams.h */; };
+		700F384F25AFED6B00943532 /* VEDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 700F382F25AFED6B00943532 /* VEDefines.h */; };
+		700F385025AFED6B00943532 /* UIImage+VEGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 700F383025AFED6B00943532 /* UIImage+VEGIF.m */; };
+		700F385125AFED6B00943532 /* VEMusicInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 700F383225AFED6B00943532 /* VEMusicInfo.m */; };
+		700F385225AFED6B00943532 /* VEMusicInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 700F383325AFED6B00943532 /* VEMusicInfo.h */; };
+		700F385325AFED6B00943532 /* VEMediaInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 700F383525AFED6B00943532 /* VEMediaInfo.h */; };
+		700F385425AFED6B00943532 /* VEMediaInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 700F383625AFED6B00943532 /* VEMediaInfo.m */; };
+		700F385525AFED6B00943532 /* VEThirdpartyConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 700F383825AFED6B00943532 /* VEThirdpartyConfig.h */; };
+		700F385625AFED6B00943532 /* VEThirdpartyConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 700F383925AFED6B00943532 /* VEThirdpartyConfig.m */; };
+		7069E17625B996540072BCAE /* VEConfigManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 7069E17425B996540072BCAE /* VEConfigManager.h */; };
+		7069E17725B996540072BCAE /* VEConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7069E17525B996540072BCAE /* VEConfigManager.m */; };
+		7076A78C25BAEAB4003F69E0 /* VEImageManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 7076A78825BAEAB4003F69E0 /* VEImageManager.h */; };
+		7076A78D25BAEAB4003F69E0 /* VEAssetModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7076A78925BAEAB4003F69E0 /* VEAssetModel.h */; };
+		7076A78E25BAEAB4003F69E0 /* VEImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7076A78A25BAEAB4003F69E0 /* VEImageManager.m */; };
+		7076A78F25BAEAB4003F69E0 /* VEAssetModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7076A78B25BAEAB4003F69E0 /* VEAssetModel.m */; };
+		70F0CBA425B573F100E80E37 /* VEEditSDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 70F0CBA225B573F100E80E37 /* VEEditSDK.bundle */; };
+		70F0CBA525B573F100E80E37 /* VideoRecord.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 70F0CBA325B573F100E80E37 /* VideoRecord.bundle */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0953419926292EBD006CA303 /* VEDemoUse.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = VEDemoUse.bundle; sourceTree = "<group>"; };
+		097C007D260C34BE00C889AB /* VEVideoCropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEVideoCropView.h; sourceTree = "<group>"; };
+		097C007E260C34BE00C889AB /* VETrackButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VETrackButton.h; sourceTree = "<group>"; };
+		097C007F260C34BE00C889AB /* VECropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VECropView.h; sourceTree = "<group>"; };
+		097C0080260C34BE00C889AB /* VECropRectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VECropRectView.h; sourceTree = "<group>"; };
+		097C0081260C34BE00C889AB /* VETrackButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VETrackButton.m; sourceTree = "<group>"; };
+		097C0082260C34BE00C889AB /* VEVideoCropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEVideoCropView.m; sourceTree = "<group>"; };
+		097C0083260C34BE00C889AB /* VECropRectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VECropRectView.m; sourceTree = "<group>"; };
+		097C0085260C34BE00C889AB /* VECropTypeModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VECropTypeModel.h; sourceTree = "<group>"; };
+		097C0086260C34BE00C889AB /* VECropTypeModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VECropTypeModel.m; sourceTree = "<group>"; };
+		097C0089260C34BE00C889AB /* VECropIconTypeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VECropIconTypeCell.m; sourceTree = "<group>"; };
+		097C008A260C34BE00C889AB /* VECropTypeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VECropTypeView.h; sourceTree = "<group>"; };
+		097C008B260C34BE00C889AB /* VECropTypeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VECropTypeCell.h; sourceTree = "<group>"; };
+		097C008C260C34BE00C889AB /* VECropIconTypeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VECropIconTypeCell.h; sourceTree = "<group>"; };
+		097C008D260C34BE00C889AB /* VECropTypeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VECropTypeView.m; sourceTree = "<group>"; };
+		097C008E260C34BE00C889AB /* VECropTypeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VECropTypeCell.m; sourceTree = "<group>"; };
+		097C008F260C34BE00C889AB /* VECropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VECropView.m; sourceTree = "<group>"; };
+		097C0091260C34BE00C889AB /* VEPlaySlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEPlaySlider.h; sourceTree = "<group>"; };
+		097C0092260C34BE00C889AB /* VEPlaySlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEPlaySlider.m; sourceTree = "<group>"; };
+		097C00EB260C350A00C889AB /* VENavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VENavigationController.m; sourceTree = "<group>"; };
+		097C00EC260C350A00C889AB /* VENavBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VENavBarButton.m; sourceTree = "<group>"; };
+		097C00ED260C350A00C889AB /* VEWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEWindow.m; sourceTree = "<group>"; };
+		097C00EE260C350A00C889AB /* VENavBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VENavBarViewController.m; sourceTree = "<group>"; };
+		097C00EF260C350A00C889AB /* VEHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEHeaderView.h; sourceTree = "<group>"; };
+		097C00F0260C350A00C889AB /* VENavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VENavigationController.h; sourceTree = "<group>"; };
+		097C00F1260C350A00C889AB /* VEWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEWindow.h; sourceTree = "<group>"; };
+		097C00F2260C350A00C889AB /* VEHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEHeaderView.m; sourceTree = "<group>"; };
+		097C00F3260C350A00C889AB /* VENavBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VENavBarViewController.h; sourceTree = "<group>"; };
+		097C00F4260C350A00C889AB /* UIViewController+PopGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+PopGestureRecognizer.h"; sourceTree = "<group>"; };
+		097C00F5260C350A00C889AB /* VENavBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VENavBarButton.h; sourceTree = "<group>"; };
+		097C00F6260C350A00C889AB /* UIViewController+PopGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+PopGestureRecognizer.m"; sourceTree = "<group>"; };
+		0AECE38625838FA400879809 /* VEENUMCONFIGER.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VEENUMCONFIGER.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0AECE38925838FA400879809 /* VEENUMCONFIGER.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VEENUMCONFIGER.h; sourceTree = "<group>"; };
+		0AECE38A25838FA400879809 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		700F381625AFED6A00943532 /* VEExportConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEExportConfiguration.h; sourceTree = "<group>"; };
+		700F381725AFED6B00943532 /* VEExportConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEExportConfiguration.m; sourceTree = "<group>"; };
+		700F382225AFED6B00943532 /* VEEditConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEEditConfiguration.m; sourceTree = "<group>"; };
+		700F382325AFED6B00943532 /* VEEditConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEEditConfiguration.h; sourceTree = "<group>"; };
+		700F382425AFED6B00943532 /* VEENUMCONFIGER-PrefixHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "VEENUMCONFIGER-PrefixHeader.h"; sourceTree = "<group>"; };
+		700F382625AFED6B00943532 /* VECameraConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VECameraConfiguration.m; sourceTree = "<group>"; };
+		700F382725AFED6B00943532 /* VECameraConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VECameraConfiguration.h; sourceTree = "<group>"; };
+		700F382825AFED6B00943532 /* UIImage+VEGIF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+VEGIF.h"; sourceTree = "<group>"; };
+		700F382925AFED6B00943532 /* VEHelp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEHelp.h; sourceTree = "<group>"; };
+		700F382B25AFED6B00943532 /* VEHelp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEHelp.m; sourceTree = "<group>"; };
+		700F382D25AFED6B00943532 /* VEFaceUBeautyParams.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEFaceUBeautyParams.m; sourceTree = "<group>"; };
+		700F382E25AFED6B00943532 /* VEFaceUBeautyParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEFaceUBeautyParams.h; sourceTree = "<group>"; };
+		700F382F25AFED6B00943532 /* VEDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEDefines.h; sourceTree = "<group>"; };
+		700F383025AFED6B00943532 /* UIImage+VEGIF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+VEGIF.m"; sourceTree = "<group>"; };
+		700F383225AFED6B00943532 /* VEMusicInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEMusicInfo.m; sourceTree = "<group>"; };
+		700F383325AFED6B00943532 /* VEMusicInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEMusicInfo.h; sourceTree = "<group>"; };
+		700F383525AFED6B00943532 /* VEMediaInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEMediaInfo.h; sourceTree = "<group>"; };
+		700F383625AFED6B00943532 /* VEMediaInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEMediaInfo.m; sourceTree = "<group>"; };
+		700F383825AFED6B00943532 /* VEThirdpartyConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEThirdpartyConfig.h; sourceTree = "<group>"; };
+		700F383925AFED6B00943532 /* VEThirdpartyConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEThirdpartyConfig.m; sourceTree = "<group>"; };
+		7069E17425B996540072BCAE /* VEConfigManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VEConfigManager.h; sourceTree = "<group>"; };
+		7069E17525B996540072BCAE /* VEConfigManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VEConfigManager.m; sourceTree = "<group>"; };
+		7076A78825BAEAB4003F69E0 /* VEImageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEImageManager.h; sourceTree = "<group>"; };
+		7076A78925BAEAB4003F69E0 /* VEAssetModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEAssetModel.h; sourceTree = "<group>"; };
+		7076A78A25BAEAB4003F69E0 /* VEImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEImageManager.m; sourceTree = "<group>"; };
+		7076A78B25BAEAB4003F69E0 /* VEAssetModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEAssetModel.m; sourceTree = "<group>"; };
+		70F0CBA225B573F100E80E37 /* VEEditSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = VEEditSDK.bundle; sourceTree = "<group>"; };
+		70F0CBA325B573F100E80E37 /* VideoRecord.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = VideoRecord.bundle; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0AECE38325838FA400879809 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		097C007C260C34BE00C889AB /* VECrop */ = {
+			isa = PBXGroup;
+			children = (
+				097C007D260C34BE00C889AB /* VEVideoCropView.h */,
+				097C007E260C34BE00C889AB /* VETrackButton.h */,
+				097C007F260C34BE00C889AB /* VECropView.h */,
+				097C0080260C34BE00C889AB /* VECropRectView.h */,
+				097C0081260C34BE00C889AB /* VETrackButton.m */,
+				097C0082260C34BE00C889AB /* VEVideoCropView.m */,
+				097C0083260C34BE00C889AB /* VECropRectView.m */,
+				097C0084260C34BE00C889AB /* Model */,
+				097C0087260C34BE00C889AB /* view */,
+				097C008F260C34BE00C889AB /* VECropView.m */,
+			);
+			path = VECrop;
+			sourceTree = "<group>";
+		};
+		097C0084260C34BE00C889AB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				097C0085260C34BE00C889AB /* VECropTypeModel.h */,
+				097C0086260C34BE00C889AB /* VECropTypeModel.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		097C0087260C34BE00C889AB /* view */ = {
+			isa = PBXGroup;
+			children = (
+				097C0088260C34BE00C889AB /* VELiteCropTypeView */,
+			);
+			path = view;
+			sourceTree = "<group>";
+		};
+		097C0088260C34BE00C889AB /* VELiteCropTypeView */ = {
+			isa = PBXGroup;
+			children = (
+				097C0089260C34BE00C889AB /* VECropIconTypeCell.m */,
+				097C008A260C34BE00C889AB /* VECropTypeView.h */,
+				097C008B260C34BE00C889AB /* VECropTypeCell.h */,
+				097C008C260C34BE00C889AB /* VECropIconTypeCell.h */,
+				097C008D260C34BE00C889AB /* VECropTypeView.m */,
+				097C008E260C34BE00C889AB /* VECropTypeCell.m */,
+			);
+			path = VELiteCropTypeView;
+			sourceTree = "<group>";
+		};
+		097C0090260C34BE00C889AB /* VEPlaySlider */ = {
+			isa = PBXGroup;
+			children = (
+				097C0091260C34BE00C889AB /* VEPlaySlider.h */,
+				097C0092260C34BE00C889AB /* VEPlaySlider.m */,
+			);
+			path = VEPlaySlider;
+			sourceTree = "<group>";
+		};
+		0A3AEF8725A5CFD9009F7664 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				0AECE38925838FA400879809 /* VEENUMCONFIGER.h */,
+				7076A78725BAEAB4003F69E0 /* ImageManager */,
+				700F382525AFED6B00943532 /* CameraConfiguration */,
+				700F382125AFED6B00943532 /* EditConfiguration */,
+				700F381525AFED6A00943532 /* ExportConfiguration */,
+				700F382C25AFED6B00943532 /* FaceUBeautyParams */,
+				700F383425AFED6B00943532 /* MediaInfo */,
+				700F383125AFED6B00943532 /* MusicInfo */,
+				700F383725AFED6B00943532 /* ThirdpartyConfig */,
+				700F382825AFED6B00943532 /* UIImage+VEGIF.h */,
+				700F383025AFED6B00943532 /* UIImage+VEGIF.m */,
+				700F382F25AFED6B00943532 /* VEDefines.h */,
+				700F382425AFED6B00943532 /* VEENUMCONFIGER-PrefixHeader.h */,
+				700F382925AFED6B00943532 /* VEHelp.h */,
+				700F382B25AFED6B00943532 /* VEHelp.m */,
+				700F381825AFED6B00943532 /* ViewController */,
+				7069E17425B996540072BCAE /* VEConfigManager.h */,
+				7069E17525B996540072BCAE /* VEConfigManager.m */,
+				097C007C260C34BE00C889AB /* VECrop */,
+				097C0090260C34BE00C889AB /* VEPlaySlider */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		0AECE37C25838FA400879809 = {
+			isa = PBXGroup;
+			children = (
+				0AECE38825838FA400879809 /* VEENUMCONFIGER */,
+				0AECE38725838FA400879809 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0AECE38725838FA400879809 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0AECE38625838FA400879809 /* VEENUMCONFIGER.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0AECE38825838FA400879809 /* VEENUMCONFIGER */ = {
+			isa = PBXGroup;
+			children = (
+				70F0CBA125B573F100E80E37 /* Bundle */,
+				0A3AEF8725A5CFD9009F7664 /* Classes */,
+				0AECE38A25838FA400879809 /* Info.plist */,
+			);
+			path = VEENUMCONFIGER;
+			sourceTree = "<group>";
+		};
+		700F381525AFED6A00943532 /* ExportConfiguration */ = {
+			isa = PBXGroup;
+			children = (
+				700F381625AFED6A00943532 /* VEExportConfiguration.h */,
+				700F381725AFED6B00943532 /* VEExportConfiguration.m */,
+			);
+			path = ExportConfiguration;
+			sourceTree = "<group>";
+		};
+		700F381825AFED6B00943532 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				097C00F4260C350A00C889AB /* UIViewController+PopGestureRecognizer.h */,
+				097C00F6260C350A00C889AB /* UIViewController+PopGestureRecognizer.m */,
+				097C00EF260C350A00C889AB /* VEHeaderView.h */,
+				097C00F2260C350A00C889AB /* VEHeaderView.m */,
+				097C00F5260C350A00C889AB /* VENavBarButton.h */,
+				097C00EC260C350A00C889AB /* VENavBarButton.m */,
+				097C00F3260C350A00C889AB /* VENavBarViewController.h */,
+				097C00EE260C350A00C889AB /* VENavBarViewController.m */,
+				097C00F0260C350A00C889AB /* VENavigationController.h */,
+				097C00EB260C350A00C889AB /* VENavigationController.m */,
+				097C00F1260C350A00C889AB /* VEWindow.h */,
+				097C00ED260C350A00C889AB /* VEWindow.m */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		700F382125AFED6B00943532 /* EditConfiguration */ = {
+			isa = PBXGroup;
+			children = (
+				700F382225AFED6B00943532 /* VEEditConfiguration.m */,
+				700F382325AFED6B00943532 /* VEEditConfiguration.h */,
+			);
+			path = EditConfiguration;
+			sourceTree = "<group>";
+		};
+		700F382525AFED6B00943532 /* CameraConfiguration */ = {
+			isa = PBXGroup;
+			children = (
+				700F382625AFED6B00943532 /* VECameraConfiguration.m */,
+				700F382725AFED6B00943532 /* VECameraConfiguration.h */,
+			);
+			path = CameraConfiguration;
+			sourceTree = "<group>";
+		};
+		700F382C25AFED6B00943532 /* FaceUBeautyParams */ = {
+			isa = PBXGroup;
+			children = (
+				700F382D25AFED6B00943532 /* VEFaceUBeautyParams.m */,
+				700F382E25AFED6B00943532 /* VEFaceUBeautyParams.h */,
+			);
+			path = FaceUBeautyParams;
+			sourceTree = "<group>";
+		};
+		700F383125AFED6B00943532 /* MusicInfo */ = {
+			isa = PBXGroup;
+			children = (
+				700F383225AFED6B00943532 /* VEMusicInfo.m */,
+				700F383325AFED6B00943532 /* VEMusicInfo.h */,
+			);
+			path = MusicInfo;
+			sourceTree = "<group>";
+		};
+		700F383425AFED6B00943532 /* MediaInfo */ = {
+			isa = PBXGroup;
+			children = (
+				700F383525AFED6B00943532 /* VEMediaInfo.h */,
+				700F383625AFED6B00943532 /* VEMediaInfo.m */,
+			);
+			path = MediaInfo;
+			sourceTree = "<group>";
+		};
+		700F383725AFED6B00943532 /* ThirdpartyConfig */ = {
+			isa = PBXGroup;
+			children = (
+				700F383825AFED6B00943532 /* VEThirdpartyConfig.h */,
+				700F383925AFED6B00943532 /* VEThirdpartyConfig.m */,
+			);
+			path = ThirdpartyConfig;
+			sourceTree = "<group>";
+		};
+		7076A78725BAEAB4003F69E0 /* ImageManager */ = {
+			isa = PBXGroup;
+			children = (
+				7076A78825BAEAB4003F69E0 /* VEImageManager.h */,
+				7076A78925BAEAB4003F69E0 /* VEAssetModel.h */,
+				7076A78A25BAEAB4003F69E0 /* VEImageManager.m */,
+				7076A78B25BAEAB4003F69E0 /* VEAssetModel.m */,
+			);
+			path = ImageManager;
+			sourceTree = "<group>";
+		};
+		70F0CBA125B573F100E80E37 /* Bundle */ = {
+			isa = PBXGroup;
+			children = (
+				0953419926292EBD006CA303 /* VEDemoUse.bundle */,
+				70F0CBA225B573F100E80E37 /* VEEditSDK.bundle */,
+				70F0CBA325B573F100E80E37 /* VideoRecord.bundle */,
+			);
+			path = Bundle;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		0AECE38125838FA400879809 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				097C00A3260C34BE00C889AB /* VEPlaySlider.h in Headers */,
+				700F383A25AFED6B00943532 /* VEExportConfiguration.h in Headers */,
+				700F384525AFED6B00943532 /* VEEditConfiguration.h in Headers */,
+				0AECE38B25838FA400879809 /* VEENUMCONFIGER.h in Headers */,
+				700F384625AFED6B00943532 /* VEENUMCONFIGER-PrefixHeader.h in Headers */,
+				097C0095260C34BE00C889AB /* VECropView.h in Headers */,
+				700F385525AFED6B00943532 /* VEThirdpartyConfig.h in Headers */,
+				7069E17625B996540072BCAE /* VEConfigManager.h in Headers */,
+				097C009A260C34BE00C889AB /* VECropTypeModel.h in Headers */,
+				097C0101260C350A00C889AB /* VENavBarButton.h in Headers */,
+				097C0093260C34BE00C889AB /* VEVideoCropView.h in Headers */,
+				097C009F260C34BE00C889AB /* VECropIconTypeCell.h in Headers */,
+				097C009D260C34BE00C889AB /* VECropTypeView.h in Headers */,
+				700F384F25AFED6B00943532 /* VEDefines.h in Headers */,
+				097C00FC260C350A00C889AB /* VENavigationController.h in Headers */,
+				700F385325AFED6B00943532 /* VEMediaInfo.h in Headers */,
+				700F384825AFED6B00943532 /* VECameraConfiguration.h in Headers */,
+				700F384E25AFED6B00943532 /* VEFaceUBeautyParams.h in Headers */,
+				097C0100260C350A00C889AB /* UIViewController+PopGestureRecognizer.h in Headers */,
+				7076A78D25BAEAB4003F69E0 /* VEAssetModel.h in Headers */,
+				097C0094260C34BE00C889AB /* VETrackButton.h in Headers */,
+				097C00FB260C350A00C889AB /* VEHeaderView.h in Headers */,
+				700F384925AFED6B00943532 /* UIImage+VEGIF.h in Headers */,
+				097C009E260C34BE00C889AB /* VECropTypeCell.h in Headers */,
+				097C00FF260C350A00C889AB /* VENavBarViewController.h in Headers */,
+				7076A78C25BAEAB4003F69E0 /* VEImageManager.h in Headers */,
+				097C00FD260C350A00C889AB /* VEWindow.h in Headers */,
+				700F384A25AFED6B00943532 /* VEHelp.h in Headers */,
+				097C0096260C34BE00C889AB /* VECropRectView.h in Headers */,
+				700F385225AFED6B00943532 /* VEMusicInfo.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		0AECE38525838FA400879809 /* VEENUMCONFIGER */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0AECE38E25838FA400879809 /* Build configuration list for PBXNativeTarget "VEENUMCONFIGER" */;
+			buildPhases = (
+				0AECE38125838FA400879809 /* Headers */,
+				0AECE38225838FA400879809 /* Sources */,
+				0AECE38325838FA400879809 /* Frameworks */,
+				0AECE38425838FA400879809 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VEENUMCONFIGER;
+			productName = VEENUMCONFIGER;
+			productReference = 0AECE38625838FA400879809 /* VEENUMCONFIGER.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0AECE37D25838FA400879809 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1220;
+				TargetAttributes = {
+					0AECE38525838FA400879809 = {
+						CreatedOnToolsVersion = 12.2;
+					};
+				};
+			};
+			buildConfigurationList = 0AECE38025838FA400879809 /* Build configuration list for PBXProject "VEENUMCONFIGER" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 0AECE37C25838FA400879809;
+			productRefGroup = 0AECE38725838FA400879809 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0AECE38525838FA400879809 /* VEENUMCONFIGER */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0AECE38425838FA400879809 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70F0CBA525B573F100E80E37 /* VideoRecord.bundle in Resources */,
+				70F0CBA425B573F100E80E37 /* VEEditSDK.bundle in Resources */,
+				0953419A26292EBD006CA303 /* VEDemoUse.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0AECE38225838FA400879809 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				097C00F9260C350A00C889AB /* VEWindow.m in Sources */,
+				097C009C260C34BE00C889AB /* VECropIconTypeCell.m in Sources */,
+				700F384725AFED6B00943532 /* VECameraConfiguration.m in Sources */,
+				7076A78E25BAEAB4003F69E0 /* VEImageManager.m in Sources */,
+				700F384C25AFED6B00943532 /* VEHelp.m in Sources */,
+				097C00A1260C34BE00C889AB /* VECropTypeCell.m in Sources */,
+				097C0099260C34BE00C889AB /* VECropRectView.m in Sources */,
+				097C00F7260C350A00C889AB /* VENavigationController.m in Sources */,
+				097C0102260C350A00C889AB /* UIViewController+PopGestureRecognizer.m in Sources */,
+				097C009B260C34BE00C889AB /* VECropTypeModel.m in Sources */,
+				097C00A2260C34BE00C889AB /* VECropView.m in Sources */,
+				7076A78F25BAEAB4003F69E0 /* VEAssetModel.m in Sources */,
+				700F385425AFED6B00943532 /* VEMediaInfo.m in Sources */,
+				097C00A4260C34BE00C889AB /* VEPlaySlider.m in Sources */,
+				700F384425AFED6B00943532 /* VEEditConfiguration.m in Sources */,
+				7069E17725B996540072BCAE /* VEConfigManager.m in Sources */,
+				700F385625AFED6B00943532 /* VEThirdpartyConfig.m in Sources */,
+				097C00FE260C350A00C889AB /* VEHeaderView.m in Sources */,
+				097C0097260C34BE00C889AB /* VETrackButton.m in Sources */,
+				097C0098260C34BE00C889AB /* VEVideoCropView.m in Sources */,
+				700F385025AFED6B00943532 /* UIImage+VEGIF.m in Sources */,
+				700F385125AFED6B00943532 /* VEMusicInfo.m in Sources */,
+				097C00FA260C350A00C889AB /* VENavBarViewController.m in Sources */,
+				700F384D25AFED6B00943532 /* VEFaceUBeautyParams.m in Sources */,
+				097C00F8260C350A00C889AB /* VENavBarButton.m in Sources */,
+				700F383B25AFED6B00943532 /* VEExportConfiguration.m in Sources */,
+				097C00A0260C34BE00C889AB /* VECropTypeView.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0AECE38C25838FA400879809 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		0AECE38D25838FA400879809 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		0AECE38F25838FA400879809 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					i386,
+					arm64,
+					armv7s,
+					armv7,
+				);
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = K8UMEY246Y;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "";
+				INFOPLIST_FILE = VEENUMCONFIGER/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				PRODUCT_BUNDLE_IDENTIFIER = "iOS-VESDK-Team.VEENUMCONFIGER";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		0AECE39025838FA400879809 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					i386,
+					arm64,
+					armv7s,
+					armv7,
+				);
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = K8UMEY246Y;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "";
+				INFOPLIST_FILE = VEENUMCONFIGER/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				PRODUCT_BUNDLE_IDENTIFIER = "iOS-VESDK-Team.VEENUMCONFIGER";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0AECE38025838FA400879809 /* Build configuration list for PBXProject "VEENUMCONFIGER" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0AECE38C25838FA400879809 /* Debug */,
+				0AECE38D25838FA400879809 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0AECE38E25838FA400879809 /* Build configuration list for PBXNativeTarget "VEENUMCONFIGER" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0AECE38F25838FA400879809 /* Debug */,
+				0AECE39025838FA400879809 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0AECE37D25838FA400879809 /* Project object */;
+}

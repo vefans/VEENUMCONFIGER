@@ -1,0 +1,15 @@
+{
+	"ver" : 2,
+	"minCoreVer":120,
+	"name" : "zoomfar",
+	"fragShader" : "frag.txt",
+	"uniformParams": [{
+        "paramName": "zoom_quickness",
+        "type": "float",
+        "frameArray": [{
+                "time": 0.000,
+                "value": 0.8
+            }
+        ]
+    }]
+}

@@ -1,0 +1,57 @@
+{
+	"ver" : 2,
+	"minCoreVer":120,
+	"color" : [340, 144, 139, 0.6],
+	"name" : "maskM",
+	"fragShader" : "frag.txt",
+	"vertShader": "vert.txt",
+	"uniformParams": [
+		{
+		"paramName": "center",
+		"type": "floatArray",
+		"frameArray": [
+			{
+				"time": 0.000,
+				"value": [0,0]
+			}]
+		},
+		{
+			"paramName": "distance",
+			"type": "float",
+			"frameArray": [
+				{
+					"time": 0.000,
+					"value": 0.5
+				}]
+		},
+		{
+			"paramName": "degrees",
+			"type": "float",
+			"frameArray": [
+				{
+					"time": 0.000,
+					"value": 90
+				}]
+		},
+		{
+			"paramName": "featherStep",
+			"type": "float",
+			"frameArray": [
+				{
+					"time": 0.000,
+					"value": 0.0
+				}
+			]
+		},
+		{
+			"paramName": "invert",
+			"type": "float",
+			"frameArray": [
+				{
+					"time": 0.000,
+					"value": 0
+				}
+			]
+		}
+	]
+}

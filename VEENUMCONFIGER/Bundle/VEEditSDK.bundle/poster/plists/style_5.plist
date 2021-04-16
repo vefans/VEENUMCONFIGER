@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SubViewArray</key>
+	<array>
+		<dict>
+			<key>pointArray</key>
+			<array>
+				<string>{0,0}/{1,1}</string>
+				<string>{1,0}/{-1,1}</string>
+				<string>{1,0.33}/{-1,-0.5}</string>
+				<string>{0,0.33}/{1,-0.5}</string>
+			</array>
+		</dict>
+		<dict>
+			<key>pointArray</key>
+			<array>
+				<string>{0,0.33}/{1,0.5}</string>
+				<string>{1,0.33}/{-1,0.5}</string>
+				<string>{1,0.66}/{-1,-0.5}</string>
+				<string>{0,0.66}/{1,-0.5}</string>
+			</array>
+		</dict>
+		<dict>
+			<key>pointArray</key>
+			<array>
+				<string>{0,0.66}/{1,0.5}</string>
+				<string>{1,0.66}/{-1,0.5}</string>
+				<string>{1,1}/{-1,-1}</string>
+				<string>{0,1}/{1,-1}</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
