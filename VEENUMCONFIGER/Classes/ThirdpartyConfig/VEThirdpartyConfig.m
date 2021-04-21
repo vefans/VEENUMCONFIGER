@@ -34,3 +34,17 @@
 }
 
 @end
+
+@implementation NuiSDKConfig
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _accessKeyId = @"LTAI5t7DxSE4esz9wD4E1THj";
+        _accessKeySecret = @"Mw3AqwxgxChylg7KbCAeEFPJiG6aYS";
+        _appKey = @"YldWKEjep1OyUKkJ";
+    }
+    
+    return self;
+}
+
+@end

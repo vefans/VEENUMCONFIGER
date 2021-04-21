@@ -611,11 +611,14 @@
 "当前时长超过了导出时长限制%@秒" = "Current duration exceed the limit(%@ second) for input time length";
 "存草稿" = "Draft";
 "保存草稿中..." = "Saving draft...";
+"配音生成中..." = "Saving dubbing...";
 "保存草稿失败" = "Fail to save draft";
 "音乐家 Jason Shaw @audionautix.com\n授权证书" = "Musician Jason Shaw @audionautix.com\n Authorization certificate";
 "授权证书" = "Authorization certificate";
 "编辑" = "Edit";
 "音乐家 Jason Shaw" = "Musician Jason Shaw";
+"配音已生成，可在声音-配音模块查看" = "The dubbing is generated and can be viewed in the voice-dubbing module";
+"生成失败" = "Build failure";
 
 "音效处理" = "Sound effect processing";
 //音效
@@ -1838,3 +1841,19 @@
 "马赛克" = "Inpaint";
 "遮罩效果" = "matteeffect";
 "双指缩放或拖动图片调整显示区域" = "Two fingers to zoom or drag the picture to adjust the display area";
+
+"发音人" = "Speaker";
+"该文本已经生成了对应的配音，是否同意删除该配音?" = "The text has already generated the corresponding dubbing. Do you agree to delete the dubbing?";
+"保留配音" = "Keep dubbing";
+"删除配音" = "Delete dubbing";
+"转配音" = "Turn dubbing";
+"标准女声" = "Standard Female";
+"标准男声" = "Standard Male";
+"女童" = "Girl";
+"萝莉" = "Loli";
+"温柔女声" = "Gentle Female";
+"磁性男声" = "Magnetic Male";
+"东北女声" = "Northeast Female";
+"台湾女声" = "Taiwan Female";
+"粤语女声" = "Cantonese Female";
+"四川女声" = "Sichuan Female";

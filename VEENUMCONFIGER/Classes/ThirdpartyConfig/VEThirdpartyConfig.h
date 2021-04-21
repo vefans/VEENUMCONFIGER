@@ -52,4 +52,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+/** 阿里云智能语音账号配置
+ */
+@interface NuiSDKConfig : NSObject
+
+/** 阿里云账号的AccessKey ID
+ */
+@property (nonatomic, strong) NSString *accessKeyId;
+
+/** 阿里云账号的AccessKey Secret
+ */
+@property (nonatomic, strong) NSString *accessKeySecret;
+
+/** 在阿里云管控台创建项目的appkey
+ */
+@property (nonatomic, strong) NSString *appKey;
+
+@end
+
 NS_ASSUME_NONNULL_END

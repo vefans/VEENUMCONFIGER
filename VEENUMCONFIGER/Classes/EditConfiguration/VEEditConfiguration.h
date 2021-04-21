@@ -321,6 +321,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 百度云AI账号配置
 */
 @property (nonatomic,strong,nullable) BaiDuCloudAIConfig *baiDuCloudAIConfig;
+/** 阿里云智能语音账号配置
+ */
+@property (nonatomic,strong,nullable) NuiSDKConfig *nuiSDKConfig;
 /** 滤镜 (default true)
  */
 @property (nonatomic,assign) bool enableFilter;

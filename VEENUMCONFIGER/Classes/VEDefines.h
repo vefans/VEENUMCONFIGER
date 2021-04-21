@@ -109,6 +109,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_Ton               =  32,  //调色
     VEAdvanceEditType_Canvas            =  33,  //画布
     VEAdvanceEditType_Split            =  34,  //分割
+    VEAdvanceEditType_SubtitleToAudio = 35,   //文字转语音
 };
 
 /*

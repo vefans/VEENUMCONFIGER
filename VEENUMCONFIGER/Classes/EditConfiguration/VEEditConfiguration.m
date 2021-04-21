@@ -48,6 +48,7 @@
         _enableAIRecogSubtitle = true;
         _tencentAIRecogConfig = [[TencentCloudAIRecogConfig alloc] init];
         _baiDuCloudAIConfig = [[BaiDuCloudAIConfig alloc] init];
+        _nuiSDKConfig = [[NuiSDKConfig alloc] init];
         _enableSticker      = true;
         _enablePicZoom = true;
         _enableBackgroundEdit = true;
