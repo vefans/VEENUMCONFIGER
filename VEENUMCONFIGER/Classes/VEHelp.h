@@ -70,8 +70,16 @@
 + (NSBundle *)getRecordBundle;
 + (NSBundle *)getDemoUseBundle;
 + (NSString *)getLocalizedString:(NSString *)key;
-
+/**
+ *  获取设备可用容量(G)
+ */
++(float)getFreeDiskSize;
 /**获取可用空间和总空间
  */
 + (NSString *)getDivceSize;
+/**获取视频需要占用的空间
+ */
++(float)fileSizeWithvideoBitRate:(float) videoBitRate audioBitRate:(float)audioBitRate duration:(float)duration;
+//自动换行，计算并添加“\n”进行换行
++(NSString *)setPastTextWith:(float) witdh atText:(NSString *) text atFont:(UIFont *) font;
 @end

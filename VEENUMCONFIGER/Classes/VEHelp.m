@@ -861,7 +861,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return freeSize;
 }
 
-
++(float)fileSizeWithvideoBitRate:(float) videoBitRate audioBitRate:(float)audioBitRate duration:(float)duration
+{
+    float fileSize = (videoBitRate + audioBitRate )*duration/8;
+    return fileSize;
+}
 /**
  *  获取设备总容量(G)
  */
@@ -886,4 +890,94 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSString * sizeStr = [NSString stringWithFormat:@"内部可用%0.2fGB / 共%0.2fGB",freeDiskSize,totalFreeSpace];
     return sizeStr;
 }
+
+//自动换行，计算并添加“\n”进行换行
++(NSString *)setPastTextWith:(float) witdh atText:(NSString *) text atFont:(UIFont *) font
+{
+    //获取手动换行的次数 及 在text中的位置
+    __block NSMutableArray * array = [NSMutableArray new];
+    __block NSMutableArray * strArray = [NSMutableArray new];
+    __block NSString * str = @"";
+    
+    [text enumerateSubstringsInRange:NSMakeRange(0, text.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString * _Nullable substring, NSRange substringRange, NSRange enclosingRange, BOOL * _Nonnull stop) {
+        if( [substring isEqualToString:@"\n"] )
+        {
+            [array addObject:[NSNumber numberWithInteger:substringRange.location]];
+        }
+    }];
+    
+    [array addObject:[NSNumber numberWithInteger:text.length]];
+    
+    __block NSInteger startInteger = 0;
+    __block NSInteger endInteger = 0;
+    [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        endInteger = [obj integerValue];
+        NSString * objStr = [text substringWithRange:NSMakeRange(startInteger, endInteger - startInteger)];
+        
+        NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:objStr
+                                                                             attributes:@{NSFontAttributeName:font}];
+        CGSize rectSize = [attributedText boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                                       context:nil].size;
+        
+        float fontWith = (float)rectSize.width/(float)objStr.length;
+        int lineNumber =  (int)(witdh/fontWith);
+        int count = (int)(objStr.length/lineNumber + ((objStr.length%lineNumber)?1:0));
+        NSInteger startNumber = 0;
+        NSInteger endNumber = 0;
+        for (int i = 1; i < count; i++) {
+            endNumber = i*lineNumber;
+            if( endNumber > objStr.length )
+            {
+                endNumber = objStr.length;
+            }
+            NSString * numberStr = [objStr substringWithRange:NSMakeRange(startNumber, endNumber - startNumber)];
+            str = [NSString stringWithFormat:@"%@%@\n",str,numberStr];
+            startNumber = endNumber;
+        }
+        
+        if( count == 1 )
+        {
+            if( idx == (array.count-1) )
+                str = [NSString stringWithFormat:@"%@%@",str,objStr];
+            else
+                str = [NSString stringWithFormat:@"%@%@\n",str,objStr];
+        }
+        
+        startInteger = [obj integerValue];
+    }];
+    
+    return str;
+    //    }
+    //    else{
+//        NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text
+//                                                                                 attributes:@{NSFontAttributeName:font}];
+//        CGSize rectSize = [attributedText boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
+//                                                       options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+//                                                       context:nil].size;
+//        float fontWith = (float)rectSize.width/(float)text.length;
+//        int lineNumber =  (int)(witdh/fontWith);
+//        int count = (int)(text.length/lineNumber + ((text.length%lineNumber)?1:0));
+//        NSInteger startNumber = 0;
+//        NSInteger endNumber = 0;
+//        for (int i = 1; i < count; i++) {
+//            endNumber = i*lineNumber;
+//            if( endNumber > text.length )
+//            {
+//                endNumber = text.length;
+//            }
+//            NSString * numberStr = [text substringWithRange:NSMakeRange(startNumber, endNumber - startNumber)];
+//            str = [NSString stringWithFormat:@"%@%@\n",str,numberStr];
+//            startNumber = endNumber;
+//        }
+//
+//        if( count == 1 )
+//        {
+//            str = text;
+//        }
+//
+//        return str;
+//    }
+}
+
 @end

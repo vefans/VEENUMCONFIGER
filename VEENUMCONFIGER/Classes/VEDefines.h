@@ -289,6 +289,8 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define KPICDURATION 3  //图片显示时长
 #define VIDEOMINDURATION 0.1 //视频最短时长，用于分割、截取
 
+//判断是否为iPad
+#define iPad ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
 #define DEGREES_TO_RADIANS(d) (d * M_PI / 180)
 #define kThumbnailFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/thumbnailFolder"]
 
@@ -326,8 +328,6 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define ADDEDMATERIALCOLOR UIColorFromRGB(0x8cb27b) //字幕等遮罩的颜色//58bb9d
 #define MATERIALMASKCOLOR ADDEDMATERIALCOLOR//[ADDEDMATERIALCOLOR colorWithAlphaComponent:0.9]
 
-//判断是否为iPad
-#define iPad ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
 #define ipadToolBarHeight (iPad?20:0)
 
 //视频导出帧率
@@ -341,7 +341,7 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define kHEIGHT [UIScreen mainScreen].bounds.size.height
 #define kNavigationBarHeight (iPhone_X ? 88 : 44)
 #define kToolbarHeight (iPhone_X ? 78 : 44 + ipadToolBarHeight )
-#define kPlayerViewHeight (kHEIGHT - (iPhone_X ? 44 + 34 : 0  + ipadToolBarHeight) - ( 0.523 * kWIDTH ) - (iPad?0:20))
+#define kPlayerViewHeight (iPad ? (kHEIGHT - 223) : (kHEIGHT - (iPhone_X ? (44 + 34) : (0  + ipadToolBarHeight)) - ( 0.523 * kWIDTH ) - (iPad?0:20)))
 //#define kToolbarHeight (iPhone_X ? 78 : 44)
 //#define kPlayerViewHeight (kHEIGHT - (iPhone_X ? 44 + 34 : 0) - ( 0.523 * kWIDTH ) - 20)
 #define kPlayerViewOriginX (iPhone_X ? 44 : 0)
