@@ -58,7 +58,7 @@
 /**加载图片
  */
 + (UIImage *)imageWithContentOfFile:(NSString *)path;
-
++ (UIImage *)composeimage:(UIImage *)image size:(CGSize)size;
 + (UIImage *)imageNamed:(NSString *)name;
 
 + (NSString *) getEditResource:(NSString *)name type: (NSString *) type;

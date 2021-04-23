@@ -1857,3 +1857,9 @@
 "台湾女声" = "Taiwan Female";
 "粤语女声" = "Cantonese Female";
 "四川女声" = "Sichuan Female";
+"文本已修改，是否更新配音内容？" = "Text has been modified, whether to update the contents of the voice?";
+"转配音失败！" = "Turn dubbing failure!";
+"请检查网络是否通畅！" = "Please check if the network is smooth!";
+"不更新" = "Do not update";
+"更新内容" = "Update content";
+"换配音" = "Replace dubbing";

@@ -14,17 +14,17 @@ static char _tapKey;
         [NSThread sleepForTimeInterval:0.5f];
     }
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    CGFloat maxWidth = 200;
+    CGFloat maxWidth = window.frame.size.width - 60;
     CGFloat maxHeight = window.frame.size.height - 200;
-    CGFloat commonInset = 10;
     
     UIFont  *font = [UIFont systemFontOfSize:12];
     NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:text];
     [string addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, string.length)];
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(maxWidth, 10000) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil];
-    CGSize size = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height < maxHeight ? rect.size.height : maxHeight));
-    
-    CGRect textFrame = CGRectMake(window.frame.size.width/2 - (size.width + commonInset * 2)/2 , (window.frame.size.height - (size.height + commonInset * 2))/2.0, size.width  + commonInset * 2, size.height + commonInset * 2);
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(maxWidth, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil];
+    CGSize size = CGSizeMake(ceilf(rect.size.width + 10), ceilf(rect.size.height < maxHeight ? rect.size.height : maxHeight));
+    size.width = size.width + 20;
+    size.height = size.height + 20;
+    CGRect textFrame = CGRectMake((window.frame.size.width - size.width)/2 , (window.frame.size.height - size.height)/2.0, size.width, size.height);
     tips = [[UITextView alloc] initWithFrame:textFrame];
     tips.text = text;
     tips.font = font;
@@ -34,11 +34,17 @@ static char _tapKey;
     tips.editable = NO;
     tips.selectable = NO;
     tips.scrollEnabled = NO;
-    tips.textContainer.lineFragmentPadding = 0;
-    tips.contentInset = UIEdgeInsetsMake(commonInset, commonInset, commonInset, commonInset);
+    tips.textAlignment = NSTextAlignmentCenter;
+    [tips sizeToFit];
+    CGRect r = tips.frame;
+    r.origin.y = CGRectGetMidY(r) - r.size.height/2.0;
+    r.size.height = r.size.height;
+    r.size.width = r.size.width + 20;
+    r.origin.x = CGRectGetMidX(r) - r.size.width/2.0;
+    tips.frame = r;
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handlerGuesture:)];
-    [window addGestureRecognizer:tap];
+//    [window addGestureRecognizer:tap];
     [window addSubview:tips];
     
     objc_setAssociatedObject(self, &_tapKey, tap, OBJC_ASSOCIATION_RETAIN_NONATOMIC);

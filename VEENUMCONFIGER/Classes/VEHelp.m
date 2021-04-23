@@ -719,6 +719,15 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
 }
 
++ (UIImage *)composeimage:(UIImage *)image size:(CGSize)size {
+    //以1.png的图大小为画布创建上下文
+    UIGraphicsBeginImageContext(CGSizeMake(size.width, size.height));
+    [image drawInRect:CGRectMake(5, (size.height - 2)/2.0, size.width - 10, 2)];//再把小图放在上下文中
+    UIImage *resultImg = UIGraphicsGetImageFromCurrentImageContext();//从当前上下文中获得最终图片
+    UIGraphicsEndImageContext();//关闭上下文
+    return resultImg;
+}
+
 + (UIImage *)imageNamed:(NSString *)name{
     return [self imageWithContentOfFile:name];
 }
@@ -835,30 +844,46 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 
-+ (NSString *)getDivceSize{
-    float totalSpace;
-    float totalFreeSpace;
-    NSError *error = nil;
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSDictionary *dictionary = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error: &error];
-    NSString * sizeStr = nil;
-    if (dictionary) {
-        NSNumber *fileSystemSizeInBytes = [dictionary objectForKey: NSFileSystemSize];
-        NSNumber *freeFileSystemSizeInBytes = [dictionary objectForKey:NSFileSystemFreeSize];
-        totalSpace = [fileSystemSizeInBytes floatValue];
-        totalSpace = (totalSpace/1024.0f)/1024.0f/1024.0f;
-        totalFreeSpace = [freeFileSystemSizeInBytes floatValue];
-        totalFreeSpace = (totalFreeSpace/1024.0f)/1024.0f/1024.0f;
-        
-        struct statfs buf;
-        long long freespace = -1;
-        if(statfs("/var", &buf) >= 0){
-            freespace = (long long)(buf.f_bsize * buf.f_bfree);
-        }
-        
-        sizeStr = [NSString stringWithFormat:@"内部可用%0.2fGB / 共%0.2fGB",freespace/1024.0f/1024.0f/1024.0f + totalFreeSpace,totalSpace];
-    }
-    return sizeStr;
+/**
+ *  获取设备可用容量(G)
+ */
++(float)getFreeDiskSize
+{
+    //    但是在iOS11以上使用这个方法获取剩余空间不准确了，或者跟系统不一样
+    //    iOS11上可以使用
+    NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:NSTemporaryDirectory()];
+    NSDictionary *results = [fileURL resourceValuesForKeys:@[NSURLVolumeAvailableCapacityForImportantUsageKey] error:nil];
+    // 这里拿到的值的单位是bytes，iOS11是这样算的1000MB = 1，1000进制算的
+    // bytes->KB->MB->G
+    
+    CGFloat freeSize = [results[NSURLVolumeAvailableCapacityForImportantUsageKey] floatValue]/1000.0f/1000.0f/1000.0f;
+    
+    return freeSize;
 }
 
+
+/**
+ *  获取设备总容量(G)
+ */
++(float)getTotalDiskSize
+{
+    float totalSize;
+    NSError * error;
+    NSDictionary * infoDic = [[NSFileManager defaultManager] attributesOfFileSystemForPath: NSHomeDirectory() error: &error];
+    if (infoDic) {
+        NSNumber * fileSystemSizeInBytes = [infoDic objectForKey: NSFileSystemSize];
+        totalSize = [fileSystemSizeInBytes floatValue]/1000.0f/1000.0f/1000.0f;
+        return totalSize;
+    } else {
+        return 0;
+    }
+}
+
+
++ (NSString *)getDivceSize{
+    float freeDiskSize = [self getFreeDiskSize];
+    float totalFreeSpace = [self getTotalDiskSize];
+    NSString * sizeStr = [NSString stringWithFormat:@"内部可用%0.2fGB / 共%0.2fGB",freeDiskSize,totalFreeSpace];
+    return sizeStr;
+}
 @end
