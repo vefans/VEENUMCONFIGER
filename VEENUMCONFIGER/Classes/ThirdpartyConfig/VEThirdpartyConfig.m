@@ -39,9 +39,9 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        _accessKeyId = @"LTAI5t7DxSE4esz9wD4E1THj";
-        _accessKeySecret = @"Mw3AqwxgxChylg7KbCAeEFPJiG6aYS";
-        _appKey = @"YldWKEjep1OyUKkJ";
+        _accessKeyId = @"LTAI5t5muG8ycj53ZRZE4KS2";
+        _accessKeySecret = @"hHtMJyAUyLcUKbTIEJh3Fj63GyJF5J";
+        _appKey = @"t5eSCO5f15lBLYvN";
     }
     
     return self;
