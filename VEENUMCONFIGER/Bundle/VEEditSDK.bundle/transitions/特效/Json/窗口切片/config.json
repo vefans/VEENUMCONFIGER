@@ -1,6 +1,1 @@
-{
-	"ver" : 2,
-	"minCoreVer":120,
-	"name" : "WindowSlice",
-	"fragShader" : "frag.txt"
-}
+{"ver":2,"minCoreVer":120,"name":"WindowSlice","fragShader":"frag.txt"}
