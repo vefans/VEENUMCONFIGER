@@ -53,6 +53,7 @@ typedef NS_ENUM(NSInteger, VECropType){
     VE_VECROPTYPE_4TO5 = 6,      //4:5
     VE_VECROPTYPE_4TO3 = 7,      //4:3
     VE_VECROPTYPE_3TO4 = 8,      //3:4
+    VE_VECROPTYPE_FIXEDRATIO = 9,    /**< 固定比例裁切*/
 };
 
 typedef NS_ENUM(NSInteger,TimeFilterType)

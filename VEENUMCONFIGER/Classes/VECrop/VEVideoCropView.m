@@ -26,11 +26,18 @@
         float videoSizeWidth = _videoRect.size.width;
         float videoSizeHeight = videoSizeWidth*(_videoSize.height/_videoSize.width);
         self.cropView.videoFrame = CGRectMake(_videoRect.origin.x, (self.frame.size.height - videoSizeHeight)/2, videoSizeWidth, videoSizeHeight);
+        if(self.frame.size.height < videoSizeHeight){
+            float videoSizeHeight = _videoRect.size.height;
+            float videoSizeWidth = videoSizeHeight * (_videoSize.width/_videoSize.height);
+            self.cropView.videoFrame = CGRectMake((self.frame.size.width - videoSizeWidth)/2.0, (self.frame.size.height - videoSizeHeight)/2, videoSizeWidth, videoSizeHeight);
+
+        }
         
     }else if(_videoSize.width < _videoSize.height){
         float videoSizeHeight = _videoRect.size.height;
         float videoSizeWidth = videoSizeHeight*(_videoSize.width/_videoSize.height);
         self.cropView.videoFrame = CGRectMake((self.frame.size.width -videoSizeWidth)/2 , _videoRect.origin.y, videoSizeWidth, videoSizeHeight);
+        
     }
 }
 

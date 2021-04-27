@@ -14,6 +14,7 @@
  */
 typedef NS_ENUM(NSInteger, SUPPORTLANGUAGE){
     CHINESE,    //中文
+    
     ENGLISH,     //英文
     Spanish,//西语
     Portuguese,//葡语
@@ -85,6 +86,10 @@ typedef void(^VEFailedHandler) (NSError * error);
 /**视频输出路径
  */
 @property (copy,nonatomic)NSString  * outPath;
+/**视频输出路径
+ */
+@property (copy,nonatomic)NSString  * draftPath;
+
 /** 需扫描的缓存文件夹名称
  */
 @property (copy,nonatomic)NSString  * appAlbumCacheName;

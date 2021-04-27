@@ -38,8 +38,8 @@
 @property(nonatomic,assign) CGPoint trackingRectPointBottomLeft;//有效拖动区下左边顶点
 @property(nonatomic,assign) CGPoint trackingRectPointBottomRight;//有效拖动区下左边顶点
 
-@property(nonatomic,assign) CGFloat ratio;
 
+@property(nonatomic,assign) CGFloat ratio;
 @property(nonatomic,assign) CGPoint changePointTemp;//
 
 
@@ -141,6 +141,22 @@
         }
         
         
+    }else if (cropType == VE_VECROPTYPE_FIXEDRATIO) {
+        if(self.ratio > 0.0){
+            if(self.ratio > 1.0){
+                [self ratioLessThan1WithValueX:16 WithToValueY:16/self.ratio];
+                self.cropSizeMin = CGSizeMake(VE_CROPWIDTH_MIN, VE_CROPHEIGHT_MIN/self.ratio);
+            }else{
+                [self ratioLessThan1WithValueX:self.ratio * 9 WithToValueY:9];
+                self.cropSizeMin = CGSizeMake(VE_CROPWIDTH_MIN * self.ratio, VE_CROPHEIGHT_MIN);
+            }
+        }else{
+            [self ratioFreeAandOriginal];
+            self.cropSizeMin = CGSizeMake(VE_CROPWIDTH_MIN, VE_CROPHEIGHT_MIN);
+        }
+        [self setTrackButtonState:YES];
+        
+        
     }else if (cropType == VE_VECROPTYPE_ORIGINAL){
         
         [self ratioFreeAandOriginal];
@@ -207,8 +223,12 @@
         self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/4)*3, VE_CROPHEIGHT_MIN);
         
     }
-    
-    self.ratio = self.cropWidth / self.cropHeight;
+    if(self.cropType != VE_VECROPTYPE_FIXEDRATIO){
+        self.ratio = self.cropWidth / self.cropHeight;
+    }
+//    else{
+//        self.ratio = self.cropWidth / self.cropHeight;
+//    }
     self.cropSizeMax = CGSizeMake(self.cropWidth, self.cropHeight);
 
     [self needsUpdateCropPoints];
@@ -274,11 +294,18 @@
     
     if ( _videoFrame.size.width > _videoFrame.size.height) {
         
-        self.croporiginX = _videoFrame.origin.x+ (_videoFrame.size.width -_videoFrame.size.height *valueX/valueY)/2;
-        self.croporiginY = _videoFrame.origin.y;
-        self.cropWidth = _videoFrame.size.height *valueX/valueY;
-        self.cropHeight = _videoFrame.size.height;
-        
+        if(videoR > 1.0 && self.cropType == VE_VECROPTYPE_FIXEDRATIO){
+            
+            self.croporiginX = _videoFrame.origin.x;
+            self.croporiginY = _videoFrame.origin.y+ (_videoFrame.size.height -_videoFrame.size.width/videoR)/2;
+            self.cropWidth = _videoFrame.size.width;
+            self.cropHeight = _videoFrame.size.width /videoR;
+        }else{
+            self.croporiginX = _videoFrame.origin.x+ (_videoFrame.size.width -_videoFrame.size.height *valueX/valueY)/2;
+            self.croporiginY = _videoFrame.origin.y;
+            self.cropWidth = _videoFrame.size.height *valueX/valueY;
+            self.cropHeight = _videoFrame.size.height;
+        }
         
     }else{
         
@@ -421,7 +448,14 @@
     
 }
 
-
+- (void)setCropType:(VECropType)cropType{
+    _cropType = cropType;
+    if(_cropType == VE_VECROPTYPE_FIXEDRATIO){
+        [self setTrackButtonState:YES];
+    }else{
+        [self setTrackButtonState:NO];
+    }
+}
 #pragma mark - 3 Data
 
 
@@ -694,7 +728,8 @@
         
         NSLog(@"拖动上方");
         return YES;
-    }else if (self.cropViewTrackType == VE_TRACK_BOTTOM){
+    }
+    else if (self.cropViewTrackType == VE_TRACK_BOTTOM){
         
         float distance = fabs(pointTemp.y - self.cropPointTopLeft.y );
         if (pointTemp.y - self.cropPointTopLeft.y> self.cropSizeMin.height && pointTemp.y <= self.trackingRectPointBottomLeft.y) {
@@ -707,7 +742,8 @@
         [self setNeedsDisplay];
         NSLog(@"拖动下方");
         return YES;
-    }else if (self.cropViewTrackType == VE_TRACK_LEFT) {
+    }
+    else if (self.cropViewTrackType == VE_TRACK_LEFT) {
         
         float distance = fabs(self.cropPointTopRight.x - pointTemp.x);
         if (fabs(self.cropPointTopRight.x - pointTemp.x)> self.cropSizeMin.width && pointTemp.x > self.trackingRectPointTopLeft.x && pointTemp.x <= self.cropPointTopRight.x - self.cropSizeMin.width) {
@@ -724,7 +760,8 @@
         
         NSLog(@"拖左边");
         return YES;
-    }else if (self.cropViewTrackType == VE_TRACK_RIGHT){
+    }
+    else if (self.cropViewTrackType == VE_TRACK_RIGHT){
         
         float distance = fabs(pointTemp.x - self.cropPointTopLeft.x);
         if (fabs(pointTemp.x - self.cropPointTopLeft.x)> self.cropSizeMin.width && pointTemp.x < self.trackingRectPointTopRight.x) {
@@ -738,7 +775,8 @@
         [self setNeedsDisplay];
         NSLog(@"拖右边");
         return YES;
-    }else if (self.cropViewTrackType == VE_TRACK_TOPLEFT) {
+    }
+    else if (self.cropViewTrackType == VE_TRACK_TOPLEFT) {
         if(self.videoCropType == VEVideoCropType_Dewatermark){
             return YES;
         }
@@ -997,7 +1035,8 @@
                
             }
             
-        }else{
+        }
+        else{
             //等比例缩放
             CGFloat croporiginX = pointTemp.x - self.changePointTemp.x;
             CGFloat croporiginY = pointTemp.y - self.changePointTemp.y;
@@ -1054,7 +1093,7 @@
             return YES;
         }
         
-        if (self.cropType == VE_VECROPTYPE_FREE) {
+        if (self.cropType == VE_VECROPTYPE_FREE ) {
             float distanceWidth = fabs(pointTemp.x - self.cropPointTopRight.x);
             float distanceHeight = fabs(pointTemp.y - self.cropPointTopRight.y);
             
@@ -1125,7 +1164,8 @@
                     self.cropHeight = fabs(self.trackingRectPointBottomLeft.y - self.cropPointTopRight.y);
                 }
             }
-        }else{
+        }
+        else{
             
             //等比例缩放
             CGFloat croporiginX = pointTemp.x - self.changePointTemp.x;
@@ -1265,7 +1305,8 @@
                 }
             }
             
-        }else{
+        }
+        else{
             
             //等比例缩放
             CGFloat croporiginX = pointTemp.x - self.changePointTemp.x;
@@ -1396,7 +1437,9 @@
 
 -(void)setCropRect:(CGRect)crop{
     
-    
+    if(_cropType == VE_VECROPTYPE_FIXEDRATIO){
+        self.ratio = crop.size.width / crop.size.height;
+    }
     
     self.croporiginX = self.videoFrame.origin.x +  crop.origin.x;
     self.croporiginY =  self.videoFrame.origin.y + crop.origin.y;
