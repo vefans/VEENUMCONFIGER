@@ -1,6 +1,6 @@
 //
 //  VENetworkMaterialView.m
-//  libVEDeluxe
+//  VEENUMCONFIGER
 //
 //  Created by apple on 2020/8/31.
 //  Copyright © 2020 iOS VESDK Team. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  VENetworkMaterialCollectionViewCell.m
-//  libVEDeluxe
+//  VEENUMCONFIGER
 //
 //  Created by apple on 2020/8/31.
 //  Copyright © 2020 iOS VESDK Team. All rights reserved.
@@ -10,6 +10,7 @@
 #import "VENetworkMaterialBtn_Cell.h"
 #import "VENetworkMaterialView.h"
 #import <SDWebImage/SDWebImage.h>
+
 @interface VENetworkMaterialCollectionViewCell()<UICollectionViewDataSource,UICollectionViewDelegate>
 
 @property(nonatomic, assign) float cellWidth;

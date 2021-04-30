@@ -10,6 +10,8 @@ Pod::Spec.new do |spec|
   spec.source       = { :git => 'https://github.com/vefans/VEENUMCONFIGER.git', :tag => spec.version.to_s}
   
   spec.requires_arc = true  
+  spec.dependency 'SDWebImage'
+  spec.dependency "SDWebImageWebPCoder", '0.2.3'
 
   spec.xcconfig = {'CONFIGURATION_BUILD_DIR' => '${PODS_CONFIGURATION_BUILD_DIR}'}
   spec.pod_target_xcconfig ={ 'ALWAYS_SEARCH_USER_PATHS'=>'YES', 'ENABLE_BITCODE' => 'NO' }

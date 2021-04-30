@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		0953419A26292EBD006CA303 /* VEDemoUse.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0953419926292EBD006CA303 /* VEDemoUse.bundle */; };
+		095FBC69263BE555005E666A /* VENetworkMaterialView.m in Sources */ = {isa = PBXBuildFile; fileRef = 095FBC62263BE555005E666A /* VENetworkMaterialView.m */; };
+		095FBC6A263BE555005E666A /* VENetworkMaterialView.h in Headers */ = {isa = PBXBuildFile; fileRef = 095FBC63263BE555005E666A /* VENetworkMaterialView.h */; };
+		095FBC6B263BE555005E666A /* VENetworkMaterialCollectionViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 095FBC65263BE555005E666A /* VENetworkMaterialCollectionViewCell.h */; };
+		095FBC6C263BE555005E666A /* VENetworkMaterialBtn_Cell.m in Sources */ = {isa = PBXBuildFile; fileRef = 095FBC66263BE555005E666A /* VENetworkMaterialBtn_Cell.m */; };
+		095FBC6D263BE555005E666A /* VENetworkMaterialCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 095FBC67263BE555005E666A /* VENetworkMaterialCollectionViewCell.m */; };
+		095FBC6E263BE555005E666A /* VENetworkMaterialBtn_Cell.h in Headers */ = {isa = PBXBuildFile; fileRef = 095FBC68263BE555005E666A /* VENetworkMaterialBtn_Cell.h */; };
 		097C0093260C34BE00C889AB /* VEVideoCropView.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C007D260C34BE00C889AB /* VEVideoCropView.h */; };
 		097C0094260C34BE00C889AB /* VETrackButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C007E260C34BE00C889AB /* VETrackButton.h */; };
 		097C0095260C34BE00C889AB /* VECropView.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C007F260C34BE00C889AB /* VECropView.h */; };
@@ -71,6 +77,12 @@
 
 /* Begin PBXFileReference section */
 		0953419926292EBD006CA303 /* VEDemoUse.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = VEDemoUse.bundle; sourceTree = "<group>"; };
+		095FBC62263BE555005E666A /* VENetworkMaterialView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VENetworkMaterialView.m; sourceTree = "<group>"; };
+		095FBC63263BE555005E666A /* VENetworkMaterialView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VENetworkMaterialView.h; sourceTree = "<group>"; };
+		095FBC65263BE555005E666A /* VENetworkMaterialCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VENetworkMaterialCollectionViewCell.h; sourceTree = "<group>"; };
+		095FBC66263BE555005E666A /* VENetworkMaterialBtn_Cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VENetworkMaterialBtn_Cell.m; sourceTree = "<group>"; };
+		095FBC67263BE555005E666A /* VENetworkMaterialCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VENetworkMaterialCollectionViewCell.m; sourceTree = "<group>"; };
+		095FBC68263BE555005E666A /* VENetworkMaterialBtn_Cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VENetworkMaterialBtn_Cell.h; sourceTree = "<group>"; };
 		097C007D260C34BE00C889AB /* VEVideoCropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEVideoCropView.h; sourceTree = "<group>"; };
 		097C007E260C34BE00C889AB /* VETrackButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VETrackButton.h; sourceTree = "<group>"; };
 		097C007F260C34BE00C889AB /* VECropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VECropView.h; sourceTree = "<group>"; };
@@ -145,6 +157,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		095FBC61263BE555005E666A /* NetworkMaterialCollectionView */ = {
+			isa = PBXGroup;
+			children = (
+				095FBC63263BE555005E666A /* VENetworkMaterialView.h */,
+				095FBC62263BE555005E666A /* VENetworkMaterialView.m */,
+				095FBC64263BE555005E666A /* NetworkMaterialCollectionViewCell */,
+			);
+			path = NetworkMaterialCollectionView;
+			sourceTree = "<group>";
+		};
+		095FBC64263BE555005E666A /* NetworkMaterialCollectionViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				095FBC65263BE555005E666A /* VENetworkMaterialCollectionViewCell.h */,
+				095FBC67263BE555005E666A /* VENetworkMaterialCollectionViewCell.m */,
+				095FBC68263BE555005E666A /* VENetworkMaterialBtn_Cell.h */,
+				095FBC66263BE555005E666A /* VENetworkMaterialBtn_Cell.m */,
+			);
+			path = NetworkMaterialCollectionViewCell;
+			sourceTree = "<group>";
+		};
 		097C007C260C34BE00C889AB /* VECrop */ = {
 			isa = PBXGroup;
 			children = (
@@ -213,6 +246,7 @@
 				700F383425AFED6B00943532 /* MediaInfo */,
 				700F383125AFED6B00943532 /* MusicInfo */,
 				700F383725AFED6B00943532 /* ThirdpartyConfig */,
+				095FBC61263BE555005E666A /* NetworkMaterialCollectionView */,
 				700F382825AFED6B00943532 /* UIImage+VEGIF.h */,
 				700F383025AFED6B00943532 /* UIImage+VEGIF.m */,
 				700F382F25AFED6B00943532 /* VEDefines.h */,
@@ -368,6 +402,7 @@
 				700F383A25AFED6B00943532 /* VEExportConfiguration.h in Headers */,
 				700F384525AFED6B00943532 /* VEEditConfiguration.h in Headers */,
 				0AECE38B25838FA400879809 /* VEENUMCONFIGER.h in Headers */,
+				095FBC6E263BE555005E666A /* VENetworkMaterialBtn_Cell.h in Headers */,
 				700F384625AFED6B00943532 /* VEENUMCONFIGER-PrefixHeader.h in Headers */,
 				097C0095260C34BE00C889AB /* VECropView.h in Headers */,
 				700F385525AFED6B00943532 /* VEThirdpartyConfig.h in Headers */,
@@ -384,7 +419,9 @@
 				700F384E25AFED6B00943532 /* VEFaceUBeautyParams.h in Headers */,
 				097C0100260C350A00C889AB /* UIViewController+PopGestureRecognizer.h in Headers */,
 				7076A78D25BAEAB4003F69E0 /* VEAssetModel.h in Headers */,
+				095FBC6A263BE555005E666A /* VENetworkMaterialView.h in Headers */,
 				097C0094260C34BE00C889AB /* VETrackButton.h in Headers */,
+				095FBC6B263BE555005E666A /* VENetworkMaterialCollectionViewCell.h in Headers */,
 				097C00FB260C350A00C889AB /* VEHeaderView.h in Headers */,
 				700F384925AFED6B00943532 /* UIImage+VEGIF.h in Headers */,
 				097C009E260C34BE00C889AB /* VECropTypeCell.h in Headers */,
@@ -472,6 +509,7 @@
 				700F384725AFED6B00943532 /* VECameraConfiguration.m in Sources */,
 				7076A78E25BAEAB4003F69E0 /* VEImageManager.m in Sources */,
 				700F384C25AFED6B00943532 /* VEHelp.m in Sources */,
+				095FBC69263BE555005E666A /* VENetworkMaterialView.m in Sources */,
 				097C00A1260C34BE00C889AB /* VECropTypeCell.m in Sources */,
 				097C0099260C34BE00C889AB /* VECropRectView.m in Sources */,
 				097C00F7260C350A00C889AB /* VENavigationController.m in Sources */,
@@ -482,12 +520,14 @@
 				700F385425AFED6B00943532 /* VEMediaInfo.m in Sources */,
 				097C00A4260C34BE00C889AB /* VEPlaySlider.m in Sources */,
 				700F384425AFED6B00943532 /* VEEditConfiguration.m in Sources */,
+				095FBC6C263BE555005E666A /* VENetworkMaterialBtn_Cell.m in Sources */,
 				7069E17725B996540072BCAE /* VEConfigManager.m in Sources */,
 				700F385625AFED6B00943532 /* VEThirdpartyConfig.m in Sources */,
 				097C00FE260C350A00C889AB /* VEHeaderView.m in Sources */,
 				097C0097260C34BE00C889AB /* VETrackButton.m in Sources */,
 				097C0098260C34BE00C889AB /* VEVideoCropView.m in Sources */,
 				700F385025AFED6B00943532 /* UIImage+VEGIF.m in Sources */,
+				095FBC6D263BE555005E666A /* VENetworkMaterialCollectionViewCell.m in Sources */,
 				700F385125AFED6B00943532 /* VEMusicInfo.m in Sources */,
 				097C00FA260C350A00C889AB /* VENavBarViewController.m in Sources */,
 				700F384D25AFED6B00943532 /* VEFaceUBeautyParams.m in Sources */,
