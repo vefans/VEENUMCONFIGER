@@ -729,6 +729,54 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return resultImg;
 }
 
++(NSString*)getTransitionConfigPath:(NSDictionary *)obj
+{
+    NSString *pExtension = [[obj[@"file"] lastPathComponent] pathExtension];
+    NSString *fileName = [[obj[@"file"] lastPathComponent] stringByDeletingPathExtension];
+    
+    NSString *name = fileName;
+    
+    if ( [pExtension rangeOfString:@"zip"].location != NSNotFound )
+        name = nil;
+    
+    fileName = [fileName stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSString *folderName = [NSString stringWithFormat:@"/%@",[[obj[@"file"] stringByDeletingLastPathComponent] lastPathComponent]];
+    NSString *path = [NSString stringWithFormat:@"%@%@/%@.%@",kTransitionFolder,folderName,fileName,pExtension];
+    NSFileManager *manager = [[NSFileManager alloc] init];
+    if(![manager fileExistsAtPath:[path stringByDeletingLastPathComponent]]){
+        [manager createDirectoryAtPath:[path stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSArray *fileArray = [manager contentsOfDirectoryAtPath:[path stringByDeletingLastPathComponent] error:nil];
+    
+    if(fileArray.count > 0){
+        for (NSString *fileName in fileArray) {
+            if (![fileName isEqualToString:@"__MACOSX"]) {
+                NSString *folderPath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:fileName];
+                BOOL isDirectory = NO;
+                BOOL isExists = [manager fileExistsAtPath:folderPath isDirectory:&isDirectory];
+                if (isExists && isDirectory) {
+                    name = fileName;
+                    break;
+                }
+            }
+        }
+    }
+    
+    NSString *configPath = nil;
+    
+    if ( [pExtension rangeOfString:@"zip"].location != NSNotFound ) {
+        configPath = [NSString stringWithFormat:@"%@/config.json",[[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:name]];
+    }else if( ([pExtension rangeOfString:@"jpg"].location != NSNotFound)
+             || ([pExtension rangeOfString:@"JPG"].location != NSNotFound)) {
+        configPath = [NSString stringWithFormat:@"%@/%@.JPG",[path stringByDeletingLastPathComponent],name];
+    }
+    else if( ([pExtension rangeOfString:@"glsl"].location != NSNotFound)) {
+        configPath = [NSString stringWithFormat:@"%@/%@.glsl",[path stringByDeletingLastPathComponent],name];
+    }
+    
+    return configPath;
+}
+
 + (UIImage *)imageNamed:(NSString *)name{
     return [self imageWithContentOfFile:name];
 }
@@ -981,6 +1029,35 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 //    }
 }
 
++ (NSMutableArray *)getInternetTransitionArray {
+    NSMutableArray *transitionList = [NSMutableArray arrayWithContentsOfFile:kTransitionPlistPath];
+    return transitionList;
+}
+
++(id)objectForData:(NSData *)data{
+    
+    if(data){
+        NSError *error;
+        id objc = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+        if (!objc) {
+            //20190821 有的json文件中含有乱码，需要处理一下才能解析
+            error = nil;
+            NSString *dataString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+            NSData *utf8Data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
+            
+            objc = [NSJSONSerialization JSONObjectWithData:utf8Data options:NSJSONReadingMutableContainers error:&error];
+            utf8Data = nil;
+        }
+        data = nil;
+        if(error){
+            return nil;
+        }else{
+            return objc;
+        }
+    }else{
+        return nil;
+    }
+}
 /**通过字体文件路径加载字体 适用于 ttf ，otf
  */
 +(NSString*)customFontWithPath:(NSString*)path fontName:(NSString *)fontName
@@ -1003,7 +1080,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             
             for (int j = 0; j<[fonts count]; j++) {
                 
-//                NSLog(@"FontName:%@",[fonts objectAtIndex:j]);
+                //                NSLog(@"FontName:%@",[fonts objectAtIndex:j]);
                 if([fontName isEqualToString:[fonts objectAtIndex:j]]){
                     registrationResult = YES;
                     break;
@@ -1114,7 +1191,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     
     return fileURL;
-
 }
 
 @end

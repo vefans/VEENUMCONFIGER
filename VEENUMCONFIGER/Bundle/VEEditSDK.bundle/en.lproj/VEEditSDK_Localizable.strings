@@ -203,6 +203,7 @@
 "是否删除当前选中文字板?" = "Delete selected textboard?";
 "删除后，可能需要重新调整剩余图片的显示效果" = "After deletion, you may need to readjust the display of the remaining images";
 "确认删除该图片？" = "Delete sure picture?";
+"图片无法删除\n至少保留一个图片" = "The picture cannot be deleted\nKeep at least one picture";
 "删除" = "Delete";
 "取消" = "Cancel";
 "是" = "Yes";

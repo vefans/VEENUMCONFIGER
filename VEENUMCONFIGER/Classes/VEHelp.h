@@ -5,6 +5,9 @@
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
 
 @interface VEHelp : NSObject
+
++(id)objectForData:(NSData *)data;
+
 + (BOOL)isLowDevice;
 /**进入系统设置
  */
@@ -35,6 +38,8 @@
  */
 + (UIImage * ) veImageWithColor:(UIColor * )color cornerRadius:(CGFloat)cornerRadius;
 + (UIImage * ) veImageWithColor:(UIColor * )color size:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
+
++(NSString*)getTransitionConfigPath:(NSDictionary *)obj;
 
 //控件显示动画
 +(void)animateView:(UIView * ) view  atUP:(bool) isUp;
@@ -82,6 +87,8 @@
 +(float)fileSizeWithvideoBitRate:(float) videoBitRate audioBitRate:(float)audioBitRate duration:(float)duration;
 //自动换行，计算并添加“\n”进行换行
 +(NSString *)setPastTextWith:(float) witdh atText:(NSString *) text atFont:(UIFont *) font;
+
++ (NSMutableArray *)getInternetTransitionArray;
 /**通过字体文件路径加载字体 适用于 ttf ，otf
  */
 +(NSString *)customFontWithPath:(NSString *)path fontName:(NSString *)fontName;
