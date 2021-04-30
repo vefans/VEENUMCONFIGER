@@ -237,7 +237,7 @@
 }
 
 -(void)setTrackButtonState:(BOOL)state{
-    if (state) {
+    if (state || _videoCropType == VEVideoCropType_Dewatermark) {
         
         self.topTrackButton.hidden = YES;
         self.bottomTrackButton.hidden = YES;

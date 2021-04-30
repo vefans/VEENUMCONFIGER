@@ -11,6 +11,7 @@
 #include <CommonCrypto/CommonHMAC.h>
 #import <VEENUMCONFIGER/VEHelp.h>
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
+#import <CoreText/CoreText.h>
 
 @implementation VEHelp
 + (NSString *) system
@@ -978,6 +979,142 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 //
 //        return str;
 //    }
+}
+
+/**通过字体文件路径加载字体 适用于 ttf ，otf
+ */
++(NSString*)customFontWithPath:(NSString*)path fontName:(NSString *)fontName
+{
+    NSURL *fontUrl = [NSURL fileURLWithPath:path];
+    
+    if(fontName){
+        CFErrorRef error;
+        BOOL registrationResult = NO;
+        
+        
+        NSArray* familys = [UIFont familyNames];
+        
+        NSLog(@"%lu",(unsigned long)familys.count);
+        for (int i = 0; i<[familys count]; i++) {
+            
+            NSString* family = [familys objectAtIndex:i];
+            
+            NSArray* fonts = [UIFont fontNamesForFamilyName:family];
+            
+            for (int j = 0; j<[fonts count]; j++) {
+                
+//                NSLog(@"FontName:%@",[fonts objectAtIndex:j]);
+                if([fontName isEqualToString:[fonts objectAtIndex:j]]){
+                    registrationResult = YES;
+                    break;
+                }
+            }
+            if(registrationResult){
+                break;
+            }
+        }
+        
+        familys = nil;
+        if(!registrationResult){
+            registrationResult = CTFontManagerRegisterFontsForURL((__bridge CFURLRef)fontUrl, kCTFontManagerScopeProcess, &error);
+            
+            if (!registrationResult) {
+                NSLog(@"Error with font registration: %@", error);
+                CFRelease(error);
+            }
+            
+        }
+        return fontName;
+    }else{
+        
+        CFURLRef urlRef = (__bridge CFURLRef)fontUrl;
+        
+        CGDataProviderRef fontDataProvider = CGDataProviderCreateWithURL(urlRef);
+        CGFontRef fontRef = CGFontCreateWithDataProvider(fontDataProvider);
+        CGDataProviderRelease(fontDataProvider);
+        //CTFontManagerUnregisterGraphicsFont(fontRef, NULL);//每次反注册会增加更多内存
+        CTFontManagerRegisterGraphicsFont(fontRef, NULL);
+        
+        fontName = CFBridgingRelease(CGFontCopyPostScriptName(fontRef));
+        //    UIFont *font = [UIFont fontWithName:fontName size:size];
+        CGFontRelease(fontRef);
+        return fontName;//SimHei,SimSun,YouYuan,FZJZJW--GB1-0,FZJLJW--GB1-0,FZSEJW--GB1-0,FZNSTK--GBK1-0,HYy1gj,HYg3gj,HYk1gj,JLinBo,JLuobo,Jpangtouyu,SentyTEA-Platinum
+    }
+    
+}
+
++ (NSURL *)getFileURLFromAbsolutePath:(NSString *)absolutePath {
+    if(absolutePath.length==0){
+        return nil;
+    }
+    NSURL *fileURL = [NSURL URLWithString:absolutePath];
+    if ([fileURL.scheme.lowercaseString isEqualToString:@"ipod-library"]
+        || [fileURL.scheme.lowercaseString isEqualToString:@"assets-library"])
+    {
+        return fileURL;
+    }else {
+        fileURL = nil;
+        NSString *filePah;
+        NSRange range = [absolutePath rangeOfString:@"Bundle/Application/"];
+        if (range.location != NSNotFound) {
+            filePah = [absolutePath substringFromIndex:range.length + range.location];
+            range = [filePah rangeOfString:@".app/"];
+            filePah = [filePah substringFromIndex:range.length + range.location - 1];
+            filePah = [[NSBundle mainBundle].bundlePath stringByAppendingString:filePah];
+            fileURL = [NSURL fileURLWithPath:filePah];
+        }else{
+            range = [absolutePath rangeOfString:@"Data/Application/"];
+            if (range.location != NSNotFound) {
+                filePah = [absolutePath substringFromIndex:range.length + range.location];
+                range = [filePah rangeOfString:@"/"];
+                filePah = [filePah substringFromIndex:range.length + range.location - 1];
+                filePah = [NSHomeDirectory() stringByAppendingString:filePah];
+                fileURL = [NSURL fileURLWithPath:filePah];
+            }else {
+                fileURL = [NSURL URLWithString:absolutePath];
+            }
+        }
+    }
+    
+    return fileURL;
+}
+
++ (NSString *)getFileURLFromAbsolutePath_str:(NSString *)absolutePath {
+
+    if(absolutePath.length==0){
+        return nil;
+    }
+    NSString *fileURL = absolutePath;
+    if ([fileURL isEqualToString:@"ipod-library"]
+        || [fileURL isEqualToString:@"assets-library"])
+    {
+        return fileURL;
+    }else {
+        fileURL = nil;
+        NSString *filePah;
+        NSRange range = [absolutePath rangeOfString:@"Bundle/Application/"];
+        if (range.location != NSNotFound) {
+            filePah = [absolutePath substringFromIndex:range.length + range.location];
+            range = [filePah rangeOfString:@".app/"];
+            filePah = [filePah substringFromIndex:range.length + range.location - 1];
+            filePah = [[NSBundle mainBundle].bundlePath stringByAppendingString:filePah];
+            fileURL = filePah;
+        }else{
+            range = [absolutePath rangeOfString:@"Data/Application/"];
+            if (range.location != NSNotFound) {
+                filePah = [absolutePath substringFromIndex:range.length + range.location];
+                range = [filePah rangeOfString:@"/"];
+                filePah = [filePah substringFromIndex:range.length + range.location - 1];
+                filePah = [NSHomeDirectory() stringByAppendingString:filePah];
+                fileURL = filePah;
+            }else {
+                fileURL = absolutePath;
+            }
+        }
+    }
+    
+    return fileURL;
+
 }
 
 @end

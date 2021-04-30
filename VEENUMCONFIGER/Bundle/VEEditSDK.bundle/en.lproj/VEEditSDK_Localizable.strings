@@ -576,9 +576,9 @@
 "可修改文案" = "Editable copy";
 "开启循环功能" = "Enable repeat";
 "素材输入(点击下面的素材按钮输入)" = "Media (Click to edit)";
-"需要添加%d个视频和%d张图片" = "The video template needs to add %d video(s) and %d picture(s).";
-"需要添加%d张图片" = "The video template needs to add %d picture(s).";
-"需要添加%d个视频" = "The video template needs to add %d video(s).";
+"视频制作需提供如下资源:\n%d个视频和%d张图片" = "The video template needs to add %d video(s) and %d picture(s).";
+"视频制作需提供如下资源:\n%d张图片" = "The video template needs to add %d picture(s).";
+"视频制作需提供如下资源:\n%d个视频" = "The video template needs to add %d video(s).";
 "素材" = "Material";
 "更换" = "Replace";
 "视频/图片" = "Video/picture";
@@ -1793,7 +1793,7 @@
 "关键帧" = "Keyframe";
 
 "拍同款" = "Template record";
-"剪同款" = "AE Template";
+"一键制作" = "AE Template";
 "视频无音频" = "The video has no audio";
 "当前位置不可定格" = "Current position cannot be frozen";
 "使用双指缩放/单指拖动" = "Use two fingers to zoom/single finger drag";

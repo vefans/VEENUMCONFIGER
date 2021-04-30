@@ -13,9 +13,6 @@
 @end
 
 @implementation VENavigationController
-- (BOOL)prefersStatusBarHidden{
-    return YES;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];

@@ -82,4 +82,16 @@
 +(float)fileSizeWithvideoBitRate:(float) videoBitRate audioBitRate:(float)audioBitRate duration:(float)duration;
 //自动换行，计算并添加“\n”进行换行
 +(NSString *)setPastTextWith:(float) witdh atText:(NSString *) text atFont:(UIFont *) font;
+/**通过字体文件路径加载字体 适用于 ttf ，otf
+ */
++(NSString *)customFontWithPath:(NSString *)path fontName:(NSString *)fontName;
+
+//从保存到plist文件中的绝对路径获取URL
++ (NSURL *)getFileURLFromAbsolutePath:(NSString *)absolutePath;
++ (NSString *)getFileURLFromAbsolutePath_str:(NSString *)absolutePath;
+
+/**判断URL是否为本地相册
+ */
++ (BOOL)isSystemPhotoUrl:(NSURL * _Nullable)url;
+
 @end
