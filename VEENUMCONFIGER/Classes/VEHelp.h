@@ -101,4 +101,6 @@
  */
 + (BOOL)isSystemPhotoUrl:(NSURL * _Nullable)url;
 
++(NSMutableArray *)getColorArray;
+
 @end

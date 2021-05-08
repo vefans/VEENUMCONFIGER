@@ -77,7 +77,7 @@ static NSString *cellIconID = @"VECropIconTypeCell";
 }
 
 -(void)didSelectItemAtIndexPathRow:(NSInteger)row{
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:row];
     
     [self setCellWithdidSelectItemAtIndexPath:indexPath];
     

@@ -186,6 +186,8 @@
     copy.canvasVideosURL                = _canvasVideosURL;
     copy.enableShowBackTipView          = _enableShowBackTipView;
     copy.enableShowRepeatView           = _enableShowRepeatView;
+    copy.templatePath                   = _templatePath;
+    copy.uploadTemplatePath             = _uploadTemplatePath;
 
     return copy;
 }
@@ -277,6 +279,8 @@
     copy.canvasVideosURL                = _canvasVideosURL;
     copy.enableShowBackTipView          = _enableShowBackTipView;
     copy.enableShowRepeatView           = _enableShowRepeatView;
+    copy.templatePath                   = _templatePath;
+    copy.uploadTemplatePath             = _uploadTemplatePath;
 
     return copy;
 }

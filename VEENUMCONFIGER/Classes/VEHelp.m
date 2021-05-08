@@ -1193,4 +1193,37 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return fileURL;
 }
 
++(NSMutableArray *)getColorArray
+{
+    NSMutableArray * colorArray = [NSMutableArray array];
+    
+    [colorArray addObject:UIColorFromRGB(0xffffff)];
+    [colorArray addObject:UIColorFromRGB(0xf9edb1)];
+    [colorArray addObject:UIColorFromRGB(0xffa078)];
+    [colorArray addObject:UIColorFromRGB(0xfe6c6c)];
+    [colorArray addObject:UIColorFromRGB(0xfe4241)];
+    [colorArray addObject:UIColorFromRGB(0x7cddfe)];
+    [colorArray addObject:UIColorFromRGB(0x41c5dc)];
+    
+    [colorArray addObject:UIColorFromRGB(0x0695b5)];
+    [colorArray addObject:UIColorFromRGB(0x2791db)];
+    [colorArray addObject:UIColorFromRGB(0x0271fe)];
+    [colorArray addObject:UIColorFromRGB(0xdcffa3)];
+    [colorArray addObject:UIColorFromRGB(0x000000)];
+    [colorArray addObject:UIColorFromRGB(0xc7fe64)];
+    [colorArray addObject:UIColorFromRGB(0x82e23a)];
+    [colorArray addObject:UIColorFromRGB(0x25ba66)];
+    [colorArray addObject:UIColorFromRGB(0x017e54)];
+    
+    [colorArray addObject:UIColorFromRGB(0xfdbacc)];
+    [colorArray addObject:UIColorFromRGB(0xff5a85)];
+    [colorArray addObject:UIColorFromRGB(0xff5ab0)];
+    [colorArray addObject:UIColorFromRGB(0xb92cec)];
+    [colorArray addObject:UIColorFromRGB(0x7e01ff)];
+    [colorArray addObject:UIColorFromRGB(0x848484)];
+    [colorArray addObject:UIColorFromRGB(0x88754d)];
+    [colorArray addObject:UIColorFromRGB(0x164c6e)];
+    
+    return colorArray;
+}
 @end
