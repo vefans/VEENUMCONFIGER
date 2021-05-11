@@ -267,6 +267,13 @@ typedef NS_ENUM(NSInteger, SELECTALBUMFILETYPE){
     ALBUMFILETYPE_MediaInfo  //返回带有视频信息数据的一个MediaInfo对象
 };
 
+//字幕对齐方式
+typedef NS_ENUM(NSInteger, UICaptionTextAlignment) {
+    UICaptionTextAlignmentLeft = 0,
+    UICaptionTextAlignmentCenter,
+    UICaptionTextAlignmentRight
+};
+
 typedef void(^VERecordCompletionHandler) (int result,NSString *path,VEMusicInfo *music);
 
 /**相册选择完成返回一个URL数组
