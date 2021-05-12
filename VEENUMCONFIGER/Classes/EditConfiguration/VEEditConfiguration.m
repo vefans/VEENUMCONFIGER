@@ -108,6 +108,7 @@
     copy.minVideoDuration                       = _minVideoDuration;
     copy.enableAlbumCamera                      = _enableAlbumCamera;
     copy.clickAlbumCameraBlackBlock             = _clickAlbumCameraBlackBlock;
+    copy.isDisableEdit                          = _isDisableEdit;
     //片段编辑预设
     copy.enableTextTitle                 = _enableTextTitle;
     copy.enableSingleMediaAdjust         = _enableSingleMediaAdjust;
@@ -202,6 +203,7 @@
     copy.minVideoDuration                       = _minVideoDuration;
     copy.enableAlbumCamera                      = _enableAlbumCamera;
     copy.clickAlbumCameraBlackBlock             = _clickAlbumCameraBlackBlock;
+    copy.isDisableEdit                          = _isDisableEdit;
     //片段编辑预设
     copy.enableTextTitle                 = _enableTextTitle;
     copy.enableSingleMediaAdjust         = _enableSingleMediaAdjust;

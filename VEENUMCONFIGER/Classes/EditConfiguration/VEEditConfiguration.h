@@ -123,6 +123,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,copy,nullable) void(^clickAlbumCameraBlackBlock)(void);
 
+/** 是否禁止编辑(default false)
+ */
+@property (nonatomic, assign) bool isDisableEdit;
+
 #pragma mark- 设置截取界面
 /** 截取时间模式
  */
