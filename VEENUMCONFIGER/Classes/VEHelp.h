@@ -3,6 +3,7 @@
 #import <Photos/Photos.h>
 #import <VEENUMCONFIGER/VEMediaInfo.h>
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
+#import <LibVECore/LibVECore.h>
 
 @interface VEHelp : NSObject
 
