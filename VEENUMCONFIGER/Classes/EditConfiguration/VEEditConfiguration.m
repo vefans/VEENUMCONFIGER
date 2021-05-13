@@ -45,6 +45,7 @@
         //编辑导出预设
         _enableMV           = false;
         _enableSubtitle     = true;
+        _enableSubtitleToSpeech = true;
         _enableAIRecogSubtitle = true;
         _tencentAIRecogConfig = [[TencentCloudAIRecogConfig alloc] init];
         _baiDuCloudAIConfig = [[BaiDuCloudAIConfig alloc] init];
@@ -136,7 +137,7 @@
     copy.enableMV               = _enableMV;
     copy.enableSubtitle         = _enableSubtitle;
     copy.enableAIRecogSubtitle  = _enableAIRecogSubtitle;
-//    copy.enableEffect           = _enableEffect;
+    copy.enableSubtitleToSpeech = _enableSubtitleToSpeech;
     copy.enableSticker           = _enableSticker;
     copy.enablePicZoom    = _enablePicZoom;
     copy.enableBackgroundEdit    = _enableBackgroundEdit;
@@ -230,7 +231,7 @@
     copy.enableMV   = _enableMV;
     copy.enableSubtitle  = _enableSubtitle;
     copy.enableAIRecogSubtitle  = _enableAIRecogSubtitle;
-//    copy.enableEffect    = _enableEffect;
+    copy.enableSubtitleToSpeech = _enableSubtitleToSpeech;
     copy.enableSticker   = _enableSticker;
     copy.enablePicZoom    = _enablePicZoom;
     copy.enableBackgroundEdit    = _enableBackgroundEdit;
