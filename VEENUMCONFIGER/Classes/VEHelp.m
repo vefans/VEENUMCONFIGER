@@ -496,10 +496,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         if( file.fileType ==  kFILEVIDEO )
         {
             CMTimeRange timeRange = file.videoActualTimeRange;
-            if (CMTimeRangeEqual(timeRange, kCMTimeRangeZero) || CMTimeRangeEqual(timeRange, kCMTimeRangeInvalid)) {
-                timeRange = [VECore getActualTimeRange:file.contentURL];
-                file.videoActualTimeRange = timeRange;
-            }
             int time = ceilf(CMTimeGetSeconds(timeRange.duration));
             count += time+1;
         }
