@@ -12,6 +12,7 @@
 #import <VEENUMCONFIGER/VEHelp.h>
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
 #import <CoreText/CoreText.h>
+#import <Reachability/Reachability.h>
 
 @implementation VEHelp
 + (NSString *) system
@@ -456,17 +457,17 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     NSMutableArray<VEMediaInfo *> * array = [NSMutableArray new];
     
-    for (int i = 0; i< newFileArray.count; i++) {
-        if( (!fileArray[i].isGif) && (fileArray[i].fileType == kFILEIMAGE)  )
+    for (VEMediaInfo *file in newFileArray) {
+        if( (!file.isGif) && (file.fileType == kFILEIMAGE)  )
         {
-            [array addObject:newFileArray[i]];
+            [array addObject:file];
         }
-        else if(![[NSFileManager defaultManager] fileExistsAtPath:fileArray[i].filtImagePatch]){
-            [[NSFileManager defaultManager] createDirectoryAtPath:fileArray[i].filtImagePatch withIntermediateDirectories:YES attributes:nil error:nil];
+        else if(![[NSFileManager defaultManager] fileExistsAtPath:file.filtImagePatch]){
+            [[NSFileManager defaultManager] createDirectoryAtPath:file.filtImagePatch withIntermediateDirectories:YES attributes:nil error:nil];
         }
-        else
+        else if ([[NSFileManager defaultManager] contentsOfDirectoryAtPath:file.filtImagePatch error:nil].count > 0)
         {
-            [array addObject:newFileArray[i]];
+            [array addObject:file];
         }
     }
     
@@ -495,6 +496,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         if( file.fileType ==  kFILEVIDEO )
         {
             CMTimeRange timeRange = file.videoActualTimeRange;
+            if (CMTimeRangeEqual(timeRange, kCMTimeRangeZero) || CMTimeRangeEqual(timeRange, kCMTimeRangeInvalid)) {
+                timeRange = [VECore getActualTimeRange:file.contentURL];
+                file.videoActualTimeRange = timeRange;
+            }
             int time = ceilf(CMTimeGetSeconds(timeRange.duration));
             count += time+1;
         }
@@ -639,8 +644,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 +(NSString *)getMaterialThumbnail:(NSURL *) fileUrl
 {
     NSString *fileName = @"";
-    if ([fileUrl.scheme.lowercaseString isEqualToString:@"ipod-library"]
-        || [fileUrl.scheme.lowercaseString isEqualToString:@"assets-library"])
+    if ([self isSystemPhotoUrl:fileUrl])
     {
         NSRange range = [fileUrl.absoluteString rangeOfString:@"?id="];
         if (range.location != NSNotFound) {
@@ -656,7 +660,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [[NSFileManager defaultManager] createDirectoryAtPath:kThumbnailFolder withIntermediateDirectories:YES attributes:nil error:nil];
     }
     NSString * str = [kThumbnailFolder stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@", fileName]];
-    
     
     return str;
 }
@@ -1226,4 +1229,254 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     return colorArray;
 }
+
++(NSString *)createPostURL:(NSMutableDictionary *)params
+{
+    NSString *postString=@"";
+    for(NSString *key in [params allKeys])
+    {
+        NSString *value=[params objectForKey:key];
+        postString=[postString stringByAppendingFormat:@"%@=%@&",key,value];
+    }
+    if([postString length]>1)
+    {
+        postString=[postString substringToIndex:[postString length]-1];
+    }
+    return postString;
+}
+
++ (void)getNetworkResourcesWithParams:(NSMutableDictionary *)params
+                              urlPath:(NSString *)urlPath
+                    completionHandler:(void (^)(NSArray *listArray))completionHandler
+                        failedHandler:(void (^)(NSError *error))failedHandler {
+    if(!params){
+        params = [NSMutableDictionary dictionary];
+        [params setObject:@"1" forKey:@"os"];
+    }
+    if(![[params allKeys] containsObject:@"os"]){
+        [params setObject:@"ios" forKey:@"os"];
+    }
+    
+    urlPath = [NSString stringWithString:[urlPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSURL *url = [NSURL URLWithString:urlPath];
+    NSString *postURL = [self createPostURL:params];
+    //=====
+    NSData *postData = [postURL dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
+    NSString *postLength = [NSString stringWithFormat:@"%lu",(unsigned long)[postData length]];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:url];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody:postData];
+    request.timeoutInterval = 3;
+    //
+    NSHTTPURLResponse* urlResponse = nil;
+    NSError *error;
+    
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if(error){
+        if (failedHandler) {
+            failedHandler(error);
+        }
+        return;
+    }
+    if(!responseData){
+        if (failedHandler) {
+            failedHandler(nil);
+        }
+        return;
+    }
+    id obj = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
+    responseData = nil;
+    urlResponse = nil;
+    if(error || !obj){
+        if (failedHandler) {
+            failedHandler(error);
+        }
+        return ;
+    }else{
+        NSDictionary *dic = (NSDictionary *)obj;
+        if ([[dic objectForKey:@"code"] integerValue] != 0) {
+            if (failedHandler) {
+                NSString *message = dic[@"msg"];
+                NSDictionary *userInfo = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
+                NSError *error = [NSError errorWithDomain:VECustomErrorDomain code:VESDKErrorCode_DownloadMaterial userInfo:userInfo];
+                failedHandler(error);
+            }
+            return;
+        }else if (completionHandler){
+            completionHandler(dic[@"data"]);
+        }
+    }
+}
+
++ (void)getCategoryMaterialWithType:(VENetworkMaterialType)materialType
+                             appkey:(NSString *)appkey
+                        typeUrlPath:(NSString *)typeUrlPath
+                    materialUrlPath:(NSString *)materialUrlPath
+                  completionHandler:(void (^)(NSArray *, NSMutableArray *))completionHandler
+                      failedHandler:(void (^)(NSError *))failedHandler
+{
+    if (appkey.length == 0 || typeUrlPath.length == 0 || materialUrlPath.length == 0) {
+        if (failedHandler) {
+            NSString *message;
+            if (appkey.length == 0) {
+                message = @"appkey为空";
+            }else {
+                message = @"网络路径为空";
+            }
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
+            NSError *error = [NSError errorWithDomain:VECustomErrorDomain code:VESDKErrorCode_DownloadMaterial userInfo:userInfo];
+            failedHandler(error);
+        }
+        return;
+    }
+    Reachability *lexiu = [Reachability reachabilityForInternetConnection];
+    NSString *type;
+    NSString *folderPath;
+    NSString *plistPath;
+    
+    switch (materialType) {
+        case VENetworkMaterialType_Subtitle:
+            plistPath = kSubtitlePlistPath;
+            folderPath = kSubtitleFolder;
+            type = @"sub_title";
+            break;
+        
+        case VENetworkMaterialType_Effect:
+            plistPath = kNewSpecialEffectPlistPath;
+            folderPath = kSpecialEffectFolder;
+            type = @"specialeffects";
+            break;
+            
+        case VENetworkMaterialType_Transition:
+            plistPath = kTransitionPlistPath;
+            folderPath = kTransitionFolder;
+            type = @"transition";
+            break;
+            
+        case VENetworkMaterialType_AETemplate:
+            plistPath = kMusicAnimatePlistPath;
+            folderPath = kMVAnimateFolder;
+            type = @"mvae2";
+            break;
+            
+        case VENetworkMaterialType_CameraTemplate:
+            plistPath = kTemplateRecordPlist;
+            folderPath = kTemplateRecordFolder;
+            type = @"recorderae";
+            break;
+            
+        case VENetworkMaterialType_Filter:
+            folderPath = kFilterFolder;
+            type = @"filter2";
+            break;
+            
+        default:
+            break;
+    }
+    if([lexiu currentReachabilityStatus] != NotReachable) {
+        if (failedHandler) {
+            NSString *message = @"下载失败，请检查网络!";
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
+            NSError *error = [NSError errorWithDomain:VECustomErrorDomain code:VESDKErrorCode_DownloadMaterial userInfo:userInfo];
+            failedHandler(error);
+        }
+        return;
+    }
+    if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:appkey forKey:@"appkey"];
+    [params setObject:type forKey:@"type"];
+    
+    WeakSelf(self);
+    [self getNetworkResourcesWithParams:params
+                                urlPath:typeUrlPath
+                      completionHandler:^(NSArray *listArray) {
+        if (listArray.count > 0) {
+            NSArray *categoryArray = listArray;
+            NSMutableArray *array = [NSMutableArray array];
+            [categoryArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSMutableDictionary *params = [NSMutableDictionary dictionary];
+                [params setObject:type forKey:@"type"];
+                [params setObject:obj[@"id"] forKey:@"category"];
+                [params setObject:@"0" forKey: @"page_num"];
+                
+                [weakSelf getNetworkResourcesWithParams:params
+                                            urlPath:materialUrlPath
+                                  completionHandler:^(NSArray *listArray) {
+                    [array addObjectsFromArray:listArray];
+                } failedHandler:^(NSError *error) {
+                    NSLog(@"%@", error.localizedDescription);
+                }];
+            }];
+            if (completionHandler) {
+                completionHandler(categoryArray, array);
+            }
+        }
+    } failedHandler:failedHandler];
+}
+
++ (NSMutableArray *)getFilterArrayWithListArray:(NSMutableArray *)listArray {
+    NSString *filterPath = kFilterFolder;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:filterPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:filterPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSMutableArray *filterArray = [NSMutableArray array];
+    [listArray enumerateObjectsUsingBlock:^(NSArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:[NSArray class]]) {
+            [obj enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+                Filter * filter = [Filter new];
+                if([obj1[@"name"] isEqualToString:VELocalizedString(@"原始", nil)] || [obj1[@"name"] isEqualToString:@"原始"]){
+                    filter.type = kFilterTypeNone;
+                }else{
+                    NSString *itemPath = [self getFilterDownloadPathWithDic:obj1];
+                    if (![[itemPath.pathExtension lowercaseString] isEqualToString:@"acv"]){
+                        filter.type = kFilterType_LookUp;
+                    }else{
+                        filter.type = kFilterType_ACV;
+                    }
+                    filter.filterPath = itemPath;
+                }
+                filter.netCover = obj1[@"cover"];
+                filter.name = obj1[@"name"];
+                [filterArray addObject:filter];
+            }];
+        }else {
+            NSDictionary *obj1 = (NSDictionary *)obj;
+            Filter * filter = [Filter new];
+            if([obj1[@"name"] isEqualToString:VELocalizedString(@"原始", nil)] || [obj1[@"name"] isEqualToString:@"原始"]){
+                filter.type = kFilterTypeNone;
+            }else{
+                NSString *itemPath = [self getFilterDownloadPathWithDic:obj1];
+                if (![[itemPath.pathExtension lowercaseString] isEqualToString:@"acv"]){
+                    filter.type = kFilterType_LookUp;
+                }else{
+                    filter.type = kFilterType_ACV;
+                }
+                filter.filterPath = itemPath;
+            }
+            filter.netCover = obj1[@"cover"];
+            filter.name = obj1[@"name"];
+            [filterArray addObject:filter];
+        }
+    }];
+    
+    return filterArray;
+}
+
++ (NSString *)getFilterDownloadPathWithDic:(NSDictionary *)itemDic {
+    NSString *filterFolderPath = kFilterFolder;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:filterFolderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:filterFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    NSString *itemPath = [[filterFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[itemDic[@"file"] hash]]] stringByAppendingPathExtension:pathExtension];
+    
+    return itemPath;
+}
+
 @end

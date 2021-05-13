@@ -99,8 +99,24 @@
 
 /**判断URL是否为本地相册
  */
-+ (BOOL)isSystemPhotoUrl:(NSURL * _Nullable)url;
++ (BOOL)isSystemPhotoUrl:(NSURL *)url;
 
 +(NSMutableArray *)getColorArray;
+
++ (void)getNetworkResourcesWithParams:(NSMutableDictionary *)params
+                            urlPath:(NSString *)urlPath
+                  completionHandler:(void (^)(NSArray *listArray))completionHandler
+                      failedHandler:(void (^)(NSError *error))failedHandler;;
+
++ (void)getCategoryMaterialWithType:(VENetworkMaterialType)materialType
+                             appkey:(NSString *)appkey
+                        typeUrlPath:(NSString *)typeUrlPath
+                    materialUrlPath:(NSString *)materialUrlPath
+                  completionHandler:(void (^)(NSArray *categoryArray, NSMutableArray *listArray))completionHandler
+                      failedHandler:(void (^)(NSError *error))failedHandler;
+
++ (NSMutableArray *)getFilterArrayWithListArray:(NSMutableArray *)listArray;
+
++ (NSString *)getFilterDownloadPathWithDic:(NSDictionary *)itemDic;
 
 @end

@@ -172,6 +172,7 @@ typedef NS_ENUM(NSInteger, VESDKErrorCode) {
     VESDKErrorCode_TrimVideo          = 1005, //截取视频失败
     VESDKErrorCode_FilePath           = 1006, //文件路径错误
     VESDKErrorCode_NotReachable       = 1007, //无可用的网络
+    VESDKErrorCode_DownloadMaterial   = 1008, //下载素材失败
 };
 
 typedef NS_ENUM(NSInteger, CaptionAnimateType) {
@@ -272,6 +273,23 @@ typedef NS_ENUM(NSInteger, UICaptionTextAlignment) {
     UICaptionTextAlignmentLeft = 0,
     UICaptionTextAlignmentCenter,
     UICaptionTextAlignmentRight
+};
+
+//网络素材类型
+typedef NS_ENUM(NSInteger, VENetworkMaterialType){
+    VENetworkMaterialType_Subtitle          = 0,    //字幕
+    VENetworkMaterialType_Font              = 1,    //字体
+    VENetworkMaterialType_SubtitleAnimation = 2,    //字幕动画
+    VENetworkMaterialType_Sticker           = 3,    //贴纸
+    VENetworkMaterialType_StickerAnimation  = 4,    //贴纸动画
+    VENetworkMaterialType_Filter            = 5,    //滤镜
+    VENetworkMaterialType_Effect            = 6,    //特效
+    VENetworkMaterialType_Music             = 7,    //音乐
+    VENetworkMaterialType_SoundEffect       = 8,    //音效
+    VENetworkMaterialType_MediaAnimation    = 9,    //媒体动画
+    VENetworkMaterialType_Transition        = 10,   //转场
+    VENetworkMaterialType_AETemplate        = 11,   //剪同款
+    VENetworkMaterialType_CameraTemplate    = 12,   //拍同款
 };
 
 typedef void(^VERecordCompletionHandler) (int result,NSString *path,VEMusicInfo *music);
@@ -480,6 +498,7 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define kVEVideoBgColorIndex  @"VEVideoBgColorIndex"  //背景颜色
 #define kVEEnableVague  @"VEEnableVague"    //模糊背景
 #define kVEAVCaptureDevicePosition @"VEAVCaptureDevicePosition"
+#define VECustomErrorDomain @"com.VESDK.ErrorDomain"
 
 //#define USEDYNAMICCOVER
 

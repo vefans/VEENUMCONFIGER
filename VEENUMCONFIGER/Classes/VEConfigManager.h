@@ -106,7 +106,6 @@ typedef void(^VEFailedHandler) (NSError * error);
 @property (nonatomic, assign) CGRect     waterLayerRect;
 
 @property (nonatomic, copy) VECompletionHandler   callbackBlock;
-@property (nonatomic, copy) VECompletionHandler   editDraftCompletionHandler;
 @property(nonatomic,copy) VECancelHandler cancelHandler;
 @property(nonatomic,copy) VEFailedHandler failedHandler;
 
