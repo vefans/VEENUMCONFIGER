@@ -68,6 +68,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) NSString *appKey;
 
+/** 在阿里云语音已经获取到的授权令牌
+ */
+@property (nonatomic, strong) NSString *token;
+
 @end
 
 NS_ASSUME_NONNULL_END

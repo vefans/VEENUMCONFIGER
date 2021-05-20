@@ -37,6 +37,9 @@
 
 @implementation NuiSDKConfig
 
+
+@synthesize token;
+
 - (instancetype)init {
     if (self = [super init]) {
         _accessKeyId = @"LTAI5t5muG8ycj53ZRZE4KS2";
