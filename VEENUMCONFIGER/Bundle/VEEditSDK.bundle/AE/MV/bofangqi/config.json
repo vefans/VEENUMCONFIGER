@@ -1,7 +1,7 @@
-{
+﻿{
     "ver":1,
-   "name": "音乐播放器",
-   "folderName": "bofangqi",
+    "name": "在路上",
+    "folderName": "ontheroad",
     "music": {
         "fileName": "music.mp3",
         "begintime": 0,
@@ -14,9 +14,9 @@
                       "fileName": "mask.mp4",
                       "repeat":1,
                       "begintime": 0.0,
-                      "duration": 15,
+                      "duration": 12.05,
                       "filterType": "video"
                     }
               ]
     }
-}
+  }
