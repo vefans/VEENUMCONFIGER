@@ -42,10 +42,16 @@
         _enableAnimation = true;
         _enableBeauty = true;
         
+        _enableAuidoCurveSpeed = true;
+        _enableMediaCurveSpeed = true;
+        _enableCaptionKeyframe = true;
+        _enableMediaKeyframe = true;
+        _enableAudioKeyframe = true;
+        
         //编辑导出预设
         _enableMV           = false;
         _enableSubtitle     = true;
-        _enableSubtitleToSpeech = true;
+        _enableSubtitleToSpeech = false;
         _enableAIRecogSubtitle = true;
         _tencentAIRecogConfig = [[TencentCloudAIRecogConfig alloc] init];
         _baiDuCloudAIConfig = [[BaiDuCloudAIConfig alloc] init];
@@ -121,6 +127,12 @@
     copy.enableSpeedcontrol              = _enableSpeedcontrol;
     copy.enableCopy                      = _enableCopy;
     copy.enableSort                      = _enableSort;
+    
+    copy.enableAuidoCurveSpeed = _enableAuidoCurveSpeed;
+    copy.enableMediaCurveSpeed = _enableMediaCurveSpeed;
+    copy.enableCaptionKeyframe = _enableCaptionKeyframe;
+    copy.enableMediaKeyframe = _enableMediaKeyframe;
+    copy.enableAudioKeyframe = _enableAudioKeyframe;
     
     copy.enableRotate                      = _enableRotate;
     copy.enableMirror                      = _enableMirror;
@@ -227,6 +239,13 @@
     copy.enableReverseVideo              = _enableReverseVideo;
     copy.enableAnimation = _enableAnimation;
     copy.enableBeauty = _enableBeauty;
+    
+    copy.enableAuidoCurveSpeed = _enableAuidoCurveSpeed;
+    copy.enableMediaCurveSpeed = _enableMediaCurveSpeed;
+    copy.enableCaptionKeyframe = _enableCaptionKeyframe;
+    copy.enableMediaKeyframe = _enableMediaKeyframe;
+    copy.enableAudioKeyframe = _enableAudioKeyframe;
+    
     //编辑导出预设
     copy.enableMV   = _enableMV;
     copy.enableSubtitle  = _enableSubtitle;

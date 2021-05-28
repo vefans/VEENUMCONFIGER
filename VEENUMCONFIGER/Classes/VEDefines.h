@@ -292,6 +292,18 @@ typedef NS_ENUM(NSInteger, VENetworkMaterialType){
     VENetworkMaterialType_CameraTemplate    = 12,   //拍同款
 };
 
+typedef NS_ENUM(NSInteger, VEMaskType)
+{
+    VEMaskType_NONE             =0,
+    VEMaskType_LINNEAR          =1, //线性
+    VEMaskType_MIRRORSURFACE    =2, //镜面
+    VEMaskType_ROUNDNESS        =3, //圆形
+    VEMaskType_RECTANGLE        =4, //矩形
+    VEMaskType_PENTACLE         =5, //五角星
+    VEMaskType_LOVE             =6, //爱心
+    VEMaskType_QUADRILATERAL    =7, //四边形
+};
+
 typedef void(^VERecordCompletionHandler) (int result,NSString *path,VEMusicInfo *music);
 
 /**相册选择完成返回一个URL数组

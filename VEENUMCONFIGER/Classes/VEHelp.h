@@ -3,7 +3,6 @@
 #import <Photos/Photos.h>
 #import <VEENUMCONFIGER/VEMediaInfo.h>
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
-#import <LibVECore/LibVECore.h>
 
 @interface VEHelp : NSObject
 
@@ -94,6 +93,10 @@
  */
 +(NSString *)customFontWithPath:(NSString *)path fontName:(NSString *)fontName;
 
+/**通过字体文件路径加载字体, 适用于 ttf ，otf,ttc
+ */
++ (NSMutableArray*)customFontArrayWithPath:(NSString*)path;
+
 //从保存到plist文件中的绝对路径获取URL
 + (NSURL *)getFileURLFromAbsolutePath:(NSString *)absolutePath;
 + (NSString *)getFileURLFromAbsolutePath_str:(NSString *)absolutePath;
@@ -103,6 +106,15 @@
 + (BOOL)isSystemPhotoUrl:(NSURL *)url;
 
 +(NSMutableArray *)getColorArray;
++ (NSInteger)getColorIndex:(UIColor *)color;
+
+/**获取媒体的实际大小
+ */
++ (CGSize)getFileActualSize:(VEMediaInfo *)file;
+
+/**MediaAsset转为VEMediaInfo
+ */
++ (VEMediaInfo *)vassetToFile:(MediaAsset *) vvasset;
 
 + (void)getNetworkResourcesWithParams:(NSMutableDictionary *)params
                             urlPath:(NSString *)urlPath
@@ -119,5 +131,15 @@
 + (NSMutableArray *)getFilterArrayWithListArray:(NSMutableArray *)listArray;
 
 + (NSString *)getFilterDownloadPathWithDic:(NSDictionary *)itemDic;
+
++ (NSString *)getMediaIdentifier;
+
++ (NSMutableArray *)getMaskArray;
+
++ (MaskObject *)getMaskWithName:(NSString *)maskName;
+
++ (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath;
+
++ (void)setApngCaptionFrameArrayWithImagePath:(NSString *)path jsonDic:(NSMutableDictionary *)jsonDic;
 
 @end

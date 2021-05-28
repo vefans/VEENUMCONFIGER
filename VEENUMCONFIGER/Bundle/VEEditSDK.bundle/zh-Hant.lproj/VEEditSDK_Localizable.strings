@@ -1259,11 +1259,13 @@
 "通过iTunes将电脑上的歌曲同步到您的设备上" = "Syncing songs from your computer to your device via iTunes";
 "片尾不能进行背景编辑！" = "Cannot edit the background of the credits!";
 "羽化" = "Feather";
-"线性" = "Linnear";
-"镜面" = "MirrorSurface";
-"矩形" = "Rectangle";
-"五角星" = "Pentacle";
-"爱心" = "Love";
+"Linear" = "线性";
+"Mirror" = "镜面";
+"Round" = "圆形";
+"Rectangle" = "矩形";
+"Quadrilateral" = "四边形";
+"Star" = "五角星";
+"Love" = "爱心";
 
 // 2020.11.25 add
 "音    量" = "音    量";

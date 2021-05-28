@@ -322,7 +322,7 @@ NS_ASSUME_NONNULL_BEGIN
 /** 字幕 (default true)
  */
 @property (nonatomic,assign) bool enableSubtitle;
-/** 字幕转语音 (default true),enableSubtitle为true时，才生效
+/** 字幕转语音 (default false),enableSubtitle为true时，才生效
  *  该功能是以阿里云智能语音为例，须设置nuiSDKConfig
  */
 @property (nonatomic,assign) bool enableSubtitleToSpeech;
@@ -391,6 +391,22 @@ NS_ASSUME_NONNULL_BEGIN
 /** 画中画 (default true)
  */
 @property (nonatomic,assign) bool enableCollage;
+
+/** 音频曲线变速 (default true)
+ */
+@property (nonatomic,assign) bool enableAuidoCurveSpeed;
+/** 媒体曲线变速 (default true)
+ */
+@property (nonatomic,assign) bool enableMediaCurveSpeed;
+/** 字幕，贴纸关键帧 (default true)
+ */
+@property (nonatomic,assign) bool enableCaptionKeyframe;
+/** 媒体关键帧 (default true)
+ */
+@property (nonatomic,assign) bool enableMediaKeyframe;
+/** 音频关键帧 (default true)
+ */
+@property (nonatomic,assign) bool enableAudioKeyframe;
 
 #pragma mark - 剪同款界面设置
 /** 是否显示开启循环功能控件 (default true)

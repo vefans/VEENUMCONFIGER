@@ -885,12 +885,6 @@
 "羽化" = "Feather";
 "蒙版" = "Mask";
 "反转" = "Invert";
-"线性" = "Linnear";
-"镜面" = "MirrorSurface";
-"圆形" = "Roundness";
-"矩形" = "Rectangle";
-"五角星" = "Pentacle";
-"爱心" = "Love";
 "入场动画" = "In";
 "出场动画" = "Out";
 "组合动画" = "Combo";
@@ -1864,3 +1858,9 @@
 "不更新" = "Do not update";
 "更新内容" = "Update content";
 "换配音" = "Replace dubbing";
+
+"主" = "Main video";
+"画" = "Overlay";
+
+"边框粗细" = "Side frame";
+"边框颜色" = "Border color";
