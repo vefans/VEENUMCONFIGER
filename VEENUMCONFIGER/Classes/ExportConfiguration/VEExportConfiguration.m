@@ -7,6 +7,18 @@
 
 #import "VEExportConfiguration.h"
 
+@implementation VEEndingMedia
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _isChangeTimeline = YES;
+    }
+    
+    return self;
+}
+
+@end
+
 @implementation VEExportConfiguration
 
 - (instancetype)init
@@ -17,16 +29,14 @@
         _outputVideoMaxDuration = 0;
         _inputVideoMaxDuration = 0;
         //设置视频片尾和码率
-        _endPicDisabled = true;
+        _endingMediaDisabled = true;
         _endPicUserName = @" ";
         _videoBitRate   = 6.0;
         _endPicDuration = 2.0;
         _endPicFadeDuration = 1.0;
         //设置水印是否可用
-        _waterDisabled = true;
-        _waterText = nil;
-        _waterImage = nil;
-        _waterPosition = WATERPOSITION_LEFTBOTTOM;
+        _watermarkDisabled = true;
+        _watermarkPosition = VEWatermarkPosition_leftBottom;
         
     }
     return self;
@@ -52,17 +62,17 @@
     copy.outputVideoMaxDuration   = _outputVideoMaxDuration;
     copy.inputVideoMaxDuration    = _inputVideoMaxDuration;
     //设置视频片尾和码率
-    copy.endPicDisabled     = _endPicDisabled;
+    copy.endingMediaDisabled= _endingMediaDisabled;
+    copy.endingMedia        = _endingMedia;
     copy.endPicUserName     = _endPicUserName;
     copy.endPicDuration     = _endPicDuration;
     copy.endPicFadeDuration = _endPicFadeDuration;
     copy.endPicImagepath    = _endPicImagepath;
     copy.videoBitRate       = _videoBitRate;
     //设置水印是否可用
-    copy.waterDisabled      = _waterDisabled;
-    copy.waterText          = _waterText;
-    copy.waterImage         = _waterImage;
-    copy.waterPosition      = _waterPosition;
+    copy.watermarkDisabled  = _watermarkDisabled;
+    copy.watermarkImage     = _watermarkImage;
+    copy.watermarkPosition  = _watermarkPosition;
     return copy;
 }
 
@@ -71,19 +81,27 @@
     copy.outputVideoMaxDuration   = _outputVideoMaxDuration;
     copy.inputVideoMaxDuration    = _inputVideoMaxDuration;
     //设置视频片尾和码率
-    copy.endPicDisabled     = _endPicDisabled;
+    copy.endingMediaDisabled= _endingMediaDisabled;
+    copy.endingMedia        = _endingMedia;
     copy.endPicUserName     = _endPicUserName;
     copy.endPicDuration     = _endPicDuration;
     copy.endPicFadeDuration = _endPicFadeDuration;
     copy.endPicImagepath    = _endPicImagepath;
     copy.videoBitRate       = _videoBitRate;
     //设置水印是否可用
-    copy.waterDisabled      = _waterDisabled;
-    copy.waterText          = _waterText;
-    copy.waterImage         = _waterImage;
-    copy.waterPosition      = _waterPosition;
+    copy.watermarkDisabled  = _watermarkDisabled;
+    copy.watermarkImage     = _watermarkImage;
+    copy.watermarkPosition  = _watermarkPosition;
     return copy;
     
+}
+
+- (void)setEndPicDisabled:(bool)endPicDisabled {
+    _endingMediaDisabled = endPicDisabled;
+}
+
+- (void)setWaterDisabled:(bool)waterDisabled {
+    _watermarkDisabled = waterDisabled;
 }
 
 - (void)setWaterText:(NSString *)waterText{
@@ -93,10 +111,14 @@
     }
 }
 - (void)setWaterImage:(UIImage *)waterImage{
-    _waterImage = waterImage;
+    _watermarkImage = waterImage;
     if(waterImage){
         _waterText  = nil;
     }
+}
+
+- (void)setWaterPosition:(VEWatermarkPosition)waterPosition {
+    _watermarkPosition = waterPosition;
 }
 
 @end
