@@ -128,6 +128,39 @@
     }
     copy.isSlomoVideo = _isSlomoVideo;
     
+    
+    if( _keyFrameTimeArray && (_keyFrameTimeArray.count > 0) )
+    {
+        copy.keyFrameTimeArray = [NSMutableArray new];
+        [_keyFrameTimeArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSNumber * number = [obj copy];
+            [copy.keyFrameTimeArray addObject:number];
+        }];
+    }
+    
+    if( _keyFrameRectRotateArray && (_keyFrameRectRotateArray.count > 0) )
+    {
+        copy.keyFrameRectRotateArray = [NSMutableArray new];
+        [_keyFrameRectRotateArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            
+            NSMutableArray * array = (NSMutableArray*)obj;
+            NSMutableArray *objArray = [NSMutableArray new];
+            [array enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+                if( [obj1 isKindOfClass:[NSNumber class]] )
+                {
+                    NSNumber * number = [obj1 copy];
+                    [objArray  addObject:number];
+                }
+                else if( [obj1 isKindOfClass:[NSValue class]] )
+                {
+                    NSValue * value = [obj1 copy];
+                    [objArray addObject:value];
+                }
+            }];
+            [copy.keyFrameRectRotateArray addObject:objArray];
+        }];
+    }
+    
     return copy;
 }
 
@@ -216,6 +249,39 @@
     }
     copy.isSlomoVideo = _isSlomoVideo;
     
+    
+    if( _keyFrameTimeArray && (_keyFrameTimeArray.count > 0) )
+    {
+        copy.keyFrameTimeArray = [NSMutableArray new];
+        [_keyFrameTimeArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSNumber * number = [obj copy];
+            [copy.keyFrameTimeArray addObject:number];
+        }];
+    }
+    
+    if( _keyFrameRectRotateArray && (_keyFrameRectRotateArray.count > 0) )
+    {
+        copy.keyFrameRectRotateArray = [NSMutableArray new];
+        [_keyFrameRectRotateArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            
+            NSMutableArray * array = (NSMutableArray*)obj;
+            NSMutableArray *objArray = [NSMutableArray new];
+            [array enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+                if( [obj1 isKindOfClass:[NSNumber class]] )
+                {
+                    NSNumber * number = [obj1 copy];
+                    [objArray  addObject:number];
+                }
+                else if( [obj1 isKindOfClass:[NSValue class]] )
+                {
+                    NSValue * value = [obj1 copy];
+                    [objArray addObject:value];
+                }
+            }];
+            [copy.keyFrameRectRotateArray addObject:objArray];
+        }];
+    }
+    
     return copy;
 }
 
@@ -228,6 +294,7 @@
         if (asset.type == MediaAssetTypeVideo) {
             self.videoTimeRange = asset.timeRange;
             _reverseVideoTimeRange = _videoTimeRange;
+            
         }else {
             _imageDurationTime = asset.timeRange.duration;
             _imageTimeRange = asset.timeRange;
@@ -298,6 +365,15 @@
             _animationOutTimeRange = asset.customOutAnimate.timeRange;
             _customOutAnimate = animate;
         }
+        [asset.customFilterArray enumerateObjectsUsingBlock:^(CustomFilter * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            CustomFilter *filter = [VEHelp getCustomFilterWithFolderPath:obj.folderPath currentFrameImagePath:asset.url.path];
+            filter.timeRange = obj.timeRange;
+//                filter.cycleDuration = obj.cycleDuration;
+            filter.networkCategoryId = obj.networkCategoryId;
+            filter.networkResourceId = obj.networkResourceId;
+            _fxEffect = filter;
+            _fxEffectTimeRange = filter.timeRange;
+        }];
     }
     
     return self;

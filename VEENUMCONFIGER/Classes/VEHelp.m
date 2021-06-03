@@ -1068,6 +1068,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
  */
 +(NSString*)customFontWithPath:(NSString*)path fontName:(NSString *)fontName
 {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        return nil;
+    }
     NSURL *fontUrl = [NSURL fileURLWithPath:path];
     
     if(fontName){
@@ -1129,6 +1132,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
  */
 + (NSMutableArray*)customFontArrayWithPath:(NSString*)path
 {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        return nil;
+    }
     @autoreleasepool {
         CFStringRef fontPath = CFStringCreateWithCString(NULL, [path UTF8String], kCFStringEncodingUTF8);
         CFURLRef fontUrl = CFURLCreateWithFileSystemPath(NULL, fontPath, kCFURLPOSIXPathStyle, 0);

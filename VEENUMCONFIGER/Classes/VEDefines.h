@@ -161,6 +161,7 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KCUT_PIP            = 41,//切画中画
     KINTELLIGENT_KEY    = 42,//智能抠像
     KNOISE              = 43,//降噪
+    KMONGOLIANKEYFRAME  = 44,//蒙板关键帧
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -226,6 +227,7 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     kPIP_INTELLIGENT_KEY    = 39,//智能抠像
     kPIP_SHIFTING_SPEED     = 40,//曲线变速
     KPIP_NOISE              = 41,//降噪
+    KPIP_MONGOLIANKEYFRAME  = 42,//蒙板关键帧
 };
 
 //去水印类型
@@ -522,7 +524,7 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define BuildAutoSeek 1
 
 #define  KScrollHeight   60
-#define kDefaultFontSize 20.0
+#define kDefaultFontSize 22.0
 
 #define kHandleHeight 50.0    //把手高度
 
