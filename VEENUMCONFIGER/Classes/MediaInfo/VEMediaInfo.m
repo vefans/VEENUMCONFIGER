@@ -291,11 +291,8 @@
     if (dic) {
         self = [VEMediaInfo veCore_yy_modelWithDictionary:dic];
         self.contentURL = asset.url;
-        if (asset.type == MediaAssetTypeVideo) {
-            self.videoTimeRange = asset.timeRange;
-            _reverseVideoTimeRange = _videoTimeRange;
-            
-        }else {
+        if ([VEHelp isImageUrl:asset.url]) {
+            _fileType = kFILEIMAGE;
             _imageDurationTime = asset.timeRange.duration;
             _imageTimeRange = asset.timeRange;
             NSData *data = [NSData dataWithContentsOfURL:asset.url];
@@ -309,6 +306,10 @@
             if (source) {
                 CFRelease(source);
             }
+        }else {
+            _fileType = kFILEVIDEO;
+            self.videoTimeRange = asset.timeRange;
+            _reverseVideoTimeRange = _videoTimeRange;
         }
         if (asset.filterUrl) {
             _filterPath = asset.filterUrl.absoluteString;
@@ -450,6 +451,7 @@
     }
     if (_mask) {
         _mask.maskImagePath = [VEHelp getFileURLFromAbsolutePath_str:_mask.maskImagePath];
+        _mask.folderPath = [VEHelp getFileURLFromAbsolutePath_str:_mask.folderPath];
         if (_mask.edgeColor) {
             _maskThickColorIndex = [VEHelp getColorIndex:_mask.edgeColor];
         }
@@ -542,6 +544,225 @@
     }else{
         _reverseVideoTrimTimeRange = reverseVideoTrimTimeRange;
     }
+}
+
+- (MediaAsset *)getMedia {
+    MediaAsset *media = [[MediaAsset alloc] init];
+    media.url = _contentURL;
+    if (_filterPath.length > 0) {
+        media.filterUrl = [NSURL fileURLWithPath:_filterPath];
+        media.filterType = kFilterType_LookUp;
+        media.filterIntensity = _filterIntensity;
+    }
+    //智能抠图
+    media.autoSegment = _isIntelligentKey;
+    //透明度
+    media.alpha = _backgroundAlpha;
+    //美颜
+    media.beautyBlurIntensity =  _beautyBlurIntensity;
+    media.beautyBrightIntensity = _beautyBrightIntensity;
+    media.beautyToneIntensity = _beautyToneIntensity;
+    media.beautyThinFaceIntensity = _beautyThinFaceIntensity;
+    media.beautyBigEyeIntensity = _beautyBigEyeIntensity;
+    //调色
+    media.brightness = _brightness;
+    media.contrast = _contrast;
+    media.saturation = _saturation;
+    media.sharpness = _sharpness;
+    media.whiteBalance = _whiteBalance;
+    media.vignette = _vignette;
+    
+    //降噪
+    media.denoiseLevel = _denoiseLevel;
+    
+    //特效
+    if( _fxEffect )
+    {
+        media.customFilterArray = [NSMutableArray new];
+        [media.customFilterArray addObject:_fxEffect];
+    }
+    
+    //变声
+    if( _fileSoundEffect > 0 )
+    {
+        media.audioFilterType = _fileSoundEffect;
+        float defaultPitch = _fileSoundEffectPitch;
+        if (media.audioFilterType == AudioFilterTypeBoy) {
+            defaultPitch = 0.8;
+        }else if (media.audioFilterType == AudioFilterTypeGirl) {
+            defaultPitch = 1.27;
+        }else if (media.audioFilterType == AudioFilterTypeMonster) {
+            defaultPitch = 0.6;
+        }else if (media.audioFilterType == AudioFilterTypeCartoon) {
+            defaultPitch = 0.45;
+        }else if (media.audioFilterType == AudioFilterTypeCartoonQuick) {
+            defaultPitch = 0.55;
+        }
+        media.pitch = defaultPitch;
+    }
+    
+    //抠图
+    if( _chromaColor )
+    {
+        media.chromaColor = _chromaColor;
+        media.blendType = _blendType;
+        media.cutoutAlphaLower = _cutoutAlphaLower;
+        media.cutoutAlphaUpper = _cutoutAlphaUpper;
+        media.cutoutEdgeSize = _cutoutEdgeSize;
+    }
+#if 0
+    //组合动画
+    if( (_animationIndex > 1) )
+    {
+        NSMutableDictionary * itemDic = self.animationArray[_animationType][@"data"][_animationIndex-2];
+        media.customAnimate = [VEDeluxeHelpClass getAnimationCustomFilter:itemDic categoryId:_animationArray[_animationType][@"id"]];
+        media.customAnimate.networkCategoryId = _animationArray[_animationType][@"id"];
+        media.customAnimate.timeRange = _animationTimeRange;
+        if( _animationType == 0 )
+        {
+            media.customAnimate.animateType = CustomAnimationTypeIn;
+        }
+        else
+        {
+            media.customAnimate.animateType = CustomAnimationTypeCombined;
+        }
+    }else if (_customAnimate) {
+        if (_animationArray.count > 0 && _customAnimate.networkCategoryId.length > 0 && _customAnimate.networkResourceId.length > 0) {
+            [_animationArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+                if ([obj1[@"typeId"] isEqual:_customAnimate.networkCategoryId]) {
+                    [obj1[@"data"] enumerateObjectsUsingBlock:^(id  _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
+                        if ([obj2[@"id"] isEqual:_customAnimate.networkResourceId]) {
+                            _animationIndex = idx2 + 2;
+                            *stop2 = YES;
+                        }
+                    }];
+                    *stop1 = YES;
+                }
+            }];
+        }
+        media.customAnimate = _customAnimate;
+    }
+    if( (_animationOutIndex > 0) && !( (_animationType == 2) && (_animationIndex > 0) ) )
+    {
+        NSMutableDictionary * itemDic = self.animationArray[_animationOutType][@"data"][_animationOutIndex-2];
+        media.customOutAnimate = [VEDeluxeHelpClass getAnimationCustomFilter:itemDic categoryId:_animationArray[_animationOutType][@"id"]];
+        media.customOutAnimate.timeRange = _animationOutTimeRange;
+        media.customOutAnimate.animateType = CustomAnimationTypeOut;
+    }
+    else if (_customOutAnimate) {
+        if (_animationArray.count > 0 && _customOutAnimate.networkCategoryId.length > 0 && _customOutAnimate.networkResourceId.length > 0) {
+            [_animationArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+                if ([obj1[@"typeId"] isEqual:_customOutAnimate.networkCategoryId]) {
+                    [obj1[@"data"] enumerateObjectsUsingBlock:^(id  _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
+                        if ([obj2[@"id"] isEqual:_customOutAnimate.networkResourceId]) {
+                            _animationOutIndex = idx2 + 2;
+                            *stop2 = YES;
+                        }
+                    }];
+                    *stop1 = YES;
+                }
+            }];
+        }
+        media.customOutAnimate = _customOutAnimate;
+    }
+#endif
+    //蒙版
+    media.mask = _mask;
+    
+    //曲线变速
+    if( _curvedSpeedPointArray && (_curvedSpeedPointArray.count >= 2) )
+    {
+        media.curvedSpeedPointArray = _curvedSpeedPointArray;
+        media.curveSpeedType = _curveSpeedIndex - 1;
+    }
+    
+    if(_fileType == kFILEVIDEO){
+        media.type = MediaAssetTypeVideo;
+        media.videoActualTimeRange = _videoActualTimeRange;
+        if(_isReverse){
+            media.url = _reverseVideoURL;
+            if (CMTimeRangeEqual(kCMTimeRangeZero, _reverseVideoTimeRange)) {
+                media.timeRange = CMTimeRangeMake(kCMTimeZero, _reverseDurationTime);
+            }else{
+                media.timeRange = _reverseVideoTimeRange;
+            }
+            if(CMTimeCompare(media.timeRange.duration, _reverseVideoTrimTimeRange.duration) == 1 && CMTimeGetSeconds(_reverseVideoTrimTimeRange.duration)>0){
+                media.timeRange = _reverseVideoTrimTimeRange;
+            }
+        }
+        else{
+            if (CMTimeRangeEqual(kCMTimeRangeZero, _videoTimeRange)) {
+                media.timeRange = CMTimeRangeMake(kCMTimeZero, _videoDurationTime);
+                if(CMTimeRangeEqual(kCMTimeRangeZero, media.timeRange)){
+                    media.timeRange = CMTimeRangeMake(kCMTimeZero, [AVURLAsset assetWithURL:_contentURL].duration);
+                }
+            }else{
+                media.timeRange = _videoTimeRange;
+            }
+            if(!CMTimeRangeEqual(kCMTimeRangeZero, _videoTrimTimeRange) && CMTimeCompare(media.timeRange.duration, _videoTrimTimeRange.duration) == 1){
+                media.timeRange = _videoTrimTimeRange;
+            }
+        }
+        media.speed        = _speed;
+        media.volume = _videoVolume;
+        media.audioFadeInDuration = _audioFadeInDuration;
+        media.audioFadeOutDuration = _audioFadeOutDuration;
+    }else{
+        media.type         = MediaAssetTypeImage;
+        if( ((CMTimeCompare(_imageTimeRange.duration, kCMTimeZero) == 1)
+             || ( CMTimeGetSeconds(_imageTimeRange.duration) > 0)) && (_isGif)
+        ){
+            media.timeRange = _imageTimeRange;
+        }else {
+            media.timeRange    = CMTimeRangeMake(kCMTimeZero, _imageDurationTime);
+        }
+        media.speed        = _speed;
+        media.volume       = _videoVolume;
+        
+        media.fillType = ImageMediaFillTypeFit;
+#if isUseCustomLayer
+        if (_fileType == kFILETEXT) {
+            media.fillType = ImageMediaFillTypeFull;
+        }
+#endif
+    }
+    
+    media.rotate = _rotate;
+    media.isVerticalMirror = _isVerticalMirror;
+    media.isHorizontalMirror = _isHorizontalMirror;
+    media.crop = _crop;
+    
+    if( (_keyFrameTimeArray) && (_keyFrameTimeArray.count > 0) )
+    {
+//        [VEDeluxeHelpClass setAssetAnimationArray_Keyframe:media file:self];
+    }else if (_animate.count > 0) {
+        media.animate = _animate;
+        _keyFrameTimeArray = [NSMutableArray array];
+        _keyFrameRectRotateArray = [NSMutableArray array];
+        for (int i = 1; i < _animate.count - 1; i++) {
+            MediaAssetAnimatePosition *obj1 = _animate[i];
+            [_keyFrameTimeArray addObject:[NSNumber numberWithFloat:obj1.atTime]];
+            
+            NSMutableArray * array = [NSMutableArray array];
+            [array addObject:[NSNumber numberWithFloat:obj1.rect.origin.x]];
+            [array addObject:[NSNumber numberWithFloat:obj1.rect.origin.y]];
+            [array addObject:[NSNumber numberWithFloat:obj1.rect.size.width]];
+            [array addObject:[NSNumber numberWithFloat:obj1.rect.size.height]];
+            [array addObject:[NSNumber numberWithFloat:obj1.rotate]];
+            [array addObject:[NSNumber numberWithFloat:1.0]];
+            
+//            [VEDeluxeHelpClass getMaskObjectArray:_mask atMaskName:nil atMaskThickColorIndex:0 atMaskType:0 atArray:array atIsKey:YES];
+//            [VEDeluxeHelpClass setKeyFrameRect_Rotate:_atArray:array atIndex:(i - 1)];
+        }
+    }
+    
+    if( _backgroundType !=  KCanvasType_None )
+    {
+        media.rectInVideo = _rectInScene;
+        media.rotate = _rotate;
+    }
+    
+    return media;
 }
 
 - (void)remove {

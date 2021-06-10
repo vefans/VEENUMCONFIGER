@@ -819,6 +819,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return [UIImage imageWithContentsOfFile:[self getRecordResource:[NSString stringWithFormat:@"%@",name] type:@"png"]];
 }
 
++(NSBundle *)getBundle
+{
+    return [VEHelp getEditBundle];;
+}
+
 + (NSBundle *)getEditBundle{
     NSString * bundlePath = [[NSBundle bundleForClass:self.class] pathForResource: @"VEEditSDK" ofType :@"bundle"];
     NSBundle *resourceBundle = [NSBundle bundleWithPath:bundlePath];
@@ -1773,9 +1778,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     customFilter.name = effectDic[@"name"];
     
     NSString *fragPath = [folderPath stringByAppendingPathComponent:effectDic[@"fragShader"]];
-    NSString *vertPath = [folderPath stringByAppendingPathComponent:effectDic[@"vertShader"]];
     customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
-    customFilter.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
+    if (effectDic[@"vertShader"]) {
+        NSString *vertPath = [folderPath stringByAppendingPathComponent:effectDic[@"vertShader"]];
+        customFilter.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
+    }    
     if (effectDic[@"script"]) {
         NSString *scriptPath = [folderPath stringByAppendingPathComponent:effectDic[@"script"]];
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];

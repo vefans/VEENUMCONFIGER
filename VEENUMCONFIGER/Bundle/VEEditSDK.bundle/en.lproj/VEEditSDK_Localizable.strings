@@ -1805,7 +1805,7 @@
 "水印位置" = "Position";
 "添加配乐" = "Add Music";
 "AI识别" = "AI Recog";
-"字说" = "Zishuo";
+"文字动画" = "Text animation";
 "添加本地音乐" = "Add local music";
 "添加网络音乐" = "Add network music";
 
@@ -1864,3 +1864,20 @@
 
 "边框粗细" = "Side frame";
 "边框颜色" = "Border color";
+
+"导出模板" = "Export Template";
+"片段" = "Fragment";
+"片段%d" = "Fragment%d"
+"编组" = "Group";
+"主轨道" = "Main video";
+"画中画%d" = "Overlay%d";
+"文字%d" = "Text%d";
+"不限" = "Unlimited";
+"无编组" = "No Group";
+"取消编组" = "Cancel Group";
+"编组%d" = "Group%d";
+"已选(%d)" = "Selected(%d)";
+"将所选应用到本轨所有片段" = "Apply selected to all clips in this track";
+"仅图片" = "Picture only";
+"仅视频" = "Video only";
+"锁定素材不可编组" = "Locked material cannot be grouped";

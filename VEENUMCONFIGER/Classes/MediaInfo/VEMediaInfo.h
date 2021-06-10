@@ -13,6 +13,8 @@
 
 @interface VEMediaInfo : NSObject<NSCopying, NSMutableCopying>
 
+@property (nonatomic, strong) NSString *sceneIdentifier;
+
 /** 标识符
  */
 @property (nonatomic,copy  ) NSString *localIdentifier;
@@ -436,6 +438,8 @@
 @property (nonatomic, strong) NSMutableArray *keyFrameRectRotateArray;
 
 - (instancetype)initWithMediaAsset:(MediaAsset *)asset;
+
+- (MediaAsset *)getMedia;
 
 - (void)remove;
 

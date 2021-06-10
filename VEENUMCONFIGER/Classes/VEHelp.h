@@ -3,7 +3,6 @@
 #import <Photos/Photos.h>
 #import <VEENUMCONFIGER/VEMediaInfo.h>
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
-#import <LibVECore/LibVECore.h>
 
 @interface VEHelp : NSObject
 
@@ -73,6 +72,7 @@
 + (UIImage *) getBundleImage : (NSString *) name;
 + (UIImage *) getBundleImagePNG : (NSString *) name;
 + (NSBundle *)getEditBundle;
++ (NSBundle *)getBundle;
 + (NSBundle *)getRecordBundle;
 + (NSBundle *)getDemoUseBundle;
 + (NSString *)getLocalizedString:(NSString *)key;
