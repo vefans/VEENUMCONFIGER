@@ -313,7 +313,7 @@ typedef void(^VERecordCompletionHandler) (int result,NSString *path,VEMusicInfo 
 
 /** 录制完后不合并视频的回调
  */
-typedef void(^VERecordDisableMergeCompletionHandler) (int type, NSMutableArray <NSURL *>*urls, MusicInfo *music);
+typedef void(^VERecordDisableMergeCompletionHandler) (int type, NSMutableArray <NSURL *>*urls, VEMusicInfo *music);
 
 /**相册选择完成返回一个URL数组
  */

@@ -1,8 +1,8 @@
 //
 //  VEPlaySlider.m
-//  VELiteSDK
+//  VEENUMCONFIGER
 //
-//  Created by 刘超 on 2021/2/17.
+//  Created by iOS VESDK Team on 2021/2/17.
 //
 
 #import "VEPlaySlider.h"
