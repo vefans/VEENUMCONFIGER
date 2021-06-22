@@ -146,6 +146,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) VEMusicInfo          * _Nullable musicInfo;
 
+/** 录制完成后，是否合并成一个视频(default true)
+ */
+@property (nonatomic, assign) bool              enableMergeVideos;
+
 /*是否启用相机水印
  */
 @property (nonatomic, assign) BOOL              enabelCameraWaterMark;

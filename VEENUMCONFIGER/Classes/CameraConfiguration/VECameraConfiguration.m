@@ -41,7 +41,7 @@
         _enabelCameraWaterMark              = NO;
         _cameraWaterMarkHeaderDuration      = 0;
         _cameraWaterMarkEndDuration         = 0;
-        
+        _enableMergeVideos                  = true;
     }
     
     return self;
@@ -78,6 +78,7 @@
     copy.cameraPhoto                        = _cameraPhoto;
     copy.cameraMV_MinVideoDuration          = _cameraMV_MinVideoDuration;
     copy.cameraMV_MaxVideoDuration          = _cameraMV_MaxVideoDuration;
+    copy.enableMergeVideos                  = _enableMergeVideos;
 //    /*传入相机水印图片
 //     */
 //    @property (nonatomic, strong) UIImage          * cameraWaterMarkHeader;
@@ -128,6 +129,7 @@
     copy.cameraPhoto                        = _cameraPhoto;
     copy.cameraMV_MinVideoDuration          = _cameraMV_MinVideoDuration;
     copy.cameraMV_MaxVideoDuration          = _cameraMV_MaxVideoDuration;
+    copy.enableMergeVideos                  = _enableMergeVideos;
     
 //    copy.cameraWaterMarkEnd                  = _cameraWaterMarkEnd;
 //    copy.cameraWaterMarkHeader                  = _cameraWaterMarkHeader;

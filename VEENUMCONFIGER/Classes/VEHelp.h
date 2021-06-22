@@ -142,5 +142,16 @@
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath;
 
 + (void)setApngCaptionFrameArrayWithImagePath:(NSString *)path jsonDic:(NSMutableDictionary *)jsonDic;
++ (UIImage *) imageWithColor:(UIColor *)color size:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
++ (BOOL)exportSlomoVideoFile:(VEMediaInfo *)file;
++ (BOOL)createSaveTmpFileFolder;
 
++(CGSize)getPEexpSize:(NSMutableArray *) peMediaInfos;
++ (UIImage *)getFullScreenImageWithUrl:(NSURL *)url;
+
+#pragma mark- 居中处理，计算对应的Crop
++(CGRect)getCropMedia:(CGSize) imageSize atExpSize:(CGSize) expSize;
+
++ (CGSize)getEditOrginSizeWithFile:(VEMediaInfo *)file ;
++ (CGSize)getEditSizeWithFile:(VEMediaInfo *)file;
 @end

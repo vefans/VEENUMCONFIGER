@@ -14,7 +14,7 @@
  */
 typedef NS_ENUM(NSInteger, SUPPORTLANGUAGE){
     CHINESE,    //中文
-    
+    ChineseTraditional,//繁体中文
     ENGLISH,     //英文
     Spanish,//西语
     Portuguese,//葡语
@@ -22,7 +22,6 @@ typedef NS_ENUM(NSInteger, SUPPORTLANGUAGE){
     Japanese,//日语
     French,//法语
     Korean,//韩语
-    ChineseTraditional,//繁体中文
     OtherLanguages,// 其他语言
 };
 
@@ -86,6 +85,9 @@ typedef void(^VEFailedHandler) (NSError * error);
 /**视频输出路径
  */
 @property (copy,nonatomic)NSString  * outPath;
+/**API模板输出文件夹路径
+ */
+@property (copy,nonatomic)NSString  * apiTemplateExportFolerPath;
 /**视频输出路径
  */
 @property (copy,nonatomic)NSString  * draftPath;

@@ -45,6 +45,40 @@
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
     copy.fxEffect = _fxEffect;
+    copy.fileSoundEffect = _fileSoundEffect;
+    copy.beautyBigEyeIntensity = _beautyBigEyeIntensity;
+    copy.beautyThinFaceIntensity = _beautyThinFaceIntensity;
+    copy.blendType = _blendType;
+    copy.chromaColor = _chromaColor;
+    copy.cutoutAlphaLower = _cutoutAlphaLower;
+    copy.cutoutAlphaUpper = _cutoutAlphaUpper;
+    copy.cutoutEdgeSize = _cutoutEdgeSize;
+    copy.filterId = _filterId;
+    copy.fileSoundEffectPitch = _fileSoundEffectPitch;
+    copy.fxEffectTimeRange = _fxEffectTimeRange;
+    copy.filterPath = _filterPath;
+    copy.voiceFXIndex = _voiceFXIndex;
+    copy.pitch = _pitch;
+    
+    copy.customAnimate = _customAnimate;
+    copy.customOutAnimate = _customOutAnimate;
+    copy.isSelfieSegmentation = _isSelfieSegmentation;
+    copy.animate = _animate;
+    
+    if(  (_keyFrameTimeArray) && (_keyFrameTimeArray.count > 0)  )
+    {
+        copy.keyFrameTimeArray = [NSMutableArray new];
+        [_keyFrameTimeArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [copy.keyFrameTimeArray addObject:obj];
+        }];
+        copy.keyFrameRectRotateArray = [NSMutableArray new];
+        [_keyFrameRectRotateArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [copy.keyFrameRectRotateArray addObject:obj];
+        }];
+    }
+    
+    //降噪
+    copy.denoiseLevel = _denoiseLevel;
     copy.isIntelligentKey = _isIntelligentKey;
     copy.animationType = _animationType;
     copy.animationIndex= _animationIndex;
@@ -56,6 +90,7 @@
     copy.backgroundFile = [_backgroundFile mutableCopy];
     copy.backgroundStyle = _backgroundStyle;
     copy.backgroundBlurIntensity = _backgroundBlurIntensity;
+    copy.imageInVideoTimeRange = _imageInVideoTimeRange;
     copy.rectInFile = _rectInFile;
     copy.rectInScale    = _rectInScale;
     copy.fileScale          = _fileScale;
@@ -66,6 +101,7 @@
     copy.fileType                = _fileType;
     copy.filtImagePatch          = _filtImagePatch;
     copy.isGif                   = _isGif;
+    copy.reverseAudioType   = _reverseAudioType;
     copy.imageDurationTime       = _imageDurationTime;
     copy.imageTimeRange          = _imageTimeRange;
     copy.coverTime               = _coverTime;
@@ -99,6 +135,7 @@
     copy.isReverse               = _isReverse;
     copy.isVerticalMirror        = _isVerticalMirror;
     copy.isHorizontalMirror      = _isHorizontalMirror;
+    copy.transition  = _transition;
     copy.transitionNetworkCategoryId = _transitionNetworkCategoryId;
     copy.transitionNetworkResourceId = _transitionNetworkResourceId;
     copy.transitionDuration      = _transitionDuration;
@@ -107,6 +144,7 @@
     copy.transitionMask          = _transitionMask;
     copy.thumbImage              = _thumbImage;
     copy.cropRect                = _cropRect;
+    copy.isMove = _isMove;
     copy.fileCropModeType        = _fileCropModeType;
     copy.customFilterIndex       = _customFilterIndex;
     copy.customFilterId          = _customFilterId;
@@ -128,6 +166,12 @@
     }
     copy.isSlomoVideo = _isSlomoVideo;
     
+    if (_mask) {
+        copy.maskName = _maskName;
+        MaskObject *mask = [VEHelp getMaskWithName:_maskName];
+        copy.maskThickColorIndex =_maskThickColorIndex;
+        copy.maskType = _maskType;
+    }
     
     if( _keyFrameTimeArray && (_keyFrameTimeArray.count > 0) )
     {
@@ -167,6 +211,18 @@
 - (id)copyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
     copy.fxEffect = _fxEffect;
+    copy.fxFileId = _fxFileId;
+    copy.isMove = _isMove;
+    copy.transition = _transition;
+    copy.fileSoundEffect = _fileSoundEffect;
+    copy.fileSoundEffectPitch = _fileSoundEffectPitch;
+    copy.beautyBigEyeIntensity = _beautyBigEyeIntensity;
+    copy.beautyThinFaceIntensity = _beautyThinFaceIntensity;
+    copy.voiceFXIndex = _voiceFXIndex;
+    copy.pitch = _pitch;
+    copy.rectInFile = _rectInFile;
+    //降噪
+    copy.denoiseLevel = _denoiseLevel;
     copy.isIntelligentKey = _isIntelligentKey;
     copy.animationType = _animationType;
     copy.animationIndex= _animationIndex;
@@ -189,6 +245,7 @@
     copy.isGif                   = _isGif;
     copy.fileTimeFilterTimeRange = _fileTimeFilterTimeRange;
     copy.imageDurationTime       = _imageDurationTime;
+    copy.imageInVideoTimeRange = _imageInVideoTimeRange;
     copy.imageTimeRange          = _imageTimeRange;
     copy.coverTime               = _coverTime;
     copy->_contentURL            = _contentURL;
@@ -221,6 +278,7 @@
     copy.customFilterId          = _customFilterId;
     copy.fileTimeFilterType      = _fileTimeFilterType;
     copy.rotate                  = _rotate;
+    copy.reverseAudioType   = _reverseAudioType;
     copy.isReverse               = _isReverse;
     copy.isVerticalMirror        = _isVerticalMirror;
     copy.isHorizontalMirror      = _isHorizontalMirror;
@@ -249,6 +307,12 @@
     }
     copy.isSlomoVideo = _isSlomoVideo;
     
+    if (_mask) {
+        copy.maskName = _maskName;
+        MaskObject *mask = [VEHelp getMaskWithName:_maskName];
+        copy.maskThickColorIndex =_maskThickColorIndex;
+        copy.maskType = _maskType;
+    }
     
     if( _keyFrameTimeArray && (_keyFrameTimeArray.count > 0) )
     {
@@ -415,6 +479,19 @@
                 }
                 else if ([value isKindOfClass:[NSValue class]]) {
                     [rotateArray addObject:NSStringFromCGPoint(((NSValue *)value).CGPointValue)];
+                }
+                else if( [value isKindOfClass:[NSMutableArray class]] )
+                {
+                    NSMutableArray *adjustArray = [NSMutableArray array];
+                    for (id value1 in value) {
+                        if ([value1 isKindOfClass:[NSNumber class]]) {
+                            [adjustArray addObject:value1];
+                        }
+                        else if ([value1 isKindOfClass:[NSValue class]]) {
+                            [adjustArray addObject:NSStringFromCGPoint(((NSValue *)value1).CGPointValue)];
+                        }
+                    }
+                    [rotateArray addObject:adjustArray];
                 }
             }
             [array addObject:rotateArray];
@@ -748,7 +825,19 @@
             [array addObject:[NSNumber numberWithFloat:obj1.rect.origin.y]];
             [array addObject:[NSNumber numberWithFloat:obj1.rect.size.width]];
             [array addObject:[NSNumber numberWithFloat:obj1.rect.size.height]];
-            [array addObject:[NSNumber numberWithFloat:obj1.rotate]];
+            {
+                NSMutableArray * adjustArray = [NSMutableArray new];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.rotate]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.opacity]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.brightness]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.contrast]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.saturation]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.vignette]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.sharpness]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.whiteBalance]];
+                [array addObject:adjustArray];
+            }
+//            [array addObject:[NSNumber numberWithFloat:obj1.rotate]];
             [array addObject:[NSNumber numberWithFloat:1.0]];
             
 //            [VEDeluxeHelpClass getMaskObjectArray:_mask atMaskName:nil atMaskThickColorIndex:0 atMaskType:0 atArray:array atIsKey:YES];

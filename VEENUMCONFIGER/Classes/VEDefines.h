@@ -2,6 +2,7 @@
 #import <UIKit/UIKit.h>
 #import <VEENUMCONFIGER/VEMusicInfo.h>
 #import "VEConfigManager.h"
+#import <LibVECore/Scene.h>
 
 typedef NS_ENUM(NSInteger ,MediaType) {
     kFILEVIDEO,
@@ -228,6 +229,8 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     kPIP_SHIFTING_SPEED     = 40,//曲线变速
     KPIP_NOISE              = 41,//降噪
     KPIP_MONGOLIANKEYFRAME  = 42,//蒙板关键帧
+    KPIP_SOUNDORGINAL       = 43,//原声
+    KPIP_MUTEVOLUME             = 44,//静音
 };
 
 //去水印类型
@@ -308,6 +311,10 @@ typedef NS_ENUM(NSInteger, VEMaskType)
 
 typedef void(^VERecordCompletionHandler) (int result,NSString *path,VEMusicInfo *music);
 
+/** 录制完后不合并视频的回调
+ */
+typedef void(^VERecordDisableMergeCompletionHandler) (int type, NSMutableArray <NSURL *>*urls, MusicInfo *music);
+
 /**相册选择完成返回一个URL数组
  */
 typedef void(^VEAlbumCompletionHandler) (NSMutableArray <NSURL*> * urls);
@@ -323,6 +330,8 @@ typedef void(^AddFinishCancelBlock) (NSString *videoPath, int type);
 typedef void(^TrimAndRotateVideoFinishBlock)(float rotate,CMTimeRange timeRange);
 //图片裁剪
 typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL verticalMirror,BOOL horizontalMirror,float rotation, int cropmodeType);
+
+#define EDITTAG     20101       //功能编辑区tag值
 
 #define TIMESCALE 600
 #define kRECORDAAC //直接录制AAC，如果录制MP3则注释掉这一行
@@ -376,6 +385,9 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define kVIDEOHEIGHT ([VEHelp isLowDevice] ? 480 : 720)
 #define kVIDEOWIDTH ([VEHelp isLowDevice] ? 852 : 1280)
 #define kSQUAREVIDEOWIDTH 720
+
+#define IMAGE_MAX_SIZE_WIDTH 1080
+#define IMAGE_MAX_SIZE_HEIGHT 1080
 //设备屏幕宽高
 #define kWIDTH [UIScreen mainScreen].bounds.size.width
 #define kHEIGHT [UIScreen mainScreen].bounds.size.height
@@ -445,6 +457,9 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define kMusicAnimatePlistPath [kMVAnimateFolder stringByAppendingPathComponent:@"musicAnimation.plist"]
 #define kTextAnimateFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/TextAnimate/"]
 #define kTempTextAnimateFolder [NSTemporaryDirectory() stringByAppendingPathComponent:@"TextAnimate/"]
+
+#define kAPITemplateFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VENetworkAPITemplate/"]
+#define kAPITemplatePlistPath [kAPITemplateFolder stringByAppendingPathComponent:@"veNetworkApiTemplates.plist"]
 
 #define kSpecialEffectFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SpecialEffect"]
 #define kNewSpecialEffectPlistPath [kSpecialEffectFolder stringByAppendingPathComponent:@"SpecialEffectList_New.plist"]

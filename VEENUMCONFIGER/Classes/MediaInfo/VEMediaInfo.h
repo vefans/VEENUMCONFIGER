@@ -375,7 +375,7 @@
 
 /**记录裁切方式
  */
-@property (nonatomic, assign) FileCropModeType fileCropModeType;
+@property (nonatomic, assign) VECropType fileCropModeType;
 
 /**文字板
  */

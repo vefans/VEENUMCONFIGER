@@ -8,10 +8,10 @@
 #import <sys/mount.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
-#include <CommonCrypto/CommonHMAC.h>
+#include <CommonCrypto/CommonHMAC.h>>
+#import <CoreText/CoreText.h>
 #import <VEENUMCONFIGER/VEHelp.h>
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
-#import <CoreText/CoreText.h>
 #import <Reachability/Reachability.h>
 
 @implementation VEHelp
@@ -1929,5 +1929,520 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     apngData = nil;
     apngImage = nil;
 }
++ (UIImage *) imageWithColor:(UIColor *)color size:(CGSize)size cornerRadius:(CGFloat)cornerRadius {
+    CGRect rect = CGRectMake(0, 0, size.width, size.height);
+    UIBezierPath *roundedRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:cornerRadius];
+    
+    roundedRect.lineWidth = 0;
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0.0f);
+    [color setFill];
+    [roundedRect fill];
+    [roundedRect stroke];
+    [roundedRect addClip];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return [image resizableImageWithCapInsets:UIEdgeInsetsMake(cornerRadius, cornerRadius, cornerRadius, cornerRadius)];
+}
 
++ (BOOL)exportSlomoVideoFile:(VEMediaInfo *)file
+{
+    __block BOOL isSuccess = YES;
+    NSString *directory = [kVEDirectory stringByAppendingPathComponent:@"SlomoVideo"];
+    if(![[NSFileManager defaultManager] fileExistsAtPath:directory]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *path;
+    NSArray *temp = [file.localIdentifier componentsSeparatedByString:@"/"];
+    if (temp.count > 0) {
+        path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mov", [temp firstObject]]];
+    }else {
+        path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mov", file.localIdentifier]];
+    }
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        if (![file.contentURL.absoluteString.lastPathComponent isEqual:path.lastPathComponent]) {
+            file.videoActualTimeRange = kCMTimeRangeZero;
+            file.contentURL = [NSURL fileURLWithPath:path];
+            file.videoTimeRange = CMTimeRangeMake(kCMTimeZero,file.videoDurationTime);
+            file.reverseVideoTimeRange = file.videoTimeRange;
+            file.videoTrimTimeRange = kCMTimeRangeInvalid;
+            file.reverseVideoTrimTimeRange = kCMTimeRangeInvalid;
+        }
+    }else {
+        PHFetchOptions *options = [[PHFetchOptions alloc] init];
+        options.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeVideo];
+        PHFetchResult<PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[file.localIdentifier] options:options];
+        if (fetchResult.count == 0) {
+            isSuccess = NO;
+        }else {
+            PHAsset *asset = [fetchResult firstObject];
+            PHVideoRequestOptions *opt_s = [[PHVideoRequestOptions alloc] init]; // assets的配置设置
+            opt_s.version = PHVideoRequestOptionsVersionCurrent;
+            opt_s.networkAccessAllowed = NO;
+            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+            [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:opt_s resultHandler:^(AVAsset * _Nullable asset_l, AVAudioMix * _Nullable audioMix_l, NSDictionary * _Nullable info_l) {
+                NSURL *url = [NSURL fileURLWithPath:path];
+
+                //Begin slomo video export
+                AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset_l presetName:AVAssetExportPresetHighestQuality];
+                exportSession.outputURL = url;
+                exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+                exportSession.shouldOptimizeForNetworkUse = YES;
+                
+                [exportSession exportAsynchronouslyWithCompletionHandler:^{
+                    if (exportSession.status == AVAssetExportSessionStatusCompleted) {
+                        file.videoActualTimeRange = kCMTimeRangeZero;
+                        file.contentURL = url;
+                        file.videoTimeRange = CMTimeRangeMake(kCMTimeZero,file.videoDurationTime);
+                        file.reverseVideoTimeRange = file.videoTimeRange;
+                        file.videoTrimTimeRange = kCMTimeRangeInvalid;
+                        file.reverseVideoTrimTimeRange = kCMTimeRangeInvalid;
+                    }else if (exportSession.status == AVAssetExportSessionStatusFailed || exportSession.status == AVAssetExportSessionStatusCancelled) {
+                        isSuccess = NO;
+                    }
+                    dispatch_semaphore_signal(semaphore);
+                }];
+            }];
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        }
+    }
+    return isSuccess;
+}
+
++ (NSString *)returnEditorVideoPath{
+    NSString *docmentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *editvideoPath = [NSString stringWithFormat:@"%@/EDITORVIDEO",docmentsPath];
+    if(![[NSFileManager defaultManager] fileExistsAtPath:editvideoPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:editvideoPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return editvideoPath;
+}
+
++ (BOOL)createSaveTmpFileFolder{
+    return YES;//不能删除，草稿要用
+    NSError *error = nil;
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:[self returnEditorVideoPath]]) {
+        [fm removeItemAtPath:[self returnEditorVideoPath] error:&error];
+        if(error){
+            fm = nil;
+            return NO;
+        }
+        [fm createDirectoryAtPath:[self returnEditorVideoPath] withIntermediateDirectories:YES attributes:nil error:&error];
+        if(error){
+            NSLog(@"error:%@",error);
+            fm = nil;
+            return NO;
+        }
+    }else{
+        [fm createDirectoryAtPath:[self returnEditorVideoPath] withIntermediateDirectories:YES attributes:nil error:&error];
+        if(error){
+            NSLog(@"error:%@",error);
+            fm = nil;
+            return NO;
+        }
+    }
+    if(error){
+        NSLog(@"error:%@",error);
+        fm = nil;
+        return NO;
+    }
+    fm = nil;
+    return YES;
+}
+
++(CGSize)getPEexpSize:(NSMutableArray *) peMediaInfos
+{
+    __block CGSize expSize = CGSizeZero;
+    [peMediaInfos enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        VEMediaInfo * mediaInfo = (VEMediaInfo*)obj;
+        UIImage * image = [self getFullScreenImageWithUrl:mediaInfo.contentURL];
+        if( image.size.width > expSize.width )
+        {
+            expSize.width =  image.size.width;
+        }
+        if( image.size.height > expSize.height )
+        {
+            expSize.height =  image.size.height;
+        }
+    }];
+    return expSize;
+}
+
++ (UIImage *)getFullScreenImageWithUrl:(NSURL *)url {
+    if([self isSystemPhotoUrl:url]){//
+        __block UIImage *image;
+        PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+        options.synchronous = YES;
+        options.resizeMode = PHImageRequestOptionsResizeModeExact;
+        options.networkAccessAllowed = YES;//解决草稿箱获取不到缩略图的问题
+        PHFetchResult *phAsset = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
+        
+        [[PHImageManager defaultManager] requestImageForAsset:[phAsset firstObject] targetSize:CGSizeMake(IMAGE_MAX_SIZE_WIDTH, IMAGE_MAX_SIZE_HEIGHT) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            
+            image = result;
+            result = nil;
+            info = nil;
+        }];
+        options = nil;
+        phAsset = nil;
+        return image;
+    }else{
+        if([self isImageUrl:url]){
+            UIImage * image = [self imageWithContentOfPath:url.path];
+            image = [self fixOrientation:image];
+            return image;
+        }else{
+            return [self assetGetThumImage:0.0 url:url urlAsset:nil];
+        }
+    }
+}
+
++ (UIImage *)imageWithContentOfPath:(NSString *)path{
+    @autoreleasepool {
+        NSData *image_data = [NSData dataWithContentsOfFile:path];
+        UIImage *image = [UIImage imageWithData:image_data];
+        image_data = nil;
+        return image;
+    }
+}
+
+/// 修正图片转向
++ (UIImage *)fixOrientation:(UIImage *)aImage {
+    //if (!self.shouldFixOrientation) return aImage;
+    
+    // No-op if the orientation is already correct
+    if (aImage.imageOrientation == UIImageOrientationUp)
+        return aImage;
+    
+    // We need to calculate the proper transformation to make the image upright.
+    // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationDown:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, aImage.size.height);
+            transform = CGAffineTransformRotate(transform, M_PI);
+            break;
+            
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
+            transform = CGAffineTransformRotate(transform, M_PI_2);
+            break;
+            
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, 0, aImage.size.height);
+            transform = CGAffineTransformRotate(transform, -M_PI_2);
+            break;
+        default:
+            break;
+    }
+    
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationUpMirrored:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+            
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.height, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+        default:
+            break;
+    }
+    
+    // Now we draw the underlying CGImage into a new context, applying the transform
+    // calculated above.
+    CGContextRef ctx = CGBitmapContextCreate(NULL, aImage.size.width, aImage.size.height,
+                                             CGImageGetBitsPerComponent(aImage.CGImage), 0,
+                                             CGImageGetColorSpace(aImage.CGImage),
+                                             CGImageGetBitmapInfo(aImage.CGImage));
+    CGContextConcatCTM(ctx, transform);
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            // Grr...
+            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.height,aImage.size.width), aImage.CGImage);
+            break;
+            
+        default:
+            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.width,aImage.size.height), aImage.CGImage);
+            break;
+    }
+    
+    // And now we just create a new UIImage from the drawing context
+    CGImageRef cgimg = CGBitmapContextCreateImage(ctx);
+    UIImage *img = [UIImage imageWithCGImage:cgimg];
+    CGContextRelease(ctx);
+    CGImageRelease(cgimg);
+    return img;
+}
+
+#pragma mark- 居中处理，计算对应的Crop
++(CGRect)getCropMedia:(CGSize) imageSize atExpSize:(CGSize) expSize
+{
+    float expProportion = expSize.width/expSize.height;
+    float imageProportion = imageSize.width/imageSize.height;
+    
+    CGRect rect = CGRectMake(0, 0, 1, 1);
+    
+    if( expProportion > 1.0 )
+    {
+        if( imageProportion < 1.0 )
+        {
+            float width = imageSize.width;
+            float height = expProportion/width;
+            rect = CGRectMake(0, (imageSize.height - height)/2.0/imageSize.height, 1, height/imageSize.height);
+        }
+    }
+    else if( expProportion < 1.0 ){
+        if( imageProportion > 1.0 )
+        {
+            float height = imageSize.height;
+            float width = height*expProportion;
+            rect = CGRectMake((imageSize.width - width)/2.0/imageSize.width, 0, width/imageSize.width, 1);
+        }
+    }
+    return rect;
+}
++ (CGSize)getEditSizeWithFile:(VEMediaInfo *)file {
+    CGSize editSize;
+    if (file.fileType == kFILEIMAGE || file.fileType == kFILETEXT) {
+        UIImage *image = [VEHelp getFullScreenImageWithUrl:file.contentURL];
+        if(file.isHorizontalMirror && file.isVerticalMirror){
+            float rotate = 0;
+            if(file.rotate == 0){
+                rotate = -180;
+            }else if(file.rotate == -90){
+                rotate = -270;
+            }else if(file.rotate == -180){
+                rotate = -0;
+            }else if(file.rotate == -270){
+                rotate = -90;
+            }
+            image = [VEHelp imageRotatedByDegrees:image rotation:rotate];
+        }else{
+            image = [VEHelp imageRotatedByDegrees:image rotation:file.rotate];
+        }
+        editSize = CGSizeMake(image.size.width*file.crop.size.width, image.size.height*file.crop.size.height);
+        image = nil;
+    }else {
+        if(file.isReverse){
+            editSize = [VEHelp trackSize:file.reverseVideoURL rotate:file.rotate crop:file.crop];
+        }else{
+            editSize = [VEHelp trackSize:file.contentURL rotate:file.rotate crop:file.crop];
+        }
+    }
+    if (editSize.width > kVIDEOWIDTH || editSize.height > kVIDEOWIDTH) {
+        if(editSize.width > editSize.height){
+            CGSize tmpsize = editSize;
+            editSize.width  = kVIDEOWIDTH;
+            editSize.height = kVIDEOWIDTH * tmpsize.height/tmpsize.width;
+        }else{
+            CGSize tmpsize = editSize;
+            editSize.height  = kVIDEOWIDTH;
+            editSize.width = kVIDEOWIDTH * tmpsize.width/tmpsize.height;
+        }
+    }
+    return editSize;
+}
++ (CGSize)getEditOrginSizeWithFile:(VEMediaInfo *)file {
+    CGSize editSize;
+    if (file.fileType == kFILEIMAGE || file.fileType == kFILETEXT) {
+        UIImage *image = [VEHelp getFullScreenImageWithUrl:file.contentURL];
+        if(file.isHorizontalMirror && file.isVerticalMirror){
+            float rotate = 0;
+            if(file.rotate == 0){
+                rotate = -180;
+            }else if(file.rotate == -90){
+                rotate = -270;
+            }else if(file.rotate == -180){
+                rotate = -0;
+            }else if(file.rotate == -270){
+                rotate = -90;
+            }
+            image = [VEHelp imageRotatedByDegrees:image rotation:rotate];
+        }else{
+            image = [VEHelp imageRotatedByDegrees:image rotation:file.rotate];
+        }
+        editSize = CGSizeMake(image.size.width, image.size.height);
+        image = nil;
+    }else {
+        if(file.isReverse){
+            editSize = [VEHelp trackSize:file.reverseVideoURL rotate:file.rotate crop:CGRectMake(0, 0, 1, 1)];
+        }else{
+            editSize = [VEHelp trackSize:file.contentURL rotate:file.rotate crop:CGRectMake(0, 0, 1, 1)];
+        }
+    }
+    if (editSize.width > kVIDEOWIDTH || editSize.height > kVIDEOWIDTH) {
+        if(editSize.width > editSize.height){
+            CGSize tmpsize = editSize;
+            editSize.width  = kVIDEOWIDTH;
+            editSize.height = kVIDEOWIDTH * tmpsize.height/tmpsize.width;
+        }else{
+            CGSize tmpsize = editSize;
+            editSize.height  = kVIDEOWIDTH;
+            editSize.width = kVIDEOWIDTH * tmpsize.width/tmpsize.height;
+        }
+    }
+    return editSize;
+}
++ (CGSize)trackSize:(NSURL *)contentURL rotate:(float)rotate crop:(CGRect)crop{
+    CGSize size = CGSizeZero;
+    AVURLAsset *asset = [AVURLAsset assetWithURL:contentURL];
+    
+    NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+    if([tracks count] > 0) {
+        AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
+        size = CGSizeApplyAffineTransform(videoTrack.naturalSize, videoTrack.preferredTransform);
+        if (CGSizeEqualToSize(size, CGSizeZero) || size.width == 0.0 || size.height == 0.0) {
+            NSArray * formatDescriptions = [videoTrack formatDescriptions];
+            CMFormatDescriptionRef formatDescription = NULL;
+            if ([formatDescriptions count] > 0) {
+                formatDescription = (__bridge CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
+                if (formatDescription) {
+                    size = CMVideoFormatDescriptionGetPresentationDimensions(formatDescription, false, false);
+                }
+            }
+        }
+    }
+    size = CGSizeMake(fabs(size.width), fabs(size.height));
+    
+    CGSize newSize;
+    
+    BOOL isportrait = [self isVideoPortrait:asset];
+    
+    if(size.height == size.width){
+        
+        newSize        = size;
+        
+    }else if(isportrait){
+        newSize = size;
+        
+        if(size.height < size.width){
+            //newSize  = CGSizeMake(size.height, size.width);
+            newSize  = CGSizeMake(MIN(size.width, size.height), MAX(size.width, size.height));
+        }
+        if(rotate == -90 || rotate == -270){
+            newSize  = CGSizeMake(MAX(size.width, size.height), MIN(size.width, size.height));
+        }
+    }else{
+        if(rotate == -90 || rotate == -270){
+            //newSize  = CGSizeMake(size.height, size.width);
+            newSize  = CGSizeMake(MIN(size.width, size.height), MAX(size.width, size.height));
+        }else{
+            newSize  = CGSizeMake(MAX(size.width, size.height), MIN(size.width, size.height));
+            
+        }
+    }
+    if(!isnan(crop.size.width) && !isnan(crop.size.height)){
+        newSize = CGSizeMake(newSize.width * crop.size.width, newSize.height * crop.size.height);
+    }
+    if(newSize.width>newSize.height){
+        CGSize tmpsize = newSize;
+        newSize.width  = kVIDEOWIDTH;
+        newSize.height = kVIDEOWIDTH * tmpsize.height/tmpsize.width;
+    }else{
+        CGSize tmpsize = newSize;
+        newSize.height  = kVIDEOWIDTH;
+        newSize.width = kVIDEOWIDTH * tmpsize.width/tmpsize.height;
+    }
+    
+    return newSize;
+}
+/**图片旋转
+ */
++ (UIImage *)imageRotatedByDegrees:(UIImage *)cImage rotation:(float)rotation
+{
+        CGSize size = CGSizeZero;
+    if(cImage.size.width>cImage.size.height){
+        if(rotation == 90 || rotation == -90 || rotation == 270 || rotation == -270){
+            size = CGSizeMake(MIN(cImage.size.width, cImage.size.height), MAX(cImage.size.width, cImage.size.height));
+        }else{
+            size = CGSizeMake(MAX(cImage.size.width, cImage.size.height), MIN(cImage.size.width, cImage.size.height));
+        }
+    }else{
+        if(rotation == 90 || rotation == -90 || rotation == 270 || rotation == -270){
+            size = CGSizeMake(MAX(cImage.size.width, cImage.size.height), MIN(cImage.size.width, cImage.size.height));
+        }else{
+            size = CGSizeMake(MIN(cImage.size.width, cImage.size.height), MAX(cImage.size.width, cImage.size.height));
+        }
+    }
+    
+//    UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,size.width,size.height)];
+//    CGAffineTransform t = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(rotation));
+//    rotatedViewBox.transform = t;
+    CGSize rotatedSize = size;//rotatedViewBox.frame.size;
+    UIGraphicsBeginImageContext(rotatedSize);
+    CGContextRef bitmap = UIGraphicsGetCurrentContext();
+    CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
+    CGContextRotateCTM(bitmap, DEGREES_TO_RADIANS(-rotation));
+    CGContextScaleCTM(bitmap, 1.0, -1.0);
+    //CGContextDrawImage(bitmap, CGRectMake(-size.width / 2, -size.height / 2, size.width, size.height), [cImage CGImage]);
+    CGContextDrawImage(bitmap, CGRectMake(-cImage.size.width / 2, -cImage.size.height / 2, cImage.size.width, cImage.size.height), [cImage CGImage]);
+    
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+    
+}
+
+/**判断视频是横屏还是竖屏
+ */
++ (BOOL) isVideoPortrait:(AVURLAsset *)asset
+{
+    BOOL isPortrait = NO;
+    NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+    if([tracks    count] > 0) {
+        AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
+        CGSize size = CGSizeApplyAffineTransform(videoTrack.naturalSize, videoTrack.preferredTransform);
+        if (CGSizeEqualToSize(size, CGSizeZero) || size.width == 0.0 || size.height == 0.0) {
+            NSArray * formatDescriptions = [videoTrack formatDescriptions];
+            CMFormatDescriptionRef formatDescription = NULL;
+            if ([formatDescriptions count] > 0) {
+                formatDescription = (__bridge CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
+                if (formatDescription) {
+                    size = CMVideoFormatDescriptionGetPresentationDimensions(formatDescription, false, false);
+                }
+            }
+        }
+        CGAffineTransform t = videoTrack.preferredTransform;
+        if(fabs(size.height)>fabs(size.width)){
+            return YES;
+        }
+        
+        //        CGAffineTransform t = videoTrack.preferredTransform;
+        // Portrait
+        if(t.a == 0 && t.b == 1.0 && t.c == -1.0 && t.d == 0)
+        {
+            isPortrait = YES;
+        }
+        // PortraitUpsideDown
+        if(t.a == 0 && t.b == -1.0 && t.c == 1.0 && t.d == 0)  {
+            
+            isPortrait = YES;
+        }
+        // LandscapeRight
+        if(t.a == 1.0 && t.b == 0 && t.c == 0 && t.d == 1.0)
+        {
+            isPortrait = NO;
+        }
+        // LandscapeLeft
+        if(t.a == -1.0 && t.b == 0 && t.c == 0 && t.d == -1.0)
+        {
+            isPortrait = NO;
+        }
+        if((size.width<0 || size.height<0)){
+            return NO;
+        }
+    }
+    return isPortrait;
+}
 @end
