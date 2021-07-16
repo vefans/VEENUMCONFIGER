@@ -83,6 +83,22 @@ typedef NS_ENUM(NSInteger,VEWatermarkPosition){
  */
 @property (nonatomic,assign)VEWatermarkPosition watermarkPosition;
 
+/** 是否可以导出模板，(default false)
+ */
+@property (nonatomic,assign) bool enableExportTemplate;
+
+/** 上传模板网络资源地址
+ */
+@property (nonatomic,copy,nullable)NSString *uploadTemplatePath;
+
+/** 新建模板分类地址
+ */
+@property (nonatomic,copy,nullable)NSString *createTemplateCategoryPath;
+
+/** 导出模板中分片段，(default false)
+ */
+@property (nonatomic,assign) bool enableTemplateFragment;
+
 
 
 /** 是否禁用片尾，(default true)

@@ -300,9 +300,6 @@ NS_ASSUME_NONNULL_BEGIN
 /** 模板网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *templatePath;
-/** 上传模板网络资源地址
- */
-@property (nonatomic,copy,nullable)NSString    *uploadTemplatePath;
 
 /** MV (default false)
  */

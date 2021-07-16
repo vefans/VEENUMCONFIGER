@@ -73,6 +73,10 @@
     copy.watermarkDisabled  = _watermarkDisabled;
     copy.watermarkImage     = _watermarkImage;
     copy.watermarkPosition  = _watermarkPosition;
+    copy.endPicDisabled     = _endPicDisabled;
+    copy.waterDisabled      = _waterDisabled;
+    copy.waterImage         = _waterImage;
+    copy.waterPosition      = _waterPosition;
     return copy;
 }
 
@@ -92,15 +96,41 @@
     copy.watermarkDisabled  = _watermarkDisabled;
     copy.watermarkImage     = _watermarkImage;
     copy.watermarkPosition  = _watermarkPosition;
+    copy.endPicDisabled     = _endPicDisabled;
+    copy.waterDisabled      = _waterDisabled;
+    copy.waterImage         = _waterImage;
+    copy.waterPosition      = _waterPosition;
     return copy;
     
 }
 
+- (void)setEndingMediaDisabled:(bool)endingMediaDisabled {
+    _endPicDisabled = endingMediaDisabled;
+    _endingMediaDisabled = endingMediaDisabled;
+}
+
+- (void)setWatermarkDisabled:(bool)watermarkDisabled {
+    _watermarkDisabled = watermarkDisabled;
+    _waterDisabled = watermarkDisabled;
+}
+
+- (void)setWatermarkImage:(UIImage *)watermarkImage {
+    _watermarkImage = watermarkImage;
+    _waterImage = watermarkImage;
+}
+
+- (void)setWatermarkPosition:(VEWatermarkPosition)watermarkPosition {
+    _watermarkPosition = watermarkPosition;
+    _waterPosition = watermarkPosition;
+}
+
 - (void)setEndPicDisabled:(bool)endPicDisabled {
+    _endPicDisabled = endPicDisabled;
     _endingMediaDisabled = endPicDisabled;
 }
 
 - (void)setWaterDisabled:(bool)waterDisabled {
+    _waterDisabled = waterDisabled;
     _watermarkDisabled = waterDisabled;
 }
 
@@ -111,6 +141,7 @@
     }
 }
 - (void)setWaterImage:(UIImage *)waterImage{
+    _waterImage = waterImage;
     _watermarkImage = waterImage;
     if(waterImage){
         _waterText  = nil;
@@ -118,6 +149,7 @@
 }
 
 - (void)setWaterPosition:(VEWatermarkPosition)waterPosition {
+    _waterPosition = waterPosition;
     _watermarkPosition = waterPosition;
 }
 
