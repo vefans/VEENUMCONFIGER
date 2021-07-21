@@ -8,7 +8,7 @@
 #import <sys/mount.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
-#include <CommonCrypto/CommonHMAC.h>>
+#import <CommonCrypto/CommonHMAC.h>
 #import <CoreText/CoreText.h>
 #import <VEENUMCONFIGER/VEHelp.h>
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>

@@ -14,6 +14,8 @@ Pod::Spec.new do |spec|
   spec.dependency "SDWebImageWebPCoder", '0.2.3'
   spec.dependency "Reachability"
   spec.dependency "LibVECore"
+  spec.dependency "ZipArchive"
+  spec.dependency "ATMHud"
 
   spec.xcconfig = {'CONFIGURATION_BUILD_DIR' => '${PODS_CONFIGURATION_BUILD_DIR}'}
   spec.pod_target_xcconfig ={ 'ALWAYS_SEARCH_USER_PATHS'=>'YES', 'ENABLE_BITCODE' => 'NO' }
