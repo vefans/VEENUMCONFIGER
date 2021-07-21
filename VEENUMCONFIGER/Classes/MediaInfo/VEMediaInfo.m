@@ -44,6 +44,8 @@
 
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
+    copy.sceneIdentifier = _sceneIdentifier;
+    copy.groupId = _groupId;
     copy.fxEffect = _fxEffect;
     copy.fileSoundEffect = _fileSoundEffect;
     copy.beautyBigEyeIntensity = _beautyBigEyeIntensity;
@@ -54,7 +56,6 @@
     copy.cutoutAlphaUpper = _cutoutAlphaUpper;
     copy.cutoutEdgeSize = _cutoutEdgeSize;
     copy.filterId = _filterId;
-    copy.fileSoundEffectPitch = _fileSoundEffectPitch;
     copy.fxEffectTimeRange = _fxEffectTimeRange;
     copy.filterPath = _filterPath;
     copy.voiceFXIndex = _voiceFXIndex;
@@ -168,7 +169,7 @@
     
     if (_mask) {
         copy.maskName = _maskName;
-        MaskObject *mask = [VEHelp getMaskWithName:_maskName];
+//        MaskObject *mask = [VEHelp getMaskWithName:_maskName];
         copy.maskThickColorIndex =_maskThickColorIndex;
         copy.maskType = _maskType;
     }
@@ -200,6 +201,19 @@
                     NSValue * value = [obj1 copy];
                     [objArray addObject:value];
                 }
+                else if( [obj1 isKindOfClass:[NSMutableArray class]] )
+                {
+                    NSMutableArray *adjustArray = [NSMutableArray array];
+                    for (id value1 in obj1) {
+                        if ([value1 isKindOfClass:[NSNumber class]]) {
+                            [adjustArray addObject:value1];
+                        }
+                        else if ([value1 isKindOfClass:[NSValue class]]) {
+                            [adjustArray addObject:NSStringFromCGPoint(((NSValue *)value1).CGPointValue)];
+                        }
+                    }
+                    [objArray addObject:adjustArray];
+                }
             }];
             [copy.keyFrameRectRotateArray addObject:objArray];
         }];
@@ -210,12 +224,13 @@
 
 - (id)copyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
+    copy.sceneIdentifier = _sceneIdentifier;
+    copy.groupId = _groupId;
     copy.fxEffect = _fxEffect;
     copy.fxFileId = _fxFileId;
     copy.isMove = _isMove;
     copy.transition = _transition;
     copy.fileSoundEffect = _fileSoundEffect;
-    copy.fileSoundEffectPitch = _fileSoundEffectPitch;
     copy.beautyBigEyeIntensity = _beautyBigEyeIntensity;
     copy.beautyThinFaceIntensity = _beautyThinFaceIntensity;
     copy.voiceFXIndex = _voiceFXIndex;
@@ -309,7 +324,7 @@
     
     if (_mask) {
         copy.maskName = _maskName;
-        MaskObject *mask = [VEHelp getMaskWithName:_maskName];
+//        MaskObject *mask = [VEHelp getMaskWithName:_maskName];
         copy.maskThickColorIndex =_maskThickColorIndex;
         copy.maskType = _maskType;
     }
@@ -340,6 +355,19 @@
                 {
                     NSValue * value = [obj1 copy];
                     [objArray addObject:value];
+                }
+                else if( [obj1 isKindOfClass:[NSMutableArray class]] )
+                {
+                    NSMutableArray *adjustArray = [NSMutableArray array];
+                    for (id value1 in obj1) {
+                        if ([value1 isKindOfClass:[NSNumber class]]) {
+                            [adjustArray addObject:value1];
+                        }
+                        else if ([value1 isKindOfClass:[NSValue class]]) {
+                            [adjustArray addObject:NSStringFromCGPoint(((NSValue *)value1).CGPointValue)];
+                        }
+                    }
+                    [objArray addObject:adjustArray];
                 }
             }];
             [copy.keyFrameRectRotateArray addObject:objArray];
@@ -372,7 +400,8 @@
             }
         }else {
             _fileType = kFILEVIDEO;
-            self.videoTimeRange = asset.timeRange;
+            self.videoTrimTimeRange = asset.timeRange;
+            self.videoTimeRange = _videoActualTimeRange;
             _reverseVideoTimeRange = _videoTimeRange;
         }
         if (asset.filterUrl) {
@@ -394,6 +423,7 @@
         if (asset.mask) {
             _maskName = asset.mask.folderPath.lastPathComponent;
             MaskObject *mask = [VEHelp getMaskWithName:_maskName];
+            _mask.name = mask.name;
             _mask.frag = mask.frag;
             _mask.vert = mask.vert;
             _mask.maskImagePath = mask.maskImagePath;
@@ -430,17 +460,32 @@
             _animationOutTimeRange = asset.customOutAnimate.timeRange;
             _customOutAnimate = animate;
         }
-        [asset.customFilterArray enumerateObjectsUsingBlock:^(CustomFilter * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            CustomFilter *filter = [VEHelp getCustomFilterWithFolderPath:obj.folderPath currentFrameImagePath:asset.url.path];
-            filter.timeRange = obj.timeRange;
-//                filter.cycleDuration = obj.cycleDuration;
-            filter.networkCategoryId = obj.networkCategoryId;
-            filter.networkResourceId = obj.networkResourceId;
-            _fxEffect = filter;
-            _fxEffectTimeRange = filter.timeRange;
+        [asset.customMultipleFilterArray enumerateObjectsUsingBlock:^(CustomMultipleFilter * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            CustomMultipleFilter * customMultipleFilter = [VEHelp getCustomMultipleFilerWithFolderPath:obj.folderPath currentFrameImagePath:asset.url.path];
+            customMultipleFilter.timeRange = obj.timeRange;
+            customMultipleFilter.networkCategoryId = obj.networkCategoryId;
+            customMultipleFilter.networkResourceId = obj.networkResourceId;
+            customMultipleFilter.overlayType = obj.overlayType;
+            _fxEffect = customMultipleFilter;
+            _fxEffectTimeRange = customMultipleFilter.timeRange;
         }];
+        if( asset.customMultipleFilterArray == nil )
+        {
+            asset.customMultipleFilterArray = [NSMutableArray new];
+        }
+        [asset.customFilterArray enumerateObjectsUsingBlock:^(CustomFilter * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//            CustomFilter *filter = [VEHelp getCustomFilterWithFolderPath:obj.folderPath currentFrameImagePath:asset.url.path];
+            CustomMultipleFilter * customMultipleFilter = [VEHelp getCustomMultipleFilerWithFolderPath:obj.folderPath currentFrameImagePath:asset.url.path];
+            customMultipleFilter.overlayType = obj.overlayType;
+            customMultipleFilter.timeRange = obj.timeRange;
+            customMultipleFilter.networkCategoryId = obj.networkCategoryId;
+            customMultipleFilter.networkResourceId = obj.networkResourceId;
+            _fxEffect = customMultipleFilter;
+            _fxEffectTimeRange = customMultipleFilter.timeRange;
+            [asset.customMultipleFilterArray addObject:_fxEffect];
+        }];
+        asset.customFilterArray = nil;
     }
-    
     return self;
 }
 
@@ -505,7 +550,7 @@
 // 你可以在这里对数据进行校验，如果校验不通过，可以返回 NO，则该 Model 会被忽略。
 // 你也可以在这里做一些自动转换不能完成的工作。
 - (BOOL)modelCustomTransformFromDictionary:(NSDictionary *)dic {
-    _contentURL = [VEHelp getFileURLFromAbsolutePath:_contentURL.absoluteString];
+    self.contentURL = [VEHelp getFileURLFromAbsolutePath:_contentURL.absoluteString];
     _coverURL = [VEHelp getFileURLFromAbsolutePath:_coverURL.absoluteString];
     if(_filtImagePatch )
         _filtImagePatch = [VEHelp getFileURLFromAbsolutePath_str:_filtImagePatch];
@@ -519,6 +564,18 @@
             for (id value in arr) {
                 if ([value isKindOfClass:[NSString class]]) {
                     [rotateArray addObject:[NSValue valueWithCGPoint:CGPointFromString((NSString *)value)]];
+                }
+                else if( [value isKindOfClass:[NSMutableArray class]] )
+                {
+                    NSMutableArray *adjustArray = [NSMutableArray array];
+                    for (id value1 in value) {
+                        if ([value1 isKindOfClass:[NSString class]]) {
+                            [adjustArray addObject:[NSValue valueWithCGPoint:CGPointFromString((NSString *)value1)]];
+                        }else {
+                            [adjustArray addObject:value1];
+                        }
+                    }
+                    [rotateArray addObject:adjustArray];
                 }else {
                     [rotateArray addObject:value];
                 }
@@ -526,9 +583,71 @@
             [_keyFrameRectRotateArray addObject:rotateArray];
         }
     }
+    
+    if( _customAnimate )
+    {
+        if( _customAnimate.folderPath )
+            _customAnimate.folderPath = [VEHelp getFileURLFromAbsolutePath_str:_customAnimate.folderPath];
+        
+        CustomFilter * filter = [VEHelp getAnimateCustomFilter: _customAnimate.folderPath];
+        filter.networkCategoryId = _customAnimate.networkCategoryId;
+        filter.networkResourceId = _customAnimate.networkResourceId;
+        filter.timeRange = _customAnimate.timeRange;
+        filter.animateType = _customAnimate.animateType;
+        if (filter.animateType == CustomAnimationTypeOut) {
+            filter.cycleDuration = _customAnimate.cycleDuration;
+        }
+        _customAnimate = filter;
+        _animationTimeRange = filter.timeRange;
+    }
+    
+    if( _customOutAnimate )
+    {
+        if( _customOutAnimate.folderPath )
+            _customOutAnimate.folderPath = [VEHelp getFileURLFromAbsolutePath_str:_customOutAnimate.folderPath];
+        
+        CustomFilter * filter = [VEHelp getAnimateCustomFilter: _customOutAnimate.folderPath];
+        filter.networkCategoryId = _customOutAnimate.networkCategoryId;
+        filter.networkResourceId = _customOutAnimate.networkResourceId;
+        filter.timeRange = _customOutAnimate.timeRange;
+        filter.animateType = _customOutAnimate.animateType;
+        _customOutAnimate = filter;
+        _animationOutTimeRange = filter.timeRange;
+    }
+    
+    if( _transition )
+    {
+        if( _transition.maskURL )
+            _transition.maskURL = [VEHelp getFileURLFromAbsolutePath: _transition.maskURL.absoluteString];
+        if( _transitionMask )
+            _transitionMask =  [VEHelp getFileURLFromAbsolutePath:_transitionMask.absoluteString];
+        if (_transition.type == TransitionTypeCustom && [[NSFileManager defaultManager] fileExistsAtPath:_transition.maskURL.path]) {
+            _transition.customTransition = [VEHelp getCustomTransitionWithJsonPath:_transition.maskURL.path];
+        }
+    }
+    
     if (_mask) {
         _mask.maskImagePath = [VEHelp getFileURLFromAbsolutePath_str:_mask.maskImagePath];
         _mask.folderPath = [VEHelp getFileURLFromAbsolutePath_str:_mask.folderPath];
+        
+        NSString * path = _mask.maskImagePath;
+        if( path == nil )
+        {
+            path = _mask.folderPath;
+        }
+        
+        NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+        NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
+        NSMutableDictionary *configDic = [VEHelp objectForData:jsonData];
+        jsonData = nil;
+        NSString *fragPath = [path stringByAppendingPathComponent:configDic[@"fragShader"]];
+        NSString *vertPath = [path stringByAppendingPathComponent:configDic[@"vertShader"]];
+        NSError * error = nil;
+        
+        _mask.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
+        _mask.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
+        _mask.name = configDic[@"name"];
+        
         if (_mask.edgeColor) {
             _maskThickColorIndex = [VEHelp getColorIndex:_mask.edgeColor];
         }
@@ -655,15 +774,17 @@
     //特效
     if( _fxEffect )
     {
-        media.customFilterArray = [NSMutableArray new];
-        [media.customFilterArray addObject:_fxEffect];
+        media.customMultipleFilterArray = [NSMutableArray new];
+        [media.customMultipleFilterArray addObject:_fxEffect];
+//        media.customFilterArray = [NSMutableArray new];
+//        [media.customFilterArray addObject:_fxEffect];
     }
     
     //变声
     if( _fileSoundEffect > 0 )
     {
         media.audioFilterType = _fileSoundEffect;
-        float defaultPitch = _fileSoundEffectPitch;
+        float defaultPitch = _pitch;
         if (media.audioFilterType == AudioFilterTypeBoy) {
             defaultPitch = 0.8;
         }else if (media.audioFilterType == AudioFilterTypeGirl) {

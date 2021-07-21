@@ -112,6 +112,15 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_Canvas            =  33,  //画布
     VEAdvanceEditType_Split            =  34,  //分割
     VEAdvanceEditType_SubtitleToAudio = 35,   //文字转语音
+    //PESDK
+    VEAdvanceEditType_Beauty        = 36,   //美颜
+    VEAdvanceEditType_Smear        = 37,   //涂抹
+    VEAdvanceEditType_Blurry        = 38,   //模糊
+    VEAdvanceEditType_Aperture        = 39,   //光圈
+    VEAdvanceEditType_HDR        = 40,   //HDR
+    VEAdvanceEditType_Holy        = 41,   //圣光
+    VEAdvanceEditType_Spirit        = 42,   //暗角
+    VEAdvanceEditType_Sharpen   = 43,   //锐化
 };
 
 /*
@@ -244,6 +253,7 @@ typedef NS_ENUM(NSInteger, VEDewatermarkType){
 typedef NS_ENUM(NSInteger, VEVideoCropType){
     VEVideoCropType_Crop          = 1,    //裁剪
     VEVideoCropType_Dewatermark        = 2,    //去水印
+    VEVideoCropType_FixedCrop = 3,         //固定比例裁剪
 };
 
 typedef NS_ENUM(NSInteger, VESubtitleContentType) {
@@ -460,6 +470,7 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 
 #define kAPITemplateFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VENetworkAPITemplate/"]
 #define kAPITemplatePlistPath [kAPITemplateFolder stringByAppendingPathComponent:@"veNetworkApiTemplates.plist"]
+#define kFragmentAPITemplatePlistPath [kAPITemplateFolder stringByAppendingPathComponent:@"veNetworkFragmentApiTemplates.plist"]//test
 
 #define kSpecialEffectFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SpecialEffect"]
 #define kNewSpecialEffectPlistPath [kSpecialEffectFolder stringByAppendingPathComponent:@"SpecialEffectList_New.plist"]
@@ -481,7 +492,6 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 
 #define kAEJsonMVEffectPath [NSTemporaryDirectory() stringByAppendingString:@"AEJsonAnimation/"]
 #define kAEPreProgressFolder [kAEJsonMVEffectPath stringByAppendingPathComponent:@"AEPreProgress"]
-#define kAEJsonSubtitsPath [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SubtitleAnimations/Effects"]
 
 #define kVEDraftDirectory [kVEDirectory stringByAppendingPathComponent:@"VEDraft"]
 #define kVEDraftListPath [kVEDraftDirectory stringByAppendingPathComponent:@"veDraft.plist"]
@@ -513,6 +523,7 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 
 #define kFilterFolder [kVEDirectory stringByAppendingPathComponent:@"filters"]
 #define kFilterCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"filterCategory.plist"]
+#define kNewFilterPlistPath [kFilterFolder stringByAppendingPathComponent:@"filterTypeList.plist"]
 
 #define kTemplateRecordFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/TemplateRecord"]
 #define kTemplateRecordPlist [kTemplateRecordFolder stringByAppendingPathComponent:@"TemplateRecord.plist"]

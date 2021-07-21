@@ -6,9 +6,10 @@
 //  Copyright © 2015年 iOS VESDK Team. All rights reserved.
 //
 
+#import <VEENUMCONFIGER/VEDefines.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <VEENUMCONFIGER/VEDefines.h>
+
 
 @interface VECustomTextPhotoFile : NSObject
 

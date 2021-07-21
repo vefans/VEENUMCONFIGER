@@ -29,7 +29,6 @@
         self.layer.cornerRadius = 4;
         self.layer.masksToBounds = YES;
         
-        
     }
     return self;
 }
@@ -44,26 +43,42 @@
 #pragma mark - 2.Custom Methods
 
 -(void)setCellForoCropTypeModel:(VECropTypeModel*)cropTypeModel{
+    float shaow = -5.0/90.0*cropTypeModel.height;
     if (cropTypeModel.isSelect) {
         self.layer.borderColor = Main_Color.CGColor;
         self.layer.borderWidth = 2;
-        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12], NSForegroundColorAttributeName: Main_Color, NSStrokeWidthAttributeName:@-5,NSStrokeColorAttributeName:Main_Color
-        }];
-        self.titleLabel.attributedText = string;
+        if( [cropTypeModel.title isKindOfClass:[NSString class]] )
+        {
+            
+            NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12/90.0*cropTypeModel.height], NSForegroundColorAttributeName: Main_Color, NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:Main_Color
+            }];
+            self.titleLabel.attributedText = string;
+        }
+        else  if( [cropTypeModel.title isKindOfClass:[NSMutableAttributedString class]] )
+        {
+            self.titleLabel.attributedText = cropTypeModel.selecctTitle;
+        }
         self.iconImageView.image = cropTypeModel.iconSelecct;
+        self.iconImageView.contentMode = UIViewContentModeScaleAspectFit;
         self.iconImageView.tintColor = Main_Color;
     }else{
         self.layer.borderColor = UIColorFromRGB(0x808080).CGColor;
         self.layer.borderWidth = 0;
-        
-        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12], NSForegroundColorAttributeName: UIColorFromRGB(0x808080), NSStrokeWidthAttributeName:@-5,NSStrokeColorAttributeName:UIColorFromRGB(0x808080)
-        }];
-        self.titleLabel.attributedText = string;
+        if( [cropTypeModel.title isKindOfClass:[NSString class]] )
+        {
+            NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12/90.0*cropTypeModel.height], NSForegroundColorAttributeName: UIColorFromRGB(0x808080), NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:UIColorFromRGB(0x808080)
+            }];
+            self.titleLabel.attributedText = string;
+        }
+        else if( [cropTypeModel.title isKindOfClass:[NSMutableAttributedString class]] )
+            self.titleLabel.attributedText = cropTypeModel.title;
+        self.iconImageView.contentMode = UIViewContentModeScaleAspectFit;
         self.iconImageView.image = cropTypeModel.iconNormal;
     }
-    
-    
-    
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    _height = cropTypeModel.height;
+    [self.iconImageView setFrame:CGRectMake((self.frame.size.width - 24.0/90.0*cropTypeModel.height)/2, self.frame.size.height/2 -24.0/90.0*cropTypeModel.height, 24.0/90.0*cropTypeModel.height, 24.0/90.0*cropTypeModel.height)];
+    [self.titleLabel setFrame:CGRectMake(0, (self.frame.size.height-30.0/90.0*cropTypeModel.height)/2 +10.0/90.0*cropTypeModel.height, self.frame.size.width, 30.0/90.0*cropTypeModel.height)];
 }
 
 -(void)setIsSelect:(BOOL)isSelect{
@@ -72,8 +87,8 @@
 
 -(void)layoutSubviews{
     
-    [self.iconImageView setFrame:CGRectMake((self.frame.size.width - 24)/2, self.frame.size.height/2 -24+2, 24, 24)];
-    [self.titleLabel setFrame:CGRectMake(0, (self.frame.size.height-30)/2 +12, self.frame.size.width, 30)];
+    [self.iconImageView setFrame:CGRectMake((self.frame.size.width - 24.0/90.0*_height)/2, self.frame.size.height/2 -24.0/90.0*_height+2.0/90.0*_height, 24.0/90.0*_height, 24.0/90.0*_height)];
+    [self.titleLabel setFrame:CGRectMake(0, (self.frame.size.height-30.0/90.0*_height)/2 +12.0/90.0*_height, self.frame.size.width, 30.0/90.0*_height)];
 }
 
 #pragma mark - 3.Set & Get

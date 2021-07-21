@@ -51,28 +51,39 @@
 #pragma mark - 2.Setting View and Style
 
 - (void)setupViews{
-    
     if ( self.videoCropType == VEVideoCropType_Crop) {
         [self addSubview:self.videoView];
         [self addSubview:self.cropView];
     }else if( self.videoCropType == VEVideoCropType_Dewatermark){
         [self addSubview:self.cropView];
     }
+    else if( self.videoCropType == VEVideoCropType_FixedCrop)
+    {
+        [self addSubview:self.videoView];
+        [self addSubview:self.cropView];
+        [self.cropView setEnabled:NO];
+    }
 }
 
 - (VECropView *)cropView{
     if (_cropView == nil) {
-        _cropView = [[VECropView alloc] initWithFrame:CGRectMake(0, 0,self.frame.size.width, self.frame.size.height)withVideoCropType:self.videoCropType];
+        if( self.videoCropType == VEVideoCropType_Dewatermark){
+            _cropView = [[VECropView alloc] initWithFrame:CGRectMake(0, 0,self.frame.size.width, self.frame.size.height)withVideoCropType:self.videoCropType];
+       }
+        else if( (self.videoCropType == VEVideoCropType_Crop)
+                || (  self.videoCropType == VEVideoCropType_FixedCrop  )) {
+            _cropView = [[VECropView alloc] initWithFrame:CGRectMake(0, 0,self.frame.size.width, self.frame.size.height)withVideoCropType:VEVideoCropType_Crop];
+        }
     }
     return _cropView;
 }
 
 -(UIView *)videoView{
     if (_videoView == nil) {
-        if (self.videoCropType == VEVideoCropType_Crop) {
+        if( (self.videoCropType == VEVideoCropType_Crop)
+            || (  self.videoCropType == VEVideoCropType_FixedCrop  )) {
             _videoView = [[UIView alloc] initWithFrame:CGRectMake(3, 3, self.frame.size.width-6, self.frame.size.height-6)];
             _videoRect = _videoView.frame;
-            
         }else{
             _videoView = [[UIView alloc] initWithFrame:CGRectMake(11, 11, self.frame.size.width-22, self.frame.size.height-22)];
         }

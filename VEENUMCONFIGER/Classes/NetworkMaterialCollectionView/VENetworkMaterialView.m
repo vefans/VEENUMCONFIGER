@@ -17,11 +17,11 @@
     NSTimer     *stopTimer;
 }
 
-
-
 @property(nonatomic, assign) BOOL               isVertical_Cell;
 @property(nonatomic, assign) float              cellWidth;
 @property(nonatomic, assign) float              cellHeight;
+
+@property(nonatomic, assign) VENetworkMaterialCollectionViewCell *currentCell;
 
 @end
 
@@ -32,6 +32,7 @@
 {
     if (self = [super initWithFrame:frame]) {
         _CollectionViewCount = count;
+        _currentCellIndex = -1;
         _cellWidth = cellWidth;
         _isVertical_Cell = isVertical_Cell;
         _isNotMove = false;
@@ -52,11 +53,7 @@
     flow_Video.minimumLineSpacing = 0.0;
     flow_Video.minimumInteritemSpacing = 0.0;
     
-    UICollectionView * videoCollectionView =  [[UICollectionView alloc] initWithFrame:
-                                               
-                                               
-                                               
-                                               self.bounds collectionViewLayout:flow_Video];
+    UICollectionView * videoCollectionView =  [[UICollectionView alloc] initWithFrame: self.bounds collectionViewLayout:flow_Video];
     videoCollectionView.backgroundColor = [UIColor clearColor];
     videoCollectionView.tag = 1000000;
     videoCollectionView.dataSource = self;
@@ -69,134 +66,21 @@
     _collectionView.showsVerticalScrollIndicator = NO;
     [self addSubview:_collectionView];
     
-    UIPanGestureRecognizer* moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
-    [_collectionView addGestureRecognizer:moveGesture];
+    if( _isVertical_Cell  )
+    {
+        UIPanGestureRecognizer* moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
+        [_collectionView addGestureRecognizer:moveGesture];
+    }
+    else{
+        self.collectionView.scrollEnabled = NO;
+    }
 }
-//#pragma mark - UIScrollViewDelegate (时间轴的更新操作)
-////开始滑动
-//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
-//    _collectionOffsetPointX = scrollView.contentOffset.x;
-//}
-///**滚动停止
-// */
-//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-//{
-//    float x =  scrollView.contentOffset.x ;
-//
-//    float leftX = x - _collectionOffsetPointX;
-//
-//    BOOL isLeft = true;
-//
-//    if( leftX == 0 )
-//    {
-//        [_collectionView setContentOffset:CGPointMake(_collectionOffsetPointX, 0) animated:true];
-//        return;
-//    }
-//    else if( leftX > 0 )
-//    {
-//        isLeft = false;
-//    }
-//
-//    if( x > ((_CollectionViewCount-1)*self.frame.size.width) )
-//    {
-//        x = (_CollectionViewCount-1)*self.frame.size.width;
-//    }
-//
-//    _collectionView.contentOffset = CGPointMake(x, 0);
-//
-//    if( _isVertical_Cell )
-//    {
-//        double conffsetX = _collectionView.contentOffset.x;
-//
-//        NSInteger index = (NSInteger)(conffsetX/_collectionView.frame.size.width);
-//        double RemaininX = conffsetX - _collectionView.frame.size.width*index;
-//        if( ((RemaininX >= 10) && !isLeft)
-//           || (RemaininX >= (_collectionView.frame.size.width - 10)) )
-//        {
-//            if( index > (_CollectionViewCount-1) )
-//            {
-//                index = _CollectionViewCount-1;
-//            }
-//            else
-//            {
-//                index++;
-//            }
-//        }
-//
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            if( _delegate && [_delegate respondsToSelector:@selector(CellIndex:atNetwork:)] )
-//            {
-//                [_delegate CellIndex:index atNetwork:self];
-//            }
-//
-//            [_collectionView setContentOffset:CGPointMake(_collectionView.frame.size.width*(index), 0) animated:true];
-//        });
-//    }
-//    else{
-//
-//    }
-//}
-//
-///**手指停止滑动
-// */
-//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-//    float x =  scrollView.contentOffset.x;
-//
-//    [_collectionView setContentOffset:CGPointMake(x, 0) animated:false];
-//
-//    float leftX = x - _collectionOffsetPointX;
-//
-//    BOOL isLeft = true;
-//
-//    if( leftX == 0 )
-//    {
-//        [_collectionView setContentOffset:CGPointMake(_collectionOffsetPointX, 0) animated:true];
-//        return;
-//    }
-//    else if( leftX > 0 )
-//    {
-//        isLeft = false;
-//    }
-//
-//    if( x > ((_CollectionViewCount-1)*self.frame.size.width) )
-//    {
-//        x = (_CollectionViewCount-1)*self.frame.size.width;
-//    }
-//
-//    _collectionView.contentOffset = CGPointMake(x, 0);
-//
-//    if( _isVertical_Cell )
-//    {
-//        double conffsetX = _collectionView.contentOffset.x;
-//
-//        NSInteger index = (NSInteger)(conffsetX/_collectionView.frame.size.width);
-//        double RemaininX = conffsetX - _collectionView.frame.size.width*index;
-//        if( ((RemaininX >= 10) && !isLeft)
-//           || (RemaininX >= (_collectionView.frame.size.width - 10)) )
-//        {
-//            if( index > (_CollectionViewCount-1) )
-//            {
-//                index = _CollectionViewCount-1;
-//            }
-//            else
-//            {
-//                index++;
-//            }
-//        }
-//
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            if( _delegate && [_delegate respondsToSelector:@selector(CellIndex:atNetwork:)] )
-//            {
-//                [_delegate CellIndex:index atNetwork:self];
-//            }
-//
-//            [_collectionView setContentOffset:CGPointMake(_collectionView.frame.size.width*(index), 0) animated:true];
-//        });
-//    }
-//    else{
-//
-//    }
-//}
+
+-(void)setContentSizeZero
+{
+    _collectionView.contentSize = CGSizeMake(0, 0);
+}
+
 // 控制翻页
 - (void) moveGesture:(UIGestureRecognizer *) recognizer{
     
@@ -307,31 +191,79 @@
     VENetworkMaterialCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
     
     cell.delegate = self;
-    cell.isNotMove = _isNotMove;
-    
-    if(!cell){
-        cell = [[VENetworkMaterialCollectionViewCell alloc] initWithFrame:CGRectMake(self.bounds.size.width*indexPath.row, 0, self.bounds.size.width, self.bounds.size.height)];
-    }
-    else
+    if( self.isImageShow )
     {
-        [[SDImageCache sharedImageCache] clearMemory];
-    }
-    
-    if( _delegate && [_delegate respondsToSelector:@selector(indexCountCell:atNetwork:)] )
-        cell.indexCount = [_delegate indexCountCell:indexPath.row atNetwork:self];
-    cell.index = indexPath.row;
-    
-    if( !cell.collectionView )
-    {
-        [cell initCollectView:_isVertical_Cell atWidth:_cellWidth atHeight:_cellHeight];
+        if(!cell){
+            cell = [[VENetworkMaterialCollectionViewCell alloc] initWithFrame:CGRectMake(self.bounds.size.width*indexPath.row, 0, self.bounds.size.width, self.bounds.size.height)];
+        }
+        
+        if( cell.imageView )
+        {
+            [cell.imageView removeFromSuperview];
+            cell.imageView = nil;
+        }
+        
+        if( _delegate && [_delegate respondsToSelector:@selector(ImageViewCollectCell:atNetwork:)] )
+        {
+            UIView * view  = [_delegate ImageViewCollectCell:indexPath.row atNetwork:self];
+            cell.imageView =  view;
+            [cell addSubview:cell.imageView];
+        }
     }
     else{
-        [cell.collectionView reloadData];
+        if(!cell){
+            cell = [[VENetworkMaterialCollectionViewCell alloc] initWithFrame:CGRectMake(self.bounds.size.width*indexPath.row, 0, self.bounds.size.width, self.bounds.size.height)];
+        }
+        else
+        {
+            [[SDImageCache sharedImageCache] clearMemory];
+        }
+        cell.index = 0;
+        [cell.collectionView setContentOffset:CGPointMake(0, 0)];
+        
+        if( _delegate && [_delegate respondsToSelector:@selector(indexCountCell:atNetwork:)] )
+            cell.indexCount = [_delegate indexCountCell:indexPath.row atNetwork:self];
+        
+        cell.index = indexPath.row;
+        
+        if( cell.collectionView  )
+        {
+            [cell.collectionView removeFromSuperview];
+            cell.collectionView = nil;
+        }
+        //        else{
+        //            if(  _isAddCount != 1 )
+        //               [cell.collectionView setContentOffset:CGPointMake(0, 0)];
+        //            else
+        //              [cell.collectionView setContentOffset:CGPointMake((_cellWidth*cell.indexCount ) -  cell.collectionView.frame.size.width, 0)];
+        //            [cell.collectionView reloadData];
+        //        }
+        
+        [cell initCollectView:_isVertical_Cell atWidth:_cellWidth atHeight:_cellHeight];
+       
+        if( (!_isImageShow) && ( !_isVertical_Cell ) && (!_isNotMove)  )
+        {
+            if( (_currentCellIndex != -1) && (_currentCellIndex == indexPath.row ) )
+            {
+                _currentCell = cell;
+                [self performSelector:@selector(setCellOffset) withObject:nil afterDelay:0.2];
+            }
+        }
+        cell.tag = indexPath.row;
+        
+        cell.isNotMove = _isNotMove;
     }
     
-    cell.tag = indexPath.row;
-    
     return cell;
+}
+
+-(void)setCellOffset
+{
+    if(  _isAddCount != 1 )
+        [_currentCell.collectionView setContentOffset:CGPointMake(0, 0)];
+    else
+        [_currentCell.collectionView setContentOffset:CGPointMake(_currentCell.collectionView.contentSize.width -  _currentCell.collectionView.frame.size.width, 0)];
+    _currentCellIndex = -1;
 }
 
 #pragma mark- 界面组装
@@ -350,9 +282,11 @@
     
     if( _delegate && [_delegate respondsToSelector:@selector(CellIndex:atNetwork:)] )
     {
+        _currentCellIndex = index;
         [_delegate CellIndex:index atNetwork:self];
+        [_collectionView setContentOffset:CGPointMake(_collectionView.frame.size.width*(index), 0) animated:true];
+        [_collectionView reloadData];
     }
-    
 }
 
 - (void)dealloc{

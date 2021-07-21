@@ -52,6 +52,7 @@
         
     UICollectionView * videoCollectionView =  [[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:flow_Video];
     videoCollectionView.backgroundColor = [UIColor clearColor];
+    ((UIScrollView*)videoCollectionView).delegate = self;
     videoCollectionView.tag = 1000000;
     videoCollectionView.dataSource = self;
     videoCollectionView.delegate = self;
@@ -118,107 +119,141 @@
 
 -(void)setIsNotMove:(bool)isNotMove
 {
-    if( !isNotMove )
-    {
-        if( !_isVertical_Cell )
-        {
-            UIPanGestureRecognizer* moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
-            [_collectionView addGestureRecognizer:moveGesture];
-        }
-    }
+//    if( !isNotMove )
+//    {
+//        if( !_isVertical_Cell )
+//        {
+//            UIPanGestureRecognizer* moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
+//            [_collectionView addGestureRecognizer:moveGesture];
+//        }
+//    }
     _isNotMove = isNotMove;
 }
 
 // 控制翻页
-- (void) moveGesture:(UIGestureRecognizer *) recognizer
-{
+//- (void) moveGesture:(UIGestureRecognizer *) recognizer
+//{
+//    if( _isNotMove )
+//        return;
+//
+//    if (recognizer.state == UIGestureRecognizerStateBegan) {
+//        _collectionOffsetPointX = _collectionView.contentOffset.x;
+//        _collectionOffsetX = [recognizer locationInView:self.superview].x;
+//
+//    }else if (recognizer.state == UIGestureRecognizerStateChanged){
+//
+//        float x = _collectionOffsetPointX + (_collectionOffsetX - [recognizer locationInView:self.superview].x );
+//
+//        [_collectionView setContentOffset:CGPointMake(x, 0) animated:false];
+//
+//    }else if (recognizer.state == UIGestureRecognizerStateEnded)
+//    {
+//        float x = _collectionOffsetPointX + (_collectionOffsetX - [recognizer locationInView:self.superview].x );
+//
+//        [_collectionView setContentOffset:CGPointMake(x, 0) animated:false];
+//
+//        float leftX = x - _collectionOffsetPointX;
+//
+//        BOOL isLeft = true;
+//
+//        if( leftX == 0 )
+//        {
+//            [_collectionView setContentOffset:CGPointMake(_collectionOffsetPointX, 0) animated:true];
+//            return;
+//        }
+//        else if( leftX > 0 )
+//        {
+//            isLeft = false;
+//        }
+//
+//        _collectionView.contentOffset = CGPointMake(x, 0);
+//
+//        VENetworkMaterialView * network = (VENetworkMaterialView*)_delegate;
+//
+//        double conffsetX = _collectionView.contentOffset.x;
+//
+//        NSInteger index = self.tag;
+//        if( conffsetX > (_collectionView.contentSize.width - _collectionView.frame.size.width + _collectionView.frame.size.height/2.0) )
+//        {
+//            index++;
+//
+//            if( index > (network.CollectionViewCount-1) )
+//            {
+//                index = network.CollectionViewCount-1;
+//
+//            }
+//        }
+//        else if( conffsetX < (-(_collectionView.frame.size.height/2.0)) )
+//        {
+//            index--;
+//            if( index < 0 )
+//            {
+//                index = 0;
+//            }
+//        }
+//
+//        if( index != self.tag )
+//        {
+//            __weak typeof(self) myself = self;
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//
+//                myself.collectionView.contentOffset = CGPointMake(0, 0);
+//
+//                if( myself.delegate && [myself.delegate respondsToSelector:@selector(CellIndex:)] )
+//                {
+//                    [myself.delegate CellIndex:index ];
+//                }
+//                [network.collectionView setContentOffset:CGPointMake(network.collectionView.frame.size.width*(index), 0) animated:false];
+//            });
+//        }
+//        else{
+//            if( conffsetX > _collectionView.contentSize.width - _collectionView.frame.size.width )
+//            {
+//                _collectionView.contentOffset = CGPointMake(_collectionView.contentSize.width - _collectionView.frame.size.width, 0);
+//            }
+//            else if( conffsetX < 0 ){
+//                _collectionView.contentOffset = CGPointMake(0, 0);
+//            }
+//        }
+//    }
+//}
+
+/**手指停止滑动
+ */
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    
     if( _isNotMove )
         return;
     
-    if (recognizer.state == UIGestureRecognizerStateBegan) {
-        _collectionOffsetPointX = _collectionView.contentOffset.x;
-        _collectionOffsetX = [recognizer locationInView:self.superview].x;
-        
-    }else if (recognizer.state == UIGestureRecognizerStateChanged){
-        
-        float x = _collectionOffsetPointX + (_collectionOffsetX - [recognizer locationInView:self.superview].x );
-        
-        [_collectionView setContentOffset:CGPointMake(x, 0) animated:false];
-        
-    }else if (recognizer.state == UIGestureRecognizerStateEnded)
+    VENetworkMaterialView * network = (VENetworkMaterialView*)_delegate;
+    double conffsetX = scrollView.contentOffset.x;
+    NSInteger index = self.tag;
+    if( conffsetX > (scrollView.contentSize.width - scrollView.frame.size.width + scrollView.frame.size.height/2.0) )
     {
-        float x = _collectionOffsetPointX + (_collectionOffsetX - [recognizer locationInView:self.superview].x );
-        
-        [_collectionView setContentOffset:CGPointMake(x, 0) animated:false];
-        
-        float leftX = x - _collectionOffsetPointX;
-        
-        BOOL isLeft = true;
-        
-        if( leftX == 0 )
-        {
-            [_collectionView setContentOffset:CGPointMake(_collectionOffsetPointX, 0) animated:true];
-            return;
-        }
-        else if( leftX > 0 )
-        {
-            isLeft = false;
-        }
-        
-        _collectionView.contentOffset = CGPointMake(x, 0);
-        
-        VENetworkMaterialView * network = (VENetworkMaterialView*)_delegate;
-        
-        double conffsetX = _collectionView.contentOffset.x;
-        
-        NSInteger index = self.tag;
-        if( conffsetX > (_collectionView.contentSize.width - _collectionView.frame.size.width + 50) )
-        {
-            index++;
-            
-            if( index > (network.CollectionViewCount-1) )
+        network.isAddCount = 0;
+        index++;
+        if( index > (network.CollectionViewCount-1) )
+            index = network.CollectionViewCount-1;
+    }
+    else if( conffsetX < (-(scrollView.frame.size.height/2.0)) )
+    {
+        network.isAddCount = 1;
+        index--;
+        if( index < 0 )
+            index = 0;
+    }
+    
+    if( index != self.tag )
+    {
+        __weak typeof(self) myself = self;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            myself.collectionView.contentOffset = CGPointMake(0, 0);
+            if( myself.delegate && [myself.delegate respondsToSelector:@selector(CellIndex:)] )
             {
-                index = network.CollectionViewCount-1;
-                
+                [myself.delegate CellIndex:index ];
             }
-        }
-        else if( conffsetX < (-50) )
-        {
-            index--;
-            if( index < 0 )
-            {
-                index = 0;
-            }
-        }
-        
-        if( index != self.tag )
-        {
-            __weak typeof(self) myself = self;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                myself.collectionView.contentOffset = CGPointMake(0, 0);
-                
-                if( myself.delegate && [myself.delegate respondsToSelector:@selector(CellIndex:)] )
-                {
-                    [myself.delegate CellIndex:index ];
-                }
-                
-                [network.collectionView setContentOffset:CGPointMake(network.collectionView.frame.size.width*(index), 0) animated:true];
-            });
-        }
-        else{
-            if( conffsetX > _collectionView.contentSize.width - _collectionView.frame.size.width )
-            {
-                _collectionView.contentOffset = CGPointMake(_collectionView.contentSize.width - _collectionView.frame.size.width, 0);
-            }
-            else if( conffsetX < 0 ){
-                _collectionView.contentOffset = CGPointMake(0, 0);
-            }
-        }
+        });
     }
 }
-
-
-
 
 @end

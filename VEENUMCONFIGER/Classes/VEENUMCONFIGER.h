@@ -15,3 +15,9 @@
 #import <VEENUMCONFIGER/VEWindow.h>
 #import <VEENUMCONFIGER/VEConfigManager.h>
 #import <VEENUMCONFIGER/VEMediaInfo.h>
+#import <VEENUMCONFIGER/VEVideoCaptionInfo.h>
+#import <VEENUMCONFIGER/VEColorControlView.h>
+#import <VEENUMCONFIGER/VEDrawView.h>
+
+
+

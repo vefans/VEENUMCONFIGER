@@ -15,6 +15,8 @@
 
 @property (nonatomic, strong) NSString *sceneIdentifier;
 
+@property (nonatomic, assign) int groupId;
+
 /** 标识符
  */
 @property (nonatomic,copy  ) NSString *localIdentifier;
@@ -266,7 +268,7 @@
  */
 @property (nonatomic, assign) int filterId;
 @property (nonatomic, assign) CMTimeRange fxEffectTimeRange;
-@property(nonatomic,strong)CustomFilter *fxEffect;
+@property(nonatomic,strong)CustomMultipleFilter *fxEffect;
 @property (nonatomic, assign) int fxFileId;
 
 /**视频 GIF 文件 缩略图保存路径 (  用于需要视频缩略图展示时加载  )
@@ -296,10 +298,6 @@
 /** 场景变声
  */
 @property (nonatomic, assign) NSInteger fileSoundEffect;
-
-/** 场景变声 自定义音量
- */
-@property (nonatomic, assign) float fileSoundEffectPitch;
 
 /** 场景媒体缩放倍数
  */

@@ -29,7 +29,7 @@
 }
 
 -(void)layoutSubviews{
-    [self.titleLabel setFrame:CGRectMake(0, (self.frame.size.height-40)/2, self.frame.size.width, 40)];
+    [self.titleLabel setFrame:CGRectMake(0, (self.frame.size.height-40.0/90.0*_height)/2, self.frame.size.width, 40.0/90.0*_height)];
 }
 
 
@@ -42,20 +42,34 @@
 #pragma mark - 2.Custom Methods
 
 -(void)setCellForoCropTypeModel:(VECropTypeModel*)cropTypeModel{
+    float shaow = -5.0/90.0*cropTypeModel.height;
     if (cropTypeModel.isSelect) {
         self.layer.borderColor = Main_Color.CGColor;
         self.layer.borderWidth = 2;
-        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12], NSForegroundColorAttributeName: Main_Color, NSStrokeWidthAttributeName:@-5,NSStrokeColorAttributeName:Main_Color
-        }];
-
-        self.titleLabel.attributedText = string;
+        if( [cropTypeModel.title isKindOfClass:[NSString class]] )
+        {
+            NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12/90.0*cropTypeModel.height], NSForegroundColorAttributeName: Main_Color, NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:Main_Color
+            }];
+            self.titleLabel.attributedText = string;
+        }
+        else  if( [cropTypeModel.title isKindOfClass:[NSMutableAttributedString class]] ){
+            self.titleLabel.attributedText = cropTypeModel.selecctTitle;
+        }
     }else{
         self.layer.borderColor = UIColorFromRGB(0x808080).CGColor;
         self.layer.borderWidth = 0;
-        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12], NSForegroundColorAttributeName: UIColorFromRGB(0x808080), NSStrokeWidthAttributeName:@-5,NSStrokeColorAttributeName:UIColorFromRGB(0x808080)
-        }];
-        self.titleLabel.attributedText = string;
+        if( [cropTypeModel.title isKindOfClass:[NSString class]] )
+        {
+            NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12/90.0*cropTypeModel.height], NSForegroundColorAttributeName: UIColorFromRGB(0x808080), NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:UIColorFromRGB(0x808080)
+            }];
+            self.titleLabel.attributedText = string;
+        }
+        else if( [cropTypeModel.title isKindOfClass:[NSMutableAttributedString class]] )
+            self.titleLabel.attributedText = cropTypeModel.title;
+        
     }
+    _height = cropTypeModel.height;
+    [self.titleLabel setFrame:CGRectMake(0, (self.frame.size.height-40.0/90.0*_height)/2, self.frame.size.width, 40.0/90.0*_height)];
 }
 
 

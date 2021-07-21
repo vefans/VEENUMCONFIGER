@@ -199,9 +199,35 @@ NS_ASSUME_NONNULL_BEGIN
 /** 音量 (default true)
  */
 @property (nonatomic,assign) bool enableVolume;
+/** 调色 (default true)
+ */
+@property (nonatomic,assign) bool enableTon;
+
+/** 光圈 (default true)
+ */
+@property (nonatomic,assign) bool enableAperture;
+/** HDR (default true)
+ */
+@property (nonatomic,assign) bool enableHDR;
+/** 圣光 (default true)
+ */
+@property (nonatomic,assign) bool enableHoly;
+/** 暗角 (default true)
+ */
+@property (nonatomic,assign) bool enableSpirit;
+/** 锐化 (default true)
+ */
+@property (nonatomic,assign) bool enableSharpen;
+
 /** 美颜 (default true)
  */
 @property (nonatomic,assign) bool enableBeauty;
+/** 涂抹 (default true)
+ */
+@property (nonatomic,assign) bool enableSmear;
+/** 模糊 (default true)
+ */
+@property (nonatomic,assign) bool enableBlurry;
 /** 动画  (default true)
  */
 @property (nonatomic,assign) bool enableAnimation;
@@ -382,9 +408,6 @@ NS_ASSUME_NONNULL_BEGIN
 /** 退出SDK界面是否需要动画 (default true)
  */
 @property (nonatomic,assign) bool dissmissAnimated;
-/** MVEffect (default false)
- */
-@property (nonatomic,assign) bool enableMVEffect;
 /** 画中画 (default true)
  */
 @property (nonatomic,assign) bool enableCollage;

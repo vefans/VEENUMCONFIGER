@@ -6,6 +6,14 @@
 
 @interface VEHelp : NSObject
 
++ (UIImage *)geScreenShotImageFromVideoURL:(NSURL *)fileURL atTime:(CMTime)time  atSearchDirection:(bool) isForward;
+
++(float)getMediaAssetScale_File:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark;
+
++(NSMutableAttributedString *)getAttrString:(NSString *) string atForegroundColor:(UIColor *) foregroundColor atStrokeColor:(UIColor *) strokeColor atShadowBlurRadius:(float) shadowBlurRadius atShadowOffset:(CGSize) shadowOffset atShadowColor:(UIColor *) shadowColor;
+
++(NSString *)pathForURL_font:(NSString *)name extStr:(NSString *)extStr hasNew:(BOOL)hasNew;
+
 +(id)objectForData:(NSData *)data;
 
 + (BOOL)isLowDevice;
@@ -15,6 +23,7 @@
 /**时间格式化
  */
 + (NSString * ) timeFormat: (float) seconds;
++ (NSString *)timeToSecFormat:(float)time;
 /**时间格式化  hh:mm:ss
  */
 + (NSString *) timeFormatHours: (float) seconds;
@@ -108,6 +117,7 @@
 
 +(NSMutableArray *)getColorArray;
 + (NSInteger)getColorIndex:(UIColor *)color;
++(NSMutableArray *)getGroupColorArray;
 
 /**获取媒体的实际大小
  */
@@ -140,6 +150,10 @@
 + (MaskObject *)getMaskWithName:(NSString *)maskName;
 
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath;
+#pragma mark- 多脚本json加载
++ (CustomMultipleFilter *)getCustomMultipleFilerWithFolderPath:(NSString *) folderPath currentFrameImagePath:(NSString *)currentFrameImagePath;
+
++ (CustomTransition *)getCustomTransitionWithJsonPath:(NSString *)configPath;
 
 + (void)setApngCaptionFrameArrayWithImagePath:(NSString *)path jsonDic:(NSMutableDictionary *)jsonDic;
 + (UIImage *) imageWithColor:(UIColor *)color size:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
@@ -150,8 +164,60 @@
 + (UIImage *)getFullScreenImageWithUrl:(NSURL *)url;
 
 #pragma mark- 居中处理，计算对应的Crop
-+(CGRect)getCropMedia:(CGSize) imageSize atExpSize:(CGSize) expSize;
++ (CGRect)getFixedRatioCropWithMediaSize:(CGSize)mediaSize newSize:(CGSize)newSize;
 
 + (CGSize)getEditOrginSizeWithFile:(VEMediaInfo *)file ;
 + (CGSize)getEditSizeWithFile:(VEMediaInfo *)file;
+
++(UIView *)initReversevideoProgress:(  UIViewController * ) viewController atLabelTag:(int *) labelTag atCancel:(SEL)cancel;
++ (NSString *) getResourceFromBundle : (NSString *) bundleName resourceName:(NSString *)name Type : (NSString *) type;
++ (UIImage *)imageWithContentOfPath:(NSString *)path;
++ (UIImage *)imageWithWebP:(NSString *)filePath error:(NSError **)error;
+///获取当前时间戳作为文件名
++ (NSString *)getFileNameForNowTime;
+
+//获取
++(NSString *)getPEImagePathForNowTime;
+
++(UIImage *)getSystemPhotoImage:( NSURL * ) url;
+
++ (UIImage *)image:(UIImage *)image rotation:(float)rotation cropRect:(CGRect)cropRect;
+
++(CustomFilter *)getAnimateCustomFilter:(NSString *) path;
+
++(NSInteger)setFontIndex:( NSString * ) name;
+
++ (NSURL *)getFileUrlWithFolderPath:(NSString *)folderPath fileName:(NSString *)fileName;
++ (id)getNetworkMaterialWithType:(NSString *)type
+                          appkey:(NSString *)appkey
+                         urlPath:(NSString *)urlPath;
+
++(NSArray *)classificationParams:( NSString * ) type atAppkey:( NSString * ) appkey atURl:( NSString * ) netMaterialTypeURL;
++ (id)updateInfomation:(NSMutableDictionary *)params andUploadUrl:(NSString *)uploadUrl;
++ (id)getNetworkMaterialWithParams:(NSMutableDictionary *)params
+                            appkey:(NSString *)appkey
+                           urlPath:(NSString *)urlPath;
+
++(UILabel *)loadProgressView:(CGRect) rect;
+
++ (id)updateInfomation:(NSMutableDictionary *)params andUploadUrl:(NSString *)uploadUrl;
+
+#pragma mark- 压缩
++ (void)OpenZip:(NSString*)zipPath  unzipto:(NSString*)_unzipto caption:(BOOL)caption;
++ (BOOL)OpenZip:(NSString*)zipPath unzipto:(NSString*)_unzipto fileName:(NSString *)fileName;
+
++(NSString *)objectToJson:(id)obj;
+
+
++(NSDictionary *)getCaptionConfig_Dic:( NSString * ) configPath;
++(Caption *)getCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atType:(NSInteger) captionType;
+
+//字体
++(void)downloadFonts:(void(^)(NSError *error))callBack;
+
++ (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize;
+
++ (UIImage*)drawImages:(NSMutableArray *)images size:(CGSize)size animited:(BOOL)animited;
+
++ (CaptionAnimationType)captionAnimateToCaptionAnimation:(CaptionAnimateType)type;
 @end

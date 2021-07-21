@@ -13,6 +13,11 @@
 #import <VEENUMCONFIGER/VEHelp.h>
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
 #import <Reachability/Reachability.h>
+#import <SDWebImage/SDWebImage.h>
+#import <SDWebImageWebPCoder/UIImage+WebP.h>
+#import <SDWebImage/UIImage+GIF.h>
+#import <ZipArchive/ZipArchive.h>
+#import <VEENUMCONFIGER/VEFileDownloader.h>
 
 @implementation VEHelp
 + (NSString *) system
@@ -70,6 +75,31 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }else{
         return [NSString stringWithFormat:@"%@%i:%@%i",cm, minutes, cs, sec];
     }
+}
+
++ (NSString *)timeToSecFormat:(float)time{
+    if(time<=0){
+        time = 0;
+    }
+    int secondsInt  = floorf(time);
+    float haomiao=time-secondsInt;
+    int hour        = secondsInt/3600;
+    secondsInt     -= hour*3600;
+    int minutes     =(int)secondsInt/60;
+    secondsInt     -= minutes * 60;
+    NSString *strText;
+    if(haomiao==1){
+        secondsInt+=1;
+        haomiao=0.f;
+    }
+    int diff = (int)floorf(haomiao*10);
+    if (hour>0)
+    {
+        minutes += hour*60;
+    }
+    secondsInt += minutes*60;
+    strText=[NSString stringWithFormat:@"%i.%d", secondsInt,diff];
+    return strText;
 }
 
 + (NSString *) timeFormatHours: (float) seconds {
@@ -1312,6 +1342,39 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return colorIndex;
 }
 
++(NSMutableArray *)getGroupColorArray
+{
+    NSMutableArray * colorArray = [NSMutableArray array];
+    
+    [colorArray addObject:UIColorFromRGB(0xF11145)];
+    [colorArray addObject:UIColorFromRGB(0xEDBE1C)];
+    [colorArray addObject:UIColorFromRGB(0x47E0B4)];
+    [colorArray addObject:UIColorFromRGB(0xDA503F)];
+    [colorArray addObject:UIColorFromRGB(0x277AFE)];
+    [colorArray addObject:UIColorFromRGB(0x41BD45)];
+    
+    [colorArray addObject:UIColorFromRGB(0xA851FE)];
+    [colorArray addObject:UIColorFromRGB(0x9B5A2C)];
+    [colorArray addObject:UIColorFromRGB(0x505DB2)];
+    [colorArray addObject:UIColorFromRGB(0xEB3C7F)];
+    [colorArray addObject:UIColorFromRGB(0xFF00FF)];
+    [colorArray addObject:UIColorFromRGB(0xFFB6C1)];
+    [colorArray addObject:UIColorFromRGB(0x0000FF)];
+    [colorArray addObject:UIColorFromRGB(0x87CEFA)];
+    [colorArray addObject:UIColorFromRGB(0x00FFFF)];
+    
+    [colorArray addObject:UIColorFromRGB(0xFFA500)];
+    [colorArray addObject:UIColorFromRGB(0xA52A2A)];
+    [colorArray addObject:UIColorFromRGB(0xEE82EE)];
+    [colorArray addObject:UIColorFromRGB(0x1E90FF)];
+    [colorArray addObject:UIColorFromRGB(0x008000)];
+    [colorArray addObject:UIColorFromRGB(0xA0522D)];
+    [colorArray addObject:UIColorFromRGB(0x008B8B)];
+    [colorArray addObject:UIColorFromRGB(0x164c6e)];
+    
+    return colorArray;
+}
+
 + (CGSize )getVideoSizeForTrack:(AVURLAsset *)asset{
     CGSize size = CGSizeZero;
     NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
@@ -1766,27 +1829,61 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return mask;
 }
 
-+ (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath {
-    NSString *configPath = [folderPath stringByAppendingPathComponent:@"config.json"];
-    CustomFilter *customFilter = [[CustomFilter alloc] init];
+#pragma mark- 多脚本json加载
++ (CustomMultipleFilter *)getCustomMultipleFilerWithFolderPath:(NSString *) folderPath currentFrameImagePath:(NSString *)currentFrameImagePath
+{
+    CustomMultipleFilter *customMultipleFilter = nil;
+    NSMutableArray<CustomFilter*>* filterArray = [[NSMutableArray alloc] init];
     
+    NSString *configPath = [folderPath stringByAppendingPathComponent:@"config.json"]; // ok
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
     NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
     jsonData = nil;
+    NSArray* shaderArray = effectDic[@"effect"];
+    if (shaderArray.count) {
+        [shaderArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSMutableDictionary* shaderDic = obj;
+            NSLog(@"name:%@",shaderDic[@"name"]);
+            [filterArray addObject:[self getCustomFilterWithDictionary:shaderDic folderPath:folderPath currentFrameTexturePath:currentFrameImagePath]];
+        }];
+    }
+    else
+        [filterArray addObject:[self getCustomFilterWithDictionary:effectDic folderPath:folderPath currentFrameTexturePath:currentFrameImagePath]];
+    customMultipleFilter = [[CustomMultipleFilter alloc] initWithFilterArray:filterArray];
+    customMultipleFilter.folderPath = folderPath;
+    return customMultipleFilter;
+}
+
++ (CustomFilter *)getCustomFilterWithDictionary:(NSMutableDictionary*)effectDic
+                                     folderPath:(NSString*)path
+                        currentFrameTexturePath:(NSString *)currentFrameTexturePath
+{
+    //TODO:解析json新增的字段
     NSError * error = nil;
-    customFilter.folderPath = folderPath;
-    customFilter.name = effectDic[@"name"];
+    CustomFilter *customFilter = [[CustomFilter alloc] init];
     
-    NSString *fragPath = [folderPath stringByAppendingPathComponent:effectDic[@"fragShader"]];
+    customFilter.folderPath = path;
+    customFilter.name = effectDic[@"name"];
+    if(!customFilter.name) //必须设置名字，多脚本滤镜根据名字确定绘制顺序
+        customFilter.name = @"linghunchuqiao";
+    
+    NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
+    NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
     customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
-    if (effectDic[@"vertShader"]) {
-        NSString *vertPath = [folderPath stringByAppendingPathComponent:effectDic[@"vertShader"]];
-        customFilter.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
-    }    
+    customFilter.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
     if (effectDic[@"script"]) {
-        NSString *scriptPath = [folderPath stringByAppendingPathComponent:effectDic[@"script"]];
+        NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
     }
+//    customFilter.name = effectDic[@"name"];
+    
+
+    //输入纹理
+    NSArray* inputFilterName = effectDic[@"inputEffect"];
+    [inputFilterName enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [customFilter.inputFilterName addObject:obj];
+    }];
+    
     NSString *builtIn = effectDic[@"builtIn"];
     if ([builtIn isEqualToString:@"illusion"]) {
         customFilter.builtInType = BuiltInFilter_illusion;
@@ -1843,6 +1940,151 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             param.type = TextureType_Sample2DBuffer;
             param.name = obj[@"paramName"];
             
+            //输入纹理对应的索引号
+            if(obj[@"inputEffectIndex"])
+                param.index = [obj[@"inputEffectIndex"] intValue];
+            
+            NSString *warpMode = obj[@"warpMode"];
+            if (warpMode.length > 0) {
+                if ([warpMode isEqualToString:@"Repeat"]) {
+                    param.warpMode = TextureWarpModeRepeat;
+                }else if ([warpMode isEqualToString:@"MirroredRepeat"]) {
+                    param.warpMode = TextureWarpModeMirroredRepeat;
+                }
+            }
+            NSString *filterMode = obj[@"filterMode"];
+            if (filterMode.length > 0) {
+                if ([filterMode isEqualToString:@"Nearest"]) {
+                    param.filterMode = TextureFilterNearest;
+                }else if ([filterMode isEqualToString:@"Linear"]) {
+                    param.filterMode = TextureFilterLinear;
+                }
+            }
+            if ([[obj objectForKey:@"paramName"] isEqualToString:@"currentFrameTexture"]) {
+                param.type = TextureType_Sample2DMain;
+                NSMutableArray *paths = [NSMutableArray arrayWithObject:currentFrameTexturePath];
+                param.pathArray = paths;
+            }else {
+                NSString *sourceName = obj[@"source"];
+                if ([sourceName isKindOfClass:[NSString class]]) {
+                    if (sourceName.length > 0) {
+                        __weak NSString *newPath = path;
+                        newPath = [newPath stringByAppendingPathComponent:sourceName];
+                        
+                        NSMutableArray *paths = [NSMutableArray arrayWithObject:newPath];
+                        param.pathArray = paths;
+                    }
+                }
+                else if ([sourceName isKindOfClass:[NSArray class]]) {
+                    NSMutableArray *sourceArray = [obj[@"source"] mutableCopy];
+                    NSMutableArray *arr = [NSMutableArray array];
+                    for (NSString * _Nonnull imageName in sourceArray) {
+                        NSString *newpath = [path stringByAppendingPathComponent:imageName];
+                        [arr addObject:newpath];
+                    }
+                    param.pathArray = [NSMutableArray arrayWithArray:arr];//
+                }
+            }
+            [customFilter setShaderTextureParams:param];
+        }
+    }
+    effectDic = nil;
+    return customFilter;
+ 
+}
+
+
+#pragma mark- 单脚本json加载
++ (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath {
+    NSString *configPath = [folderPath stringByAppendingPathComponent:@"config.json"];
+    CustomFilter *customFilter = [[CustomFilter alloc] init];
+    
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
+    NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
+    jsonData = nil;
+    NSError * error = nil;
+    customFilter.folderPath = folderPath;
+    customFilter.name = effectDic[@"name"];
+    if(!customFilter.name) //必须设置名字，多脚本滤镜根据名字确定绘制顺序
+        customFilter.name = @"linghunchuqiao";
+    
+    NSString *fragPath = [folderPath stringByAppendingPathComponent:effectDic[@"fragShader"]];
+    customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
+    if (effectDic[@"vertShader"]) {
+        NSString *vertPath = [folderPath stringByAppendingPathComponent:effectDic[@"vertShader"]];
+        customFilter.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
+    }    
+    if (effectDic[@"script"]) {
+        NSString *scriptPath = [folderPath stringByAppendingPathComponent:effectDic[@"script"]];
+        customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+    }
+    
+    //输入纹理
+    NSArray* inputFilterName = effectDic[@"inputEffect"];
+    [inputFilterName enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [customFilter.inputFilterName addObject:obj];
+    }];
+    
+    NSString *builtIn = effectDic[@"builtIn"];
+    if ([builtIn isEqualToString:@"illusion"]) {
+        customFilter.builtInType = BuiltInFilter_illusion;
+    }
+    customFilter.cycleDuration = [effectDic[@"duration"] floatValue];
+    NSArray *uniformParams = effectDic[@"uniformParams"];
+    [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *type = obj[@"type"];
+        NSMutableArray *paramArray = [NSMutableArray array];
+        NSArray *frameArray = obj[@"frameArray"];
+        [frameArray enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+            ShaderParams *param = [[ShaderParams alloc] init];
+            param.time = [obj1[@"time"] floatValue];
+            if ([type isEqualToString:@"floatArray"]) {
+                param.type = UNIFORM_ARRAY;
+                param.array = [NSMutableArray array];
+                [obj1[@"value"] enumerateObjectsUsingBlock:^(id  _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
+                    [param.array addObject:[NSNumber numberWithFloat:[obj2 floatValue]]];
+                }];
+            }else if ([type isEqualToString:@"float"]) {
+                param.type = UNIFORM_FLOAT;
+                if ([obj1[@"value"] isKindOfClass:[NSArray class]]) {
+                    param.fValue = [[obj1[@"value"] firstObject] floatValue];
+                }else {
+                    param.fValue = [obj1[@"value"] floatValue];
+                }
+            }else if ([type isEqualToString:@"Matrix4x4"]) {
+                param.type = UNIFORM_MATRIX4X4;
+                GLMatrix4x4 matrix4;
+                NSArray *valueArray = obj1[@"value"];
+                matrix4.one = (GLVectore4){[valueArray[0][0] floatValue], [valueArray[0][1] floatValue], [valueArray[0][2] floatValue], [valueArray[0][3] floatValue]};
+                matrix4.two = (GLVectore4){[valueArray[1][0] floatValue], [valueArray[1][1] floatValue], [valueArray[1][2] floatValue], [valueArray[1][3] floatValue]};
+                matrix4.three = (GLVectore4){[valueArray[2][0] floatValue], [valueArray[2][1] floatValue], [valueArray[2][2] floatValue], [valueArray[2][3] floatValue]};
+                matrix4.four = (GLVectore4){[valueArray[3][0] floatValue], [valueArray[3][1] floatValue], [valueArray[3][2] floatValue], [valueArray[3][3] floatValue]};
+                param.matrix4 = matrix4;
+            }else {
+                param.type = UNIFORM_INT;
+                if ([obj1[@"value"] isKindOfClass:[NSArray class]]) {
+                    param.iValue = [[obj1[@"value"] firstObject] intValue];
+                }else {
+                    param.iValue = [obj1[@"value"] intValue];
+                }
+            }
+            [paramArray addObject:param];
+        }];
+        [customFilter setShaderUniformParams:paramArray isRepeat:[obj[@"repeat"] boolValue] forUniform:obj[@"paramName"]];
+    }];
+    NSArray *textureParams = effectDic[@"textureParams"];
+    
+   for(id  _Nonnull obj in textureParams) {
+        @autoreleasepool {
+            
+            TextureParams *param = [[TextureParams alloc] init];
+            param.type = TextureType_Sample2DBuffer;
+            param.name = obj[@"paramName"];
+            
+            //输入纹理对应的索引号
+            if(obj[@"inputEffectIndex"])
+                param.index = [obj[@"inputEffectIndex"] intValue];
+            
             NSString *warpMode = obj[@"warpMode"];
             if (warpMode.length > 0) {
                 if ([warpMode isEqualToString:@"Repeat"]) {
@@ -1889,6 +2131,106 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     effectDic = nil;
     return customFilter;
+}
+
++ (CustomTransition *)getCustomTransitionWithJsonPath:(NSString *)configPath {
+    NSString *path = [configPath stringByDeletingLastPathComponent];
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
+    NSMutableDictionary *configDic = [VEHelp objectForData:jsonData];
+    jsonData = nil;
+    
+    CustomTransition *transition = [[CustomTransition alloc] init];
+    transition.folderPath = path;
+    NSError * error = nil;
+    if (![configPath.pathExtension isEqualToString:@"json"]) {
+        transition.frag = [NSString stringWithContentsOfFile:configPath encoding:NSUTF8StringEncoding error:&error];
+        return transition;
+    }
+    NSString *fragPath = [path stringByAppendingPathComponent:configDic[@"fragShader"]];
+    NSString *vertPath = [path stringByAppendingPathComponent:configDic[@"vertShader"]];
+    transition.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
+    transition.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
+    transition.name = configDic[@"name"];
+    
+    NSArray *uniformParams = configDic[@"uniformParams"];
+    [uniformParams enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *type = obj[@"type"];
+        NSDictionary *frameDic = [obj[@"frameArray"] firstObject];
+        TranstionShaderParams *param = [[TranstionShaderParams alloc] init];
+        if ([type isEqualToString:@"floatArray"]) {
+            param.type = UNIFORM_ARRAY;
+            param.array = [NSMutableArray array];
+            [frameDic[@"value"] enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+                [param.array addObject:[NSNumber numberWithFloat:[obj1 floatValue]]];
+            }];
+        }else if ([type isEqualToString:@"float"]) {
+            param.type = UNIFORM_FLOAT;
+            if ([frameDic[@"value"] isKindOfClass:[NSArray class]]) {
+                param.fValue = [[frameDic[@"value"] firstObject] floatValue];
+            }else {
+                param.fValue = [frameDic[@"value"] floatValue];
+            }
+        }else if ([type isEqualToString:@"Matrix4x4"]) {
+            param.type = UNIFORM_MATRIX4X4;
+            GLMatrix4x4 matrix4;
+            NSArray *valueArray = frameDic[@"value"];
+            matrix4.one = (GLVectore4){[valueArray[0][0] floatValue], [valueArray[0][1] floatValue], [valueArray[0][2] floatValue], [valueArray[0][3] floatValue]};
+            matrix4.two = (GLVectore4){[valueArray[1][0] floatValue], [valueArray[1][1] floatValue], [valueArray[1][2] floatValue], [valueArray[1][3] floatValue]};
+            matrix4.three = (GLVectore4){[valueArray[2][0] floatValue], [valueArray[2][1] floatValue], [valueArray[2][2] floatValue], [valueArray[2][3] floatValue]};
+            matrix4.four = (GLVectore4){[valueArray[3][0] floatValue], [valueArray[3][1] floatValue], [valueArray[3][2] floatValue], [valueArray[3][3] floatValue]};
+            param.matrix4 = matrix4;
+        }else {
+            param.type = UNIFORM_INT;
+            if ([frameDic[@"value"] isKindOfClass:[NSArray class]]) {
+                param.iValue = [[frameDic[@"value"] firstObject] intValue];
+            }else {
+                param.iValue = [frameDic[@"value"] intValue];
+            }
+        }
+        [transition setShaderUniformParams:param forUniform:obj[@"paramName"]];
+    }];
+    
+    NSArray *textureParams = configDic[@"textureParams"];
+    [textureParams enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        TranstionTextureParams *param = [[TranstionTextureParams alloc] init];
+        NSString *sourceName = obj[@"source"];
+        if( [sourceName isKindOfClass:[NSString class]] )
+        {
+            if (sourceName.length > 0) {
+                param.type = TextureType_Sample2DBuffer;
+                param.pathArray = [NSMutableArray new];
+                [param.pathArray addObject:[[configPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:sourceName]];
+                NSString *warpMode = obj[@"warpMode"];
+                if ([warpMode isEqualToString:@"Repeat"]) {
+                    param.warpMode = TextureWarpModeRepeat;
+                }else if ([warpMode isEqualToString:@"MirroredRepeat"]) {
+                    param.warpMode = TextureWarpModeMirroredRepeat;
+                }
+            }
+            param.name = obj[@"paramName"];
+            [transition setShaderTextureParams:param];
+        }
+        else
+        {
+            NSMutableArray *sourceArray = (NSMutableArray*)sourceName;
+            if( sourceArray && (sourceArray.count>0) )
+            {
+                NSString *paramName = obj[@"paramName"];
+                if( [paramName isKindOfClass:[NSString class]] )
+                {
+                    param.name = paramName;
+                }
+                param.pathArray = [NSMutableArray new];
+                [sourceArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    [param.pathArray addObject:[[configPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:obj]];
+                }];
+                
+                if( param.pathArray.count > 0 )
+                    [transition setShaderTextureParams:param];
+            }
+        }
+    }];
+    return transition;
 }
 
 + (void)setApngCaptionFrameArrayWithImagePath:(NSString *)path jsonDic:(NSMutableDictionary *)jsonDic {
@@ -2106,6 +2448,19 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
 }
 
++ (UIImage *)imageWithWebP:(NSString *)filePath error:(NSError **)error
+{
+    // If passed `filepath` is invalid, return nil to caller and log error in console
+   
+    NSError *dataError = nil;
+    NSData *imgData = [NSData dataWithContentsOfFile:filePath options:NSDataReadingMappedIfSafe error:&dataError];
+    if (dataError != nil) {
+        *error = dataError;
+        return nil;
+    }
+    return [UIImage sd_imageWithWebPData:imgData];
+}
+
 /// 修正图片转向
 + (UIImage *)fixOrientation:(UIImage *)aImage {
     //if (!self.shouldFixOrientation) return aImage;
@@ -2186,32 +2541,42 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 #pragma mark- 居中处理，计算对应的Crop
-+(CGRect)getCropMedia:(CGSize) imageSize atExpSize:(CGSize) expSize
-{
-    float expProportion = expSize.width/expSize.height;
-    float imageProportion = imageSize.width/imageSize.height;
-    
-    CGRect rect = CGRectMake(0, 0, 1, 1);
-    
-    if( expProportion > 1.0 )
-    {
-        if( imageProportion < 1.0 )
-        {
-            float width = imageSize.width;
-            float height = expProportion/width;
-            rect = CGRectMake(0, (imageSize.height - height)/2.0/imageSize.height, 1, height/imageSize.height);
++ (CGRect)getFixedRatioCropWithMediaSize:(CGSize)mediaSize newSize:(CGSize)newSize {
+    float newSizePro = newSize.width/newSize.height;
+    float imageSizePro = mediaSize.width/mediaSize.height;
+    CGRect crop = CGRectMake(0, 0, 1, 1);
+    if (imageSizePro != newSizePro) {
+        float x,y,w,h;
+        if (newSizePro == 1.0) {
+            w = MIN(mediaSize.width, mediaSize.height);
+            h = w;
+        }else if (newSizePro > 1.0) {
+            w = mediaSize.width;
+            h = w/newSizePro;
+            if (h > mediaSize.height) {
+                h = mediaSize.height;
+                w = h*newSizePro;
+            }
+        }else {
+            h = mediaSize.height;
+            w = h*newSizePro;
+            if (w > mediaSize.width) {
+                w = mediaSize.width;
+                h = w / newSizePro;
+            }
         }
+        x = fabs(mediaSize.width - w)/2.0;
+        y = fabs(mediaSize.height - h)/2.0;
+        
+        CGRect clipRect = CGRectMake(x, y, w, h);
+        crop.origin.x = clipRect.origin.x/mediaSize.width;
+        crop.origin.y = clipRect.origin.y/mediaSize.height;
+        crop.size.width = clipRect.size.width/mediaSize.width;
+        crop.size.height = clipRect.size.height/mediaSize.height;
     }
-    else if( expProportion < 1.0 ){
-        if( imageProportion > 1.0 )
-        {
-            float height = imageSize.height;
-            float width = height*expProportion;
-            rect = CGRectMake((imageSize.width - width)/2.0/imageSize.width, 0, width/imageSize.width, 1);
-        }
-    }
-    return rect;
+    return crop;
 }
+
 + (CGSize)getEditSizeWithFile:(VEMediaInfo *)file {
     CGSize editSize;
     if (file.fileType == kFILEIMAGE || file.fileType == kFILETEXT) {
@@ -2444,5 +2809,1023 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }
     }
     return isPortrait;
+}
+
++(UIView *)initReversevideoProgress:(  UIViewController * ) viewController atLabelTag:(int *) labelTag atCancel:(SEL)cancel
+{
+    UIView * view = [[UIView alloc] initWithFrame:viewController.view.bounds];
+    view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.8];
+    [viewController.view addSubview:view];
+    
+    UIView * reverseVideoView = [[UIView alloc] initWithFrame:CGRectMake( (view.frame.size.width-150.0)/2.0, (view.frame.size.height-150.0)/2.0, 150.0, 150.0)];
+    reverseVideoView.backgroundColor = [UIColor colorWithWhite:0.2 alpha:1.0];;
+    reverseVideoView.layer.cornerRadius = 5.0;
+    reverseVideoView.layer.masksToBounds = YES;
+    [view addSubview:reverseVideoView];
+    
+    UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake( (reverseVideoView.frame.size.width - 100)/2.0, 10, 100, 100)];
+    [imageView sd_setImageWithURL:[NSURL fileURLWithPath:[[VEHelp getEditBundle] pathForResource:@"/New_EditVideo/animatSchedule_@3x" ofType:@"png"]]];
+    [reverseVideoView addSubview:imageView];
+
+    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0 , imageView.frame.size.height + imageView.frame.origin.y, reverseVideoView.frame.size.width, 20)];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.font = [UIFont systemFontOfSize:12];
+    label.text = VELocalizedString(@"倒放中0%", nil);
+    label.textColor = [UIColor whiteColor];
+    label.tag = 30121;
+    *labelTag = 30121;
+    [reverseVideoView addSubview:label];
+    
+    UIButton * btn = [[UIButton alloc] initWithFrame:CGRectMake(reverseVideoView.frame.size.width - 30,  0, 30, 30)];
+    btn.layer.cornerRadius = btn.frame.size.width/2.0;
+    btn.layer.masksToBounds = YES;
+//    btn.backgroundColor = [UIColor  colorWithWhite:0.6 alpha:1.0];
+    [btn setImage:[VEHelp imageNamed:@"jianji/music/剪辑-剪辑-音乐_关闭默认_"] forState:UIControlStateNormal];
+    [btn addTarget:viewController action:cancel forControlEvents:UIControlEventTouchUpInside];
+    [reverseVideoView addSubview:btn];
+    
+    return view ;
+}
+
++ (NSString *) getResourceFromBundle : (NSString *) bundleName resourceName:(NSString *)name Type : (NSString *) type
+{
+    NSBundle *bundle = nil;
+    bundle = [VEHelp getEditBundle];
+    return [bundle pathForResource:name ofType:type];
+}
+
+///获取当前时间戳作为文件名
++ (NSString *)getFileNameForNowTime{
+
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
+    [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss SSS"];
+    //设置时区,这个对于时间的处理有时很重要
+    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
+    [formatter setTimeZone:timeZone];
+    NSDate *datenow = [NSDate date];//现在时间,你可以输出来看下是什么格式
+    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]*1000];
+    
+    NSDate *date_ = [NSDate date];
+    NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
+    [dateformater setDateFormat:@"yyyy-MM-dd_HH-mm-ss-SSS"];
+    return [dateformater stringFromDate:date_];
+}
+
++ (NSString *)getFileUrlWithFolderPath:(NSString *)folderPath fileName:(NSString *)fileName {
+    if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *filePath;
+    BOOL isExists = NO;
+    NSInteger index = 0;
+    do {
+        filePath = [[folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%ld", fileName.stringByDeletingPathExtension, (long)index]] stringByAppendingPathExtension:fileName.pathExtension];
+        index ++;
+        isExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+    } while (isExists);
+    return filePath;
+}
+
++(NSString *)getPEImagePathForNowTime
+{
+    NSString *folder;
+    if(!folder){
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        folder =[[paths objectAtIndex:0] stringByAppendingPathComponent:@"Documents/PEImage"];
+    }
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:[folder stringByDeletingLastPathComponent]]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:[folder stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
+    return  [VEHelp getFileUrlWithFolderPath:folder fileName:[NSString stringWithFormat:@"%@.png",[self getFileNameForNowTime]]];
+}
+
++(UIImage *)getSystemPhotoImage:( NSURL * ) url
+{
+    __block UIImage *image;
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    options.synchronous = YES;
+    options.resizeMode = PHImageRequestOptionsResizeModeExact;
+    options.networkAccessAllowed = YES;//解决草稿箱获取不到缩略图的问题
+    PHFetchResult *phAsset = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
+    
+    @try {
+        [[PHImageManager defaultManager] requestImageForAsset:[phAsset firstObject] targetSize:CGSizeMake(2048, 2048) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            
+            image = result;
+            result = nil;
+            info = nil;
+        }];
+    } @catch (NSException *exception) {
+        NSLog(@"exception:%@",exception);
+    } @finally {
+        options = nil;
+        phAsset = nil;
+    }
+    return image;
+}
+
++ (UIImage *)image:(UIImage *)image rotation:(float)rotation cropRect:(CGRect)cropRect {
+    @autoreleasepool {
+        if (CGRectEqualToRect(cropRect, CGRectZero)) {
+            cropRect = CGRectMake(0, 0, 1, 1);
+        }
+        
+        CGSize size = CGSizeZero;
+        if(image.size.width>image.size.height){
+            if(rotation == 90 || rotation == -90 || rotation == 270 || rotation == -270){
+                size = CGSizeMake(MIN(image.size.width, image.size.height), MAX(image.size.width, image.size.height));
+            }else{
+                size = CGSizeMake(MAX(image.size.width, image.size.height), MIN(image.size.width, image.size.height));
+            }
+        }else{
+            if(rotation == 90 || rotation == -90 || rotation == 270 || rotation == -270){
+                size = CGSizeMake(MAX(image.size.width, image.size.height), MIN(image.size.width, image.size.height));
+            }else{
+                size = CGSizeMake(MIN(image.size.width, image.size.height), MAX(image.size.width, image.size.height));
+            }
+        }
+        
+        UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,size.width,size.height)];
+        CGAffineTransform t = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(rotation));
+        rotatedViewBox.transform = t;
+        
+        UIGraphicsBeginImageContext(size);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGContextTranslateCTM(context, size.width/2, size.height/2);
+        CGContextRotateCTM(context, DEGREES_TO_RADIANS(-rotation));
+        CGContextScaleCTM(context, 1.0, -1.0);
+        CGContextDrawImage(context, CGRectMake((-image.size.width / 2), (-image.size.height / 2), image.size.width, image.size.height), [image CGImage]);
+        
+        UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        CGRect rect = CGRectMake(resultImage.size.width * cropRect.origin.x, resultImage.size.height * cropRect.origin.y, resultImage.size.width * cropRect.size.width, resultImage.size.height * cropRect.size.height);
+        CGImageRef newImageRef = CGImageCreateWithImageInRect(resultImage.CGImage, rect);
+        resultImage = [UIImage imageWithCGImage:newImageRef];
+        if (newImageRef) {
+            CGImageRelease(newImageRef);
+        }
+        return resultImage;
+    }
+}
+
++(CustomFilter *)getAnimateCustomFilter:(NSString *) path
+{
+    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+    CustomFilter * customFilter = [CustomFilter new];
+    
+    customFilter.folderPath = path;
+    
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
+    NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
+    jsonData = nil;
+    NSError * error = nil;
+    customFilter.cycleDuration = 0.0;
+    customFilter.name = effectDic[@"name"];
+    customFilter.folderPath = path;
+    NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
+    NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
+    customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
+    customFilter.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
+    
+    if (effectDic[@"script"]) {
+        NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
+        customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+    }
+    
+    NSArray *uniformParams = effectDic[@"uniformParams"];
+    [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *type = obj[@"type"];
+        NSMutableArray *paramArray = [NSMutableArray array];
+        NSArray *frameArray = obj[@"frameArray"];
+        [frameArray enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+            ShaderParams *param = [[ShaderParams alloc] init];
+            param.time = [obj1[@"time"] floatValue];
+            if ([type isEqualToString:@"floatArray"]) {
+                param.type = UNIFORM_ARRAY;
+                param.array = [NSMutableArray array];
+                [obj1[@"value"] enumerateObjectsUsingBlock:^(id  _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
+                    [param.array addObject:[NSNumber numberWithFloat:[obj2 floatValue]]];
+                }];
+            }else if ([type isEqualToString:@"float"]) {
+                param.type = UNIFORM_FLOAT;
+                if ([obj1[@"value"] isKindOfClass:[NSArray class]]) {
+                    param.fValue = [[obj1[@"value"] firstObject] floatValue];
+                }else {
+                    param.fValue = [obj1[@"value"] floatValue];
+                }
+            }else if ([type isEqualToString:@"Matrix4x4"]) {
+                param.type = UNIFORM_MATRIX4X4;
+                GLMatrix4x4 matrix4;
+                NSArray *valueArray = obj1[@"value"];
+                matrix4.one = (GLVectore4){[valueArray[0][0] floatValue], [valueArray[0][1] floatValue], [valueArray[0][2] floatValue], [valueArray[0][3] floatValue]};
+                matrix4.two = (GLVectore4){[valueArray[1][0] floatValue], [valueArray[1][1] floatValue], [valueArray[1][2] floatValue], [valueArray[1][3] floatValue]};
+                matrix4.three = (GLVectore4){[valueArray[2][0] floatValue], [valueArray[2][1] floatValue], [valueArray[2][2] floatValue], [valueArray[2][3] floatValue]};
+                matrix4.four = (GLVectore4){[valueArray[3][0] floatValue], [valueArray[3][1] floatValue], [valueArray[3][2] floatValue], [valueArray[3][3] floatValue]};
+                param.matrix4 = matrix4;
+            }else {
+                param.type = UNIFORM_INT;
+                if ([obj1[@"value"] isKindOfClass:[NSArray class]]) {
+                    param.iValue = [[obj1[@"value"] firstObject] intValue];
+                }else {
+                    param.iValue = [obj1[@"value"] intValue];
+                }
+            }
+            [paramArray addObject:param];
+        }];
+        [customFilter setShaderUniformParams:paramArray isRepeat:[obj[@"repeat"] boolValue] forUniform:obj[@"paramName"]];
+    }];
+    NSArray *textureParams = effectDic[@"textureParams"];
+    
+   for(id  _Nonnull obj in textureParams) {
+        @autoreleasepool {
+            
+            TextureParams *param = [[TextureParams alloc] init];
+            param.type = TextureType_Sample2DBuffer;
+            param.name = obj[@"paramName"];
+            
+            NSString *warpMode = obj[@"warpMode"];
+            if (warpMode.length > 0) {
+                if ([warpMode isEqualToString:@"Repeat"]) {
+                    param.warpMode = TextureWarpModeRepeat;
+                }else if ([warpMode isEqualToString:@"MirroredRepeat"]) {
+                    param.warpMode = TextureWarpModeMirroredRepeat;
+                }
+            }
+            NSString *filterMode = obj[@"filterMode"];
+            if (filterMode.length > 0) {
+                if ([filterMode isEqualToString:@"Nearest"]) {
+                    param.filterMode = TextureFilterNearest;
+                }else if ([filterMode isEqualToString:@"Linear"]) {
+                    param.filterMode = TextureFilterLinear;
+                }
+            }
+            NSString *sourceName = obj[@"source"];
+            if ([sourceName isKindOfClass:[NSString class]]) {
+                if (sourceName.length > 0) {
+                    __weak NSString *newPath = path;
+                    newPath = [newPath stringByAppendingPathComponent:sourceName];
+                     
+                    NSMutableArray *paths = [NSMutableArray arrayWithObject:newPath];
+                    param.pathArray = paths;
+                }
+            }
+            else if ([sourceName isKindOfClass:[NSArray class]]) {
+                NSMutableArray *sourceArray = [obj[@"source"] mutableCopy];
+                NSMutableArray *arr = [NSMutableArray array];
+                for (NSString * _Nonnull imageName in sourceArray) {
+                    NSString *newpath = [path stringByAppendingPathComponent:imageName];
+
+                    [arr addObject:newpath];
+                }
+                param.pathArray = [NSMutableArray arrayWithArray:arr];//
+                
+            }
+            [customFilter setShaderTextureParams:param];
+        }
+    }
+    return  customFilter;
+}
++(NSInteger)setFontIndex:( NSString * ) name
+{
+    NSMutableArray * fonts = [NSMutableArray arrayWithContentsOfFile:kFontPlistPath];
+    __block NSInteger index = 0;
+    [fonts enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSDictionary *itemDic = obj;
+        BOOL hasNew = [[itemDic allKeys] containsObject:@"cover"] ? YES : NO;
+        NSString *fontCode = hasNew ? [[itemDic[@"file"] lastPathComponent] stringByDeletingPathExtension] : itemDic[@"name"];
+        if( [name isEqualToString:[NSString stringWithFormat:@"%@.%@",fontCode,@"ttf" ]] )
+        {
+            index = idx;
+            *stop = true;
+        }
+    }];
+    return index;
+}
+
+#pragma mark-滤镜
++(NSArray *)classificationParams:( NSString * ) type atAppkey:( NSString * ) appkey atURl:( NSString * ) netMaterialTypeURL
+{
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithObjectsAndKeys:type,@"type", nil];
+    if( appkey.length>0)
+        [params setObject:appkey forKey:@"appkey"];
+    NSDictionary *dic = [VEHelp updateInfomation:params andUploadUrl:netMaterialTypeURL];
+    BOOL hasValue = [[dic objectForKey:@"code"] integerValue]  == 0;
+    if( hasValue )
+        return [dic objectForKey:@"data"];
+    else
+        return nil;
+}
+
++ (id)updateInfomation:(NSMutableDictionary *)params andUploadUrl:(NSString *)uploadUrl{
+    @autoreleasepool {
+        if(!params){
+            params  = [[NSMutableDictionary alloc] init];
+            [params setObject:@"1" forKey:@"os"];
+            [params setObject:@"2" forKey:@"product"];
+            
+        }
+        if(![[params allKeys] containsObject:@"os"]){
+            [params setObject:@"ios" forKey:@"os"];
+        }
+        if(![[params allKeys] containsObject:@"ver"]){
+            [params setObject:[NSNumber numberWithInt:[VECore getSDKVersion]] forKey:@"ver"];
+        }
+//        uploadUrl=[NSString stringWithString:[uploadUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        uploadUrl=[NSString stringWithString:[uploadUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+        NSURL *url=[NSURL URLWithString:uploadUrl];
+        NSString *postURL= [VEHelp createPostURL:params];
+        //=====
+        NSData *postData = [postURL dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
+        NSString *postLength = [NSString stringWithFormat:@"%lu",(unsigned long)[postData length]];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:url];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+        [request setHTTPBody:postData];
+        
+//        NSHTTPURLResponse* urlResponse = nil;
+//        NSError *error;
+//
+//        NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+        
+        __block NSHTTPURLResponse* urlResponse = nil;
+        __block NSError *error;
+        __block NSData *responseData = nil;
+        dispatch_semaphore_t disp = dispatch_semaphore_create(0);
+        NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error1) {
+            //处理model
+            urlResponse = (NSHTTPURLResponse*)response;
+            responseData = data;
+            error = error1;
+            dispatch_semaphore_signal(disp);
+        }];
+        [dataTask resume];
+        dispatch_semaphore_wait(disp, DISPATCH_TIME_FOREVER);
+        
+        if(error){
+            NSLog(@"error:%@",[error description]);
+        }
+        if(!responseData){
+            return nil;
+        }
+        id obj = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
+        responseData = nil;
+        urlResponse = nil;
+        if(error || !obj){
+            error = nil;
+            return nil;
+        }else{
+            return obj;
+        }
+        
+    }
+}
++ (id)getNetworkMaterialWithParams:(NSMutableDictionary *)params
+                            appkey:(NSString *)appkey
+                           urlPath:(NSString *)urlPath
+{
+    if (!params) {
+        params = [NSMutableDictionary dictionary];
+    }
+    if (appkey.length > 0) {
+        [params setObject:appkey forKey:@"appkey"];
+    }
+    [params setObject:@"ios" forKey:@"os"];
+    [params setObject:[NSNumber numberWithInt:[VECore getSDKVersion]] forKey:@"ver"];
+    return [self updateInfomation:params andUploadUrl:urlPath];
+}
+
++(UILabel *)loadProgressView:(CGRect) rect
+{
+    UIColor *color = [UIColor colorWithWhite:0.0 alpha:0.3];
+    UILabel * progressLabel = [[UILabel alloc] initWithFrame:rect];
+    progressLabel.backgroundColor = color;
+    progressLabel.textAlignment = NSTextAlignmentCenter;
+    progressLabel.font = [UIFont systemFontOfSize:12];
+    progressLabel.textColor = Main_Color;
+    
+    return progressLabel;
+}
+#pragma mark- 压缩
++ (void)OpenZip:(NSString*)zipPath  unzipto:(NSString*)_unzipto caption:(BOOL)caption
+{
+    ZipArchive* zip = [[ZipArchive alloc] init];
+    if( [zip UnzipOpenFile:zipPath] )
+    {
+        //NSInteger index =0;
+        BOOL ret = [zip UnzipFileTo:_unzipto overWrite:YES];
+        if( NO==ret )
+        {
+            NSLog(@"error");
+        }else{
+            unlink([zipPath UTF8String]);
+        }
+        [zip UnzipCloseFile];
+    }
+}
++ (BOOL)OpenZipp:(NSString*)zipPath  unzipto:(NSString*)_unzipto
+{
+    ZipArchive* zip = [[ZipArchive alloc] init];
+    if( [zip UnzipOpenFile:zipPath] )
+    {
+        //NSInteger index =0;
+        BOOL ret = [zip UnzipFileTo:_unzipto overWrite:YES];
+        if( NO==ret )
+        {
+            NSLog(@"error");
+        }else{
+            unlink([zipPath UTF8String]);
+        }
+        [zip UnzipCloseFile];
+        return YES;
+    }
+    return NO;
+}
+
++(NSString *)pathForURL_font:(NSString *)name extStr:(NSString *)extStr hasNew:(BOOL)hasNew{
+    NSString *filePath = nil;
+    if(!hasNew){
+        filePath = [NSString stringWithFormat:@"%@/%@/%@.%@",kFontFolder,name,name,extStr];
+    }else{
+        filePath = [NSString stringWithFormat:@"%@/%@.%@",kFontFolder,name,extStr];
+    }
+    return filePath;
+}
+
+/** 压缩 相关函数
+ */
++ (BOOL)OpenZip:(NSString*)zipPath unzipto:(NSString*)_unzipto fileName:(NSString *)fileName
+{
+    ZipArchive* zip = [[ZipArchive alloc] init];
+    if( [zip UnzipOpenFile:zipPath] )
+    {
+        //NSInteger index =0;
+        BOOL ret = [zip UnzipFileTo:_unzipto overWrite:YES];
+        if( NO==ret )
+        {
+            NSLog(@"error");
+        }else{
+            unlink([zipPath UTF8String]);
+        }
+        [zip UnzipCloseFile];
+        if (ret && fileName.length > 0) {
+            NSString *path = [_unzipto stringByAppendingPathComponent:fileName];
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSArray *fileArray = [fileManager contentsOfDirectoryAtPath:path error:nil];
+            [fileArray enumerateObjectsUsingBlock:^(NSString * _Nonnull fileName, NSUInteger idx, BOOL * _Nonnull stop) {
+                if([[[fileName pathExtension] lowercaseString] isEqualToString:@"webp"] && ![fileName containsString:@"__MACOSX"]) {
+                    [self webpToPng:[path stringByAppendingPathComponent:fileName]];
+                }
+            }];
+        }
+        return YES;
+    }
+    return NO;
+}
+
++ (void)webpToPng:(NSString *)webpPath {
+    @autoreleasepool {
+        NSFileManager* fman = [NSFileManager defaultManager];
+        NSError *error = nil;
+        UIImage *result = [self imageWithWebP:webpPath error:&error];
+        //UIImage *result = [UIImage ve_imageWithWebP:webpPath error:&error];
+         if (error) {
+         NSLog(@"%@", error.localizedDescription);
+         }else{
+             NSData *pngData;
+             @try {
+                 pngData =  UIImagePNGRepresentation(result);
+             }@catch (NSException *exception) {
+                     NSLog(@"exception: %@",exception);
+             }
+             result = nil;
+             if (pngData) {
+                 if ([pngData writeToFile:[[webpPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"png"] options:NSAtomicWrite error:&error])
+                 {
+                     [fman removeItemAtPath:webpPath error:&error];
+                 }else {
+                     NSLog(@"%@", error.localizedDescription);
+                 }
+             }else {
+                 NSLog(@"");
+             }
+        }
+    }
+}
+
+
++(NSString *)objectToJson:(id)obj {
+    if (!obj || ![NSJSONSerialization isValidJSONObject:obj]) {
+        return nil;
+    }
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:obj
+                                                       options:0
+                                                         error:&error];
+    
+    if ([jsonData length] && !error){
+        return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }else{
+        return nil;
+    }
+}
+
++(NSDictionary *)getCaptionConfig_Dic:( NSString * ) configPath
+{
+    NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+    NSFileManager *manager = [[NSFileManager alloc] init];
+    if([manager fileExistsAtPath:path]){
+        NSLog(@"have");
+    }else{
+        NSLog(@"nohave");
+    }
+    NSData *data = [[NSData alloc] initWithContentsOfFile:path];
+    data = [[NSData alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path]];
+    
+    NSError *err;
+    if(data){
+        NSDictionary *subtitleEffectConfig = [NSJSONSerialization JSONObjectWithData:data
+                                                                                    options:NSJSONReadingMutableContainers
+                                                                                      error:&err];
+        return subtitleEffectConfig;
+    }
+    else
+    {
+        return nil;
+    }
+}
+
++(Caption *)getCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atType:(NSInteger) captionType
+{
+    @try {
+        NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+        NSFileManager *manager = [[NSFileManager alloc] init];
+        if([manager fileExistsAtPath:path]){
+            NSLog(@"have");
+        }else{
+            NSLog(@"nohave");
+        }
+        NSData *data = [[NSData alloc] initWithContentsOfFile:path];
+        data = [[NSData alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path]];
+        
+        NSError *err;
+        if(data){
+            NSDictionary *subtitleEffectConfig = [NSJSONSerialization JSONObjectWithData:data
+                                                                                        options:NSJSONReadingMutableContainers
+                                                                                          error:&err];
+            (*config) = subtitleEffectConfig;
+            
+            if(err) {
+                NSLog(@"json解析失败：%@",err);
+            }
+            
+            float   x = [subtitleEffectConfig[@"centerX"] floatValue];
+            float   y = [subtitleEffectConfig[@"centerY"] floatValue];
+            int     w = [subtitleEffectConfig[@"width"] intValue];
+            int     h = [subtitleEffectConfig[@"height"] intValue];
+            
+            int fx = 0,fy = 0,fw = 0,fh = 0;
+            NSArray *textPadding = subtitleEffectConfig[@"textPadding"];
+            fx =  [textPadding[0] intValue];
+            fy =  [textPadding[1] intValue]+3;
+            fw =  [subtitleEffectConfig[@"textWidth"] intValue];
+            fh =  [subtitleEffectConfig[@"textHeight"] intValue];
+            
+            Caption *ppCaption = [[Caption alloc]init];
+            ppCaption.isVerticalText = [subtitleEffectConfig[@"vertical"] boolValue];
+//            ppCaption.captionImagePath =
+            ppCaption.imageFolderPath =[configPath stringByAppendingString:@"/"];
+            
+            // [[NSBundle mainBundle].bundlePath  stringByAppendingString:@"/"];
+            ppCaption.type = (CaptionType)[[subtitleEffectConfig objectForKey:@"type"] integerValue];
+            ppCaption.angle = 0;
+            ppCaption.position= CGPointMake(x, y);
+            ppCaption.size = CGSizeMake(w, h);
+            ppCaption.duration = [subtitleEffectConfig[@"duration"] floatValue];
+            ppCaption.imageName = subtitleEffectConfig[@"name"];
+            
+//            ppCaption.tFontSize = 10;
+            
+            ppCaption.scale = 1;
+            ppCaption.angle = 0;
+            if([subtitleEffectConfig[@"music"] isKindOfClass:[NSMutableDictionary class]]){
+                ppCaption.music.name = subtitleEffectConfig[@"music"][@"src"];
+            }else{
+                ppCaption.music.name = nil;
+            }
+            if(ppCaption.type == CaptionTypeHasText){
+                if( captionType == 2 ){
+//                    [self.stickerScrollview setContentTextFieldText:subtitleEffectConfig[@"textContent"]];
+                }else{
+//                    if( ![self.subtitleView isFieldChanged] ){
+//                        ppCaption.pText = VELocalizedString(@"", nil);
+////                        [self.subtitleView setContentTextFieldText:ppCaption.pText];
+//                    }else{
+                        ppCaption.pText = VELocalizedString(@"点击输入字幕", nil);
+//                        [self.subtitleView setContentTextFieldText:ppCaption.pText];
+//                    }
+                }
+                
+                ppCaption.tFontName = subtitleEffectConfig[@"textFont"];//@"Helvetica-Bold";//
+                
+                ppCaption.tFontName = [[UIFont systemFontOfSize:10] fontName];
+                ppCaption.tFrame = CGRectMake(fx, fy, fw, fh);
+                NSArray *textColors = subtitleEffectConfig[@"textColor"];
+                float r = [(textColors[0]) floatValue]/255.0;
+                float g = [(textColors[1]) floatValue]/255.0;
+                float b = [(textColors[2]) floatValue]/255.0;
+                
+                ppCaption.tColor = [UIColor colorWithRed:r green:g blue:b alpha:1];
+                
+                NSArray *strokeColors = subtitleEffectConfig[@"strokeColor"];
+                
+                ppCaption.strokeColor =  [UIColor colorWithRed:[(strokeColors[0]) floatValue]/255.0
+                                                         green:[(strokeColors[0]) floatValue]/255.0
+                                                          blue:[(strokeColors[0]) floatValue]/255.0
+                                                         alpha:1];
+                
+                
+                if([subtitleEffectConfig objectForKey:@"tAngle"])
+                    ppCaption.tAngle = [[subtitleEffectConfig objectForKey:@"tAngle"] floatValue];
+                
+                ppCaption.strokeWidth = [[subtitleEffectConfig objectForKey:@"strokeWidth"] floatValue]/2;
+                
+            }
+            ppCaption.frameArray = subtitleEffectConfig[@"frameArray"];
+            ppCaption.timeArray = subtitleEffectConfig[@"timeArray"];
+            
+            ppCaption.timeRange = CMTimeRangeMake(CMTimeMakeWithSeconds(startTime/*+0.1*/, TIMESCALE), CMTimeMakeWithSeconds(ppCaption.duration, TIMESCALE));
+            
+            ppCaption.textAnimate = nil;
+            ppCaption.imageAnimate = nil;
+            ppCaption.customAnimate = nil;
+            
+            ppCaption.customOutAnimate = nil;
+            return ppCaption;
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    }
+}
+
++ (id)getNetworkMaterialWithType:(NSString *)type
+                          appkey:(NSString *)appkey
+                         urlPath:(NSString *)urlPath
+{
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:type forKey:@"type"];
+    if (appkey.length > 0) {
+        [params setObject:appkey forKey:@"appkey"];
+    }
+    [params setObject:@"ios" forKey:@"os"];
+    [params setObject:[NSNumber numberWithInt:[VECore getSDKVersion]] forKey:@"ver"];
+    return [self updateInfomation:params andUploadUrl:urlPath];
+}
+
++(void)downloadFonts:(void(^)(NSError *error))callBack
+{
+    VEEditConfiguration *editConfig =  [VEConfigManager sharedManager].editConfiguration;
+    BOOL hasNewFont =  editConfig.fontResourceURL.length>0;
+    NSString *uploadUrl = (hasNewFont ? editConfig.fontResourceURL : getFontTypeUrl);
+    NSMutableDictionary *fontListDic;
+    if(hasNewFont){
+        fontListDic = [VEHelp getNetworkMaterialWithType:kFontType
+                                                             appkey:[VEConfigManager sharedManager].appKey
+                                                      urlPath:uploadUrl];
+    }else{
+        fontListDic = [VEHelp updateInfomation:nil andUploadUrl:uploadUrl];
+    }
+    if (hasNewFont ? ([fontListDic[@"code"] intValue] != 0) : ([fontListDic[@"code"] intValue] != 200)){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (callBack) {
+                NSString *message;
+                if (fontListDic) {
+                    if (hasNewFont) {
+                        message = fontListDic[@"msg"];
+                    }else {
+                        message = fontListDic[@"message"];
+                    }
+                }
+                if (!message || message.length == 0) {
+                    message = VELocalizedString(@"下载失败，请检查网络!", nil);
+                }
+                NSDictionary *userInfo = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
+                NSError *error = [NSError errorWithDomain:@"com.PESDK.ErrorDomain" code:VESDKErrorCode_DownloadSubtitle userInfo:userInfo];
+                callBack(error);
+            }
+        });
+        return;
+    }
+    NSArray *fontList = [fontListDic objectForKey:@"data"];
+    NSDictionary *fontIconDic = [fontListDic objectForKey:@"icon"];
+    NSString *iconUrl = [fontIconDic objectForKey:@"caption"];
+    NSString *cacheFolderPath = [[VEHelp pathFontForURL:[NSURL URLWithString:iconUrl]] stringByDeletingLastPathComponent];
+    NSString *cacheIconPath = [cacheFolderPath stringByAppendingPathComponent:@"icon"];
+    if(![[NSFileManager defaultManager] fileExistsAtPath:cacheFolderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:cacheFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
+    if([[NSFileManager defaultManager] contentsOfDirectoryAtPath:cacheIconPath error:nil].count==0 && !hasNewFont){
+        //将plist文件写入文件夹
+        BOOL suc = [fontList writeToFile:kFontPlistPath atomically:YES];
+        suc = [fontIconDic writeToFile:kFontIconPlistPath atomically:YES];
+        [VEFileDownloader downloadFileWithURL:iconUrl cachePath:cacheFolderPath HTTPMethod:VEGET cancelBtn: nil progress:^(NSNumber *numProgress) {
+            NSLog(@"progress:%f",[numProgress floatValue]);
+//            if(progressBlock){
+//                progressBlock([numProgress floatValue]);
+//            }
+        } finish:^(NSString *fileCachePath) {
+            [VEHelp OpenZipp:fileCachePath unzipto:cacheFolderPath];
+        } fail:^(NSError *error) {
+        }cancel:^{
+        }];
+    }else{
+        [self updateLocalMaterialWithType:VEAdvanceEditType_None newList:fontList];
+        BOOL suc = [fontList writeToFile:kFontPlistPath atomically:YES];
+        suc = [fontIconDic writeToFile:kFontIconPlistPath atomically:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (callBack) {
+                callBack(nil);
+            }
+        });
+    }
+}
+
++ (void)updateLocalMaterialWithType:(VEAdvanceEditType)type newList:(NSArray *)newList {
+    NSString *folderPath;
+    if (type == VEAdvanceEditType_Subtitle) {
+        folderPath = kSubtitlePlistPath;
+    }else if (type == VEAdvanceEditType_Sticker) {
+        folderPath = kStickerPlistPath;
+    }else {
+        folderPath = kFontPlistPath;
+    }
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *oldList = [[NSArray alloc] initWithContentsOfFile:folderPath];
+    if (oldList.count > 0) {
+        [newList enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+            NSString *updateTime = obj1[@"updatetime"];
+            [oldList enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
+                if ([obj2[@"id"] intValue] == [obj1[@"id"] intValue]) {
+                    if (![obj2[@"updatetime"] isEqualToString:updateTime]) {
+                        NSString *file = [[obj2[@"file"] stringByDeletingLastPathComponent] lastPathComponent];
+                        NSString *path = [folderPath stringByAppendingPathComponent:file];
+                        if ([fileManager fileExistsAtPath:path]) {
+                            [fileManager removeItemAtPath:path error:nil];
+                        }
+                    }
+                    *stop2 = YES;
+                }
+            }];
+        }];
+    }
+}
+
++(NSString *)pathFontForURL:(NSURL *)aURL{
+    return [kFontFolder stringByAppendingPathComponent:[NSString stringWithFormat:@"Font-%lu.zip", (unsigned long)[[aURL description] hash]]];
+}
+
++(NSMutableAttributedString *)getAttrString:(NSString *) string atForegroundColor:(UIColor *) foregroundColor atStrokeColor:(UIColor *) strokeColor atShadowBlurRadius:(float) shadowBlurRadius atShadowOffset:(CGSize) shadowOffset atShadowColor:(UIColor *) shadowColor
+{
+    NSString *str = string;
+    NSRange range = NSMakeRange(0, str.length);
+    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:str];
+    [attrString addAttribute:NSForegroundColorAttributeName value:foregroundColor range:range];
+    [attrString addAttribute:NSStrokeWidthAttributeName value:@-2 range:range];
+    [attrString addAttribute:NSStrokeColorAttributeName value:strokeColor range:range];
+    
+    NSShadow *shadow = [[NSShadow alloc]init];
+    shadow.shadowBlurRadius = shadowBlurRadius;
+    shadow.shadowOffset = shadowOffset;
+    shadow.shadowColor = shadowColor;
+    [attrString addAttribute:NSShadowAttributeName value:shadow range:range];
+    [attrString addAttribute:NSBaselineOffsetAttributeName value:@1 range:range];
+    return  attrString;
+}
+
++ (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize
+{
+    UIGraphicsBeginImageContext(CGSizeMake(image.size.width * scaleSize, image.size.height * scaleSize));
+    [image drawInRect:CGRectMake(0, 0, image.size.width * scaleSize, image.size.height * scaleSize)];
+    UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return scaledImage;
+}
+
++ (UIImage*)drawImages:(NSMutableArray *)images size:(CGSize)size animited:(BOOL)animited{
+    if(images.count>0){
+        float width=0;
+        float height;
+        if(animited){
+            height = ((UIImage *)images[0]).size.height/2;
+        }else{
+            height = ((UIImage *)images[0]).size.height;
+        }
+        for(int i=0;i<images.count;i++){
+            if(animited){
+                width = width + ((UIImage *)images[i]).size.width/2;
+            }else{
+                width = width + ((UIImage *)images[i]).size.width;
+            }
+        }
+        size = CGSizeMake(width, height);
+
+        UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+        UIGraphicsGetCurrentContext();
+        float x=0;
+        for (NSInteger i =0;i<images.count;i++) {
+            UIImage *imagees = images[i];
+            float width = imagees.size.width;
+//            NSLog(@"%s : %f",__func__,imagees.size.width);
+            if(animited){
+                width = imagees.size.width/2;
+            }
+            [imagees drawInRect:CGRectMake(x,0,width,size.height)];
+            x+=width;
+        }
+        
+        UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        return newImage;
+    }else{
+        return nil;
+    }
+    
+}
+
++ (CaptionAnimationType)captionAnimateToCaptionAnimation:(CaptionAnimateType)type {
+    CaptionAnimationType resultType;
+    switch (type) {
+        case CaptionAnimateTypeUp:
+        case CaptionAnimateTypeDown:
+        case CaptionAnimateTypeLeft:
+        case CaptionAnimateTypeRight:
+            resultType = CaptionAnimationTypeMove;
+            break;
+            
+        case CaptionAnimateTypeScaleInOut:
+            resultType = CaptionAnimationTypeScaleInOut;
+            break;
+            
+        case CaptionAnimateTypeScrollInOut:
+            resultType = CaptionAnimationTypeScrollInOut;
+            break;
+            
+        case CaptionAnimateTypeFadeInOut:
+            resultType = CaptionAnimationTypeFadeInOut;
+            break;
+            
+        default:
+            resultType = CaptionAnimationTypeNone;
+            break;
+    }
+    return resultType;
+}
+
++ (UIImage *)getLastScreenShotImageFromVideoURL:(NSURL *)fileURL atTime:(CMTime)time {
+    if (CMTimeCompare(time, kCMTimeZero) < 0) {
+        return nil;
+    }
+    @autoreleasepool {
+        AVURLAsset *asset = [AVURLAsset assetWithURL:fileURL];
+        AVAssetImageGenerator *gen = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+        gen.appliesPreferredTrackTransform = YES;
+        //如果需要精确时间
+        gen.requestedTimeToleranceAfter = kCMTimeZero;
+        gen.requestedTimeToleranceBefore = kCMTimeZero;
+        
+        NSError *error = nil;
+        CGImageRef image = [gen copyCGImageAtTime:time actualTime:nil error:&error];
+        float frameRate = 0.0;
+        if ([[asset tracksWithMediaType:AVMediaTypeVideo] count] > 0) {
+            AVAssetTrack* clipVideoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+            frameRate = clipVideoTrack.nominalFrameRate;
+            if (CMTimeCompare(time, clipVideoTrack.timeRange.duration) == 1) {
+                time = clipVideoTrack.timeRange.duration;
+            }
+        }
+        while (!image) {
+            error = nil;
+            time = CMTimeSubtract(time, CMTimeMake(1, frameRate>0 ? frameRate : 30));
+            image = [gen copyCGImageAtTime:time actualTime:nil error:&error];
+            if (image || CMTimeCompare(kCMTimeZero, time) == 0) {
+                break;
+            }
+        }
+        UIImage *shotImage = [[UIImage alloc] initWithCGImage:image];
+        CGImageRelease(image);
+        
+        if(error){
+            NSLog(@"error:%@",error);
+            error = nil;
+        }
+        gen = nil;
+        asset = nil;
+        return shotImage;
+    }
+}
+
++ (UIImage *)geScreenShotImageFromVideoURL:(NSURL *)fileURL atTime:(CMTime)time  atSearchDirection:(bool) isForward{
+    
+    if( isForward )
+    {
+        return  [VEHelp getLastScreenShotImageFromVideoURL:fileURL atTime:time];
+    }
+    
+    if (CMTimeCompare(time, kCMTimeZero) < 0) {
+        time = kCMTimeZero;
+    }
+    @autoreleasepool {
+        AVURLAsset *asset = [AVURLAsset assetWithURL:fileURL];
+        AVAssetImageGenerator *gen = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+        gen.appliesPreferredTrackTransform = YES;
+        gen.apertureMode =AVAssetImageGeneratorApertureModeEncodedPixels;
+        //如果需要精确时间
+        gen.requestedTimeToleranceAfter = kCMTimeZero;
+        gen.requestedTimeToleranceBefore = kCMTimeZero;
+        
+        NSError *error = nil;
+        CGImageRef image = [gen copyCGImageAtTime:time actualTime:nil error:&error];
+        
+        float frameRate = 0.0;
+        float duration = 0;
+        if ([[asset tracksWithMediaType:AVMediaTypeVideo] count] > 0) {
+            AVAssetTrack* clipVideoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+            frameRate = clipVideoTrack.nominalFrameRate;
+            if (CMTimeCompare(time, clipVideoTrack.timeRange.duration) == 1) {
+                time = clipVideoTrack.timeRange.duration;
+            }
+            duration = CMTimeGetSeconds(clipVideoTrack.timeRange.duration);
+        }
+        while (!image) {
+            error = nil;
+            time = CMTimeAdd(time, CMTimeMake(1, frameRate>0 ? frameRate : 30));
+            image = [gen copyCGImageAtTime:time actualTime:nil error:&error];
+            if (image || CMTimeCompare(kCMTimeZero, time) == 0) {
+                break;
+            }
+            
+//            if( duration < CMTimeGetSeconds(time) )
+//            {
+//                break;
+//            }
+            
+        }
+        UIImage *shotImage = [[UIImage alloc] initWithCGImage:image];
+        CGImageRelease(image);
+        
+        if(error){
+            NSLog(@"error:%@",error);
+            error = nil;
+        }
+        gen = nil;
+        asset = nil;
+        return shotImage;
+    }
+}
+
++(float)getMediaAssetScale_File:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark
+{
+    if (CGRectEqualToRect(corp, CGRectZero)) {
+        corp = CGRectMake(0, 0, 1, 1);
+    }
+    
+    float scale = 1;
+    
+    
+    float width;
+    float height;
+    if (syncContainerSize.width == syncContainerSize.height) {
+        if( isWatermark )
+            width = syncContainerSize.width/4.0/4.0;
+        else
+            width = syncContainerSize.width/4.0;
+        height = width / (size.width / size.height);
+    }else if (syncContainerSize.width < syncContainerSize.height) {
+        if( isWatermark )
+            width = syncContainerSize.width/2.0/4.0;
+        else
+            width = syncContainerSize.width/2.0;
+        height = width / (size.width / size.height);
+    }else {
+        if( isWatermark )
+            height = syncContainerSize.height/2.0/4.0;
+        else
+            height = syncContainerSize.height/2.0;
+        width = height * (size.width / size.height);
+    }
+    
+    size = CGSizeMake(width * corp.size.width, height * corp.size.height);
+    
+    scale = rect.size.height*syncContainerSize.height/size.height;
+    
+    return scale;
 }
 @end

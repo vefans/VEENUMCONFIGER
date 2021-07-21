@@ -64,7 +64,8 @@
         CGFloat width = frame.size.width;
         CGFloat height = frame.size.height;
         
-        if (self.videoCropType == VEVideoCropType_Crop) {
+        if ((self.videoCropType == VEVideoCropType_Crop)
+            || (VEVideoCropType_FixedCrop == self.videoCropType )) {
             
             self.cropWidth= self.cropSizeMin.width;
             self.cropHeight = self.cropSizeMin.height;
@@ -130,7 +131,8 @@
     
     self.cropType = cropType;
     if (cropType == VE_VECROPTYPE_FREE) {
-        if (self.videoCropType == VEVideoCropType_Crop) {
+        if( (self.videoCropType == VEVideoCropType_Crop)
+           || (VEVideoCropType_FixedCrop == self.videoCropType)) {
             
             [self ratioFreeAandOriginal];
             [self setTrackButtonState:NO];
@@ -383,7 +385,8 @@
     [super drawRect:rect];
     
     
-    if (self.videoCropType == VEVideoCropType_Crop) {
+    if ((self.videoCropType == VEVideoCropType_Crop)
+        || (VEVideoCropType_FixedCrop == self.videoCropType )) {
         
         [self.cropRectView setFrame:CGRectMake(self.croporiginX, self.croporiginY, self.cropWidth, self.cropHeight)];
         //透明区域
@@ -625,7 +628,8 @@
         return  self.rightTrackButton.superview;
     }else if(CGRectContainsPoint(topLeftTrackBounds,point)){
         
-        if (self.videoCropType == VEVideoCropType_Crop) {
+        if ((self.videoCropType == VEVideoCropType_Crop)
+            || (VEVideoCropType_FixedCrop == self.videoCropType )) {
             self.cropViewTrackType = VE_TRACK_TOPLEFT;
             return  self.topLeftTrackButton.superview;
             
@@ -638,7 +642,8 @@
         
     }else if(CGRectContainsPoint(topRightTrackBounds,point)){
         
-        if (self.videoCropType == VEVideoCropType_Crop) {
+        if ((self.videoCropType == VEVideoCropType_Crop)
+            || (VEVideoCropType_FixedCrop == self.videoCropType )) {
             self.cropViewTrackType = VE_TRACK_TOPRIGHT;
             return  self.topRightTrackButton.superview;
             
@@ -1497,7 +1502,8 @@
 
 -(VETrackButton *)topLeftTrackButton{
     if (_topLeftTrackButton == nil) {
-        if (self.videoCropType == VEVideoCropType_Crop) {
+        if ((self.videoCropType == VEVideoCropType_Crop)
+            || (VEVideoCropType_FixedCrop == self.videoCropType )) {
             _topLeftTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake(self.croporiginX -VE_TRACK_WIDTH, self.croporiginY - VE_TRACK_WIDTH, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH) withCropViewTrackType:VE_TRACK_TOPLEFT];
             [_topLeftTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
         }else if (self.videoCropType == VEVideoCropType_Dewatermark){
@@ -1517,7 +1523,8 @@
 -(VETrackButton *)topRightTrackButton{
     if (_topRightTrackButton == nil) {
         
-        if (self.videoCropType == VEVideoCropType_Crop) {
+        if ((self.videoCropType == VEVideoCropType_Crop)
+            || (VEVideoCropType_FixedCrop == self.videoCropType )) {
             _topRightTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake((self.croporiginX+ self.cropWidth) -VE_TRACK_HEIGHT*1/2, self.croporiginY - VE_TRACK_WIDTH, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH) withCropViewTrackType:VE_TRACK_TOPRIGHT];
             [_topRightTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
         }else if (self.videoCropType == VEVideoCropType_Dewatermark){
@@ -1545,7 +1552,8 @@
 -(VETrackButton *)bottomRightTrackButton{
     
     if (_bottomRightTrackButton == nil) {
-        if (self.videoCropType == VEVideoCropType_Crop) {
+        if ((self.videoCropType == VEVideoCropType_Crop)
+            || (VEVideoCropType_FixedCrop == self.videoCropType )) {
             _bottomRightTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake(self.croporiginX+self.cropWidth -VE_TRACK_HEIGHT*1/2, self.croporiginY+self.cropHeight -VE_TRACK_HEIGHT*1/2, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH) withCropViewTrackType:VE_TRACK_BOTTOMRIGHT];
             [_bottomRightTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
         }else if (self.videoCropType == VEVideoCropType_Dewatermark){

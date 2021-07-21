@@ -143,23 +143,23 @@ static NSString *cellIconID = @"VECropIconTypeCell";
 
     
     if (cropTypeModel.cropType == VE_VECROPTYPE_FREE) {
-        return UIEdgeInsetsMake(38, 0, 0, 8);//（上、左、下、右）自由
+        return UIEdgeInsetsMake(38.0/90.0*self.frame.size.height, 0, 0, 8.0/90.0*self.frame.size.height);//（上、左、下、右）自由
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_ORIGINAL){
-        return UIEdgeInsetsMake(38, 0, 0, 8);//（上、左、下、右）原比列
+        return UIEdgeInsetsMake(38.0/90.0*self.frame.size.height, 0, 0, 8.0/90.0*self.frame.size.height);//（上、左、下、右）原比列
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_9TO16){
-        return UIEdgeInsetsMake(0, 0, 0, 8);//（上、左、下、右）9:16
+        return UIEdgeInsetsMake(0, 0, 0, 8.0/90.0*self.frame.size.height);//（上、左、下、右）9:16
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_16TO9){
-        return UIEdgeInsetsMake(38, 0, 0, 8);//（上、左、下、右）16:9
+        return UIEdgeInsetsMake(38.0/90.0*self.frame.size.height, 0, 0, 8.0/90.0*self.frame.size.height);//（上、左、下、右）16:9
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_1TO1){
-        return UIEdgeInsetsMake(38, 0, 0, 8);//（上、左、下、右）1:1
+        return UIEdgeInsetsMake(38.0/90.0*self.frame.size.height, 0, 0, 8.0/90.0*self.frame.size.height);//（上、左、下、右）1:1
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_6TO7){
-        return UIEdgeInsetsMake(13, 0, 0, 8);//（上、左、下、右）6:7
+        return UIEdgeInsetsMake(13.0/90.0*self.frame.size.height, 0, 0, 8.0/90.0*self.frame.size.height);//（上、左、下、右）6:7
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_4TO5){
-        return UIEdgeInsetsMake(18, 0, 0, 8);//（上、左、下、右）4:5
+        return UIEdgeInsetsMake(18.0/90.0*self.frame.size.height, 0, 0, 8.0/90.0*self.frame.size.height);//（上、左、下、右）4:5
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_4TO3){
-        return UIEdgeInsetsMake(38, 0, 0, 8);//（上、左、下、右）4:3
+        return UIEdgeInsetsMake(38.0/90.0*self.frame.size.height, 0, 0, 8.0/90.0*self.frame.size.height);//（上、左、下、右）4:3
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_3TO4){
-        return UIEdgeInsetsMake(20, 0, 0, 8);//（上、左、下、右）3:4
+        return UIEdgeInsetsMake(20.0/90.0*self.frame.size.height, 0, 0, 8.0/90.0*self.frame.size.height);//（上、左、下、右）3:4
     }
     return UIEdgeInsetsMake(0, 0, 0, 0);//（上、左、下、右）
 }
@@ -185,38 +185,38 @@ static NSString *cellIconID = @"VECropIconTypeCell";
 
     
     if (cropTypeModel.cropType == VE_VECROPTYPE_FREE) {
-        return CGSizeMake(52, 52);//返回两个小的cell的尺寸 自由
+        return CGSizeMake(52.0/90.0*self.frame.size.height, 52.0/90.0*self.frame.size.height);//返回两个小的cell的尺寸 自由
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_ORIGINAL){
 
-        return CGSizeMake(52, 52);//返回两个小的cell的尺寸 原比列
+        return CGSizeMake(52.0/90.0*self.frame.size.height, 52.0/90.0*self.frame.size.height);//返回两个小的cell的尺寸 原比列
 
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_9TO16){
 
-        return CGSizeMake(52, 90);//返回两个小的cell的尺寸 9:16
+        return CGSizeMake(52.0/90.0*self.frame.size.height, 90.0/90.0*self.frame.size.height);//返回两个小的cell的尺寸 9:16
 
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_16TO9){
 
-        return CGSizeMake(90, 52);//返回两个小的cell的尺寸 16:9
+        return CGSizeMake(90.0/90.0*self.frame.size.height, 52.0/90.0*self.frame.size.height);//返回两个小的cell的尺寸 16:9
 
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_1TO1){
 
-        return CGSizeMake(52, 52);//返回两个小的cell的尺寸 1:1
+        return CGSizeMake(52.0/90.0*self.frame.size.height, 52.0/90.0*self.frame.size.height);//返回两个小的cell的尺寸 1:1
 
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_6TO7){
 
-        return CGSizeMake(55, 77);//返回两个小的cell的尺寸 6:7
+        return CGSizeMake(55.0/90.0*self.frame.size.height, 77.0/90.0*self.frame.size.height);//返回两个小的cell的尺寸 6:7
 
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_4TO5){
 
-        return CGSizeMake(56, 72);//返回两个小的cell的尺寸 4:5
+        return CGSizeMake(56.0/90.0*self.frame.size.height, 72.0/90.0*self.frame.size.height);//返回两个小的cell的尺寸 4:5
 
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_4TO3){
 
-        return CGSizeMake(70, 52);//返回两个小的cell的尺寸 4:3
+        return CGSizeMake(70.0/90.0*self.frame.size.height, 52.0/90.0*self.frame.size.height);//返回两个小的cell的尺寸 4:3
 
     }else if(cropTypeModel.cropType == VE_VECROPTYPE_3TO4){
 
-        return CGSizeMake(52, 70);//返回两个小的cell的尺寸 3:4
+        return CGSizeMake(52.0/90.0*self.frame.size.height, 70.0/90.0*self.frame.size.height);//返回两个小的cell的尺寸 3:4
 
     }
     return CGSizeMake(0, 0);

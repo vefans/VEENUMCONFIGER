@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) NSInteger       index;
 @property(nonatomic, assign) NSInteger       indexCount;
 
+@property(nonatomic, weak)UIView       *imageView;
+
 @property(nonatomic, assign) bool               isNotMove;
 
 -(void)initCollectView:(BOOL) isVertical_Cell atWidth:(float) cellWidth atHeight:(float) cellHeight;

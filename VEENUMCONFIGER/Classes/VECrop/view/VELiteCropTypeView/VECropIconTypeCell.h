@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,assign)BOOL isSelect;
 @property(nonatomic,strong)UILabel * titleLabel;
 @property(nonatomic,strong)UIImageView * iconImageView;
+@property(nonatomic,assign)float    height;
 
 -(void)setCellForoCropTypeModel:(VECropTypeModel*)cropTypeModel;
 

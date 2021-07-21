@@ -17,6 +17,15 @@
         _minVideoDuration = 0;
         _enableTextTitle                 = true;
         //片段编辑预设
+        _enableSmear = true;
+        _enableAperture = true;
+        _enableHDR = true;
+        _enableHoly = true;
+        _enableSharpen = true;
+        _enableSmear = true;
+        _enableTon = true;
+        _enableSpirit = true;
+        _enableBlurry = true;
         _enableSingleMediaAdjust = true;
         _enableSingleSpecialEffects = true;
         _enableSingleMediaFilter         = true;
@@ -97,7 +106,6 @@
         _specialEffectResourceURL = nil;
         _fontResourceURL = nil;
         _transitionURL  = nil;
-        _enableMVEffect  = false;
         _enableDraft = false;
         _enableShowBackTipView = true;
         _enableShowRepeatView = true;
@@ -107,6 +115,14 @@
 }
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEEditConfiguration *copy   = [[[self class] allocWithZone:zone] init];
+    copy.enableSmear = _enableSmear;
+    copy.enableTon = _enableTon;
+    copy.enableAperture = _enableAperture;
+    copy.enableHDR = _enableHDR;
+    copy.enableHoly = _enableHoly;
+    copy.enableSpirit = _enableSpirit;
+    copy.enableSharpen = _enableSharpen;
+    copy.enableBlurry = _enableBlurry;
     copy.netMaterialTypeURL                     = _netMaterialTypeURL;
     copy.supportFileType                        = _supportFileType;
     copy.defaultSelectAlbum                     = _defaultSelectAlbum;
@@ -193,7 +209,6 @@
     copy.specialEffectResourceURL       = _specialEffectResourceURL;
     copy.fontResourceURL                = _fontResourceURL;
     copy.transitionURL                  = _transitionURL;
-    copy.enableMVEffect                 = _enableMVEffect;
     copy.enableDraft                    = _enableDraft;
     copy.disableShowDraftButton         = _disableShowDraftButton;
     copy.enableAutoSaveDraft            = _enableAutoSaveDraft;
@@ -208,6 +223,13 @@
 - (id)copyWithZone:(NSZone *)zone{
     VEEditConfiguration *copy   = [[[self class] allocWithZone:zone] init];
     copy.netMaterialTypeURL                     = _netMaterialTypeURL;
+    copy.enableTon = _enableTon;
+    copy.enableAperture = _enableAperture;
+    copy.enableHDR = _enableHDR;
+    copy.enableHoly = _enableHoly;
+    copy.enableSpirit = _enableSpirit;
+    copy.enableSharpen = _enableSharpen;
+    copy.enableBlurry = _enableBlurry;
     copy.supportFileType                        = _supportFileType;
     copy.defaultSelectAlbum                     = _defaultSelectAlbum;
     copy.mediaCountLimit                         = _mediaCountLimit;
@@ -293,7 +315,6 @@
     copy.specialEffectResourceURL       = _specialEffectResourceURL;
     copy.fontResourceURL                = _fontResourceURL;
     copy.transitionURL                  = _transitionURL;
-    copy.enableMVEffect                 = _enableMVEffect;
     copy.enableDraft                    = _enableDraft;
     copy.disableShowDraftButton         = _disableShowDraftButton;
     copy.enableAutoSaveDraft            = _enableAutoSaveDraft;

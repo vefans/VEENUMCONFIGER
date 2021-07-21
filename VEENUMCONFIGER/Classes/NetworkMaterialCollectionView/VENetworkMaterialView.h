@@ -20,6 +20,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 -(void)initCollectView;
 
+@property(nonatomic, assign) NSInteger           isAddCount;
+ 
+@property(nonatomic, assign) BOOL             isImageShow;
+
 @property(nonatomic, assign) bool               isNotMove;
 
 @property(nonatomic, weak) UICollectionView     *collectionView;
@@ -28,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, assign) NSInteger          CollectionViewCount;
 
+@property(nonatomic, assign) NSInteger         currentCellIndex;
+
 @end
 
 @protocol VENetworkMaterialViewDelegate <NSObject>
@@ -35,6 +41,8 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) CellIndex:(NSInteger) index atNetwork:(VENetworkMaterialView *) network;
 -(UIView *)btnCollectCell:(NSInteger) index atIndexCount:(NSInteger) indexCount atNetwork:(VENetworkMaterialView *) network;
 -(NSInteger) indexCountCell:(NSInteger) index atNetwork:(VENetworkMaterialView *) network;
+
+-(UIView *)ImageViewCollectCell:(NSInteger) indexCount atNetwork:(VENetworkMaterialView *) network;
 
 @end
 
