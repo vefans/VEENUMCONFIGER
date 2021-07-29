@@ -20,6 +20,7 @@
 
 @interface VECropView()
 
+@property(nonatomic,assign)BOOL isTrackButtonHidden;
 
 @property(nonatomic,assign) CGFloat cropWidth;
 @property(nonatomic,assign) CGFloat cropHeight;
@@ -294,6 +295,17 @@
     
     float videoR = valueX / valueY;
     
+    CGRect rect =  _videoFrame;
+    
+    if( VEVideoCropType_FixedCrop == self.videoCropType )
+    {
+        rect.origin.x = rect.origin.x + 20;
+        rect.origin.y = rect.origin.y + 45;
+        
+        rect.size.width = rect.size.width - 40;
+        rect.size.width = rect.size.width - 90;
+    }
+    
     if ( _videoFrame.size.width > _videoFrame.size.height) {
         
         if(videoR > 1.0 && self.cropType == VE_VECROPTYPE_FIXEDRATIO){
@@ -324,9 +336,6 @@
             self.croporiginY = _videoFrame.origin.y;
             self.cropWidth = _videoFrame.size.height *valueX/valueY;
             self.cropHeight = _videoFrame.size.height;
-            
-            
-
         }
         
                 
@@ -466,8 +475,6 @@
 
 - (CGRect)getCropRect
 {
-    
-    
     float imgsize = self.videoSize.width;
     float viewsize = self.videoFrame.size.width;
 
@@ -1574,5 +1581,28 @@
     return _cropRectView;
 }
 
+-(void)trackButton_hidden:(  BOOL ) isHidden
+{
+    _isTrackButtonHidden = isHidden;
+    self.topTrackButton.hidden = YES;
+    self.bottomTrackButton.hidden = YES;
+    self.leftTrackButton.hidden = YES;
+    self.rightTrackButton.hidden = YES;
+    
+    self.topLeftTrackButton.hidden = YES;
+    self.topRightTrackButton.hidden = YES;
+    self.bottomLeftTrackButton.hidden = YES;
+    self.bottomRightTrackButton.hidden = YES;
+    
+    _cropRectView.isTrackButtonHidden = _isTrackButtonHidden;
+    
+    if( _isTrackButtonHidden )
+    {
+        _cropRectView.layer.borderWidth = 2.0;
+    }
+    
+    [_cropRectView setNeedsLayout];
+    [_cropRectView setNeedsDisplay];
+}
 @end
 

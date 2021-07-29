@@ -26,7 +26,7 @@
 -(void)drawRect:(CGRect)rect{
     [super drawRect:rect];
     
-    if ( self.videoCropType !=VEVideoCropType_Dewatermark ) {
+    if ( (self.videoCropType !=VEVideoCropType_Dewatermark) && (!_isTrackButtonHidden) ) {
         CGContextRef context = UIGraphicsGetCurrentContext();
         CGContextSetStrokeColorWithColor(context, Color(255,255,255,1).CGColor);//线框颜色
         

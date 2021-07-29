@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic,assign)VEVideoCropType videoCropType;
 
+@property(nonatomic,assign)BOOL isTrackButtonHidden;
+
 -(instancetype)initWithFrame:(CGRect)frame withVideoCropType:(VEVideoCropType)videoCropType;
 
 @end

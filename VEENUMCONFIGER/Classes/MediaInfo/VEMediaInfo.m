@@ -491,7 +491,7 @@
 
 // 如果实现了该方法，则处理过程中会忽略该列表内的所有属性
 + (NSArray *)modelPropertyBlacklist {
-    return @[@"contentURL"];
+    return @[@"contentURL", @"thumbImage"];
 }
 
 //返回一个 Dict，将 Model 属性名对映射到 JSON 的 Key。

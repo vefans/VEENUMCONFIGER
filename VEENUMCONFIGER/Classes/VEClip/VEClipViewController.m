@@ -221,6 +221,7 @@
     r.origin.x = (_videoCropView.cropView.cropRectView.frame.size.width-rect.size.width)/2.0;
     r.origin.y =  (_videoCropView.cropView.cropRectView.frame.size.height - rect.size.height)/2.0;
     [_videoCropView.cropView setCropRect:r];
+    [_videoCropView.cropView trackButton_hidden:YES];
     //    }
     
     if( _videoView )
@@ -373,31 +374,11 @@
     vvasset.rotate = _selectFile.rotate;
     vvasset.isVerticalMirror = _selectFile.isVerticalMirror;
     vvasset.isHorizontalMirror = _selectFile.isHorizontalMirror;
-    //vvasset.crop = _selectFile.crop;
-    
-    vvasset.brightness = _selectFile.brightness;
-    vvasset.contrast = _selectFile.contrast;
-    vvasset.saturation = _selectFile.saturation;
-    vvasset.sharpness = _selectFile.sharpness;
-    vvasset.whiteBalance = _selectFile.whiteBalance;
-    vvasset.vignette = _selectFile.vignette;
     [scene.media addObject:vvasset];
-    //添加特效
-    //滤镜特效
-//    if( _selectFile.customFilterIndex != 0 )
-//    {
-//        NSArray *filterFxArray = [NSArray arrayWithContentsOfFile:kNewSpecialEffectPlistPath];
-//        vvasset.customFilter = [VEGenSpecialEffect getCustomFilerWithFxId:_selectFile.customFilterId filterFxArray:filterFxArray timeRange:CMTimeRangeMake(kCMTimeZero,vvasset.timeRange.duration)];
-//    }
-//    //时间特效
-//    if( _selectFile.fileTimeFilterType != kTimeFilterTyp_None )
-//    {
-//        [VEGenSpecialEffect refreshVideoTimeEffectType:self.scenesArray atFile:_selectFile atscene:scene atTimeRange:_selectFile.fileTimeFilterTimeRange atIsRemove:NO];
-//    }
-//    else
+    
     [self.scenesArray addObject:scene];
 
-    _editVideoSize = [VEHelp getEditOrginSizeWithFile:_selectFile];//[VECommonClass getEditSizeWithFile:_selectFile];
+    _editVideoSize = [VEHelp getEditOrginSizeWithFile:_selectFile];
 
     self.editVideoSize = self.videoCropView.bounds.size;
     
@@ -415,7 +396,7 @@
     }
     
     self.videoCropView.cropView.cropType = self.cropType;
-    self.videoCropView.videoSize = self.editVideoSize;
+    self.videoCropView.videoSize = CGSizeMake(self.editVideoSize.width, self.editVideoSize.height);
     _videoCoreSDK.frame = self.videoCropView.videoView.bounds;
     [_videoCoreSDK setEditorVideoSize:_editVideoSize];
     originalvideoCropViewFrame = _videoCoreSDK.frame;
@@ -557,7 +538,6 @@
 }
 
 -(void)whirlButtonClicked{
-    CGRect rc = [_videoCropView.cropView getCropRect];
     if(_selectFile.rotate == 0){
         _selectFile.rotate = -270;
     }else if(_selectFile.rotate == -270 || _selectFile.rotate == 90){
@@ -1122,10 +1102,10 @@
     VECropTypeModel * cropTypeModel = [self.dataCropTypeArray objectAtIndex:indexPath.section];
     [_videoCropView.cropView setCropRectViewFrame:cropTypeModel.cropType];
     self.cropType = cropTypeModel.cropType;
+    
     CGPoint point = self.videoCropView.cropView.cropRectView.frame.origin;
     point = [self.videoCropView.cropView convertPoint:point toView:self.syncContainerView];
     self.pasterTextView.cropRect = CGRectMake(point.x, point.y, self.videoCropView.cropView.cropRectView.frame.size.width, self.videoCropView.cropView.cropRectView.frame.size.height);
-    
     float scale = [self.pasterTextView getCropREct_Scale:self.pasterTextView.selfscale];
     CGAffineTransform transform2 = CGAffineTransformMakeRotation( -_selectFile.rotate/(180.0/M_PI) );
     self.pasterTextView.transform = CGAffineTransformScale(transform2, scale, scale);
@@ -1688,7 +1668,8 @@
     point.x = point.x + size.width/2.0;
     point.y = point.y + size.height/2.0;
     CGRect rect = CGRectZero;
-    CGSize videoSize = CGSizeMake(_videoCropView.frame.size.width-40, _videoCropView.frame.size.height-90);
+    CGSize videoSize = CGSizeMake(_syncContainerRect.size.width - 40, _syncContainerRect.size.height - 90);
+    
     float proportion = size.width/size.height;
     float width = proportion*videoSize.height;
     

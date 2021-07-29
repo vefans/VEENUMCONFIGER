@@ -4,6 +4,36 @@
 #import "VEConfigManager.h"
 #import <LibVECore/Scene.h>
 
+typedef NS_ENUM(NSInteger ,KBeautyCategoryType) {
+    KBeautyCategory_None = 0,             //无
+    KBeautyCategory_FiveSenses,          //五官
+    KBeautyCategory_BlurIntensity,        //磨皮
+    KBeautyCategory_WHitening,           //美白
+    KBeautyCategory_Rosy,                  //红润
+};
+
+typedef NS_ENUM(NSInteger ,KBeautyType) {
+    KBeauty_FaceWidth = 0, //脸的宽度
+    KBeauty_Forehead,        //额头高度
+    KBeauty_ChinWidth,      //下颚的宽度
+    KBeauty_ChinHeight,     //下巴的高度
+    KBeauty_EyeSize,         //眼睛大小
+    KBeauty_EyeWidth,       //眼睛宽度
+    KBeauty_EyeHeight,      //眼睛高度
+    KBeauty_EyeSlant,         //眼睛倾斜
+    KBeauty_EyeDistance,    //眼睛距离
+    KBeauty_NoseSize,         //鼻子大小
+    KBeauty_NoseWidth,      //鼻子宽度
+    KBeauty_NoseHeight,     //鼻子高度
+    KBeauty_MouthWidth,     //嘴巴宽度
+    KBeauty_LipUpper,         //上嘴唇
+    KBeauty_LipLower,          //下嘴唇
+    KBeauty_Smile,                //微笑
+    KBeauty_BlurIntensity,      //磨皮
+    KBeauty_ToneIntensity,      // 红润
+    KBeauty_BrightIntensity,    //美白
+};
+
 typedef NS_ENUM(NSInteger ,MediaType) {
     kFILEVIDEO,
     kFILEIMAGE,

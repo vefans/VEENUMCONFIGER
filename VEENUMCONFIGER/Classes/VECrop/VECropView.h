@@ -63,6 +63,8 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)setWithCropWidth:(CGFloat)cropWidth WithCropHeight:(CGFloat)CropHeight;
 -(void)setCropRect:(CGRect)crop;
 
+-(void)trackButton_hidden:(  BOOL ) isHidden;
+
 @end
 
 NS_ASSUME_NONNULL_END
