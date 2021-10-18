@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0953419A26292EBD006CA303 /* VEDemoUse.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0953419926292EBD006CA303 /* VEDemoUse.bundle */; };
-		095FBC69263BE555005E666A /* VENetworkMaterialView.m in Sources */ = {isa = PBXBuildFile; fileRef = 095FBC62263BE555005E666A /* VENetworkMaterialView.m */; };
-		095FBC6A263BE555005E666A /* VENetworkMaterialView.h in Headers */ = {isa = PBXBuildFile; fileRef = 095FBC63263BE555005E666A /* VENetworkMaterialView.h */; };
-		095FBC6B263BE555005E666A /* VENetworkMaterialCollectionViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 095FBC65263BE555005E666A /* VENetworkMaterialCollectionViewCell.h */; };
-		095FBC6C263BE555005E666A /* VENetworkMaterialBtn_Cell.m in Sources */ = {isa = PBXBuildFile; fileRef = 095FBC66263BE555005E666A /* VENetworkMaterialBtn_Cell.m */; };
-		095FBC6D263BE555005E666A /* VENetworkMaterialCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 095FBC67263BE555005E666A /* VENetworkMaterialCollectionViewCell.m */; };
-		095FBC6E263BE555005E666A /* VENetworkMaterialBtn_Cell.h in Headers */ = {isa = PBXBuildFile; fileRef = 095FBC68263BE555005E666A /* VENetworkMaterialBtn_Cell.h */; };
+		093BFA752702F2C100F85D4B /* VEDraftInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 093BFA732702F2C100F85D4B /* VEDraftInfo.h */; };
+		093BFA762702F2C100F85D4B /* VEDraftInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 093BFA742702F2C100F85D4B /* VEDraftInfo.m */; };
+		095FBC56263B9683005E666A /* VEDemoUse.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 095FBC55263B9682005E666A /* VEDemoUse.bundle */; };
+		096800BD27016040006472FF /* VEUndoRedoObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 096800BB27016040006472FF /* VEUndoRedoObject.h */; };
+		096800BE27016040006472FF /* VEUndoRedoObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 096800BC27016040006472FF /* VEUndoRedoObject.m */; };
+		09695B50263A5D1E00A34B71 /* VECustomTextPhotoFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 09695B4E263A5D1E00A34B71 /* VECustomTextPhotoFile.h */; };
+		09695B51263A5D1E00A34B71 /* VECustomTextPhotoFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 09695B4F263A5D1E00A34B71 /* VECustomTextPhotoFile.m */; };
 		097C0093260C34BE00C889AB /* VEVideoCropView.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C007D260C34BE00C889AB /* VEVideoCropView.h */; };
 		097C0094260C34BE00C889AB /* VETrackButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C007E260C34BE00C889AB /* VETrackButton.h */; };
 		097C0095260C34BE00C889AB /* VECropView.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C007F260C34BE00C889AB /* VECropView.h */; };
@@ -44,6 +44,14 @@
 		097C0100260C350A00C889AB /* UIViewController+PopGestureRecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C00F4260C350A00C889AB /* UIViewController+PopGestureRecognizer.h */; };
 		097C0101260C350A00C889AB /* VENavBarButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 097C00F5260C350A00C889AB /* VENavBarButton.h */; };
 		097C0102260C350A00C889AB /* UIViewController+PopGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 097C00F6260C350A00C889AB /* UIViewController+PopGestureRecognizer.m */; };
+		097F783327144BC90014A725 /* VEUndoRedoEditManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 097F783127144BC90014A725 /* VEUndoRedoEditManager.h */; };
+		097F783427144BC90014A725 /* VEUndoRedoEditManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 097F783227144BC90014A725 /* VEUndoRedoEditManager.m */; };
+		09B83C9E26B3E0D7001BE0C6 /* VEClipViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 09B83C9C26B3E0D7001BE0C6 /* VEClipViewController.h */; };
+		09B83C9F26B3E0D7001BE0C6 /* VEClipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B83C9D26B3E0D7001BE0C6 /* VEClipViewController.m */; };
+		09B83CA526B3E0E4001BE0C6 /* VESkinView.h in Headers */ = {isa = PBXBuildFile; fileRef = 09B83CA126B3E0E4001BE0C6 /* VESkinView.h */; };
+		09B83CA626B3E0E4001BE0C6 /* VEFiveSensesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B83CA226B3E0E4001BE0C6 /* VEFiveSensesView.m */; };
+		09B83CA726B3E0E4001BE0C6 /* VESkinView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B83CA326B3E0E4001BE0C6 /* VESkinView.m */; };
+		09B83CA826B3E0E4001BE0C6 /* VEFiveSensesView.h in Headers */ = {isa = PBXBuildFile; fileRef = 09B83CA426B3E0E4001BE0C6 /* VEFiveSensesView.h */; };
 		0AECE38B25838FA400879809 /* VEENUMCONFIGER.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AECE38925838FA400879809 /* VEENUMCONFIGER.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		700F383A25AFED6B00943532 /* VEExportConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 700F381625AFED6A00943532 /* VEExportConfiguration.h */; };
 		700F383B25AFED6B00943532 /* VEExportConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 700F381725AFED6B00943532 /* VEExportConfiguration.m */; };
@@ -76,13 +84,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0953419926292EBD006CA303 /* VEDemoUse.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = VEDemoUse.bundle; sourceTree = "<group>"; };
-		095FBC62263BE555005E666A /* VENetworkMaterialView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VENetworkMaterialView.m; sourceTree = "<group>"; };
-		095FBC63263BE555005E666A /* VENetworkMaterialView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VENetworkMaterialView.h; sourceTree = "<group>"; };
-		095FBC65263BE555005E666A /* VENetworkMaterialCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VENetworkMaterialCollectionViewCell.h; sourceTree = "<group>"; };
-		095FBC66263BE555005E666A /* VENetworkMaterialBtn_Cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VENetworkMaterialBtn_Cell.m; sourceTree = "<group>"; };
-		095FBC67263BE555005E666A /* VENetworkMaterialCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VENetworkMaterialCollectionViewCell.m; sourceTree = "<group>"; };
-		095FBC68263BE555005E666A /* VENetworkMaterialBtn_Cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VENetworkMaterialBtn_Cell.h; sourceTree = "<group>"; };
+		093BFA732702F2C100F85D4B /* VEDraftInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VEDraftInfo.h; sourceTree = "<group>"; };
+		093BFA742702F2C100F85D4B /* VEDraftInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VEDraftInfo.m; sourceTree = "<group>"; };
+		095FBC55263B9682005E666A /* VEDemoUse.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = VEDemoUse.bundle; sourceTree = "<group>"; };
+		096800BB27016040006472FF /* VEUndoRedoObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VEUndoRedoObject.h; sourceTree = "<group>"; };
+		096800BC27016040006472FF /* VEUndoRedoObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VEUndoRedoObject.m; sourceTree = "<group>"; };
+		09695B4E263A5D1E00A34B71 /* VECustomTextPhotoFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VECustomTextPhotoFile.h; sourceTree = "<group>"; };
+		09695B4F263A5D1E00A34B71 /* VECustomTextPhotoFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VECustomTextPhotoFile.m; sourceTree = "<group>"; };
 		097C007D260C34BE00C889AB /* VEVideoCropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEVideoCropView.h; sourceTree = "<group>"; };
 		097C007E260C34BE00C889AB /* VETrackButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VETrackButton.h; sourceTree = "<group>"; };
 		097C007F260C34BE00C889AB /* VECropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VECropView.h; sourceTree = "<group>"; };
@@ -113,6 +121,14 @@
 		097C00F4260C350A00C889AB /* UIViewController+PopGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+PopGestureRecognizer.h"; sourceTree = "<group>"; };
 		097C00F5260C350A00C889AB /* VENavBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VENavBarButton.h; sourceTree = "<group>"; };
 		097C00F6260C350A00C889AB /* UIViewController+PopGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+PopGestureRecognizer.m"; sourceTree = "<group>"; };
+		097F783127144BC90014A725 /* VEUndoRedoEditManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VEUndoRedoEditManager.h; sourceTree = "<group>"; };
+		097F783227144BC90014A725 /* VEUndoRedoEditManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VEUndoRedoEditManager.m; sourceTree = "<group>"; };
+		09B83C9C26B3E0D7001BE0C6 /* VEClipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEClipViewController.h; sourceTree = "<group>"; };
+		09B83C9D26B3E0D7001BE0C6 /* VEClipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEClipViewController.m; sourceTree = "<group>"; };
+		09B83CA126B3E0E4001BE0C6 /* VESkinView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VESkinView.h; sourceTree = "<group>"; };
+		09B83CA226B3E0E4001BE0C6 /* VEFiveSensesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VEFiveSensesView.m; sourceTree = "<group>"; };
+		09B83CA326B3E0E4001BE0C6 /* VESkinView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VESkinView.m; sourceTree = "<group>"; };
+		09B83CA426B3E0E4001BE0C6 /* VEFiveSensesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VEFiveSensesView.h; sourceTree = "<group>"; };
 		0AECE38625838FA400879809 /* VEENUMCONFIGER.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VEENUMCONFIGER.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AECE38925838FA400879809 /* VEENUMCONFIGER.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VEENUMCONFIGER.h; sourceTree = "<group>"; };
 		0AECE38A25838FA400879809 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -157,25 +173,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		095FBC61263BE555005E666A /* NetworkMaterialCollectionView */ = {
+		093BFA722702F2A500F85D4B /* VEDraft */ = {
 			isa = PBXGroup;
 			children = (
-				095FBC63263BE555005E666A /* VENetworkMaterialView.h */,
-				095FBC62263BE555005E666A /* VENetworkMaterialView.m */,
-				095FBC64263BE555005E666A /* NetworkMaterialCollectionViewCell */,
+				093BFA732702F2C100F85D4B /* VEDraftInfo.h */,
+				093BFA742702F2C100F85D4B /* VEDraftInfo.m */,
 			);
-			path = NetworkMaterialCollectionView;
+			path = VEDraft;
 			sourceTree = "<group>";
 		};
-		095FBC64263BE555005E666A /* NetworkMaterialCollectionViewCell */ = {
+		0958F32F269ED72400DB7359 /* VEClip */ = {
 			isa = PBXGroup;
 			children = (
-				095FBC65263BE555005E666A /* VENetworkMaterialCollectionViewCell.h */,
-				095FBC67263BE555005E666A /* VENetworkMaterialCollectionViewCell.m */,
-				095FBC68263BE555005E666A /* VENetworkMaterialBtn_Cell.h */,
-				095FBC66263BE555005E666A /* VENetworkMaterialBtn_Cell.m */,
+				09B83C9C26B3E0D7001BE0C6 /* VEClipViewController.h */,
+				09B83C9D26B3E0D7001BE0C6 /* VEClipViewController.m */,
 			);
-			path = NetworkMaterialCollectionViewCell;
+			path = VEClip;
+			sourceTree = "<group>";
+		};
+		096800BA27015F9D006472FF /* VEUndoRedo */ = {
+			isa = PBXGroup;
+			children = (
+				096800BB27016040006472FF /* VEUndoRedoObject.h */,
+				096800BC27016040006472FF /* VEUndoRedoObject.m */,
+				097F783127144BC90014A725 /* VEUndoRedoEditManager.h */,
+				097F783227144BC90014A725 /* VEUndoRedoEditManager.m */,
+			);
+			path = VEUndoRedo;
+			sourceTree = "<group>";
+		};
+		09695B4D263A5D1E00A34B71 /* CustomTextPhotoFile */ = {
+			isa = PBXGroup;
+			children = (
+				09695B4E263A5D1E00A34B71 /* VECustomTextPhotoFile.h */,
+				09695B4F263A5D1E00A34B71 /* VECustomTextPhotoFile.m */,
+			);
+			path = CustomTextPhotoFile;
 			sourceTree = "<group>";
 		};
 		097C007C260C34BE00C889AB /* VECrop */ = {
@@ -234,9 +267,24 @@
 			path = VEPlaySlider;
 			sourceTree = "<group>";
 		};
+		09B83CA026B3E0E4001BE0C6 /* VEBeauty */ = {
+			isa = PBXGroup;
+			children = (
+				09B83CA126B3E0E4001BE0C6 /* VESkinView.h */,
+				09B83CA326B3E0E4001BE0C6 /* VESkinView.m */,
+				09B83CA426B3E0E4001BE0C6 /* VEFiveSensesView.h */,
+				09B83CA226B3E0E4001BE0C6 /* VEFiveSensesView.m */,
+			);
+			path = VEBeauty;
+			sourceTree = "<group>";
+		};
 		0A3AEF8725A5CFD9009F7664 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				093BFA722702F2A500F85D4B /* VEDraft */,
+				096800BA27015F9D006472FF /* VEUndoRedo */,
+				09B83CA026B3E0E4001BE0C6 /* VEBeauty */,
+				0958F32F269ED72400DB7359 /* VEClip */,
 				0AECE38925838FA400879809 /* VEENUMCONFIGER.h */,
 				7076A78725BAEAB4003F69E0 /* ImageManager */,
 				700F382525AFED6B00943532 /* CameraConfiguration */,
@@ -246,7 +294,6 @@
 				700F383425AFED6B00943532 /* MediaInfo */,
 				700F383125AFED6B00943532 /* MusicInfo */,
 				700F383725AFED6B00943532 /* ThirdpartyConfig */,
-				095FBC61263BE555005E666A /* NetworkMaterialCollectionView */,
 				700F382825AFED6B00943532 /* UIImage+VEGIF.h */,
 				700F383025AFED6B00943532 /* UIImage+VEGIF.m */,
 				700F382F25AFED6B00943532 /* VEDefines.h */,
@@ -355,6 +402,7 @@
 		700F383425AFED6B00943532 /* MediaInfo */ = {
 			isa = PBXGroup;
 			children = (
+				09695B4D263A5D1E00A34B71 /* CustomTextPhotoFile */,
 				700F383525AFED6B00943532 /* VEMediaInfo.h */,
 				700F383625AFED6B00943532 /* VEMediaInfo.m */,
 			);
@@ -384,7 +432,7 @@
 		70F0CBA125B573F100E80E37 /* Bundle */ = {
 			isa = PBXGroup;
 			children = (
-				0953419926292EBD006CA303 /* VEDemoUse.bundle */,
+				095FBC55263B9682005E666A /* VEDemoUse.bundle */,
 				70F0CBA225B573F100E80E37 /* VEEditSDK.bundle */,
 				70F0CBA325B573F100E80E37 /* VideoRecord.bundle */,
 			);
@@ -399,10 +447,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				097C00A3260C34BE00C889AB /* VEPlaySlider.h in Headers */,
+				09B83CA826B3E0E4001BE0C6 /* VEFiveSensesView.h in Headers */,
 				700F383A25AFED6B00943532 /* VEExportConfiguration.h in Headers */,
 				700F384525AFED6B00943532 /* VEEditConfiguration.h in Headers */,
 				0AECE38B25838FA400879809 /* VEENUMCONFIGER.h in Headers */,
-				095FBC6E263BE555005E666A /* VENetworkMaterialBtn_Cell.h in Headers */,
 				700F384625AFED6B00943532 /* VEENUMCONFIGER-PrefixHeader.h in Headers */,
 				097C0095260C34BE00C889AB /* VECropView.h in Headers */,
 				700F385525AFED6B00943532 /* VEThirdpartyConfig.h in Headers */,
@@ -410,27 +458,31 @@
 				097C009A260C34BE00C889AB /* VECropTypeModel.h in Headers */,
 				097C0101260C350A00C889AB /* VENavBarButton.h in Headers */,
 				097C0093260C34BE00C889AB /* VEVideoCropView.h in Headers */,
+				09B83C9E26B3E0D7001BE0C6 /* VEClipViewController.h in Headers */,
 				097C009F260C34BE00C889AB /* VECropIconTypeCell.h in Headers */,
 				097C009D260C34BE00C889AB /* VECropTypeView.h in Headers */,
 				700F384F25AFED6B00943532 /* VEDefines.h in Headers */,
+				096800BD27016040006472FF /* VEUndoRedoObject.h in Headers */,
 				097C00FC260C350A00C889AB /* VENavigationController.h in Headers */,
 				700F385325AFED6B00943532 /* VEMediaInfo.h in Headers */,
 				700F384825AFED6B00943532 /* VECameraConfiguration.h in Headers */,
 				700F384E25AFED6B00943532 /* VEFaceUBeautyParams.h in Headers */,
 				097C0100260C350A00C889AB /* UIViewController+PopGestureRecognizer.h in Headers */,
 				7076A78D25BAEAB4003F69E0 /* VEAssetModel.h in Headers */,
-				095FBC6A263BE555005E666A /* VENetworkMaterialView.h in Headers */,
 				097C0094260C34BE00C889AB /* VETrackButton.h in Headers */,
-				095FBC6B263BE555005E666A /* VENetworkMaterialCollectionViewCell.h in Headers */,
+				097F783327144BC90014A725 /* VEUndoRedoEditManager.h in Headers */,
 				097C00FB260C350A00C889AB /* VEHeaderView.h in Headers */,
 				700F384925AFED6B00943532 /* UIImage+VEGIF.h in Headers */,
 				097C009E260C34BE00C889AB /* VECropTypeCell.h in Headers */,
 				097C00FF260C350A00C889AB /* VENavBarViewController.h in Headers */,
+				09695B50263A5D1E00A34B71 /* VECustomTextPhotoFile.h in Headers */,
 				7076A78C25BAEAB4003F69E0 /* VEImageManager.h in Headers */,
 				097C00FD260C350A00C889AB /* VEWindow.h in Headers */,
 				700F384A25AFED6B00943532 /* VEHelp.h in Headers */,
 				097C0096260C34BE00C889AB /* VECropRectView.h in Headers */,
+				09B83CA526B3E0E4001BE0C6 /* VESkinView.h in Headers */,
 				700F385225AFED6B00943532 /* VEMusicInfo.h in Headers */,
+				093BFA752702F2C100F85D4B /* VEDraftInfo.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,7 +545,7 @@
 			files = (
 				70F0CBA525B573F100E80E37 /* VideoRecord.bundle in Resources */,
 				70F0CBA425B573F100E80E37 /* VEEditSDK.bundle in Resources */,
-				0953419A26292EBD006CA303 /* VEDemoUse.bundle in Resources */,
+				095FBC56263B9683005E666A /* VEDemoUse.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,35 +557,39 @@
 			buildActionMask = 2147483647;
 			files = (
 				097C00F9260C350A00C889AB /* VEWindow.m in Sources */,
+				09B83C9F26B3E0D7001BE0C6 /* VEClipViewController.m in Sources */,
+				093BFA762702F2C100F85D4B /* VEDraftInfo.m in Sources */,
 				097C009C260C34BE00C889AB /* VECropIconTypeCell.m in Sources */,
 				700F384725AFED6B00943532 /* VECameraConfiguration.m in Sources */,
 				7076A78E25BAEAB4003F69E0 /* VEImageManager.m in Sources */,
 				700F384C25AFED6B00943532 /* VEHelp.m in Sources */,
-				095FBC69263BE555005E666A /* VENetworkMaterialView.m in Sources */,
 				097C00A1260C34BE00C889AB /* VECropTypeCell.m in Sources */,
 				097C0099260C34BE00C889AB /* VECropRectView.m in Sources */,
 				097C00F7260C350A00C889AB /* VENavigationController.m in Sources */,
 				097C0102260C350A00C889AB /* UIViewController+PopGestureRecognizer.m in Sources */,
 				097C009B260C34BE00C889AB /* VECropTypeModel.m in Sources */,
+				09695B51263A5D1E00A34B71 /* VECustomTextPhotoFile.m in Sources */,
 				097C00A2260C34BE00C889AB /* VECropView.m in Sources */,
+				09B83CA726B3E0E4001BE0C6 /* VESkinView.m in Sources */,
 				7076A78F25BAEAB4003F69E0 /* VEAssetModel.m in Sources */,
 				700F385425AFED6B00943532 /* VEMediaInfo.m in Sources */,
 				097C00A4260C34BE00C889AB /* VEPlaySlider.m in Sources */,
 				700F384425AFED6B00943532 /* VEEditConfiguration.m in Sources */,
-				095FBC6C263BE555005E666A /* VENetworkMaterialBtn_Cell.m in Sources */,
 				7069E17725B996540072BCAE /* VEConfigManager.m in Sources */,
+				09B83CA626B3E0E4001BE0C6 /* VEFiveSensesView.m in Sources */,
 				700F385625AFED6B00943532 /* VEThirdpartyConfig.m in Sources */,
 				097C00FE260C350A00C889AB /* VEHeaderView.m in Sources */,
 				097C0097260C34BE00C889AB /* VETrackButton.m in Sources */,
 				097C0098260C34BE00C889AB /* VEVideoCropView.m in Sources */,
 				700F385025AFED6B00943532 /* UIImage+VEGIF.m in Sources */,
-				095FBC6D263BE555005E666A /* VENetworkMaterialCollectionViewCell.m in Sources */,
 				700F385125AFED6B00943532 /* VEMusicInfo.m in Sources */,
 				097C00FA260C350A00C889AB /* VENavBarViewController.m in Sources */,
+				097F783427144BC90014A725 /* VEUndoRedoEditManager.m in Sources */,
 				700F384D25AFED6B00943532 /* VEFaceUBeautyParams.m in Sources */,
 				097C00F8260C350A00C889AB /* VENavBarButton.m in Sources */,
 				700F383B25AFED6B00943532 /* VEExportConfiguration.m in Sources */,
 				097C00A0260C34BE00C889AB /* VECropTypeView.m in Sources */,
+				096800BE27016040006472FF /* VEUndoRedoObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

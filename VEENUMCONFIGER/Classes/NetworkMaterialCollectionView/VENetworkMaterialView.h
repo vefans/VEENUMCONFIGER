@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 -(void)initCollectView;
 
+@property(nonatomic, assign)BOOL                 isDragToChange;
+
 @property(nonatomic, assign) NSInteger           isAddCount;
  
 @property(nonatomic, assign) BOOL             isImageShow;
@@ -34,6 +36,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, assign) NSInteger         currentCellIndex;
 
+/** 设置当前选中项相关参数
+ *  offsetX ：CollectView的偏移值
+ *  lineItemCount ：竖排时，一行的素材数，0为横排
+ *  selectedItemIndex ：当前选中项
+ */
+- (void)setCurrentOffsetX:(float)offsetX
+            lineItemCount:(NSInteger)lineItemCount
+        selectedItemIndex:(NSInteger)selectedItemIndex;
+
 @end
 
 @protocol VENetworkMaterialViewDelegate <NSObject>
@@ -43,6 +54,24 @@ NS_ASSUME_NONNULL_BEGIN
 -(NSInteger) indexCountCell:(NSInteger) index atNetwork:(VENetworkMaterialView *) network;
 
 -(UIView *)ImageViewCollectCell:(NSInteger) indexCount atNetwork:(VENetworkMaterialView *) network;
+
+#pragma mark - UIScrollViewDelegate (时间轴的更新操作)
+//开始滑动
+- (void)netWrokMaterial_ScrollViewWillBeginDragging:(UIScrollView *)scrollView;
+/**
+ 滚动中
+ */
+- (void)netWrokMaterial_ScrollViewDidScroll:(UIScrollView *)scrollView;
+
+/**滚动停止
+ */
+- (void)netWrokMaterial_ScrollViewDidEndDecelerating:(UIScrollView *)scrollView;
+
+/**手指停止滑动
+ */
+- (void)netWrokMaterial_ScrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate;
+
+-(void)netWrokMaterial_MoveGesture:(UIGestureRecognizer *) recognizer;
 
 @end
 

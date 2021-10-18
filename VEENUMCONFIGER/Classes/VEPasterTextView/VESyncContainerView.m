@@ -18,6 +18,15 @@
 
 @implementation VESyncContainerView
 
+- (void)contentTapped:(UITapGestureRecognizer*)tapGesture
+{
+    if( _currentPasterTextView )
+    {
+        VEPasterTextView * PasterText = (VEPasterTextView *)_currentPasterTextView;
+        [PasterText contentTapped:tapGesture];
+    }
+}
+
 - (void)pinchGestureRecognizer:(UIPinchGestureRecognizer *)recognizer
 {
     if( _currentPasterTextView )
@@ -47,10 +56,6 @@
 
 -(void)pasterMidline:(UIView *) PasterTextView isHidden:(bool) ishidden
 {
-    
-    if( _isNoPasterMidline )
-        return;
-    
     VEPasterTextView * PasterText = (VEPasterTextView *)PasterTextView;
     
     float interval = 2;
@@ -172,6 +177,9 @@
         rotation.delegate = self;
         //手势View 对象 添加给UIImageView
         [self addGestureRecognizer:rotation];
+        
+        UITapGestureRecognizer *singleTapShowHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(contentTapped:)];
+        [self addGestureRecognizer:singleTapShowHide];
     }
 }
 

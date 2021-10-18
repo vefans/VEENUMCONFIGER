@@ -295,6 +295,10 @@
  */
 @property (nonatomic, assign) float beautyThinFaceIntensity;
 
+/** 五官美颜
+ */
+@property (nonatomic, strong)  NSMutableArray<FaceAttribute*>* multipleFaceAttribute;
+
 /** 场景变声
  */
 @property (nonatomic, assign) NSInteger fileSoundEffect;
@@ -327,6 +331,7 @@
  */
 @property (nonatomic, copy  ) NSURL *coverURL;
 
+@property (nonatomic, assign  ) CGRect coverCrop;
 /** 转场
  */
 @property (nonatomic, strong) Transition *transition;
@@ -440,5 +445,10 @@
 - (MediaAsset *)getMedia;
 
 - (void)remove;
+
+/**智能抠像
+ */
+@property (nonatomic, assign) BOOL autoSegment;
+@property (nonatomic, strong)UIImage *autoSegmentImage;
 
 @end

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "VESyncContainerView.h"
+#import "VEPasterLabel.h"
 
 @class VEPasterTextView;
 @protocol VEPasterTextViewDelegate <NSObject>
@@ -32,22 +33,22 @@
 
 @interface VEPasterTextView : UIView
 
-@property(assign, nonatomic)BOOL        isFixedCrop;    //是否固定裁剪
-@property( assign, nonatomic )CGRect    cropRect;
-
-@property(nonatomic, strong)NSString *  captionColorImagePath;
-
-- (void)adj_TextArea:(NSString *_Nullable)text;
+@property(nonatomic, assign) BOOL   isTextTemplateEdit;
 
 -(UIImageView *_Nullable)getselectImageView;
 
-@property( nonatomic, assign )BOOL  isSizePrompt;
-
-@property (nonatomic, strong)Caption * _Nullable caption;
-
 @property (assign, nonatomic) CGRect contentsCenter_Rect;
 
+@property(assign, nonatomic)BOOL        isFixedCrop;    //是否固定裁剪
+@property( assign, nonatomic )CGRect    cropRect;
+
 @property (nonatomic,weak) VESyncContainerView            * _Nullable syncContainer;
+
+
+@property( nonatomic, assign )BOOL  isSizePrompt;
+
+@property( nonatomic, strong)MediaAsset * _Nullable media;
+
 
 @property (nonatomic, weak) UIButton * _Nullable textEditBtn;
 @property (nonatomic, strong) UIButton * _Nullable closeBtn;
@@ -56,6 +57,19 @@
 
 @property (nonatomic, weak)UIButton  * _Nullable TextEditBtn;
 
+@property (nonatomic, strong)Caption * _Nullable caption;
+
+@property (nonatomic, strong)NSString   * _Nullable captionExCover;
+@property (nonatomic, strong)CaptionEx * _Nullable captionSubtitle;
+@property (nonatomic, assign)NSInteger   captionTextIndex;
+@property (nonatomic, assign)CGRect  tOutRect;
+
+@property (nonatomic, strong)NSMutableArray<UIButton *> * _Nullable textEditBtnArray;
+@property (nonatomic, strong)NSMutableArray * _Nullable textEditBtnLayerArrary;
+-(void)addTextEditBoxEx:(CGRect) rect;
+-(void)textEdit_BtnEx:(UIButton * _Nullable) btn;
+-(void)refreshTextEidtFrameEx;
+
 @property (nonatomic,assign)  BOOL          isMirror;
 @property (nonatomic, strong) UIButton * _Nullable mirrorBtn;
 @property (copy, nonatomic) NSString                      * _Nullable fontName;
@@ -63,7 +77,8 @@
 @property (copy, nonatomic) NSString                      * _Nullable fontPath;
 @property (assign, nonatomic) CGFloat                        fontSize;
 @property (nonatomic, strong) UIView                        * _Nullable labelBgView;
-@property (nonatomic, assign) CGSize                        textLabelSize;
+@property (strong, nonatomic) VEPasterLabel                 * _Nullable contentLabel;
+@property (strong, nonatomic) VEPasterLabel                 * _Nullable shadowLbl;
 @property (strong, nonatomic) UIImageView                   * _Nullable contentImage;
 @property (weak, nonatomic,nullable) id<VEPasterTextViewDelegate>   delegate;
 @property (assign, nonatomic) BOOL                           isShowingEditingHandles;
@@ -107,6 +122,8 @@
 /** 文字竖排，默认为NO*/
 @property (nonatomic ,assign) BOOL isVerticalText;
 
+@property (nonatomic, assign) CGSize                        textLabelSize;
+
 @property (copy, nonatomic, nullable) NSString                       *pname;
 
 - (instancetype _Nullable )initWithFrame:(CGRect)frame
@@ -118,6 +135,7 @@
              pasterViewEnbled:(BOOL)pasterViewEnbled
                superViewFrame:(CGRect)superRect
                  contentImage:(UIImageView * _Nullable)contentImageView
+                    textLabel:(UILabel * _Nullable)textLabel
                      textRect:(CGRect )textRect
                       ectsize:(CGSize )tsize
                          ect:(CGRect )t
@@ -138,8 +156,8 @@
 - (void) hideEditingHandles;
 - (void) showEditingHandles;
 - (void) setFontName:(NSString * _Nullable)fontName;
-//- (void) setTextString: (NSString * _Nullable) text adjustPosition:(BOOL)adjust;
-//- (void) setAttributedString:(NSMutableAttributedString * _Nullable)attributedString isBgCaption:(BOOL)isBgCaption adjustPosition:(BOOL)adjust;
+- (void) setTextString: (NSString * _Nullable) text adjustPosition:(BOOL)adjust;
+- (void) setAttributedString:(NSMutableAttributedString * _Nullable)attributedString isBgCaption:(BOOL)isBgCaption adjustPosition:(BOOL)adjust;
 - (void) setFramescale:(float)value;
 - (float)getFramescale;
 - (NSInteger)getTextAlign;
@@ -187,6 +205,8 @@
 -(void)setTextEdit;
 
 -(void)remove_Recognizer;
+
+- (void)contentTapped:(UITapGestureRecognizer*)tapGesture;
 
 @property (nonatomic, assign)BOOL   isCoverText;
 

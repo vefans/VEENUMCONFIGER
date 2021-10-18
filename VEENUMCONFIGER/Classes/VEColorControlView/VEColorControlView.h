@@ -23,7 +23,7 @@
 
 - (void)refreshFrame:(CGRect)frame;
 
--(void)setCurrentColorButtonColor:(UIColor *) color;
+-(NSInteger)setCurrentColorButtonColor:(UIColor *) color;
 
 -(void)getColor:(UIColor *) color atColorIndex:(void (^)(int index))colorIndex;
 

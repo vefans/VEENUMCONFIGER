@@ -87,10 +87,19 @@
         //取出color1的背景颜色的RGBA值
         [color getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
         
-        [_colorArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            UIColor *objColor = (UIColor *)obj;
+        [_colorArray enumerateObjectsUsingBlock:^(UIColor * _Nonnull objColor, NSUInteger idx, BOOL * _Nonnull stop) {
             [objColor getRed:&red2 green:&green2 blue:&blue2 alpha:&alpha2];
-            if ((red1 == red2)&&(green1 == green2)&&(blue1 == blue2)&&(alpha1 == alpha2)) {
+            
+            NSString *red1_str = [NSString stringWithFormat:@"%.6f", red1];
+            NSString *red2_str = [NSString stringWithFormat:@"%.6f", red2];
+            NSString *green1_str = [NSString stringWithFormat:@"%.6f", green1];
+            NSString *green2_str = [NSString stringWithFormat:@"%.6f", green2];
+            NSString *blue1_str = [NSString stringWithFormat:@"%.6f", blue1];
+            NSString *blue2_str = [NSString stringWithFormat:@"%.6f", blue2];
+            if ([red1_str isEqualToString:red2_str]
+                && [green1_str isEqualToString:green2_str]
+                && [blue1_str isEqualToString:blue2_str])
+            {
                 index = idx;
                 *stop = TRUE;
                 if( colorIndex )
@@ -102,7 +111,7 @@
     }
 }
 
--(void)setCurrentColorButtonColor:(UIColor *) color
+-(NSInteger)setCurrentColorButtonColor:(UIColor *) color
 {
     __block NSUInteger index = 0;
     if( color )
@@ -112,10 +121,19 @@
         //取出color1的背景颜色的RGBA值
         [color getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
         
-        [_colorArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            UIColor *objColor = (UIColor *)obj;
+        [_colorArray enumerateObjectsUsingBlock:^(UIColor * _Nonnull objColor, NSUInteger idx, BOOL * _Nonnull stop) {
             [objColor getRed:&red2 green:&green2 blue:&blue2 alpha:&alpha2];
-            if ((red1 == red2)&&(green1 == green2)&&(blue1 == blue2)&&(alpha1 == alpha2)) {
+            
+            NSString *red1_str = [NSString stringWithFormat:@"%.6f", red1];
+            NSString *red2_str = [NSString stringWithFormat:@"%.6f", red2];
+            NSString *green1_str = [NSString stringWithFormat:@"%.6f", green1];
+            NSString *green2_str = [NSString stringWithFormat:@"%.6f", green2];
+            NSString *blue1_str = [NSString stringWithFormat:@"%.6f", blue1];
+            NSString *blue2_str = [NSString stringWithFormat:@"%.6f", blue2];
+            if ([red1_str isEqualToString:red2_str]
+                && [green1_str isEqualToString:green2_str]
+                && [blue1_str isEqualToString:blue2_str])
+            {
                 index = idx;
                 *stop = TRUE;
             }
@@ -124,7 +142,7 @@
     
     if( index > 0 )
     {
-        [self setColor_CurrentBtn:[colorScrollView viewWithTag:index]];
+        [self setColor_CurrentBtn:[colorScrollView viewWithTag:index + 1]];
     }
     else
     {
@@ -149,6 +167,7 @@
             currentColorButton = nil;
         }
     }
+    return index;
 }
 
 -(void)setColor_CurrentBtn:(UIButton *) sender
@@ -191,6 +210,17 @@
      }
      
     [colorScrollView addSubview:currentColorButton];
+    float maxX = colorScrollView.contentSize.width - colorScrollView.frame.size.width;
+    float x = MIN(maxX, sender.frame.origin.x);
+    if (sender.frame.origin.x >= maxX) {
+        colorScrollView.contentOffset = CGPointMake(maxX, 0);
+    }
+    else if (sender.frame.origin.x < colorScrollView.frame.size.width) {
+        colorScrollView.contentOffset = CGPointZero;
+    }
+    else if (!(x >= colorScrollView.contentOffset.x && x <= colorScrollView.contentOffset.x + colorScrollView.frame.size.width)) {
+        colorScrollView.contentOffset = CGPointMake(MAX(x - sender.frame.size.width, 0), 0);
+    }
 }
 
 - (void)dealloc{

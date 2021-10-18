@@ -1,0 +1,50 @@
+{
+	"ver": 1,
+	"minCoreVer": 130,
+	"normal": {
+		"gradient": 0,
+		"color": [
+			{
+				"color": [
+					253,
+					249,
+					184,
+					255
+				],
+				"factor": 1.0
+			}
+		]
+	},
+	"stroke": [
+		{
+			"gradient": 0,
+			"width": 0.1,
+			"color": [
+				{
+					"color": [
+						191,
+						191,
+						191,
+						255
+					],
+					"factor": 1.0
+				}
+			]
+		},
+		{
+			"gradient": 0,
+			"width": 0.3,
+			"color": [
+				{
+					"color": [
+						255,
+						255,
+						255,
+						255
+					],
+					"factor": 1.0
+				}
+			]
+		}		
+	]
+}

@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak, nonatomic) id<VENetworkMaterialCollectionViewCellDelegate> delegate;
 
+@property(nonatomic, assign)BOOL                 isDragToChange;
+
 @property(nonatomic, weak) UICollectionView *collectionView;
 @property(nonatomic, assign) NSInteger       index;
 @property(nonatomic, assign) NSInteger       indexCount;
@@ -30,9 +32,27 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol VENetworkMaterialCollectionViewCellDelegate <NSObject>
 @optional
--(UIView *)btnCollectCell:(NSInteger) index atIndexCount:(NSInteger) indexCount;
+-(UIView *)btnCollectCell:(NSInteger) index atIndexCount:(NSInteger) indexCount collectionView:(UICollectionView *)collectionView;
 
 -(void)CellIndex:(NSInteger) index;
+
+#pragma mark - UIScrollViewDelegate (时间轴的更新操作)
+//开始滑动
+- (void)cell_ScrollViewWillBeginDragging:(UIScrollView *)scrollView;
+/**
+ 滚动中
+ */
+- (void)cell_ScrollViewDidScroll:(UIScrollView *)scrollView;
+
+/**滚动停止
+ */
+- (void)cell_ScrollViewDidEndDecelerating:(UIScrollView *)scrollView;
+
+/**手指停止滑动
+ */
+- (void)cell_ScrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate;
+
+-(void)cell_MoveGesture:(UIGestureRecognizer *) recognizer;
 
 @end
 NS_ASSUME_NONNULL_END

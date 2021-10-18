@@ -10,6 +10,7 @@
 #import "UIImage+Tint.h"
 #import <VEENUMCONFIGER/VEENUMCONFIGER.h>
 
+
 /* 角度转弧度 */
 #define SK_DEGREES_TO_RADIANS(angle) \
 ((angle) / 180.0 * M_PI)
@@ -68,7 +69,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     BOOL _isShowingEditingHandles;
     
     CGRect originRect;
-    CGRect _tOutRect;
+    
     
     float  _tScale;
     
@@ -96,6 +97,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 }
 @end
 @implementation VEPasterTextView
+
 
 -(void)remove_Recognizer
 {
@@ -158,6 +160,9 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         frame.origin.y = 0;
     }
     if (self = [super initWithFrame:frame]) {
+        _captionTextIndex = 0;
+        
+        _isSizePrompt = true;
         
         _isViewHidden_GestureRecognizer = false;
         _isEditImage = false;
@@ -292,6 +297,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
              pasterViewEnbled:(BOOL)pasterViewEnbled
                superViewFrame:(CGRect)superRect
                  contentImage:(UIImageView *)contentImageView
+                    textLabel:(VEPasterLabel *)textLabel
                      textRect:(CGRect )textRect
                       ectsize:(CGSize )tsize
                           ect:(CGRect )t
@@ -303,22 +309,12 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                     isRestore:(BOOL)isREstroe
 {
     
+    _captionTextIndex = 0;
+    _isSizePrompt = false;
     globalInset = 8;
     _syncContainerRect = syncContainerRect;
     _needStretching = needStretching;
     _tsize = tsize;
-    if (isnan(t.origin.x) || isinf(t.origin.x)) {
-        t.origin.x = 0;
-    }
-    if (isnan(t.origin.y) || isinf(t.origin.y)) {
-        t.origin.y = 0;
-    }
-    if (isnan(t.size.width) || isinf(t.size.width)) {
-        t.size.width = 0;
-    }
-    if (isnan(t.size.height) || isinf(t.size.height)) {
-        t.size.height = 0;
-    }
     _tOutRect = t;
     if( !isREstroe )
     {
@@ -418,6 +414,49 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         _labelBgView.layer.allowsEdgeAntialiasing = YES;
         [self insertSubview:_labelBgView atIndex:1];
         
+        _shadowLbl = [[VEPasterLabel alloc] initWithFrame:_labelBgView.bounds];
+        _shadowLbl.text = textLabel.text;
+        _shadowLbl.globalInset = globalInset;
+        _shadowLbl.backgroundColor = [UIColor clearColor];
+        _shadowLbl.tScale = _tScale;
+        _shadowLbl.fontColor = textColor;
+        _shadowLbl.strokeWidth = strokeWidth;
+        _shadowLbl.needStretching = needStretching;
+        _shadowLbl.onlyoneline = onlyoneLine;
+        _shadowLbl.clipsToBounds = NO;
+        _shadowLbl.layer.allowsEdgeAntialiasing = YES;
+        _shadowLbl.lineBreakMode = NSLineBreakByCharWrapping;
+        _shadowLbl.minimumScaleFactor = 5.0;
+        _shadowLbl.numberOfLines = 0;
+        _shadowLbl.hidden = YES;
+        [_labelBgView addSubview:_shadowLbl];
+        
+        _contentLabel = textLabel;
+        _contentLabel.frame = _labelBgView.bounds;
+        _contentLabel.globalInset = globalInset;
+//        [_contentLabel setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+        _contentLabel.backgroundColor = [UIColor clearColor];
+        _contentLabel.tScale = _tScale;
+        _contentLabel.fontColor = textColor;
+        _contentLabel.strokeColor = strokeColor;
+        _contentLabel.strokeWidth = strokeWidth;
+        _contentLabel.needStretching = needStretching;
+        _contentLabel.onlyoneline = onlyoneLine;
+        
+//        _contentLabel.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
+//        _contentLabel.layer.borderWidth = 1.0;
+//        _contentLabel.layer.borderColor = [UIColor clearColor].CGColor;
+//        _contentLabel.layer.shadowColor = [UIColor clearColor].CGColor;
+//        _contentLabel.layer.shadowOffset = CGSizeZero;
+//        _contentLabel.layer.shadowOpacity = 0.5;
+//        _contentLabel.layer.shadowRadius = 2.0;
+        //2019.10.31 为了解决文字毛边严重
+        _contentLabel.clipsToBounds = NO;
+        _contentLabel.layer.allowsEdgeAntialiasing = YES;
+        _contentLabel.lineBreakMode = NSLineBreakByCharWrapping;
+        _contentLabel.minimumScaleFactor = 5.0;
+        [_labelBgView addSubview:_contentLabel];
+        
         if(!_needStretching){
             
             _contentImage.image = [contentImageView.animationImages firstObject];
@@ -436,6 +475,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             _contentImage.layer.contentsGravity = kCAGravityResize;
             [_contentImage setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
         }
+        _contentLabel.numberOfLines = 0;
         
 //        _moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
 //        [self addGestureRecognizer:_moveGesture];
@@ -508,6 +548,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         _contentImage.transform = CGAffineTransformIdentity;//复原
         sender.selected = NO;
     }
+    [_contentLabel setNeedsLayout];
+    [_shadowLbl setNeedsLayout];
 }
 
 - (void)setContentImageTransform:(CGAffineTransform)transform {
@@ -515,6 +557,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     if (CGAffineTransformEqualToTransform(transform, kUDFlipTransform) || CGAffineTransformEqualToTransform(transform, kLRUPFlipTransform)) {
         _mirrorBtn.selected = YES;
     }
+    [_contentLabel setNeedsLayout];
+    [_shadowLbl setNeedsLayout];
 }
 
 - (void)refreshBounds:(CGRect)bounds {
@@ -543,6 +587,9 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     
     _selfScale = self.transform.a;
     
+    [_contentLabel setNeedsLayout];
+    [_shadowLbl setNeedsLayout];
+    
      [self setFramescale:_selfScale];
     
     if( iswatermark )
@@ -565,6 +612,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     if( _isSubtitleView )
         return;
     
+    [_contentLabel setNeedsLayout];
+    [_shadowLbl setNeedsLayout];
     if( _isCutout )
     {
         //取得所点击的点的坐标
@@ -819,8 +868,14 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 -(void)Rotation_GestureRecognizer:(UIRotationGestureRecognizer *)rotation
 {
+    if( rotation.numberOfTouches == 1 )
+    {
+        return;
+    }
+    
     if( _isFixedCrop )
         return;
+    
     
     touchLocation = [rotation locationInView:self.superview];
     
@@ -834,7 +889,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         case UIGestureRecognizerStateChanged://缩放改变
         {
             float angleDiff = ( deltaAngle + (beginAngle - rotation.rotation) );
-            if( ((-angleDiff) < 0.2) && ((-angleDiff) >= -0.2)  )
+            if( ((-angleDiff) < (20.0/180.0/3.14)) && ((-angleDiff) >= -(20.0/180.0/3.14))  )
             {
                 angleDiff = 0;
                 if( isShock )
@@ -847,7 +902,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             {
                 isShock = true;
             }
-            
+        
             self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), _selfScale, _selfScale);
             
             if( _isDrag )
@@ -855,12 +910,15 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 _isDrag_Upated = false;
 //                _contentImage.alpha = 1.0;
             }
+            
+            
+            
         }
             break;
         case UIGestureRecognizerStateEnded://缩放结束
         {
             float angleDiff = ( deltaAngle + (beginAngle - rotation.rotation) );
-            if( ((-angleDiff) < 0.2) && ((-angleDiff) >= -0.2)  )
+            if( ((-angleDiff) < (20.0/180.0/3.14)) && ((-angleDiff) >= -(20.0/180.0/3.14))  )
             {
                 angleDiff = 0;
                 if( isShock )
@@ -875,7 +933,6 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             }
             
             self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), _selfScale, _selfScale);
-            
             if( _isDrag )
             {
                 _isDrag_Upated = true;
@@ -894,6 +951,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             [_delegate pasterViewMoved:self];
         }
     }
+    [_contentLabel setNeedsLayout];
+    [_shadowLbl setNeedsLayout];
 }
 
 - (void)pinchGestureRecognizer:(UIPinchGestureRecognizer *)recognizer {
@@ -917,8 +976,11 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                     initialBounds   = CGRectIntegral(self.bounds);
                     initialDistance = CGPointGetDistance(center, touchLocation);
             
+            
             pinScale = recognizer.scale;
             _oldSelfScale = _selfScale;
+            
+            
             
             if( _isDrag )
             {
@@ -1043,6 +1105,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             [_delegate pasterViewMoved:self];
         }
     }
+    [_contentLabel setNeedsLayout];
+    [_shadowLbl setNeedsLayout];
 }
 
 - (void) moveGesture:(UIGestureRecognizer *) recognizer{
@@ -1090,6 +1154,12 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 //                _contentImage.alpha = 1.0;
 #else   //20200306 test
 //                _contentImage.alpha = 0.0;
+                if( _textEditBtnArray )
+                {
+                    [_textEditBtnArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        obj.hidden = YES;
+                    }];
+                }
                 selectImageView.hidden = YES;
                 _closeBtn.hidden = YES;
                 _textEditBtn.hidden = YES;
@@ -1099,6 +1169,13 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 #endif
             }
         }else if (recognizer.state == UIGestureRecognizerStateChanged){
+            
+            if( shockX == 0 )
+            {
+                shockX = self.center.x;
+                shockY = self.center.y;
+            }
+            
             float interval = 2;
             float x = self.syncContainer.frame.size.width/2.0;
             float y = self.syncContainer.frame.size.height/2.0;
@@ -1177,6 +1254,12 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             }
         }else if (recognizer.state == UIGestureRecognizerStateEnded){
             
+            if( shockX == 0 )
+            {
+                shockX = self.center.x;
+                shockY = self.center.y;
+            }
+            
             float interval = 2;
             float x = self.syncContainer.frame.size.width/2.0;
             float y = self.syncContainer.frame.size.height/2.0;
@@ -1185,7 +1268,6 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             shockX = shockX + point.x;
             shockY = shockY + point.y;
             CGPoint center = CGPointMake(shockX,shockY);
-            
             
             if( _isFixedCrop )
             {
@@ -1258,6 +1340,12 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             if( _isDrag )
             {
                 _isDrag_Upated = true;
+                if( _textEditBtnArray )
+                {
+                    [_textEditBtnArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        obj.hidden = NO;
+                    }];
+                }
 //                _contentImage.alpha = 0.0;
 #if 1   //20200306 test
                 selectImageView.hidden = NO;
@@ -1274,60 +1362,9 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         if([_delegate respondsToSelector:@selector(pasterViewMoved:)]){
             [_delegate pasterViewMoved:self];
         }
+        [_contentLabel setNeedsLayout];
+        [_shadowLbl setNeedsLayout];
     }
-}
-
--(float)getCropREct_Scale:(float) scale
-{
-    float width = _contentImage.frame.size.width*scale;
-    float height = _contentImage.frame.size.height*scale;
-    
-    float wScale = scale;
-    float  hScale = scale;
-    
-    if( width < _cropRect.size.width )
-    {
-        wScale = _cropRect.size.width/_contentImage.frame.size.width;
-    }
-    if( height <  _cropRect.size.height  )
-    {
-        hScale = _cropRect.size.height/_contentImage.frame.size.height;
-    }
-    
-    if( hScale > wScale )
-    {
-        scale = hScale;
-    }
-    else{
-        scale = wScale;
-    }
-    
-    return scale;
-}
-
--(CGPoint)getCropRect_Center:(CGPoint) center
-{
-    if( (center.x - _contentImage.frame.size.width*_selfScale/2.0) > (_cropRect.origin.x) )
-    {
-        center.x = _cropRect.origin.x+_contentImage.frame.size.width*_selfScale/2.0;
-    }
-    else if((center.x + _contentImage.frame.size.width*_selfScale/2.0) < (_cropRect.size.width+_cropRect.origin.x) )
-    {
-        center.x = (_cropRect.size.width+_cropRect.origin.x)-_contentImage.frame.size.width*_selfScale/2.0;
-    }
-    
-    if((center.y - _contentImage.frame.size.height*_selfScale/2.0) > (_cropRect.origin.y) )
-    {
-        center.y = _cropRect.origin.y+_contentImage.frame.size.height*_selfScale/2.0;
-    }
-    else if((center.y + _contentImage.frame.size.height*_selfScale/2.0) < (_cropRect.size.height+_cropRect.origin.y) )
-    {
-        center.y = (_cropRect.size.height+_cropRect.origin.y)-_contentImage.frame.size.height*_selfScale/2.0;
-    }
-    
-    shockX = center.x;
-    shockY = center.y;
-    return center;
 }
 
 - (void)touchClose{
@@ -1352,29 +1389,47 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 - (void)alignBtnAction:(UIButton *)sender {
     if (_alignment == NSTextAlignmentRight) {
-        self.alignment = NSTextAlignmentLeft;
+       self.alignment = NSTextAlignmentLeft;
     }
     else if (_alignment == NSTextAlignmentCenter) {
         self.alignment = NSTextAlignmentRight;
     }else {
         self.alignment = NSTextAlignmentCenter;
     }
+    [_contentLabel setNeedsLayout];
+    [_shadowLbl setNeedsLayout];
 }
 
 - (void)setIsBold:(BOOL)isBold{
     _isBold = isBold;
+    _contentLabel.isBold = _isBold;
+    _shadowLbl.isBold = _isBold;
 }
 
 - (void)setAlignment:(NSTextAlignment)alignment {
     _alignment = alignment;
     if (alignment == NSTextAlignmentLeft) {
+        _contentLabel.textAlignment = NSTextAlignmentLeft;
+        _contentLabel.tAlignment = UICaptionTextAlignmentLeft;
+        _shadowLbl.textAlignment = NSTextAlignmentLeft;
+        _shadowLbl.tAlignment = UICaptionTextAlignmentLeft;
         [_alignBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-字幕居左_"] forState:UIControlStateNormal];
     }
     else if (alignment == NSTextAlignmentRight) {
+        _contentLabel.textAlignment = NSTextAlignmentRight;
+        _contentLabel.tAlignment = UICaptionTextAlignmentRight;
+        _shadowLbl.textAlignment = NSTextAlignmentRight;
+        _shadowLbl.tAlignment = UICaptionTextAlignmentRight;
         [_alignBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-字幕居右_"] forState:UIControlStateNormal];
     }else {
+        _contentLabel.textAlignment = NSTextAlignmentCenter;
+        _contentLabel.tAlignment = UICaptionTextAlignmentCenter;
+        _shadowLbl.textAlignment = NSTextAlignmentCenter;
+        _shadowLbl.tAlignment = UICaptionTextAlignmentCenter;
         [_alignBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-字幕居中_"] forState:UIControlStateNormal];
     }
+    [_contentLabel setNeedsLayout];
+    [_shadowLbl setNeedsLayout];
 }
 
 - (void) setFramescale:(float)value{
@@ -1398,7 +1453,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     _cutout_RealAreaView.layer.borderWidth = 1.0*1/value;
     _cutout_RealAreaView.layer.shadowRadius = 2.0*1/value;
     
-    if( _labelBgView )
+    if( _contentLabel )
     {
         _labelBgView.transform = CGAffineTransformIdentity;
         float width = _labelBgView.frame.size.width/_tScale;
@@ -1410,22 +1465,22 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 _labelBgView.transform = CGAffineTransformMake(1/value, 0, tanf(0 * (CGFloat)M_PI / 180), 1/value, 0, 0);
                 CGAffineTransform matrix = CGAffineTransformMake(1, 0, tanf(15 * (CGFloat)M_PI / 180), 1, 0, 0);//设置倾斜角度。
                 UIFontDescriptor *desc = [UIFontDescriptor fontDescriptorWithName:_fontName matrix:matrix];
-//                _contentLabel.font = [UIFont fontWithDescriptor:desc size:_fontSize*value];
+                _contentLabel.font = [UIFont fontWithDescriptor:desc size:_fontSize*value];
             }else {
                 _labelBgView.transform = CGAffineTransformMake(1/value, 0, tanf(-15 * (CGFloat)M_PI / 180), 1/value, 0, 0);
-//                _contentLabel.font = [UIFont fontWithName:_fontName size:_fontSize*value];
+                _contentLabel.font = [UIFont fontWithName:_fontName size:_fontSize*value];
             }
         }else{
             _labelBgView.transform = CGAffineTransformMake(1/value, 0, tanf(0 * (CGFloat)M_PI / 180), 1/value, 0, 0);
-//            _contentLabel.font = [UIFont fontWithName:_fontName size:_fontSize*value];
+            _contentLabel.font = [UIFont fontWithName:_fontName size:_fontSize*value];
         }
         _tScale = value;
-//        _contentLabel.frame = _labelBgView.bounds;
-////        _contentLabel.tScale = _tScale;
-//        _shadowLbl.font = _contentLabel.font;
-//        _shadowLbl.frame = CGRectMake(_shadowOffset.width*_tScale, _shadowOffset.height*_tScale, _contentLabel.frame.size.width, _contentLabel.frame.size.height);
-//        [_contentLabel setNeedsLayout];
-//        [_shadowLbl setNeedsLayout];
+        _contentLabel.frame = _labelBgView.bounds;
+//        _contentLabel.tScale = _tScale;
+        _shadowLbl.font = _contentLabel.font;
+        _shadowLbl.frame = CGRectMake(_shadowOffset.width*_tScale, _shadowOffset.height*_tScale, _contentLabel.frame.size.width, _contentLabel.frame.size.height);
+        [_contentLabel setNeedsLayout];
+        [_shadowLbl setNeedsLayout];
     }
     
     rotateView.transform = CGAffineTransformMakeScale(1, 1);
@@ -1456,6 +1511,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         _textEditBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
         _textEditBtn.center = center;
     }
+    
+//    [self refreshTextEidtFrameEx];
 }
 
 - (float) getFramescale{
@@ -1560,7 +1617,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 //            }
 //        }
         _zoomLastScale = _zoomScale;
-        if( _labelBgView )
+        if( _contentLabel )
         {
             float size = (_selfScale - 1.0)/1.2f;
             float scale = oldScale;
@@ -1588,7 +1645,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 
                 
 //            }
-            if( ((-angleDiff) < 0.03) && ((-angleDiff) >= -0.03)  )
+            if( ((-angleDiff) < (20.0/180.0/3.14)) && ((-angleDiff) >= (-20.0/180.0/3.14))  )
             {
                 angleDiff = 0;
                 if( isShock )
@@ -1602,6 +1659,35 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             }
             float fheight = (scale*CGRectGetHeight(self.frame));
             scale = fheight/CGRectGetHeight(self.frame);
+            
+            self.transform =  CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), scale, scale);
+            [self setFramescale:scale];
+            if([_delegate respondsToSelector:@selector(pasterViewSizeScale: atValue:)]){
+                [_delegate pasterViewSizeScale:self atValue:size];
+            }
+        }
+        else{
+            float size = (_selfScale - 1.0)/1.2f;
+            float scale = oldScale;
+                scale = _selfScale;
+            
+            if( ((-angleDiff) < (20.0/180.0/3.14)) && ((-angleDiff) >= (-20.0/180.0/3.14))  )
+            {
+                angleDiff = 0;
+                if( isShock )
+                {
+                    AudioServicesPlaySystemSound(1519);
+                    isShock = false;
+                }
+            }
+            else{
+                isShock = true;
+            }
+            
+            if( _minScale > scale )
+            {
+                scale = _minScale;
+            }
             
             self.transform =  CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), scale, scale);
             [self setFramescale:scale];
@@ -1648,35 +1734,6 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 [_delegate pasterViewSizeScale:self atValue:size];
             }
         }
-        else{
-            float size = (_selfScale - 1.0)/1.2f;
-            float scale = oldScale;
-                scale = _selfScale;
-            
-            if( ((-angleDiff) < 0.03) && ((-angleDiff) >= -0.03)  )
-            {
-                angleDiff = 0;
-                if( isShock )
-                {
-                    AudioServicesPlaySystemSound(1519);
-                    isShock = false;
-                }
-            }
-            else{
-                isShock = true;
-            }
-            
-            if( _minScale > scale )
-            {
-                scale = _minScale;
-            }
-            
-            self.transform =  CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), scale, scale);
-            [self setFramescale:scale];
-            if([_delegate respondsToSelector:@selector(pasterViewSizeScale: atValue:)]){
-                [_delegate pasterViewSizeScale:self atValue:size];
-            }
-        }
         if( _isDrag )
         {
             _isDrag_Upated = false;
@@ -1700,14 +1757,460 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             [_delegate pasterViewMoved:self];
         }
     }
-//    [_contentLabel setNeedsLayout];
-//    [_shadowLbl setNeedsLayout];
+    [_contentLabel setNeedsLayout];
+    [_shadowLbl setNeedsLayout];
 }
 -(void)setMinScale:(float) scale
 {
     _minScale = scale;
 }
 
+
+- (void)setTextString:(NSString *)text adjustPosition:(BOOL)adjust{
+    _contentLabel.isUseAttributedText = NO;
+    _shadowLbl.isUseAttributedText = NO;
+    _contentLabel.pText = text;
+    _shadowLbl.pText = text;
+    NSMutableString * attributedText = [NSMutableString string];
+    if (_isVerticalText) {
+        text = [text stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+        [text enumerateSubstringsInRange:NSMakeRange(0, text.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:
+        ^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+            if (substringRange.location + substringRange.length == text.length) {
+                [attributedText insertString:substring atIndex:attributedText.length];
+            }else {
+                [attributedText insertString:[substring stringByAppendingString:@"\n"] atIndex:attributedText.length];
+            }
+        }];
+        text = attributedText;
+    }else if (text.length > 0) {
+        [attributedText setString:text];
+    }else{
+        [attributedText setString:@""];
+    }
+    if (text.length == 0) {
+        text = @"";
+    }
+    if (attributedText.length > 0) {
+        [_contentLabel setText:attributedText];
+        [_shadowLbl setText:attributedText];
+    }else{
+        [_contentLabel setText:nil];
+        [_shadowLbl setText:nil];
+    }
+    
+    _contentLabel.needStretching = _needStretching;
+    _contentLabel.isVerticalText = _isVerticalText;
+    _contentLabel.layer.contentsGravity = kCAGravityResizeAspectFill;
+    _contentLabel.layer.minificationFilter = kCAFilterNearest;
+    _contentLabel.layer.magnificationFilter = kCAFilterNearest;
+    _shadowLbl.needStretching = _needStretching;
+    _shadowLbl.isVerticalText = _isVerticalText;
+    _shadowLbl.layer.contentsGravity = kCAGravityResizeAspectFill;
+    _shadowLbl.layer.minificationFilter = kCAFilterNearest;
+    _shadowLbl.layer.magnificationFilter = kCAFilterNearest;
+    self.layer.contentsGravity = kCAGravityResizeAspectFill;
+    self.layer.minificationFilter = kCAFilterNearest;
+    self.layer.magnificationFilter = kCAFilterNearest;
+    float RestrictedFontSize  = 1.0;
+    if (_needStretching) {
+        CGSize maxSize;
+        if ( [_pname isEqualToString:@"text_sample"] ) {
+            maxSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
+            float fontSize = 22;
+            UIFont *font = [UIFont fontWithName:_fontName size:fontSize];
+            if(!font){
+                _fontName = [[UIFont systemFontOfSize:kDefaultFontSize] fontName];//@"Baskerville-BoldItalic";
+                _fontCode = @"morenziti";
+                font = [UIFont fontWithName:_fontName size:fontSize];
+            }
+            NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text
+                                                                                     attributes:@{NSFontAttributeName:font}];
+                CGSize rectSize = [attributedText boundingRectWithSize:maxSize
+                                                               options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                                               context:nil].size;
+                CGRect frame = self.bounds;
+                frame.size.width = rectSize.width + _tOutRect.origin.x + _tOutRect.size.width + globalInset*2.0;
+                frame.size.height = rectSize.height + _tOutRect.origin.y + _tOutRect.size.height + globalInset*2.0;
+                self.bounds = frame;
+                _labelBgView.frame = CGRectMake(_tOutRect.origin.x + globalInset, _tOutRect.origin.y + globalInset, rectSize.width, rectSize.height);
+                _contentLabel.frame = _labelBgView.bounds;
+                _shadowLbl.frame = CGRectMake(_shadowOffset.width*_tScale, _shadowOffset.height*_tScale, _contentLabel.frame.size.width, _contentLabel.frame.size.height);
+                [self setFontSize:fontSize label:_contentLabel];
+                [self setFontSize:fontSize label:_shadowLbl];
+            }
+            else
+        {
+            if (_isVerticalText) {
+                maxSize = CGSizeMake(CGFLOAT_MAX, _syncContainerRect.size.height - _tOutRect.origin.y - _tOutRect.size.height);
+            }
+            else {
+                maxSize = CGSizeMake(_syncContainerRect.size.width - _tOutRect.origin.x - _tOutRect.size.width, CGFLOAT_MAX);
+            }
+            if( [_pname isEqualToString:@"text_vertical"] )
+            {
+                maxSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
+                float fontSize = 22;
+                UIFont *font = [UIFont fontWithName:_fontName size:fontSize];
+                if(!font){
+                    _fontName = [[UIFont systemFontOfSize:kDefaultFontSize] fontName];//@"Baskerville-BoldItalic";
+                    _fontCode = @"morenziti";
+                    font = [UIFont fontWithName:_fontName size:fontSize];
+                }
+                NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text
+                                                                                         attributes:@{NSFontAttributeName:font}];
+                    CGSize rectSize = [attributedText boundingRectWithSize:maxSize
+                                                                   options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                                                   context:nil].size;
+                    CGRect frame = self.bounds;
+                    frame.size.width = rectSize.width + _tOutRect.origin.x + _tOutRect.size.width + globalInset*2.0;
+                    frame.size.height = rectSize.height + _tOutRect.origin.y + _tOutRect.size.height + globalInset*2.0;
+                    self.bounds = frame;
+                    _labelBgView.frame = CGRectMake(_tOutRect.origin.x + globalInset, _tOutRect.origin.y + globalInset, rectSize.width, rectSize.height);
+                    _contentLabel.frame = _labelBgView.bounds;
+                    _shadowLbl.frame = CGRectMake(_shadowOffset.width*_tScale, _shadowOffset.height*_tScale, _contentLabel.frame.size.width, _contentLabel.frame.size.height);
+                    [self setFontSize:fontSize label:_contentLabel];
+                    [self setFontSize:fontSize label:_shadowLbl];
+            }
+            else{
+                float fWidth = _labelBgView.frame.size.width;
+                float fHeight = _labelBgView.frame.size.height;
+                for (int i = (_isVerticalText ? fWidth : fHeight); i >= 1 ; i--) {
+                    UIFont *font = [UIFont fontWithName:_fontName size:(CGFloat)i];
+                    if(!font){
+                        _fontName = [[UIFont systemFontOfSize:kDefaultFontSize] fontName];//@"Baskerville-BoldItalic";
+                        _fontCode = @"morenziti";
+                        font = [UIFont fontWithName:_fontName size:(CGFloat)i];
+                    }
+                    
+                    NSMutableAttributedString *attrStrText = [[NSMutableAttributedString alloc] initWithAttributedString:_shadowLbl.attributedText];
+                    [attrStrText replaceCharactersInRange:NSMakeRange(0, _shadowLbl.attributedText.length) withString:text];
+                    NSRange range = NSMakeRange(0, attrStrText.length);
+                    
+                    NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithAttributedString:attrStrText];
+                    [attrStr removeAttribute:NSFontAttributeName range:range];
+                    [attrStr addAttribute:NSFontAttributeName value:font range:range];
+                    
+                    CGSize rectSize = [attrStr boundingRectWithSize:maxSize
+                                                                   options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                                                    context:nil].size;
+                    if((!_isVerticalText && rectSize.height <= fHeight) || (_isVerticalText && rectSize.width <= fWidth) || i == RestrictedFontSize){
+                        CGRect frame = self.bounds;
+                        if (_isVerticalText) {
+                            frame.size.height = rectSize.height + _tOutRect.origin.y + _tOutRect.size.height + globalInset*2.0;
+                            self.bounds = frame;
+                            _labelBgView.frame = CGRectMake(_tOutRect.origin.x + globalInset, _tOutRect.origin.y + globalInset, rectSize.width, rectSize.height);
+                        }else {
+                            frame.size.width = rectSize.width + _tOutRect.origin.x + _tOutRect.size.width + globalInset*2.0;
+                            self.bounds = frame;
+                            _labelBgView.frame = CGRectMake(_tOutRect.origin.x + globalInset, _tOutRect.origin.y + globalInset, rectSize.width, rectSize.height);
+                        }
+                        _contentLabel.frame = _labelBgView.bounds;
+                        _shadowLbl.frame = CGRectMake(_shadowOffset.width*_tScale, _shadowOffset.height*_tScale, _contentLabel.frame.size.width, _contentLabel.frame.size.height);
+                         [self setFontSize:i label:_contentLabel];
+                         [self setFontSize:i label:_shadowLbl];
+                        break;
+                    }
+                }
+            }
+            }
+    }
+    else
+    {
+        if (_isVerticalText) {
+            float width = _labelBgView.frame.size.width;
+            float height = _labelBgView.frame.size.height;
+            for (int i = _labelBgView.frame.size.width; i >= 1 ; i--) {
+                UIFont *font = [UIFont fontWithName:_fontName size:(CGFloat)i];
+                if(!font){
+                    _fontName = [[UIFont systemFontOfSize:10] fontName];
+                    _fontCode = @"morenziti";
+                    font = [UIFont fontWithName:_fontName size:(CGFloat)i];
+                }
+                CGSize size_w = [attributedText boundingRectWithSize:CGSizeMake(width, MAXFLOAT)
+                                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                                          attributes:@{NSFontAttributeName:font}
+                                                             context:nil].size;
+                CGSize size_h = [attributedText boundingRectWithSize:CGSizeMake(MAXFLOAT, height)
+                                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                                          attributes:@{NSFontAttributeName:font}
+                                                             context:nil].size;
+                
+                if ((size_w.height <= height && size_h.width <= width) || ( i == RestrictedFontSize )  ) {
+                    [self setFontSize:i label:_contentLabel];
+                    [self setFontSize:i label:_shadowLbl];
+                    break;
+                }
+            }
+        }else {
+            float textHeight = _labelBgView.frame.size.height - 5;
+            for (int i = textHeight; i >= 1 ; i--) {
+                UIFont *font = [UIFont fontWithName:_fontName size:(CGFloat)i];
+                if(!font){
+                    _fontName = [[UIFont systemFontOfSize:10] fontName];
+                    _fontCode = @"morenziti";
+                    font = [UIFont fontWithName:_fontName size:(CGFloat)i];
+                }
+                
+                NSMutableAttributedString *attrStrText = [[NSMutableAttributedString alloc] initWithAttributedString:_shadowLbl.attributedText];
+                [attrStrText replaceCharactersInRange:NSMakeRange(0, _shadowLbl.attributedText.length) withString:text];
+                NSRange range = NSMakeRange(0, attrStrText.length);
+                
+                NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithAttributedString:attrStrText];
+                [attrStr removeAttribute:NSFontAttributeName range:range];
+                [attrStr addAttribute:NSFontAttributeName value:font range:range];
+                
+                float textWidth = _labelBgView.frame.size.width-5;
+                if( textWidth <= 5 )
+                {
+                    textWidth = 5;
+                }
+                
+                CGSize rectSize = [attrStr boundingRectWithSize:CGSizeMake(textWidth, CGFLOAT_MAX)
+                                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                                               context:nil].size;
+                
+                if(( (rectSize.height <= _labelBgView.frame.size.height)) || ( i == RestrictedFontSize ) ){
+                    [self setFontSize:i label:_contentLabel];
+                    [self setFontSize:i label:_shadowLbl];
+                    break;
+                }
+            }
+        }
+        _contentLabel.adjustsFontSizeToFitWidth = NO;
+    }
+    if(adjust)
+        [self adjustPosition];
+    
+    [_contentLabel setNeedsLayout];
+    [_shadowLbl setNeedsLayout];
+    selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
+    if( _alignBtn )
+    {
+        if( _closeBtn )
+        {
+            _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+//            [self textEdit];
+        }
+    }
+
+    if( _textEditBtn )
+    {
+        _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+
+    }
+    [self setFramescale:_selfScale];
+//    NSLog(@"self:%@ 文本框:%@ _tOutRect:%@ 图片：%@", NSStringFromCGSize(self.frame.size), NSStringFromCGRect(_labelBgView.frame), NSStringFromCGRect(_tOutRect), NSStringFromCGRect(_contentImage.frame));
+}
+
+- (void)setAttributedString:(NSMutableAttributedString *)attributedString isBgCaption:(BOOL)isBgCaption adjustPosition:(BOOL)adjust{
+    _contentLabel.pText = attributedString.string;
+    _shadowLbl.pText = attributedString.string;
+    NSMutableString * attributedText = [NSMutableString string];
+    if (_isVerticalText) {
+        NSString *text = attributedString.string;
+        text = [text stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+        [text enumerateSubstringsInRange:NSMakeRange(0, text.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:
+        ^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+            if (substringRange.location + substringRange.length == text.length) {
+                [attributedText insertString:substring atIndex:attributedText.length];
+            }else {
+                [attributedText insertString:[substring stringByAppendingString:@"\n"] atIndex:attributedText.length];
+            }
+        }];
+        [attributedString replaceCharactersInRange:NSMakeRange(0, attributedString.length) withString:attributedText];
+    }else if (attributedString.string.length > 0) {
+        [attributedText setString:attributedString.string];
+    }else{
+        [attributedText setString:@""];
+    }
+    NSString *text;
+    if (attributedString) {
+        if (isBgCaption) {
+            _shadowLbl.attributedText = attributedString;
+            _shadowLbl.isUseAttributedText = YES;
+        }else {
+            _contentLabel.attributedText = attributedString;
+            _contentLabel.isUseAttributedText = YES;
+        }
+        text = attributedString.string;
+    }else{
+        _contentLabel.text = @"";
+        _shadowLbl.text = @"";
+        text = @"";
+        if (isBgCaption) {
+            _shadowLbl.isUseAttributedText = NO;
+        }else {
+            _contentLabel.isUseAttributedText = NO;
+        }
+    }
+    
+    _contentLabel.needStretching = _needStretching;
+    _contentLabel.isVerticalText = _isVerticalText;
+    _contentLabel.layer.contentsGravity = kCAGravityResizeAspectFill;
+    _contentLabel.layer.minificationFilter = kCAFilterNearest;
+    _contentLabel.layer.magnificationFilter = kCAFilterNearest;
+    _shadowLbl.needStretching = _needStretching;
+    _shadowLbl.isVerticalText = _isVerticalText;
+    _shadowLbl.layer.contentsGravity = kCAGravityResizeAspectFill;
+    _shadowLbl.layer.minificationFilter = kCAFilterNearest;
+    _shadowLbl.layer.magnificationFilter = kCAFilterNearest;
+    self.layer.contentsGravity = kCAGravityResizeAspectFill;
+    self.layer.minificationFilter = kCAFilterNearest;
+    self.layer.magnificationFilter = kCAFilterNearest;
+    float RestrictedFontSize  = 2.0;
+    if (_needStretching) {
+        CGSize maxSize;
+        if ( [_pname isEqualToString:@"text_sample"] ) {
+            maxSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
+            float fontSize = 22;
+            UIFont *font = [UIFont fontWithName:_fontName size:fontSize];
+            if(!font){
+                _fontName = [[UIFont systemFontOfSize:kDefaultFontSize] fontName];//@"Baskerville-BoldItalic";
+                _fontCode = @"morenziti";
+                font = [UIFont fontWithName:_fontName size:fontSize];
+            }
+            NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text
+                                                                                     attributes:@{NSFontAttributeName:font}];
+            CGSize rectSize = [attributedText boundingRectWithSize:maxSize
+                                                           options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                                           context:nil].size;
+            CGRect frame = self.bounds;
+            frame.size.width = rectSize.width + _tOutRect.origin.x + _tOutRect.size.width + globalInset*2.0;
+            frame.size.height = rectSize.height + _tOutRect.origin.y + _tOutRect.size.height + globalInset*2.0;
+            self.bounds = frame;
+            _labelBgView.frame = CGRectMake(_tOutRect.origin.x + globalInset, _tOutRect.origin.y + globalInset, rectSize.width, rectSize.height);
+            if (isBgCaption) {
+                _shadowLbl.frame = CGRectMake(_shadowOffset.width*_tScale, _shadowOffset.height*_tScale, _labelBgView.bounds.size.width, _labelBgView.bounds.size.height);
+                [self setFontSize:fontSize label:_shadowLbl];
+            }else {
+                _contentLabel.frame = _labelBgView.bounds;
+                [self setFontSize:fontSize label:_contentLabel];
+            }
+        }else {
+            if (_isVerticalText) {
+                maxSize = CGSizeMake(CGFLOAT_MAX, _syncContainerRect.size.height - _tOutRect.origin.y - _tOutRect.size.height);
+            }
+            else {
+                maxSize = CGSizeMake(_syncContainerRect.size.width - _tOutRect.origin.x - _tOutRect.size.width, CGFLOAT_MAX);
+            }
+            float fWidth = _labelBgView.frame.size.width;
+            float fHeight = _labelBgView.frame.size.height;
+            for (int i = (_isVerticalText ? fWidth : fHeight); i >= 1 ; i--) {
+                UIFont *font = [UIFont fontWithName:_fontName size:(CGFloat)i];
+                if(!font){
+                    _fontName = [[UIFont systemFontOfSize:kDefaultFontSize] fontName];//@"Baskerville-BoldItalic";
+                    _fontCode = @"morenziti";
+                    font = [UIFont fontWithName:_fontName size:(CGFloat)i];
+                }
+                NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text
+                                                                                     attributes:@{NSFontAttributeName:font}];
+                CGSize rectSize = [attributedText boundingRectWithSize:maxSize
+                                                               options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                                                context:nil].size;
+                if((!_isVerticalText && rectSize.height <= fHeight) || (_isVerticalText && rectSize.width <= fWidth) || i == RestrictedFontSize){
+                    CGRect frame = self.bounds;
+                    if (_isVerticalText) {
+                        frame.size.height = rectSize.height + _tOutRect.origin.y + _tOutRect.size.height + globalInset*2.0;
+                        self.bounds = frame;
+                        _labelBgView.frame = CGRectMake(_tOutRect.origin.x + globalInset, _tOutRect.origin.y + globalInset, rectSize.width, rectSize.height);
+                    }else {
+                        frame.size.width = rectSize.width + _tOutRect.origin.x + _tOutRect.size.width + globalInset*2.0;
+                        self.bounds = frame;
+                        _labelBgView.frame = CGRectMake(_tOutRect.origin.x + globalInset, _tOutRect.origin.y + globalInset, rectSize.width, rectSize.height);
+                    }
+                    if (isBgCaption) {
+                        _shadowLbl.frame = CGRectMake(_shadowOffset.width*_tScale, _shadowOffset.height*_tScale, _labelBgView.bounds.size.width, _labelBgView.bounds.size.height);
+                        [self setFontSize:i label:_shadowLbl];
+                    }else {
+                        _contentLabel.frame = _labelBgView.bounds;
+                         [self setFontSize:i label:_contentLabel];
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        if (_isVerticalText) {
+            float width = _labelBgView.frame.size.width;
+            float height = _labelBgView.frame.size.height;
+            for (int i = _labelBgView.frame.size.width; i >= 1 ; i--) {
+                UIFont *font = [UIFont fontWithName:_fontName size:(CGFloat)i];
+                if(!font){
+                    _fontName = [[UIFont systemFontOfSize:10] fontName];
+                    _fontCode = @"morenziti";
+                    font = [UIFont fontWithName:_fontName size:(CGFloat)i];
+                }
+                CGSize size_w = [attributedText boundingRectWithSize:CGSizeMake(width, MAXFLOAT)
+                                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                                          attributes:@{NSFontAttributeName:font}
+                                                             context:nil].size;
+                CGSize size_h = [attributedText boundingRectWithSize:CGSizeMake(MAXFLOAT, height)
+                                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                                          attributes:@{NSFontAttributeName:font}
+                                                             context:nil].size;
+                
+                if ((size_w.height <= height && size_h.width <= width) || ( i == RestrictedFontSize )  ) {
+                    if (isBgCaption) {
+                        [self setFontSize:i label:_shadowLbl];
+                    }else {
+                        [self setFontSize:i label:_contentLabel];
+                    }
+                    break;
+                }
+            }
+        }else {
+            for (int i = (_labelBgView.frame.size.height - 5 ); i >= 1 ; i--) {
+                UIFont *font = [UIFont fontWithName:_fontName size:(CGFloat)i];
+                if(!font){
+                    _fontName = [[UIFont systemFontOfSize:10] fontName];
+                    _fontCode = @"morenziti";
+                    font = [UIFont fontWithName:_fontName size:(CGFloat)i];
+                }
+                NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:(text ? text : @"")
+                                                                                     attributes:@{NSFontAttributeName:font}];
+                CGSize rectSize = [attributedText boundingRectWithSize:CGSizeMake(_labelBgView.frame.size.width-globalInset*2.0, CGFLOAT_MAX)
+                                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                                               context:nil].size;
+                if( (rectSize.height <= _labelBgView.frame.size.height) || ( i == RestrictedFontSize ) ){
+                    if (isBgCaption) {
+                        [self setFontSize:i label:_shadowLbl];
+                    }else {
+                        [self setFontSize:i label:_contentLabel];
+                    }
+                    break;
+                }
+            }
+        }
+        _contentLabel.adjustsFontSizeToFitWidth = NO;
+    }
+    if(adjust)
+        [self adjustPosition];
+    if (isBgCaption) {
+        [_shadowLbl setNeedsLayout];
+    }else {
+        [_contentLabel setNeedsLayout];
+    }
+    selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
+    if( _alignBtn )
+    {
+        if( _closeBtn )
+        {
+            _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+//            [self textEdit];
+        }
+    }
+
+    if( _textEditBtn )
+    {
+        _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+
+    }
+    [self setFramescale:_selfScale];
+//    NSLog(@"self:%@ 文本框:%@ _tOutRect:%@ 图片：%@", NSStringFromCGSize(self.frame.size), NSStringFromCGRect(_labelBgView.frame), NSStringFromCGRect(_tOutRect), NSStringFromCGRect(_contentImage.frame));
+}
 
 - (void)adjustPosition{
 
@@ -1762,6 +2265,15 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     
     _isShowingEditingHandles = NO;
     
+    if( _textEditBtnArray )
+    {
+        [_textEditBtnArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            obj.hidden = YES;
+        }];
+        _alignBtn.hidden = YES;
+    }
+    _TextEditBtn.hidden = YES;
+    
 //    _syncContainer.currentPasterTextView = nil;
     if( _isCoverText )
     {
@@ -1783,7 +2295,7 @@ static VEPasterTextView *lastTouchedView;
     {
         _closeBtn.hidden = NO;
         _textEditBtn.hidden = NO;
-        _alignBtn.hidden = NO;
+        _alignBtn.hidden = (_contentLabel.text.length == 0);
         _mirrorBtn.hidden = NO;
     }
     
@@ -1791,6 +2303,16 @@ static VEPasterTextView *lastTouchedView;
     rotateView.hidden = NO;
     
 //    _syncContainer.currentPasterTextView = self;
+    
+    if( _textEditBtnArray )
+    {
+        [_textEditBtnArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            obj.hidden = NO;
+        }];
+        _alignBtn.hidden = NO;
+    }
+    
+    _TextEditBtn.hidden = NO;
     
     [self setFramescale:_selfScale];
     
@@ -1806,47 +2328,47 @@ static VEPasterTextView *lastTouchedView;
 
 - (void)setIsItalic:(BOOL)isItalic{
     _isItalic = isItalic;
-//    _contentLabel.isItalic = _isItalic;
-//    _shadowLbl.isItalic = _isItalic;
+    _contentLabel.isItalic = _isItalic;
+    _shadowLbl.isItalic = _isItalic;
     if(_isItalic){
         if (_isVerticalText) {
             _labelBgView.transform = CGAffineTransformMake(1/_tScale, 0, tanf(0 * (CGFloat)M_PI / 180), 1/_tScale, 0, 0);
             CGAffineTransform matrix = CGAffineTransformMake(1, 0, tanf(15 * (CGFloat)M_PI / 180), 1, 0, 0);//设置倾斜角度。
             UIFontDescriptor *desc = [UIFontDescriptor fontDescriptorWithName:_fontName matrix:matrix];
-//            _contentLabel.font = [UIFont fontWithDescriptor:desc size:_fontSize*_tScale];
+            _contentLabel.font = [UIFont fontWithDescriptor:desc size:_fontSize*_tScale];
         }else {
             _labelBgView.transform = CGAffineTransformMake(1/_tScale, 0, tanf(-15 * (CGFloat)M_PI / 180), 1/_tScale, 0, 0);
-//            _contentLabel.font = [UIFont fontWithName:_fontName size:_fontSize*_tScale];
+            _contentLabel.font = [UIFont fontWithName:_fontName size:_fontSize*_tScale];
         }
     }else{
         _labelBgView.transform = CGAffineTransformMake(1/_tScale, 0, tanf(0 * (CGFloat)M_PI / 180), 1/_tScale, 0, 0);
-//        _contentLabel.font = [UIFont fontWithName:_fontName size:_fontSize*_tScale];
+        _contentLabel.font = [UIFont fontWithName:_fontName size:_fontSize*_tScale];
     }
 }
 
 - (void)setIsShadow:(BOOL)isShadow{
     _isShadow = isShadow;
-//    _contentLabel.isShadow = _isShadow;
-//    _shadowLbl.hidden = !isShadow;
+    _contentLabel.isShadow = _isShadow;
+    _shadowLbl.hidden = !isShadow;
 }
 
 - (void)setShadowColor:(UIColor *)shadowColor{
     _shadowColor = shadowColor;
     if(_isShadow){
-//        _contentLabel.tShadowColor = _shadowColor;    //设置文本的阴影色彩和透明度。
+        _contentLabel.tShadowColor = _shadowColor;    //设置文本的阴影色彩和透明度。
     }else{
-//        _contentLabel.tShadowColor = [UIColor clearColor];    //设置文本的阴影色彩和透明度。
+        _contentLabel.tShadowColor = [UIColor clearColor];    //设置文本的阴影色彩和透明度。
     }
-//    _shadowLbl.textColor = shadowColor;
-//    _shadowLbl.strokeColor = shadowColor;
-//    _shadowLbl.fontColor = shadowColor;
-//    [_shadowLbl setNeedsLayout];
+    _shadowLbl.textColor = shadowColor;
+    _shadowLbl.strokeColor = shadowColor;
+    _shadowLbl.fontColor = shadowColor;
+    [_shadowLbl setNeedsLayout];
 }
 
 - (void)setIsVerticalText:(BOOL)isVerticalText {
     _isVerticalText = isVerticalText;
-//    _contentLabel.isVerticalText = isVerticalText;
-//    _shadowLbl.isVerticalText = isVerticalText;
+    _contentLabel.isVerticalText = isVerticalText;
+    _shadowLbl.isVerticalText = isVerticalText;
 }
 
 - (void)setFontName:(NSString *)fontName
@@ -1856,20 +2378,20 @@ static VEPasterTextView *lastTouchedView;
         if (_isVerticalText) {
             CGAffineTransform matrix = CGAffineTransformMake(1, 0, tanf(15 * (CGFloat)M_PI / 180), 1, 0, 0);//设置倾斜角度。
             UIFontDescriptor *desc = [UIFontDescriptor fontDescriptorWithName:_fontName matrix:matrix];
-//            _contentLabel.font = [UIFont fontWithDescriptor:desc size:_fontSize*_tScale];
+            _contentLabel.font = [UIFont fontWithDescriptor:desc size:_fontSize*_tScale];
         }else {
-//            _contentLabel.font = [UIFont fontWithName:_fontName size:_fontSize*_tScale];
+            _contentLabel.font = [UIFont fontWithName:_fontName size:_fontSize*_tScale];
         }
     }else{
-//        _contentLabel.font = [UIFont fontWithName:_fontName size:_fontSize*_tScale];
+        _contentLabel.font = [UIFont fontWithName:_fontName size:_fontSize*_tScale];
     }
-//    _shadowLbl.font = _contentLabel.font;
+    _shadowLbl.font = _contentLabel.font;
 //    if(_needStretching && _contentLabel.pText.length > 0){
 //        [_contentLabel adjustsWidthWithSuperOriginalSize:originRect.size textRect:_tOutRect syncContainerRect:_syncContainerRect];
 //        _shadowLbl.frame = CGRectMake(_shadowOffset.width*_tScale, _shadowOffset.height*_tScale, _contentLabel.frame.size.width, _contentLabel.frame.size.height);
 //    }
-//    [_contentLabel setNeedsLayout];
-//    [_shadowLbl setNeedsLayout];
+    [_contentLabel setNeedsLayout];
+    [_shadowLbl setNeedsLayout];
     selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
     if( _alignBtn )
     {
@@ -1890,12 +2412,47 @@ static VEPasterTextView *lastTouchedView;
 }
 
 - (void) setonlyoneline:(BOOL)onlyoneline{
-//    _contentLabel.onlyoneline = onlyoneline;
-//    _shadowLbl.onlyoneline = onlyoneline;
+    _contentLabel.onlyoneline = onlyoneline;
+    _shadowLbl.onlyoneline = onlyoneline;
+}
+
+- (void)setFontSize:(CGFloat)fontSize label:(VEPasterLabel *)label
+{
+    NSLog(@"fontSize:%f",_fontSize);
+    _fontSize = fontSize;
+    UIFont * font;
+    if (_isItalic && _isVerticalText) {
+        CGAffineTransform matrix = CGAffineTransformMake(1, 0, tanf(15 * (CGFloat)M_PI / 180), 1, 0, 0);//设置倾斜角度。
+        UIFontDescriptor *desc = [UIFontDescriptor fontDescriptorWithName:_fontName matrix:matrix];
+        font = [UIFont fontWithDescriptor:desc size:_fontSize*_tScale];
+    }else {
+        font = [UIFont fontWithName:_fontName size:_fontSize*_tScale];
+        label.font = font;
+    }
+    if (label.isUseAttributedText) {
+        NSRange range = NSMakeRange(0, label.attributedText.length);
+        NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithAttributedString:label.attributedText];
+        [attrStr removeAttribute:NSFontAttributeName range:range];
+        [attrStr addAttribute:NSFontAttributeName value:font range:range];
+        label.attributedText = attrStr;
+    }else {
+        label.font = font;
+    }
+    if (_needStretching) {
+        _contentImage.layer.contentsScale = _tsize.height / _contentImage.frame.size.height;
+    }
 }
 
 - (void)dealloc{
     NSLog(@"%s",__func__);
+    
+    [_textEditBtnLayerArrary enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSMutableArray *array = (NSMutableArray*)obj;
+        [array enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+            CAShapeLayer *layer = (CAShapeLayer*)obj1;
+            [layer removeFromSuperlayer];
+        }];
+    }];
     
     if( _contentImage )
     {
@@ -1949,17 +2506,17 @@ static VEPasterTextView *lastTouchedView;
         _mirrorBtn = nil;
     }
     
-//    if( _contentLabel )
-//    {
-//        [_contentLabel removeFromSuperview];
-//        _contentLabel = nil;
-//    }
+    if( _contentLabel )
+    {
+        [_contentLabel removeFromSuperview];
+        _contentLabel = nil;
+    }
     
-//    if( _shadowLbl )
-//    {
-//        [_shadowLbl removeFromSuperview];
-//        _shadowLbl = nil;
-//    }
+    if( _shadowLbl )
+    {
+        [_shadowLbl removeFromSuperview];
+        _shadowLbl = nil;
+    }
     
     if( _closeBtn )
     {
@@ -2040,6 +2597,7 @@ static VEPasterTextView *lastTouchedView;
            syncContainerRect:(CGRect)syncContainerRect
                    isRestore:(BOOL)isREstroe
 {
+    _captionTextIndex = 0;
     globalInset = 8;
     _syncContainerRect = syncContainerRect;
     if( !isREstroe )
@@ -2151,7 +2709,7 @@ static VEPasterTextView *lastTouchedView;
         [self addGestureRecognizer:singleTapShowHide];
         
         UITapGestureRecognizer *singleTapShowHide1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(DoubleClick:)];
-        singleTapShowHide1.numberOfTouchesRequired = 1;
+        singleTapShowHide1.delegate = self;
         singleTapShowHide1.numberOfTapsRequired = 2;
         [self addGestureRecognizer:singleTapShowHide1];
         
@@ -2168,6 +2726,100 @@ static VEPasterTextView *lastTouchedView;
         }
     }
     return  self;
+}
+
+-(void)addTextEditBoxEx:(CGRect) rect
+{
+    if(  _textEditBtnArray == nil  )
+    {
+        _textEditBtnArray = [NSMutableArray new];
+        _textEditBtnLayerArrary = [NSMutableArray new];
+    }
+    
+    UIButton * btn = [[UIButton alloc] initWithFrame:rect];
+    [btn addTarget:self action:@selector(textEdit_BtnEx:) forControlEvents:UIControlEventTouchUpInside];
+    btn.tag = _textEditBtnArray.count + 2300;
+    [self addSubview:btn];
+    [_textEditBtnArray addObject:btn];
+    
+    [self addSubview:_closeBtn];
+    [self addSubview:_alignBtn];
+    [self addSubview:_mirrorBtn];
+    [self addSubview:rotateView];
+}
+
+-(void)textEdit_BtnEx:(UIButton *) btn
+{
+//    if( _isSubtitleView )
+//    {
+//        return;
+//    }
+    
+    if( self.syncContainer.currentPasterTextView != self )
+    {
+        [self showEditingHandles];
+        if( [_delegate respondsToSelector:@selector(pasterViewShowText:)] )
+        {
+            [_delegate pasterViewShowText:self];
+        }
+    }
+    _captionTextIndex = btn.tag - 2300;
+    
+    if( _delegate && [_delegate respondsToSelector:@selector(DoubleClick_pasterViewShowText:)] )
+    {
+        [_delegate DoubleClick_pasterViewShowText:self];
+    }
+}
+
+-(void)refreshTextEidtFrameEx
+{
+    [_textEditBtnLayerArrary enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSMutableArray *array = (NSMutableArray*)obj;
+        [array enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+            CAShapeLayer *layer = (CAShapeLayer*)obj1;
+            [layer removeFromSuperlayer];
+        }];
+    }];
+    
+    if(_textEditBtnLayerArrary && _textEditBtnLayerArrary.count )
+    {
+        [_textEditBtnLayerArrary removeAllObjects];
+    }
+    
+    [_textEditBtnArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSMutableArray * array = [NSMutableArray new];
+        {
+            CAShapeLayer *layer   = [[CAShapeLayer alloc] init];
+//            layer.t
+            layer.frame            = CGRectMake(0, 0 , obj.frame.size.width, obj.frame.size.height);
+            layer.backgroundColor   = [UIColor clearColor].CGColor;
+            UIBezierPath *path    = [UIBezierPath bezierPathWithRoundedRect:layer.frame cornerRadius:4.0f/_selfScale];
+            layer.path             = path.CGPath;
+            layer.lineWidth         = 0.9/_selfScale;
+            layer.lineDashPattern    = @[@(8/_selfScale), @(8/_selfScale)];
+            layer.fillColor          = [UIColor clearColor].CGColor;
+            layer.strokeColor       = [UIColor colorWithWhite:0.6 alpha:0.5].CGColor;
+            [obj.layer addSublayer:layer];
+            [array addObject:layer];
+        }
+        {
+            CAShapeLayer *layer   = [[CAShapeLayer alloc] init];
+            layer.frame            = CGRectMake(0, 0 , obj.frame.size.width, obj.frame.size.height);
+            layer.backgroundColor   = [UIColor clearColor].CGColor;
+            UIBezierPath *path    = [UIBezierPath bezierPathWithRoundedRect:layer.frame cornerRadius:4.0f/_selfScale];
+            layer.path             = path.CGPath;
+            layer.lineWidth         = 0.5/_selfScale;
+            layer.lineDashPattern    = @[@(8/_selfScale), @(8/_selfScale)];
+            layer.fillColor          = [UIColor clearColor].CGColor;
+            if( (_captionTextIndex == idx) && ( _isTextTemplateEdit ) )
+                layer.strokeColor       = Main_Color.CGColor;
+            else
+                layer.strokeColor       = [UIColor colorWithWhite:1.0 alpha:1.0].CGColor;
+            [obj.layer addSublayer:layer];
+            [array addObject:layer];
+        }
+        [_textEditBtnLayerArrary addObject:array];
+    }];
 }
 
 -(void)addTextEditBox:(CGRect) rect
@@ -2203,153 +2855,57 @@ static VEPasterTextView *lastTouchedView;
     [_TextEditBtn.layer addSublayer:layer];
 }
 
-- (void)adj_TextArea:(NSString *)text{
-    NSMutableString * attributedText = [NSMutableString string];
-    if (_isVerticalText) {
-        text = [text stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-        [text enumerateSubstringsInRange:NSMakeRange(0, text.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:
-        ^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
-            if (substringRange.location + substringRange.length == text.length) {
-                [attributedText insertString:substring atIndex:attributedText.length];
-            }else {
-                [attributedText insertString:[substring stringByAppendingString:@"\n"] atIndex:attributedText.length];
-            }
-        }];
-        text = attributedText;
-    }else if (text.length > 0) {
-        [attributedText setString:text];
-    }else{
-        [attributedText setString:@""];
+-(float)getCropREct_Scale:(float) scale
+{
+    float width = _contentImage.frame.size.width*scale;
+    float height = _contentImage.frame.size.height*scale;
+    
+    float wScale = scale;
+    float  hScale = scale;
+    
+    if( width < _cropRect.size.width )
+    {
+        wScale = _cropRect.size.width/_contentImage.frame.size.width;
     }
-    if (text.length == 0) {
-        text = @"";
+    if( height <  _cropRect.size.height  )
+    {
+        hScale = _cropRect.size.height/_contentImage.frame.size.height;
     }
     
-    self.layer.contentsGravity = kCAGravityResizeAspectFill;
-    self.layer.minificationFilter = kCAFilterNearest;
-    self.layer.magnificationFilter = kCAFilterNearest;
-    float RestrictedFontSize  = 1.0;
-    if (_needStretching) {
-        CGSize maxSize;
-        if ( [_pname isEqualToString:@"text_sample"] ) {
-            maxSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
-            float fontSize = 22;
-            UIFont *font = [UIFont fontWithName:_caption.tFontName size:fontSize];
-            if(!font){
-                _fontName = _caption.tFontName;//@"Baskerville-BoldItalic";
-                _fontCode = @"morenziti";
-                font = [UIFont fontWithName:_caption.tFontName size:fontSize];
-            }
-            NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text
-                                                                                 attributes:@{NSFontAttributeName:font}];
-            CGSize rectSize = [attributedText boundingRectWithSize:maxSize
-                                                           options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
-                                                           context:nil].size;
-            CGRect frame = self.bounds;
-            CGPoint center = self.center;
-            frame.size.width = rectSize.width + _tOutRect.origin.x + _tOutRect.size.width + globalInset*2.0;
-            frame.size.height = rectSize.height + _tOutRect.origin.y + _tOutRect.size.height + globalInset*2.0;
-            self.bounds = frame;
-            self.center = center;
-            _labelBgView.frame = CGRectMake(_tOutRect.origin.x + globalInset, _tOutRect.origin.y + globalInset, rectSize.width, rectSize.height);
-            _fontSize = 22;
-        }
-        else
-        {
-            float fWidth = _labelBgView.frame.size.width;
-            float fHeight = _labelBgView.frame.size.height;
-            if (_isVerticalText) {
-                maxSize = CGSizeMake(CGFLOAT_MAX, _syncContainerRect.size.height - _tOutRect.origin.y - _tOutRect.size.height);
-                fWidth = _textLabelSize.width;
-            }
-            else {
-                maxSize = CGSizeMake(_syncContainerRect.size.width - _tOutRect.origin.x - _tOutRect.size.width, CGFLOAT_MAX);
-                fHeight = _textLabelSize.height;
-            }
-            if( [_pname isEqualToString:@"text_vertical"] )
-            {
-                maxSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
-                float fontSize = 22;
-                UIFont *font = [UIFont fontWithName:_caption.tFontName size:fontSize];
-                if(!font){
-                    _fontName = _caption.tFontName;//@"Baskerville-BoldItalic";
-                    _fontCode = @"morenziti";
-                    font = [UIFont fontWithName:_caption.tFontName size:fontSize];
-                }
-                NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text
-                                                                                         attributes:@{NSFontAttributeName:font}];
-                    CGSize rectSize = [attributedText boundingRectWithSize:maxSize
-                                                                   options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
-                                                                   context:nil].size;
-                CGRect frame = self.bounds;
-                frame.size.width = rectSize.width + _tOutRect.origin.x + _tOutRect.size.width + globalInset*2.0;
-                frame.size.height = rectSize.height + _tOutRect.origin.y + _tOutRect.size.height + globalInset*2.0;
-                CGPoint center = self.center;
-                self.bounds = frame;
-                self.center = center;
-                _labelBgView.frame = CGRectMake(_tOutRect.origin.x + globalInset, _tOutRect.origin.y + globalInset, rectSize.width, rectSize.height);
-                _fontSize = 22;
-            }
-            else{
-               
-                for (int i = (_isVerticalText ? fWidth : fHeight); i >= 1 ; i--) {
-                    UIFont *font = [UIFont fontWithName:_caption.tFontName size:(CGFloat)i];
-                    if(!font){
-                        _fontName = _caption.tFontName;//@"Baskerville-BoldItalic";
-                        _fontCode = @"morenziti";
-                        font = [UIFont fontWithName:_caption.tFontName size:(CGFloat)i];
-                    }
-                    
-                    NSMutableAttributedString *attrStrText = [[NSMutableAttributedString alloc] initWithAttributedString:[[NSAttributedString alloc] initWithString:text
-                                                                                                                                                         attributes:@{NSFontAttributeName:font}]];
-                    [attrStrText replaceCharactersInRange:NSMakeRange(0, attributedText.length) withString:text];
-                    NSRange range = NSMakeRange(0, attrStrText.length);
-                    
-                    NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithAttributedString:attrStrText];
-                    [attrStr removeAttribute:NSFontAttributeName range:range];
-                    [attrStr addAttribute:NSFontAttributeName value:font range:range];
-                    
-                    CGSize rectSize = [attrStr boundingRectWithSize:maxSize
-                                                                   options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
-                                                                    context:nil].size;
-                    if((!_isVerticalText && rectSize.height <= fHeight) || (_isVerticalText && rectSize.width <= fWidth) || i == RestrictedFontSize){
-                        CGRect frame = self.bounds;
-                        if (_isVerticalText) {
-                            frame.size.height = rectSize.height + _tOutRect.origin.y + _tOutRect.size.height + globalInset*2.0;
-                            CGPoint center = self.center;
-                            self.bounds = frame;
-                            self.center = center;
-                            _labelBgView.frame = CGRectMake(_tOutRect.origin.x + globalInset, _tOutRect.origin.y + globalInset, rectSize.width, rectSize.height);
-                        }else {
-                            frame.size.width = rectSize.width + _tOutRect.origin.x + _tOutRect.size.width + globalInset*2.0;
-                            CGPoint center = self.center;
-                            self.bounds = frame;
-                            center = self.center;
-                            _labelBgView.frame = CGRectMake(_tOutRect.origin.x + globalInset, _tOutRect.origin.y + globalInset, rectSize.width, rectSize.height);
-                        }
-                        _fontSize = i;
-                        break;
-                    }
-                }
-            }
-            }
+    if( hScale > wScale )
+    {
+        scale = hScale;
+    }
+    else{
+        scale = wScale;
     }
     
-//    [self adjustPosition];
-    selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
-    if( _alignBtn )
-    {
-        if( _closeBtn )
-        {
-            _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
-        }
-    }
-
-    if( _textEditBtn )
-    {
-        _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
-
-    }
-    [self setFramescale:_selfScale];
+    return scale;
 }
+
+-(CGPoint)getCropRect_Center:(CGPoint) center
+{
+    if( (center.x - _contentImage.frame.size.width*_selfScale/2.0) > (_cropRect.origin.x) )
+    {
+        center.x = _cropRect.origin.x+_contentImage.frame.size.width*_selfScale/2.0;
+    }
+    else if((center.x + _contentImage.frame.size.width*_selfScale/2.0) < (_cropRect.size.width+_cropRect.origin.x) )
+    {
+        center.x = (_cropRect.size.width+_cropRect.origin.x)-_contentImage.frame.size.width*_selfScale/2.0;
+    }
+    
+    if((center.y - _contentImage.frame.size.height*_selfScale/2.0) > (_cropRect.origin.y) )
+    {
+        center.y = _cropRect.origin.y+_contentImage.frame.size.height*_selfScale/2.0;
+    }
+    else if((center.y + _contentImage.frame.size.height*_selfScale/2.0) < (_cropRect.size.height+_cropRect.origin.y) )
+    {
+        center.y = (_cropRect.size.height+_cropRect.origin.y)-_contentImage.frame.size.height*_selfScale/2.0;
+    }
+    
+    shockX = center.x;
+    shockY = center.y;
+    return center;
+}
+
 @end

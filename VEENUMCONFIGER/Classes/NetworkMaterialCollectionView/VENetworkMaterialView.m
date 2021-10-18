@@ -17,6 +17,11 @@
     NSTimer     *stopTimer;
 }
 
+@property(nonatomic, assign) float              currentOffsetX;//CollectView的偏移值
+
+@property(nonatomic, assign) NSInteger          lineItemCount;//竖排时，一行的素材数
+
+@property(nonatomic, assign) NSInteger          selectedItemIndex;//当前选中
 @property(nonatomic, assign) BOOL               isVertical_Cell;
 @property(nonatomic, assign) float              cellWidth;
 @property(nonatomic, assign) float              cellHeight;
@@ -79,6 +84,15 @@
 -(void)setContentSizeZero
 {
     _collectionView.contentSize = CGSizeMake(0, 0);
+}
+
+- (void)setCurrentOffsetX:(float)offsetX
+            lineItemCount:(NSInteger)lineItemCount
+        selectedItemIndex:(NSInteger)selectedItemIndex
+{
+    _currentOffsetX = offsetX;
+    _lineItemCount = lineItemCount;
+    _selectedItemIndex = selectedItemIndex;
 }
 
 // 控制翻页
@@ -239,6 +253,8 @@
         //            [cell.collectionView reloadData];
         //        }
         
+        cell.isDragToChange = _isDragToChange;
+        
         [cell initCollectView:_isVertical_Cell atWidth:_cellWidth atHeight:_cellHeight];
        
         if( (!_isImageShow) && ( !_isVertical_Cell ) && (!_isNotMove)  )
@@ -267,8 +283,26 @@
 }
 
 #pragma mark- 界面组装
--(UIView *)btnCollectCell:(NSInteger) index atIndexCount:(NSInteger) indexCount
+-(UIView *)btnCollectCell:(NSInteger) index atIndexCount:(NSInteger) indexCount collectionView:(UICollectionView *)collectionView
 {
+    if (_selectedItemIndex > 0 && collectionView.superview.frame.origin.x == _currentOffsetX) {
+        UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)collectionView.collectionViewLayout;
+        if (_lineItemCount > 0) {
+            NSInteger index = _selectedItemIndex / _lineItemCount;
+            float y = layout.itemSize.height * index;
+            if (y + layout.itemSize.height > collectionView.frame.size.height) {
+                y = MIN(y, collectionView.contentSize.height - collectionView.frame.size.height);
+                [collectionView setContentOffset:CGPointMake(0, y) animated:YES];
+            }
+        }else {
+            float x = (layout.itemSize.width + layout.minimumLineSpacing) * _selectedItemIndex;
+            if (x + layout.itemSize.width > collectionView.frame.size.width) {
+                x = MIN(x, collectionView.contentSize.width - collectionView.frame.size.width);
+                [collectionView setContentOffset:CGPointMake(x, 0) animated:YES];
+            }
+        }
+        _selectedItemIndex = 0;
+    }
     if( _delegate && [_delegate respondsToSelector:@selector(btnCollectCell:atIndexCount:atNetwork:)] )
         return [_delegate btnCollectCell:index atIndexCount:indexCount atNetwork:self];
     else
@@ -300,6 +334,54 @@
     if(stopTimer){
         [stopTimer invalidate];
         stopTimer = nil;
+    }
+}
+
+#pragma mark - UIScrollViewDelegate (时间轴的更新操作)
+//开始滑动
+- (void)cell_ScrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if( _delegate && [_delegate respondsToSelector:@selector(netWrokMaterial_ScrollViewWillBeginDragging:)] )
+    {
+        [_delegate netWrokMaterial_ScrollViewWillBeginDragging:scrollView];
+    }
+}
+/**
+ 滚动中
+ */
+- (void)cell_ScrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if( _delegate && [_delegate respondsToSelector:@selector(netWrokMaterial_ScrollViewWillBeginDragging:)] )
+    {
+        [_delegate netWrokMaterial_ScrollViewDidScroll:scrollView];
+    }
+}
+
+/**滚动停止
+ */
+- (void)cell_ScrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    if( _delegate && [_delegate respondsToSelector:@selector(netWrokMaterial_ScrollViewWillBeginDragging:)] )
+    {
+        [_delegate netWrokMaterial_ScrollViewDidEndDecelerating:scrollView];
+    }
+}
+
+/**手指停止滑动
+ */
+- (void)cell_ScrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if( _delegate && [_delegate respondsToSelector:@selector(netWrokMaterial_ScrollViewDidEndDragging:willDecelerate:)] )
+    {
+        [_delegate netWrokMaterial_ScrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+    }
+}
+
+-(void)cell_MoveGesture:(UIGestureRecognizer *) recognizer
+{
+    if( _delegate && [_delegate respondsToSelector:@selector(netWrokMaterial_MoveGesture:)] )
+    {
+        [_delegate netWrokMaterial_MoveGesture:recognizer];
     }
 }
 

@@ -33,7 +33,7 @@
             CGImageRef image = CGImageSourceCreateImageAtIndex(source, i, NULL);
 
             duration += [self ve_frameDurationAtIndex:i source:source];
-            UIImage *img = [UIImage imageWithCGImage:image scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];
+            UIImage *img = [UIImage imageWithCGImage:image scale:1.0 orientation:UIImageOrientationUp];
             [images addObject:img];
 
             CGImageRelease(image);

@@ -140,9 +140,11 @@
 -(float)progress:(float) value
 {
     _currentProgressValue = value;
-    float fPercentage = ( (_currentProgressValue - _progressValue)/_trimDuration_OneSpecifyTime );
-    float width = (self.frame.size.width/6*2.0 + 3 )*fPercentage;
-    _currentProgressLabel.frame = CGRectMake(self.frame.size.width/2.0 - self.frame.size.width/6 + width, 3, 1.5, self.frame.size.height-6);
+    float fPercentage = (_currentProgressValue - _progressValue)/_trimDuration_OneSpecifyTime;
+    float width = (_currentHandle.frame.size.width * ((_currentProgressValue - _progressValue)/_trimDuration_OneSpecifyTime)) + _currentHandle.frame.origin.x;
+    CGRect frame = _currentProgressLabel.frame;
+    frame.origin.x = width;
+    _currentProgressLabel.frame = frame;
     if( _currentProgressLabel.hidden )
         _currentProgressLabel.hidden = NO;
     return fPercentage;

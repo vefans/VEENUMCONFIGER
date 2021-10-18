@@ -1,0 +1,73 @@
+{
+	"ver": 1,
+	"minCoreVer": 130,
+	"normal": {
+		"gradient": 0,
+		"color": [
+			{
+				"color": [
+					255,
+					249,
+					56,
+					255
+				],
+				"factor": 0.5
+			},
+            {
+                "color": [
+                    255,
+                    215,
+                    49,
+                    255
+                ],
+                "factor": 1.0
+            }
+		]
+	},
+	"shadow": {
+		"auto": 0,
+		"color": [
+			255,
+			255,
+			255,
+			255
+		],
+		"distance": 0.0,
+		"angle": 90.0,
+		"blur": 0.65,
+        "stroke": [
+            {
+                "gradient": 0,
+                "width": 0.5,
+                "color": [
+                    {
+                        "color": [
+                            255,
+                            255,
+                            255,
+                            255
+                        ],
+                        "factor": 1.0
+                    }
+                ]
+            }
+        ]
+	},
+	"stroke": [
+		{
+			"gradient": 0,
+			"width": 0.1,
+			"color": [
+				{
+					"color": [
+						0,
+						0,
+						0,
+						255
+					],
+					"factor": 1.0
+				}
+			]
+		}
+	]
+}

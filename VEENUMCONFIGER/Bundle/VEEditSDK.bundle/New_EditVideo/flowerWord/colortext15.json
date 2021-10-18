@@ -1,0 +1,48 @@
+{
+	"ver": 1,
+	"minCoreVer": 130,
+	"normal": {
+		"note": "从红色到黄色渐变效果",
+		"gradient": 1,
+		"color": [
+			{
+				"color": [
+					255,
+					255,
+					255,
+					255
+				],
+				"factor": 0.0
+			}
+		]
+	},
+    "stroke": [
+        {
+            "gradient": 0,
+            "width": 0.2,
+            "color": [
+                {
+                    "color": [
+                        224,
+                        88,
+                        129,
+                        255
+                    ],
+                    "factor": 1.0
+                }
+            ]
+        }
+    ],
+	"shadow": {
+		"auto": 0,
+		"color": [
+            224,
+            88,
+            129,
+            255
+		],
+		"distance": 0.06,
+		"angle": 90,
+		"blur": 0.65
+	}
+}

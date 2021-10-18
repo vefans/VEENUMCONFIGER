@@ -10,28 +10,32 @@ typedef NS_ENUM(NSInteger ,KBeautyCategoryType) {
     KBeautyCategory_BlurIntensity,        //磨皮
     KBeautyCategory_WHitening,           //美白
     KBeautyCategory_Rosy,                  //红润
+    KBeautyCategory_BigEyes,             //大眼
+    KBeautyCategory_FaceLift,            //瘦脸
 };
 
 typedef NS_ENUM(NSInteger ,KBeautyType) {
-    KBeauty_FaceWidth = 0, //脸的宽度
-    KBeauty_Forehead,        //额头高度
-    KBeauty_ChinWidth,      //下颚的宽度
-    KBeauty_ChinHeight,     //下巴的高度
-    KBeauty_EyeSize,         //眼睛大小
-    KBeauty_EyeWidth,       //眼睛宽度
-    KBeauty_EyeHeight,      //眼睛高度
-    KBeauty_EyeSlant,         //眼睛倾斜
-    KBeauty_EyeDistance,    //眼睛距离
-    KBeauty_NoseSize,         //鼻子大小
-    KBeauty_NoseWidth,      //鼻子宽度
-    KBeauty_NoseHeight,     //鼻子高度
-    KBeauty_MouthWidth,     //嘴巴宽度
-    KBeauty_LipUpper,         //上嘴唇
-    KBeauty_LipLower,          //下嘴唇
-    KBeauty_Smile,                //微笑
-    KBeauty_BlurIntensity,      //磨皮
-    KBeauty_ToneIntensity,      // 红润
-    KBeauty_BrightIntensity,    //美白
+    KBeauty_FaceWidth           = 0,    //脸的宽度
+    KBeauty_Forehead            = 1,    //额头高度
+    KBeauty_ChinWidth           = 2,    //下颚的宽度
+    KBeauty_ChinHeight          = 3,    //下巴的高度
+    KBeauty_EyeSize             = 4,    //眼睛大小
+    KBeauty_EyeWidth            = 5,    //眼睛宽度
+    KBeauty_EyeHeight           = 6,    //眼睛高度
+    KBeauty_EyeSlant            = 7,    //眼睛倾斜
+    KBeauty_EyeDistance         = 8,    //眼睛距离
+    KBeauty_NoseSize             = 9,    //鼻子大小
+    KBeauty_NoseWidth          = 10,   //鼻子宽度
+    KBeauty_NoseHeight         = 11,   //鼻子高度
+    KBeauty_MouthWidth        = 12,   //嘴巴宽度
+    KBeauty_LipUpper             = 13,   //上嘴唇
+    KBeauty_LipLower             = 14,   //下嘴唇
+    KBeauty_Smile                   = 15,   //微笑
+    KBeauty_BlurIntensity        = 16,   //磨皮
+    KBeauty_BrightIntensity     = 17,   //美白
+    KBeauty_ToneIntensity       = 18,   // 红润
+    KBeauty_BigEyes               = 19,//大眼
+    KBeauty_FaceLift               = 20, //瘦脸
 };
 
 typedef NS_ENUM(NSInteger ,MediaType) {
@@ -151,6 +155,16 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_Holy        = 41,   //圣光
     VEAdvanceEditType_Spirit        = 42,   //暗角
     VEAdvanceEditType_Sharpen   = 43,   //锐化
+    VEAdvanceEditType_INTELLIGENT_KEY    = 44,//智能抠像
+    VEAdvanceEditType_Layer         = 45, //图层
+    VEAdvanceEditType_REPLACE         = 46, //替换
+    VEAdvanceEditType_TRANSPARENCY = 47,//透明度
+    VEAdvanceEditType_ChangeBackground = 48,//换背景
+    VEAdvanceEditType_ErasePen          = 49,//消除笔
+    VEAdvanceEditType_EdgeFeathering = 50,//边缘羽
+    VEAdvanceEditType_Fillet                = 51,   //圆角
+    VEAdvanceEditType_MIXEDMODE     =52,    //  混合模式
+    VEAdvanceEditType_MASK              = 52,   //  蒙版
 };
 
 /*
@@ -214,6 +228,8 @@ typedef NS_ENUM(NSInteger, VESDKErrorCode) {
     VESDKErrorCode_FilePath           = 1006, //文件路径错误
     VESDKErrorCode_NotReachable       = 1007, //无可用的网络
     VESDKErrorCode_DownloadMaterial   = 1008, //下载素材失败
+    VESDKErrorCode_NoUserID           = 1009, //无用户ID
+    VESDKErrorCode_GetResources       = 1010, //获取资源失败
 };
 
 typedef NS_ENUM(NSInteger, CaptionAnimateType) {
@@ -270,6 +286,8 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_MONGOLIANKEYFRAME  = 42,//蒙板关键帧
     KPIP_SOUNDORGINAL       = 43,//原声
     KPIP_MUTEVOLUME             = 44,//静音
+    
+    
 };
 
 //去水印类型
@@ -304,6 +322,9 @@ typedef NS_ENUM(NSInteger,AdjustType){
     Adjust_Sharpness,       //锐度
     Adjust_WhiteBalance,    //色温
     Adjust_Vignette,        //暗角
+    Adjust_Highlight,       //高光
+    Adjust_Shadow,          //阴影
+    Adjust_Granule,     //颗粒
 };
 
 /**相册返回数据类型
@@ -406,6 +427,10 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define NAVIBGCOLOR [VEConfigManager sharedManager].navigationBackgroundColor
 #define NAVIBARTITLEFONT [VEConfigManager sharedManager].navigationBarTitleFont
 
+#pragma mark-PESDK颜色配比
+#define PESDKMain_Color UIColorFromRGB(0x9700ff)
+#define PESDKTEXT_COLOR UIColorFromRGB(0x2B2B2B)
+
 #define VIEW_COLOR UIColorFromRGB(0x1a1a1a)
 
 #define NV_Color 0x27262c
@@ -472,7 +497,6 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define kLocalTransitionFolder [VEEditBundlePath stringByAppendingPathComponent:@"transitions"]
 
 #define kVEDirectory [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject]
-#define LibtaryAblumPath [NSTemporaryDirectory() stringByAppendingString:@"LibtaryAblum"]
 
 #define kMusicFolder_old [NSTemporaryDirectory() stringByAppendingString:@"music/"]
 #define kMusicIconPath_old [NSTemporaryDirectory() stringByAppendingString:@"music/musicIcon/"]
@@ -481,8 +505,6 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define kThemeMVPath_old [NSTemporaryDirectory() stringByAppendingString:@"MV/"]
 #define kThemeMVIconPath_old [NSTemporaryDirectory() stringByAppendingString:@"MV/MVIcon/"]
 #define kThemeMVEffectPath_old [NSTemporaryDirectory() stringByAppendingString:@"MV/MVEffects/"]
-
-#define kComminuteFolder [kVEDirectory stringByAppendingPathComponent:@"Comminute"]
 
 #define kMusicFolder [kVEDirectory stringByAppendingPathComponent:@"music"]
 #define kMusicIconPath [kMusicFolder stringByAppendingPathComponent:@"musicIcon"]
@@ -524,8 +546,10 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define kAEPreProgressFolder [kAEJsonMVEffectPath stringByAppendingPathComponent:@"AEPreProgress"]
 
 #define kVEDraftDirectory [kVEDirectory stringByAppendingPathComponent:@"VEDraft"]
+#define kVEDraftPListPath [kVEDraftDirectory stringByAppendingPathComponent:@"VEDraft.plist"]
 #define kVEDraftListPath [kVEDraftDirectory stringByAppendingPathComponent:@"veDraft.plist"]
 #define kVEDraftUndonePath [kVEDraftDirectory stringByAppendingPathComponent:@"veDraftUndone.plist"]
+#define kVECloudBackupDirectory [kVEDirectory stringByAppendingPathComponent:@"VECloudBackup"]//已下载云备份
 
 #define kSubtitleEffectFolder [kVEDirectory stringByAppendingPathComponent:@"SubtitleEffect"]
 #define kSubtitleFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"Subtitle"]
@@ -533,6 +557,12 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define kSubtitlePlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleListType.plist"]
 #define kSubtitleIconPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleIconList.plist"]
 #define kSubtitleCategoryPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleCategoryListType.plist"]
+#pragma mark- 字幕动画
+#define KSubtitleAnimationFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SubtitleAnimation"]
+#define kSubtitleAnimationPath [KSubtitleAnimationFolder stringByAppendingPathComponent:@"SubtitleAnimationPath.plist"]
+
+#define kTextTemplateFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"textTemplate"]
+#define kTextTemplatePlistPath [kTextTemplateFolder stringByAppendingPathComponent:@"TextTemplatePlistList.plist"]
 
 #define kFontFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"Font"]
 #define kFontIconPath [kFontFolder stringByAppendingPathComponent:@"icon"]

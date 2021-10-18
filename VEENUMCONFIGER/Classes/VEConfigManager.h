@@ -31,6 +31,10 @@ typedef void(^VECompletionHandler) (NSString * videoPath);
 typedef void(^VECancelHandler) (void);
 //编辑取消回调
 typedef void(^VEFailedHandler) (NSError * error);
+//云备份中回调
+typedef void(^VECloudBackingUpHandler) (int completionCount, int totalCount);
+//云备份结束回调
+typedef void(^VECloudBackupCompletionHandler) (int completionCount);
 
 @protocol VESDKDelegate <NSObject>
 
@@ -110,6 +114,8 @@ typedef void(^VEFailedHandler) (NSError * error);
 @property (nonatomic, copy) VECompletionHandler   callbackBlock;
 @property(nonatomic,copy) VECancelHandler cancelHandler;
 @property(nonatomic,copy) VEFailedHandler failedHandler;
+@property(nonatomic,copy) VECloudBackingUpHandler cloudBackingUpHandler;
+@property(nonatomic,copy) VECloudBackupCompletionHandler cloudBackupCompletionHandler;
 
 @property (nonatomic, weak) id<VESDKDelegate> veSDKDelegate;
 

@@ -89,15 +89,35 @@ typedef NS_ENUM(NSInteger,VEWatermarkPosition){
 
 /** 上传模板网络资源地址
  */
-@property (nonatomic,copy,nullable)NSString *uploadTemplatePath;
+@property (nonatomic,copy)NSString *uploadTemplatePath;
 
 /** 新建模板分类地址
  */
-@property (nonatomic,copy,nullable)NSString *createTemplateCategoryPath;
+@property (nonatomic,copy)NSString *createTemplateCategoryPath;
 
 /** 导出模板中分片段，(default false)
  */
 @property (nonatomic,assign) bool enableTemplateFragment;
+
+/** 上传草稿云备份网络资源地址
+ */
+@property (nonatomic,copy)NSString *uploadCloudBackupPath;
+
+/** 更新草稿云备份网络资源地址
+ */
+@property (nonatomic,copy)NSString *updateCloudBackupPath;
+
+/** 删除草稿云备份网络资源地址
+ */
+@property (nonatomic,copy)NSString *deleteCloudBackupPath;
+
+/** 获取草稿云备份列表网络资源地址
+ */
+@property (nonatomic,copy)NSString *cloudBackupListPath;
+
+/** 草稿云备份的用户唯一ID
+ */
+@property (nonatomic,copy)NSString *userUniqueId;
 
 
 

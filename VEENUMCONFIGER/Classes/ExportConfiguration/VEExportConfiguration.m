@@ -77,6 +77,18 @@
     copy.waterDisabled      = _waterDisabled;
     copy.waterImage         = _waterImage;
     copy.waterPosition      = _waterPosition;
+    //API模板
+    copy.enableExportTemplate = _enableExportTemplate;
+    copy.uploadTemplatePath = _uploadTemplatePath;
+    copy.createTemplateCategoryPath = _createTemplateCategoryPath;
+    copy.enableTemplateFragment = _enableTemplateFragment;
+    //草稿云备份
+    copy.uploadCloudBackupPath = _uploadCloudBackupPath;
+    copy.updateCloudBackupPath = _updateCloudBackupPath;
+    copy.deleteCloudBackupPath = _deleteCloudBackupPath;
+    copy.cloudBackupListPath = _cloudBackupListPath;
+    copy.userUniqueId = _userUniqueId;
+    
     return copy;
 }
 
@@ -100,6 +112,18 @@
     copy.waterDisabled      = _waterDisabled;
     copy.waterImage         = _waterImage;
     copy.waterPosition      = _waterPosition;
+    //API模板
+    copy.enableExportTemplate = _enableExportTemplate;
+    copy.uploadTemplatePath = _uploadTemplatePath;
+    copy.createTemplateCategoryPath = _createTemplateCategoryPath;
+    copy.enableTemplateFragment = _enableTemplateFragment;
+    //草稿云备份
+    copy.uploadCloudBackupPath = _uploadCloudBackupPath;
+    copy.updateCloudBackupPath = _updateCloudBackupPath;
+    copy.deleteCloudBackupPath = _deleteCloudBackupPath;
+    copy.cloudBackupListPath = _cloudBackupListPath;
+    copy.userUniqueId = _userUniqueId;
+    
     return copy;
     
 }

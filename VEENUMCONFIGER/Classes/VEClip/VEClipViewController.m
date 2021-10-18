@@ -17,7 +17,7 @@
     BOOL isNeedRefreshPlayer;
     
     CGPoint     _pasterTextCenter;
-    
+    CMTimeRange _playTimeRange;
     NSMutableArray  *thumbTimes;
 }
 
@@ -174,17 +174,24 @@
         [self.toolView addSubview:self.cropTypeView];
     }
     else if( _cutMmodeType == kCropTypeFixed ){
-        if( _selectFile.fileType == kFILEIMAGE )
+        if( _selectFile.fileType == kFILEIMAGE && !_selectFile.isGif)
         {
             [self initphotoView];
         }
         else{
+            if (_selectFile.isGif) {
+                _playTimeRange = _selectFile.imageTimeRange;
+            }else {
+                _playTimeRange = _selectFile.videoTrimTimeRange;
+            }
             [self initvideoView];
+            [self.view addSubview:self.playButton];
+            
+            UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(playVideoEvent:)];
+            [tapGesture setNumberOfTapsRequired:1];
+            [self.videoCropView addGestureRecognizer:tapGesture];
         }
     }
-//    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(playVideoEvent:)];
-//    [tapGesture setNumberOfTapsRequired:1];
-//    [self.videoCropView addGestureRecognizer:tapGesture];
     
 }
 
@@ -198,7 +205,14 @@
     if(self.cropType != VE_VECROPTYPE_FIXEDRATIO)
     self.cropType = VE_VECROPTYPE_FREE;
     [self reloadDataCropTypeView];
-    self.seekTime = _selectFile.videoTrimTimeRange.start;
+    if (_selectFile.isGif) {
+        self.seekTime = _selectFile.imageTimeRange.start;
+    }
+    else if (_selectFile.isReverse) {
+        self.seekTime = _selectFile.reverseVideoTrimTimeRange.start;
+    }else {
+        self.seekTime = _selectFile.videoTrimTimeRange.start;
+    }
     
     [self initPlayer];
     
@@ -371,7 +385,7 @@
     }
     scene.transition.type   = TransitionTypeNone;
     scene.transition.duration = 0.0;
-    vvasset.rotate = _selectFile.rotate;
+    vvasset.rotate = 0;
     vvasset.isVerticalMirror = _selectFile.isVerticalMirror;
     vvasset.isHorizontalMirror = _selectFile.isHorizontalMirror;
     [scene.media addObject:vvasset];
@@ -464,6 +478,9 @@
 -(void)backAction{
     
     [self deletePlayer];
+    if (_cancelBlock) {
+        _cancelBlock();
+    }
     UIViewController *upView = [self.navigationController popViewControllerAnimated:NO];
     if(!upView){
         [self dismissViewControllerAnimated:NO completion:nil];
@@ -495,24 +512,28 @@
         if([_videoCoreSDK isPlaying]){
            [_videoCoreSDK pause];
         }
-        [_playButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_video_play"] forState:UIControlStateNormal];
-    }else{
-        [_playButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_video_stop"] forState:UIControlStateNormal];
-        if(![_videoCoreSDK isPlaying]){
-            
-            float playValue = self.playSlider.value;
-            __weak typeof(self) weakSelf = self;
-            [_videoCoreSDK seekToTime:CMTimeMakeWithSeconds(_videoCoreSDK.duration*playValue,TIMESCALE) toleranceTime:kCMTimeZero completionHandler:^(BOOL finished) {
-                [weakSelf.videoCoreSDK play];
-            }];
+        _playButton.selected = NO;
+        if( _cutMmodeType == kCropTypeFixed ){
+            _playButton.hidden = NO;
         }
+    }else{
+        _playButton.selected = YES;
+        if( _cutMmodeType == kCropTypeFixed ){
+            _playButton.hidden = YES;
+        }
+        [_videoCoreSDK play];
     }
 }
 
 - (void)playToEnd{
     [self playVideo:NO];
-    CMTime start = CMTimeMakeWithSeconds(_videoCoreSDK.duration* self.playSlider.minimumValue, TIMESCALE);
-    [_videoCoreSDK seekToTime:start toleranceTime:kCMTimeZero completionHandler:nil];
+    if( _cutMmodeType == kCropTypeFixed ){
+        [_videoCoreSDK seekToTime:_playTimeRange.start];
+        [_videoTrimiSlider progress:CMTimeGetSeconds(_playTimeRange.start)];
+    }else {
+        CMTime start = CMTimeMakeWithSeconds(_videoCoreSDK.duration* self.playSlider.minimumValue, TIMESCALE);
+        [_videoCoreSDK seekToTime:start toleranceTime:kCMTimeZero completionHandler:nil];
+    }
 }
 
 -(void)seekTime:(CMTime) time
@@ -524,7 +545,11 @@
 {
     if( CMTimeGetSeconds(self.seekTime) > 0 )
     {
-        self.seekTime = _selectFile.videoTrimTimeRange.start;
+        if (_selectFile.isGif) {
+            self.seekTime = _selectFile.imageTimeRange.start;
+        }else {
+            self.seekTime = _selectFile.videoTrimTimeRange.start;
+        }
         double time = CMTimeGetSeconds(self.seekTime);
         [_videoCoreSDK seekToTime:self.seekTime];
         float duration = _videoCoreSDK.duration;
@@ -684,12 +709,13 @@
     CGPoint point = [_videoCropView.cropView convertPoint:_videoCropView.cropView.cropRectView.frame.origin toView:self.pasterTextView.contentImage ];
     CGSize size = _videoCropView.cropView.cropRectView.frame.size;
     
+    point = CGPointMake(point.x*self.pasterTextView.selfscale, point.y*self.pasterTextView.selfscale);
     CGSize imageSize = CGSizeMake(self.pasterTextView.contentImage.bounds.size.width*self.pasterTextView.selfscale, self.pasterTextView.contentImage.bounds.size.height*self.pasterTextView.selfscale);
     
     if(_editVideoForOnceFinishAction){
         _selectFile.contentURL = oldselectFile.contentURL;
         _editVideoForOnceFinishAction(NO,
-                                      CGRectMake(point.x*self.pasterTextView.selfscale/imageSize.width, point.y*self.pasterTextView.selfscale/imageSize.height, size.width/imageSize.width, size.height/imageSize.height),
+                                      CGRectMake(point.x/imageSize.width, point.y/imageSize.height, size.width/imageSize.width, size.height/imageSize.height),
                                       _videoCropView.cropView.cropRectView.frame,
                                       oldselectFile.isVerticalMirror,
                                       oldselectFile.isHorizontalMirror,
@@ -1019,7 +1045,10 @@
         if( _videoTrimiSlider )
         {
             CMTimeRange timeRange = kCMTimeRangeZero;
-            if(_selectFile.isReverse){
+            if (_selectFile.isGif) {
+                timeRange = _selectFile.imageTimeRange;
+            }
+            else if(_selectFile.isReverse){
                 timeRange = _selectFile.reverseVideoTrimTimeRange;
             }else{
                 timeRange = _selectFile.videoTrimTimeRange;
@@ -1061,19 +1090,28 @@
         return;
     }
     float progress = CMTimeGetSeconds(time);
-    float progressValue = progress/_videoCoreSDK.duration;
-    self.playSlider.value = progressValue;
-    CMTime palyTime = CMTimeMakeWithSeconds(_videoCoreSDK.duration*progressValue*(float)_selectFile.speed, TIMESCALE);
-    _playTimeLabel.text = [NSString stringWithFormat:@"%@",[VEHelp timeToStringFormat:(CMTimeGetSeconds(palyTime))]];
-    CMTime endtime = CMTimeMakeWithSeconds(_videoCoreSDK.duration*_playSlider.maximumValue, TIMESCALE);
-    if(CMTimeCompare(CMTimeAdd(currentTime, CMTimeMake(1, kEXPORTFPS)), endtime) == 1){
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.playSlider.value = 0;
-        });
-        self.playSlider.value = 1.1;
-        _playTimeLabel.text = @"00:00.0";
-        [self playToEnd];
-        return;
+    if( _cutMmodeType == kCropTypeFixed ){
+        [_videoTrimiSlider progress:progress];
+        if (CMTimeCompare(currentTime, CMTimeAdd(_playTimeRange.start, _playTimeRange.duration)) >= 0) {
+            [self playVideo:NO];
+            [_videoCoreSDK seekToTime:_playTimeRange.start];
+            [_videoTrimiSlider progress:CMTimeGetSeconds(_playTimeRange.start)];
+        }
+    }else {
+        float progressValue = progress/_videoCoreSDK.duration;
+        self.playSlider.value = progressValue;
+        CMTime palyTime = CMTimeMakeWithSeconds(_videoCoreSDK.duration*progressValue*(float)_selectFile.speed, TIMESCALE);
+        _playTimeLabel.text = [NSString stringWithFormat:@"%@",[VEHelp timeToStringFormat:(CMTimeGetSeconds(palyTime))]];
+        CMTime endtime = CMTimeMakeWithSeconds(_videoCoreSDK.duration*_playSlider.maximumValue, TIMESCALE);
+        if(CMTimeCompare(CMTimeAdd(currentTime, CMTimeMake(1, kEXPORTFPS)), endtime) == 1){
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                self.playSlider.value = 0;
+            });
+            self.playSlider.value = 1.1;
+            _playTimeLabel.text = @"00:00.0";
+            [self playToEnd];
+            return;
+        }
     }
 }
 
@@ -1263,8 +1301,15 @@
     if(_playButton == nil){
         _playButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _playButton.backgroundColor = [UIColor clearColor];
-        _playButton.frame = CGRectMake(10, 16, 28, 28);
-        [_playButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_video_play"] forState:UIControlStateNormal];
+        if( _cutMmodeType == kCropTypeNone ) {
+            _playButton.frame = CGRectMake(10, 16, 28, 28);
+            [_playButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_video_play"] forState:UIControlStateNormal];
+            [_playButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_video_stop"] forState:UIControlStateSelected];
+        }else {
+            _playButton.frame = CGRectMake((kWIDTH - 56)/2.0, (iPhone_X ? 44 : 0) + (_videoCropView.frame.size.height - 56)/2.0, 56, 56);
+            [_playButton setImage:[VEHelp imageWithContentOfFile:@"/剪辑_播放_@3x"] forState:UIControlStateNormal];
+            [_playButton setImage:[VEHelp imageWithContentOfFile:@"/剪辑_暂停_@3x"] forState:UIControlStateSelected];
+        }
         [_playButton addTarget:self action:@selector(playButtonClicked) forControlEvents:UIControlEventTouchUpInside];
     }
     return _playButton;
@@ -1505,7 +1550,10 @@
 -(void)initTrimSlider
 {
     CMTimeRange timeRange = kCMTimeRangeZero;
-    if(_selectFile.isReverse){
+    if (_selectFile.isGif) {
+        timeRange = _selectFile.imageTimeRange;
+    }
+    else if(_selectFile.isReverse){
         timeRange = _selectFile.reverseVideoTrimTimeRange;
     }else{
         timeRange = _selectFile.videoTrimTimeRange;
@@ -1534,7 +1582,7 @@
     }
     
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, _videoView.bounds.size.width, 20)];
-    label.text = [NSString stringWithFormat:@"%.1fs", CMTimeGetSeconds(_selectFile.videoTrimTimeRange.duration)];
+    label.text = [NSString stringWithFormat:@"%.1fs", CMTimeGetSeconds(timeRange.duration)];
     label.font = [UIFont systemFontOfSize:14];
     label.textAlignment =NSTextAlignmentCenter;
     label.textColor = [UIColor whiteColor];
@@ -1544,7 +1592,10 @@
 - (void)loadTrimmerViewThumbImage {
     @autoreleasepool {
         CMTimeRange timeRange = kCMTimeRangeZero;
-        if(_selectFile.isReverse){
+        if (_selectFile.isGif) {
+            timeRange = _selectFile.imageTimeRange;
+        }
+        else if(_selectFile.isReverse){
             timeRange = _selectFile.reverseVideoTrimTimeRange;
         }else{
             timeRange = _selectFile.videoTrimTimeRange;
@@ -1611,7 +1662,8 @@
 #pragma mark- VETrimSliderDelegate
 -(void)trimmerViewProgress:(CGFloat)startTime;
 {
-    [_videoCoreSDK seekToTime:CMTimeMakeWithSeconds(startTime, TIMESCALE) toleranceTime:kCMTimeZero completionHandler:nil];
+    _playTimeRange = CMTimeRangeMake(CMTimeMakeWithSeconds(startTime, TIMESCALE), _playTimeRange.duration);
+    [_videoCoreSDK seekToTime:_playTimeRange.start toleranceTime:kCMTimeZero completionHandler:nil];
     if([_videoCoreSDK isPlaying])
         [self playVideo:NO];
 }
@@ -1805,11 +1857,11 @@
     CGRect rectInScene = CGRectMake(0, 0, 1, 1);
 //    self.isCanvasFirst = false;
     
+    double rotate = 0;//file.rotate;
     if( (fileScale == 0) && ( (rectInScene.origin.x == 0) && (rectInScene.origin.y == 0)
                              && (rectInScene.size.width == 1)
                              && (rectInScene.size.height == 1)))
     {
-        double rotate = file.rotate;
         
         fileScale = 2.0;
         CGSize size = CGSizeMake(rectInScene.size.width * self.syncContainerView.bounds.size.width, rectInScene.size.height* self.syncContainerView.bounds.size.height);
@@ -1909,20 +1961,15 @@
             [self.pasterTextView setFramescale:2.0];
         [self pasterView_Rect:&rectInScene atRotate:&rotate];
         
-        float scale = [self.pasterTextView getFramescale];
-        
-        file.rectInScale = scale;
-        file.rectInScene = rectInScene;
-        
         [self svae_PaterText];
         [self.videoCoreSDK refreshCurrentFrame];
     }
 //    CGPoint point = CGPointMake(rectInScene.origin.x + rectInScene.size.width/2.0, rectInScene.origin.y + rectInScene.size.height/2.0);
 //    point = CGPointMake(point.x*self.syncContainerView.frame.size.width, point.y*self.syncContainerView.frame.size.height);
     
-    fileScale = [VEHelp getMediaAssetScale_File:thumbImage.size atRect:file.rectInScene atCorp:CGRectMake(0, 0, 1, 1) atSyncContainerHeihgt:self.syncContainerView.bounds.size atIsWatermark:NO];
+    fileScale = [VEHelp getMediaAssetScale_File:thumbImage.size atRect:rectInScene atCorp:CGRectMake(0, 0, 1, 1) atSyncContainerHeihgt:self.syncContainerView.bounds.size atIsWatermark:NO];
     file.fileScale = fileScale;
-    CGAffineTransform transform2 = CGAffineTransformMakeRotation( -file.rotate/(180.0/M_PI) );
+    CGAffineTransform transform2 = CGAffineTransformMakeRotation( -rotate/(180.0/M_PI) );
     self.pasterTextView.transform = CGAffineTransformScale(transform2, fileScale, fileScale);
     [self.pasterTextView setFramescale:file.fileScale];
     

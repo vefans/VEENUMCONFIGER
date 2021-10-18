@@ -62,6 +62,7 @@
 "个" = "Number";
 "截取不能小于1.0秒!" = "Trim not trim video under 1 second!";
 
+"五官" = "FiveSenses";
 "美颜" = "Beauty";
 "磨皮" = "Smooth";
 "美白" = "Beauty";
@@ -955,12 +956,10 @@
 "封面" = "Cover";
 "模板" = "Template";
 "转场" = "Transition";
-"导出" = "Export";
 "添加字幕" = "Add subtitle";
 "背景色" = "BG";
 "对齐" = "Align";
 "无" = "None";
-"本地" = "Local";
 "本地视频" = "Local video";
 "云音乐" = "Online";
 "细" = "Thin";
@@ -1072,13 +1071,6 @@
 "我知道了" = "Got it";
 "视频小于%.1f秒，无法添加转场" = "Cannot add transitions to videos under %.1f sec";
 "视频尚未导出完成，是否取消？" = "Do you want to cancel video conversion?";
-"磨皮" = "Smooth";
-"美白" = "Beautify";
-"瘦脸" = "Shape";
-"大眼" = "Eye";
-"亮肤" = "Brighten";
-"红润" = "Tone";
-"细节" = "Detail";
 "文字板" = "Textboard";
 "是" = "Yes";
 "否" = "No";
@@ -1189,7 +1181,6 @@
 "片尾" = "Ending";
 "分割" = "Split";
 "提取音乐" = "Extract music";
-"编辑" = "Edit";
 "切换画中画" = "Switch Picture-in-Picture";
 "复制" = "Copy";
 "关键帧" = "Keyframe";
@@ -1437,7 +1428,6 @@
 "自定义题词" = "Custom Inscription";
 "详情" = "Detail";
 "相册视频" = "Album Video";
-"删除" = "Delete";
 "3分钟" = "3 minutes";
 "更多动画" = "More Animation";
 "横向拉幕" = "Horizontal";
@@ -1607,7 +1597,6 @@
 "截取" = "Trim";
 "相册视频" = "Album Video";
 "压缩" = "Compress";
-"编辑" = "Edit";
 "配 音" = "Recording";
 "配 乐" = "Music";
 "变 声" = "Voice change";
@@ -1658,7 +1647,6 @@
 "完成" = "Finish";
 "动 画" = "Animations";
 "编辑图片" = "Picture editing";
-"导出" = "Export";
 
 
 // 2020.11.18 add
@@ -1911,3 +1899,46 @@
 "确定删除上一段视频？" = "Are you sure you want to delete the last video?";
 "应用视频到剪同款" = "Apply the video to cut the template";
 "保存到本地相册" = "Save to local album";
+"脸型" = "Face shape";
+"下巴" = "chin";
+"额头" = "Forehead";
+"鼻子" = "Nose";
+"微笑" = "Smile";
+"眼睛" = "Eye";
+"嘴唇"= "Lips";
+"脸宽" = "Face width";
+"下颚宽" = "Jaw width";
+"下巴高" = "Chin Height";
+"额头高" = "Forehead Height";
+"距离" = "Distance";
+"上嘴唇" = "Upper lip";
+"下嘴唇" = "Lower lip";
+"嘴巴宽" = "Mouth width";
+"备份" = "Backup";
+"管理" = "Manage";
+"正在等待" = "Waiting";
+"全部取消" = "Cancel all";
+"%@个草稿备份中" = "%@ drafts are being backed up";
+"备份列表" = "Backup List";
+"更新于 %@" = "Updated on %@";
+"重命名" = "Rename";
+"复制草稿" = "Copy Draft";
+"输入草稿名称" = "Enter draft name";
+"无用户ID" = "No user ID";
+"备份于%@" = "Backed up at %@";
+"云草稿" = "Cloud Draft";
+"您还没有上传云草稿" = "You have not uploaded a cloud draft";
+"确定删除所选视频？" = "Are you sure to delete the selected video?";
+"云端已存在相同的草稿，是否覆盖原草稿？" = "The same draft already exists in the cloud, do you overwrite the original draft?";
+"确认覆盖" = "Confirm Overwrite";
+"备份为新草稿" = "Backup as a new draft";
+"已下载至草稿箱" = "Downloaded to draft box";
+"草稿正在备份中" = "Drafts are being backed up";
+"请等待草稿备份完成后再进行操作" = "Please wait for the backup of the draft to be completed before proceeding";
+"该草稿已下载到本地，你可以到草稿箱中进行编辑" = "The draft has been downloaded, you can edit it in the draft box";
+"前往编辑" = "Go to edit";
+"立即备份" = "Backup Now";
+"你还没有备份的草稿哦" = "You haven't backed up the draft yet";
+"标记" = "Mark";
+"添加标记" = "Add Mark";
+"草稿不存在" = "The draft does not exist";

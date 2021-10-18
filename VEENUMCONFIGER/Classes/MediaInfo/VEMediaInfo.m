@@ -218,6 +218,12 @@
             [copy.keyFrameRectRotateArray addObject:objArray];
         }];
     }
+    if (_multipleFaceAttribute.count > 0) {
+        copy.multipleFaceAttribute = [NSMutableArray array];
+        [_multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [copy.multipleFaceAttribute addObject:[obj copy]];
+        }];
+    }
     
     return copy;
 }
@@ -373,6 +379,12 @@
             [copy.keyFrameRectRotateArray addObject:objArray];
         }];
     }
+    if (_multipleFaceAttribute.count > 0) {
+        copy.multipleFaceAttribute = [NSMutableArray array];
+        [_multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [copy.multipleFaceAttribute addObject:[obj copy]];
+        }];
+    }
     
     return copy;
 }
@@ -382,30 +394,59 @@
     NSDictionary *dic = [asset veCore_yy_modelToJSONObject];
     if (dic) {
         self = [VEMediaInfo veCore_yy_modelWithDictionary:dic];
+        if (![VEHelp isSystemPhotoUrl:asset.url]) {
+            asset.url = [VEHelp getFileURLFromAbsolutePath:asset.url.path];
+        }        
         self.contentURL = asset.url;
+        _thumbImage = [VEHelp getThumbImageWithUrl:_contentURL];
         if ([VEHelp isImageUrl:asset.url]) {
             _fileType = kFILEIMAGE;
             _imageDurationTime = asset.timeRange.duration;
             _imageTimeRange = asset.timeRange;
-            NSData *data = [NSData dataWithContentsOfURL:asset.url];
-            CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
-            size_t count = CGImageSourceGetCount(source);
-            if (count > 1) {
-                _isGif = YES;
-                _gifData = data;
-                _imageDurationTime = CMTimeAdd(asset.timeRange.start, asset.timeRange.duration);
-            }
-            if (source) {
-                CFRelease(source);
+            if ([VEHelp isSystemPhotoUrl:asset.url]) {
+                PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+                option.synchronous = YES;
+                option.resizeMode = PHImageRequestOptionsResizeModeExact;
+                PHFetchResult<PHAsset *> *result = [PHAsset fetchAssetsWithALAssetURLs:@[asset.url] options:nil];
+                if (!result || result.count == 0) {
+                    return nil;
+                }
+                PHAsset* asset = [result objectAtIndex:0];
+                if ([[asset valueForKey:@"uniformTypeIdentifier"] isEqualToString:@"com.compuserve.gif"]) {
+                    _filtImagePatch = [VEHelp getMaterialThumbnail:_contentURL];
+                    _isGif = YES;
+                    [[PHImageManager defaultManager] requestImageDataForAsset:asset
+                                                                      options:option
+                                                                resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+                        self.gifData = imageData;
+                        float imageDuration = [VECore isGifWithData:imageData];
+                        self.imageDurationTime = CMTimeMakeWithSeconds(imageDuration, NSEC_PER_SEC);
+                                                                }];
+                }
+            }else {
+                NSData *data = [NSData dataWithContentsOfURL:asset.url];
+                CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
+                size_t count = CGImageSourceGetCount(source);
+                if (count > 1) {
+                    _filtImagePatch = [VEHelp getMaterialThumbnail:_contentURL];
+                    _isGif = YES;
+                    _gifData = data;
+                    float imageDuration = [VECore isGifWithData:data];
+                    _imageDurationTime = CMTimeMakeWithSeconds(imageDuration, NSEC_PER_SEC);
+                }
+                if (source) {
+                    CFRelease(source);
+                }
             }
         }else {
+            _filtImagePatch = [VEHelp getMaterialThumbnail:_contentURL];
             _fileType = kFILEVIDEO;
             self.videoTrimTimeRange = asset.timeRange;
             self.videoTimeRange = _videoActualTimeRange;
             _reverseVideoTimeRange = _videoTimeRange;
         }
         if (asset.filterUrl) {
-            _filterPath = asset.filterUrl.absoluteString;
+            _filterPath = [VEHelp getFileURLFromAbsolutePath_str:asset.filterUrl.absoluteString];
         }
         if (asset.audioFilterType != AudioFilterTypeNormal) {
             _fileSoundEffect = asset.audioFilterType - 1;
@@ -420,47 +461,8 @@
         }else {
             _voiceFXIndex = asset.audioFilterType - 1;
         }
-        if (asset.mask) {
-            _maskName = asset.mask.folderPath.lastPathComponent;
-            MaskObject *mask = [VEHelp getMaskWithName:_maskName];
-            _mask.name = mask.name;
-            _mask.frag = mask.frag;
-            _mask.vert = mask.vert;
-            _mask.maskImagePath = mask.maskImagePath;
-            _maskThickColorIndex = [VEHelp getColorIndex:_mask.edgeColor];
-            NSMutableArray *maskArray = [VEHelp getMaskArray];
-            [maskArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([_maskName isEqualToString:obj[@"title"]]) {
-                    _maskType = idx;
-                    *stop = YES;
-                }
-            }];
-        }
-        if (asset.customAnimate) {
-            CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:asset.customAnimate.folderPath currentFrameImagePath:nil];
-            animate.timeRange = asset.customAnimate.timeRange;
-            animate.cycleDuration = asset.customAnimate.cycleDuration;
-            animate.networkCategoryId = asset.customAnimate.networkCategoryId;
-            animate.networkResourceId = asset.customAnimate.networkResourceId;
-            animate.animateType = asset.customAnimate.animateType;
-            
-            _animationType = asset.customAnimate.animateType;
-            _animationTimeRange = asset.customAnimate.timeRange;
-            _customAnimate = animate;
-        }
-        if (asset.customOutAnimate) {
-            CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:asset.customOutAnimate.folderPath currentFrameImagePath:nil];
-            animate.timeRange = asset.customOutAnimate.timeRange;
-            animate.cycleDuration = asset.customOutAnimate.cycleDuration;
-            animate.networkCategoryId = asset.customOutAnimate.networkCategoryId;
-            animate.networkResourceId = asset.customOutAnimate.networkResourceId;
-            animate.animateType = asset.customOutAnimate.animateType;
-            
-            _animationOutType = asset.customOutAnimate.animateType;
-            _animationOutTimeRange = asset.customOutAnimate.timeRange;
-            _customOutAnimate = animate;
-        }
         [asset.customMultipleFilterArray enumerateObjectsUsingBlock:^(CustomMultipleFilter * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            obj.folderPath = [VEHelp getFileURLFromAbsolutePath_str:obj.folderPath];
             CustomMultipleFilter * customMultipleFilter = [VEHelp getCustomMultipleFilerWithFolderPath:obj.folderPath currentFrameImagePath:asset.url.path];
             customMultipleFilter.timeRange = obj.timeRange;
             customMultipleFilter.networkCategoryId = obj.networkCategoryId;
@@ -469,22 +471,6 @@
             _fxEffect = customMultipleFilter;
             _fxEffectTimeRange = customMultipleFilter.timeRange;
         }];
-        if( asset.customMultipleFilterArray == nil )
-        {
-            asset.customMultipleFilterArray = [NSMutableArray new];
-        }
-        [asset.customFilterArray enumerateObjectsUsingBlock:^(CustomFilter * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//            CustomFilter *filter = [VEHelp getCustomFilterWithFolderPath:obj.folderPath currentFrameImagePath:asset.url.path];
-            CustomMultipleFilter * customMultipleFilter = [VEHelp getCustomMultipleFilerWithFolderPath:obj.folderPath currentFrameImagePath:asset.url.path];
-            customMultipleFilter.overlayType = obj.overlayType;
-            customMultipleFilter.timeRange = obj.timeRange;
-            customMultipleFilter.networkCategoryId = obj.networkCategoryId;
-            customMultipleFilter.networkResourceId = obj.networkResourceId;
-            _fxEffect = customMultipleFilter;
-            _fxEffectTimeRange = customMultipleFilter.timeRange;
-            [asset.customMultipleFilterArray addObject:_fxEffect];
-        }];
-        asset.customFilterArray = nil;
     }
     return self;
 }
@@ -507,7 +493,9 @@
 
 + (NSDictionary *)modelContainerPropertyGenericClass {
     return @{@"curvedSpeedPointArray" : [CurvedSpeedPoint class],
-             @"animate" : [MediaAssetAnimatePosition class]};
+             @"animate" : [MediaAssetAnimatePosition class],
+             @"multipleFaceAttribute" : [FaceAttribute class]
+    };
 }
 
 // 当 Model 转为 JSON 完成后，该方法会被调用。
@@ -555,7 +543,9 @@
     if(_filtImagePatch )
         _filtImagePatch = [VEHelp getFileURLFromAbsolutePath_str:_filtImagePatch];
     _reverseVideoURL = [VEHelp getFileURLFromAbsolutePath:_reverseVideoURL.path];
-    
+    if (_filterPath) {
+        _filterPath = [VEHelp getFileURLFromAbsolutePath_str:_filterPath];
+    }
     NSArray *pointsArray = dic[@"keyFrameRectRotateArray"];
     if (pointsArray && [pointsArray isKindOfClass:[NSArray class]]) {
         _keyFrameRectRotateArray = [NSMutableArray array];
@@ -594,9 +584,9 @@
         filter.networkResourceId = _customAnimate.networkResourceId;
         filter.timeRange = _customAnimate.timeRange;
         filter.animateType = _customAnimate.animateType;
-        if (filter.animateType == CustomAnimationTypeOut) {
-            filter.cycleDuration = _customAnimate.cycleDuration;
-        }
+        filter.cycleDuration = _customAnimate.cycleDuration;
+        
+        _animationType = _customAnimate.animateType;
         _customAnimate = filter;
         _animationTimeRange = filter.timeRange;
     }
@@ -611,6 +601,9 @@
         filter.networkResourceId = _customOutAnimate.networkResourceId;
         filter.timeRange = _customOutAnimate.timeRange;
         filter.animateType = _customOutAnimate.animateType;
+        filter.cycleDuration = _customAnimate.cycleDuration;
+        
+        _animationOutType = _customOutAnimate.animateType;
         _customOutAnimate = filter;
         _animationOutTimeRange = filter.timeRange;
     }
@@ -630,27 +623,22 @@
         _mask.maskImagePath = [VEHelp getFileURLFromAbsolutePath_str:_mask.maskImagePath];
         _mask.folderPath = [VEHelp getFileURLFromAbsolutePath_str:_mask.folderPath];
         
-        NSString * path = _mask.maskImagePath;
-        if( path == nil )
-        {
-            path = _mask.folderPath;
-        }
-        
-        NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
-        NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
-        NSMutableDictionary *configDic = [VEHelp objectForData:jsonData];
-        jsonData = nil;
-        NSString *fragPath = [path stringByAppendingPathComponent:configDic[@"fragShader"]];
-        NSString *vertPath = [path stringByAppendingPathComponent:configDic[@"vertShader"]];
-        NSError * error = nil;
-        
-        _mask.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
-        _mask.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
-        _mask.name = configDic[@"name"];
-        
+        _maskName = _mask.folderPath.lastPathComponent;
+        MaskObject *mask = [VEHelp getMaskWithName:_maskName];
+        _mask.name = mask.name;
+        _mask.frag = mask.frag;
+        _mask.vert = mask.vert;
+        _mask.maskImagePath = mask.maskImagePath;
         if (_mask.edgeColor) {
             _maskThickColorIndex = [VEHelp getColorIndex:_mask.edgeColor];
         }
+        NSMutableArray *maskArray = [VEHelp getMaskArray];
+        [maskArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([_maskName isEqualToString:obj[@"title"]]) {
+                _maskType = idx;
+                *stop = YES;
+            }
+        }];
     }
     
     return YES;
@@ -760,6 +748,7 @@
     media.beautyToneIntensity = _beautyToneIntensity;
     media.beautyThinFaceIntensity = _beautyThinFaceIntensity;
     media.beautyBigEyeIntensity = _beautyBigEyeIntensity;
+    media.multipleFaceAttribute = _multipleFaceAttribute;
     //调色
     media.brightness = _brightness;
     media.contrast = _contrast;
@@ -979,13 +968,20 @@
     NSError *err = nil;
     NSFileManager *fman = [NSFileManager defaultManager];
     //视频
-    if (_contentURL && ![VEHelp isSystemPhotoUrl:_contentURL] && [fman fileExistsAtPath:[[VEHelp getFileURLFromAbsolutePath:_contentURL.absoluteString] path]]) {
-        [fman removeItemAtPath:[[VEHelp getFileURLFromAbsolutePath:_contentURL.absoluteString] path] error:&err];
+    if (_contentURL
+        && ![VEHelp isSystemPhotoUrl:_contentURL]
+        && [fman fileExistsAtPath:[[VEHelp getFileURLFromAbsolutePath:_contentURL.absoluteString] path]]
+        && ![_contentURL.path containsString:kAPITemplateFolder.lastPathComponent])
+    {
+        NSURL *url = [VEHelp getFileURLFromAbsolutePath:_contentURL.absoluteString];
+        [fman removeItemAtPath:[url path] error:&err];
         if (err) {
             NSLog(@"删除videoURL出错： %@", err);
         }
         _contentURL = nil;
         err = nil;
+        NSString *thumbnailPath = [VEHelp getMaterialThumbnail:url];
+        [fman removeItemAtPath:thumbnailPath error:&err];
     }
     //倒序视频
     if (_reverseVideoURL && [fman fileExistsAtPath:[[VEHelp getFileURLFromAbsolutePath:_reverseVideoURL.absoluteString] path]]) {

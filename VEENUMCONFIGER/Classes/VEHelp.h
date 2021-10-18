@@ -14,6 +14,10 @@
 
 +(NSString *)pathForURL_font:(NSString *)name extStr:(NSString *)extStr hasNew:(BOOL)hasNew;
 
+//MARK: 添加特效
++(CustomMultipleFilter *)getCustomMultipleFilter:( NSDictionary * ) itemDic atPath:( NSString * ) path atTimeRange:( CMTimeRange ) timeRange atImage:( UIImage * ) FXFrameTexture atFXFrameTexturePath:( NSString * )  fXFrameTexturePath atEffectArray:( NSMutableArray * ) effectArray;
++ (NSString *)getEffectCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
+
 +(id)objectForData:(NSData *)data;
 
 + (BOOL)isLowDevice;
@@ -69,6 +73,10 @@
 +(void)fileImage_Save:(NSMutableArray<VEMediaInfo *> * ) fileArray atProgress:(void(^)(float progress))completedBlock atReturn:(void(^)(bool isSuccess))completedReturn;
 +(void)save_Image:(int) currentIndex atURL:(NSURL * ) url atPatch:(NSString * ) fileImagePatch atTimes:(NSMutableArray *) times atProgressCurrent:(int) progressIndex  atCount:(int) count atProgress:(void(^)(float progress))completedBlock;
 
++ (NSBundle *)getBundleName:( NSString * ) name;
++( UIImage * )imageNamed:(NSString *)name atBundle:( NSBundle * ) bundle;
++(UIImage *)imageWithContentOfFile:(NSString *)path atBundle:( NSBundle * ) bundle;
+
 /**加载图片
  */
 + (UIImage *)imageWithContentOfFile:(NSString *)path;
@@ -113,6 +121,7 @@
 
 /**判断URL是否为本地相册
  */
++ (BOOL)isSystemPath:(NSString *)path;
 + (BOOL)isSystemPhotoUrl:(NSURL *)url;
 
 +(NSMutableArray *)getColorArray;
@@ -200,8 +209,6 @@
 
 +(UILabel *)loadProgressView:(CGRect) rect;
 
-+ (id)updateInfomation:(NSMutableDictionary *)params andUploadUrl:(NSString *)uploadUrl;
-
 #pragma mark- 压缩
 + (void)OpenZip:(NSString*)zipPath  unzipto:(NSString*)_unzipto caption:(BOOL)caption;
 + (BOOL)OpenZip:(NSString*)zipPath unzipto:(NSString*)_unzipto fileName:(NSString *)fileName;
@@ -220,4 +227,56 @@
 + (UIImage*)drawImages:(NSMutableArray *)images size:(CGSize)size animited:(BOOL)animited;
 
 + (CaptionAnimationType)captionAnimateToCaptionAnimation:(CaptionAnimateType)type;
+
+#pragma mark- 美颜设置
++ (void)setMediaBeauty:(MediaAsset *)asset beautyType:(KBeautyType)type faceRect:(CGRect)faceRect beautyValue:(float)value;
+
+//获取转场
++ (NSMutableArray *)getTransitionArray;
+//获取转场缩略图路径
++ (NSString *)getTransitionIconPath:(NSString *)typeName itemName:(NSString *)itemName;
+//获取转场文件路径
++ (NSString *)getTransitionPath:(NSString *)typeName itemName:(NSString *)itemName;
+//设置转场
++ (void)setTransition_Network:(Transition *)transition file:(VEMediaInfo *)file;
++ (void)setTransition:(Transition *)transition file:(VEMediaInfo *)file atConfigPath:(NSString *) configPath;
+
++(NSString *)getCollageIdentifier;
+
++ (NSString *) getVideoUUID;
+
++ (void)refreshVeCoreSDK:(VECore *)veCoreSDK
+        withTemplateInfo:(VECoreTemplateInfo *)templateInfo
+              folderPath:(NSString *)folderPath
+                isExport:(BOOL)isExport
+                coverUrl:(NSURL *)coverUrl;
+
++ (void)setVeCoreSDKSecens:(VECore *)veCoreSDK
+          withTemplateInfo:(VECoreTemplateInfo *)templateInfo
+                folderPath:(NSString *)folderPath;
+
+//替换媒体
++ (void)replaceMedia:(MediaAsset *)media withVEMediaInfo:(VEMediaInfo *)file videoSize:(CGSize)videoSize;
+
+#pragma mark - 字幕动画
++ (CustomFilter *)getSubtitleAnimation:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId atAnimationPath:(NSString *) animationPath atCaptionItem:( CaptionItem * ) captionItem;
+#pragma mark- 花字
++ (CaptionEffectCfg *)getFLowerWordConfigWithIndex:(NSInteger)index;
+
+#pragma mark- 文字模版
++(NSDictionary *)getTextTemplateEffectConfig:( NSString * ) configPath;
++(CaptionEx *)getTextTemplateCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atName:(NSString *) name;
++(CustomFilter *)getTextTemplateAnimation:( NSString * ) configPath  atFileName:(NSString *) fileName atCaptionItem:( CaptionItem * ) captionItem;
+
+//判断图片是否有alpha通道
++ (BOOL)CGImageRefContainsAlpha:(CGImageRef)imageRef;
+
+#pragma mark- 气泡
++(void)getConfig_CaptionEx:( CaptionEx * ) captionEx atCaptionConfig:( NSString * ) configPath atConfig:( NSDictionary** ) config;
+
+
++ (NSString *)getVerBationAnimationFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
++ (BOOL)OpenZipp:(NSString*)zipPath  unzipto:(NSString*)_unzipto;
+
++(  CustomFilter * )getSubtitleAnmation:( NSString * ) configPath atPath:( NSString * ) path atCaptionItem:( CaptionItem * ) captionItem;
 @end

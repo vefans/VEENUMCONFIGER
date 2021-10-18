@@ -11,7 +11,7 @@
 #import "VENetworkMaterialView.h"
 #import <SDWebImage/SDWebImage.h>
 
-@interface VENetworkMaterialCollectionViewCell()<UICollectionViewDataSource,UICollectionViewDelegate>
+@interface VENetworkMaterialCollectionViewCell()<UICollectionViewDataSource,UICollectionViewDelegate,UIScrollViewDelegate>
 
 @property(nonatomic, assign) float cellWidth;
 @property(nonatomic, assign) float cellHeight;
@@ -56,6 +56,9 @@
     videoCollectionView.tag = 1000000;
     videoCollectionView.dataSource = self;
     videoCollectionView.delegate = self;
+    
+    ((UIScrollView*)videoCollectionView).delegate = self;
+    
     if( !isVertical_Cell )
     {
         
@@ -65,7 +68,101 @@
     _collectionView.backgroundColor = [UIColor clearColor];
     _collectionView.showsHorizontalScrollIndicator = NO;
     _collectionView.showsVerticalScrollIndicator = NO;
+    
+//    UIPanGestureRecognizer* moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
+//    [_collectionView addGestureRecognizer:moveGesture];
+    
     [self addSubview:_collectionView];
+}
+
+#pragma mark-scrollView
+#pragma mark - UIScrollViewDelegate (时间轴的更新操作)
+//开始滑动
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    if( _isDragToChange &&  _delegate && [_delegate respondsToSelector:@selector(cell_ScrollViewWillBeginDragging:)] )
+    {
+        [_delegate cell_ScrollViewWillBeginDragging:scrollView];
+    }
+}
+/**
+ 滚动中
+ */
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if(  _isDragToChange && _delegate && [_delegate respondsToSelector:@selector(cell_ScrollViewDidScroll:)] )
+    {
+        [_delegate cell_ScrollViewDidScroll:scrollView];
+    }
+}
+
+/**滚动停止
+ */
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    if( _isDragToChange &&  _delegate && [_delegate respondsToSelector:@selector(cell_ScrollViewDidEndDecelerating:)] )
+    {
+        [_delegate cell_ScrollViewDidEndDecelerating:scrollView];
+    }
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(nullable UIView *)view atScale:(CGFloat)scale
+{
+    if( _isDragToChange &&  _delegate && [_delegate respondsToSelector:@selector(cell_ScrollViewDidEndDecelerating:)] )
+    {
+        [_delegate cell_ScrollViewDidEndDecelerating:scrollView];
+    }
+}
+
+/**手指停止滑动
+ */
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    
+    if( _isDragToChange && _delegate && [_delegate respondsToSelector:@selector(cell_ScrollViewDidEndDragging:willDecelerate:)] )
+    {
+        [_delegate cell_ScrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+    }
+    
+    if( _isNotMove )
+        return;
+    
+    VENetworkMaterialView * network = (VENetworkMaterialView*)_delegate;
+    double conffsetX = scrollView.contentOffset.x;
+    NSInteger index = self.tag;
+    if( conffsetX > (scrollView.contentSize.width - scrollView.frame.size.width + scrollView.frame.size.height/2.0) )
+    {
+        network.isAddCount = 0;
+        index++;
+        if( index > (network.CollectionViewCount-1) )
+            index = network.CollectionViewCount-1;
+    }
+    else if( conffsetX < (-(scrollView.frame.size.height/2.0)) )
+    {
+        network.isAddCount = 1;
+        index--;
+        if( index < 0 )
+            index = 0;
+    }
+    
+    if( index != self.tag )
+    {
+        __weak typeof(self) myself = self;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            myself.collectionView.contentOffset = CGPointMake(0, 0);
+            if( myself.delegate && [myself.delegate respondsToSelector:@selector(CellIndex:)] )
+            {
+                [myself.delegate CellIndex:index ];
+            }
+        });
+    }
+}
+
+#pragma mark-拖动
+-(void)moveGesture:(UIGestureRecognizer *) recognizer
+{
+    if(  _isDragToChange && _delegate && [_delegate respondsToSelector:@selector(cell_MoveGesture:)] )
+    {
+        [_delegate cell_MoveGesture:recognizer];
+    }
 }
 
 #pragma mark- UICollectionViewDelegate/UICollectViewdataSource
@@ -106,9 +203,9 @@
         }
     }
     
-    if( _delegate && [_delegate respondsToSelector:@selector(btnCollectCell:atIndexCount:)] )
+    if( _delegate && [_delegate respondsToSelector:@selector(btnCollectCell:atIndexCount:collectionView:)] )
     {
-        UIView * view = [_delegate btnCollectCell:indexPath.row atIndexCount:_index];
+        UIView * view = [_delegate btnCollectCell:indexPath.row atIndexCount:_index collectionView:collectionView];
         cell.btnCollectBtn = view;
         [cell addSubview:view];
     }
@@ -220,40 +317,9 @@
 
 /**手指停止滑动
  */
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    
-    if( _isNotMove )
-        return;
-    
-    VENetworkMaterialView * network = (VENetworkMaterialView*)_delegate;
-    double conffsetX = scrollView.contentOffset.x;
-    NSInteger index = self.tag;
-    if( conffsetX > (scrollView.contentSize.width - scrollView.frame.size.width + scrollView.frame.size.height/2.0) )
-    {
-        network.isAddCount = 0;
-        index++;
-        if( index > (network.CollectionViewCount-1) )
-            index = network.CollectionViewCount-1;
-    }
-    else if( conffsetX < (-(scrollView.frame.size.height/2.0)) )
-    {
-        network.isAddCount = 1;
-        index--;
-        if( index < 0 )
-            index = 0;
-    }
-    
-    if( index != self.tag )
-    {
-        __weak typeof(self) myself = self;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            myself.collectionView.contentOffset = CGPointMake(0, 0);
-            if( myself.delegate && [myself.delegate respondsToSelector:@selector(CellIndex:)] )
-            {
-                [myself.delegate CellIndex:index ];
-            }
-        });
-    }
-}
+//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+//
+//
+//}
 
 @end
