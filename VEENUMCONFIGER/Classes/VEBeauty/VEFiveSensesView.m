@@ -242,7 +242,7 @@
     
     float value =  0.5;
     switch (_currentType) {
-        case 0://MARK:脸型
+        case 0://MARK: 脸型
         {
             self.adjustmentViews[0].hidden = NO;
             CGRect rect = self.adjustmentViews[0].frame;
@@ -258,7 +258,7 @@
             _adjustmentNumberLabels[0].text = VELocalizedString(@"脸宽", nil);
         }
             break;
-        case 1://MARK:下巴
+        case 1://MARK: 下巴
         {
             self.adjustmentViews[0].hidden = NO;
             CGRect rect = self.adjustmentViews[0].frame;
@@ -283,7 +283,7 @@
             _adjustmentNumberLabels[3].text = VELocalizedString(@"下巴高", nil);
         }
             break;
-        case 2://MARK:额头
+        case 2://MARK: 额头
         {
             self.adjustmentViews[0].hidden = NO;
             CGRect rect = self.adjustmentViews[0].frame;
@@ -299,7 +299,7 @@
             _adjustmentSliders[0].tag =  KBeauty_Forehead;
         }
             break;
-        case 3://MARK:微笑
+        case 3://MARK: 微笑
         {
             self.adjustmentViews[0].hidden = NO;
             CGRect rect = self.adjustmentViews[0].frame;
@@ -315,7 +315,7 @@
             _adjustmentSliders[0].tag = KBeauty_Smile;
         }
             break;
-        case 4://MARK:眼睛
+        case 4://MARK: 眼睛
         {
             {
                 self.adjustmentViews[1].hidden = NO;
@@ -351,7 +351,7 @@
             }
         }
             break;
-        case 5://MARK:嘴唇
+        case 5://MARK: 嘴唇
         {
             {
                 self.adjustmentViews[1].hidden = NO;
@@ -387,7 +387,7 @@
             }
         }
             break;
-        case 6://MARK:鼻子
+        case 6://MARK: 鼻子
         {
             self.adjustmentViews[0].hidden = NO;
             CGRect rect = self.adjustmentViews[0].frame;

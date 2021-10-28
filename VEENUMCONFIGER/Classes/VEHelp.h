@@ -279,4 +279,6 @@
 + (BOOL)OpenZipp:(NSString*)zipPath  unzipto:(NSString*)_unzipto;
 
 +(  CustomFilter * )getSubtitleAnmation:( NSString * ) configPath atPath:( NSString * ) path atCaptionItem:( CaptionItem * ) captionItem;
+
++(MaskObject * )getMaskObject:(NSString *) maskName;
 @end

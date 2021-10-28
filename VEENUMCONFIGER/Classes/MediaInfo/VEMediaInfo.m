@@ -802,7 +802,7 @@
     if( (_animationIndex > 1) )
     {
         NSMutableDictionary * itemDic = self.animationArray[_animationType][@"data"][_animationIndex-2];
-        media.customAnimate = [VEDeluxeHelpClass getAnimationCustomFilter:itemDic categoryId:_animationArray[_animationType][@"id"]];
+        media.customAnimate = [VEHelp getAnimationCustomFilter:itemDic categoryId:_animationArray[_animationType][@"id"]];
         media.customAnimate.networkCategoryId = _animationArray[_animationType][@"id"];
         media.customAnimate.timeRange = _animationTimeRange;
         if( _animationType == 0 )
@@ -832,7 +832,7 @@
     if( (_animationOutIndex > 0) && !( (_animationType == 2) && (_animationIndex > 0) ) )
     {
         NSMutableDictionary * itemDic = self.animationArray[_animationOutType][@"data"][_animationOutIndex-2];
-        media.customOutAnimate = [VEDeluxeHelpClass getAnimationCustomFilter:itemDic categoryId:_animationArray[_animationOutType][@"id"]];
+        media.customOutAnimate = [VEHelp getAnimationCustomFilter:itemDic categoryId:_animationArray[_animationOutType][@"id"]];
         media.customOutAnimate.timeRange = _animationOutTimeRange;
         media.customOutAnimate.animateType = CustomAnimationTypeOut;
     }
@@ -921,7 +921,7 @@
     
     if( (_keyFrameTimeArray) && (_keyFrameTimeArray.count > 0) )
     {
-//        [VEDeluxeHelpClass setAssetAnimationArray_Keyframe:media file:self];
+//        [VEHelp setAssetAnimationArray_Keyframe:media file:self];
     }else if (_animate.count > 0) {
         media.animate = _animate;
         _keyFrameTimeArray = [NSMutableArray array];
@@ -950,8 +950,8 @@
 //            [array addObject:[NSNumber numberWithFloat:obj1.rotate]];
             [array addObject:[NSNumber numberWithFloat:1.0]];
             
-//            [VEDeluxeHelpClass getMaskObjectArray:_mask atMaskName:nil atMaskThickColorIndex:0 atMaskType:0 atArray:array atIsKey:YES];
-//            [VEDeluxeHelpClass setKeyFrameRect_Rotate:_atArray:array atIndex:(i - 1)];
+//            [VEHelp getMaskObjectArray:_mask atMaskName:nil atMaskThickColorIndex:0 atMaskType:0 atArray:array atIsKey:YES];
+//            [VEHelp setKeyFrameRect_Rotate:_atArray:array atIndex:(i - 1)];
         }
     }
     

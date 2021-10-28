@@ -278,9 +278,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y + view.frame.size
                             .height, view.frame.size.width, view.frame.size.height);
     }
-    //[UIView animateWithDuration:0.1 animations:^{
+    [UIView setAnimationsEnabled:YES];
+    [UIView animateWithDuration:0.2 animations:^{
         view.frame = rect;
-    //}];
+    }];
 }
 
 + (UIImage *) veImageWithColor:(UIColor *)color cornerRadius:(CGFloat)cornerRadius {
@@ -1261,6 +1262,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             range = [filePah rangeOfString:@".app/"];
             filePah = [filePah substringFromIndex:range.length + range.location - 1];
             filePah = [[NSBundle mainBundle].bundlePath stringByAppendingString:filePah];
+            if ([filePah hasPrefix:@"/private"]) {
+                filePah = [filePah substringFromIndex:[@"/private" length]];
+            }
             fileURL = [NSURL fileURLWithPath:filePah];
         }else{
             range = [absolutePath rangeOfString:@"Data/Application/"];
@@ -1297,6 +1301,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             range = [filePah rangeOfString:@".app/"];
             filePah = [filePah substringFromIndex:range.length + range.location - 1];
             filePah = [[NSBundle mainBundle].bundlePath stringByAppendingString:filePah];
+            if ([filePah hasPrefix:@"/private"]) {
+                filePah = [filePah substringFromIndex:[@"/private" length]];
+            }
             fileURL = filePah;
         }else{
             range = [absolutePath rangeOfString:@"Data/Application/"];
@@ -1804,6 +1811,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     mask.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
     mask.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
     mask.name = configDic[@"name"];
+    mask.maskName = maskName;
     
     NSArray *uniformParams = configDic[@"uniformParams"];
     [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -3935,110 +3943,110 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         return;
     
     switch (type) {
-        case KBeauty_FaceWidth://MARK:脸的宽度
+        case KBeauty_FaceWidth://MARK: 脸的宽度
         {
             faceAttribute.faceWidth = value;
         }
             break;
-        case KBeauty_Forehead://MARK:额头高度
+        case KBeauty_Forehead://MARK: 额头高度
         {
             faceAttribute.forehead = value;
         }
             break;
-        case KBeauty_ChinWidth://MARK:下颚的宽度
+        case KBeauty_ChinWidth://MARK: 下颚的宽度
         {
             faceAttribute.chinWidth = value;
         }
             break;
-        case KBeauty_ChinHeight://MARK:下巴的高度
+        case KBeauty_ChinHeight://MARK: 下巴的高度
         {
             faceAttribute.chinHeight = value;
         }
             break;
-        case KBeauty_EyeSize://MARK:眼睛大小
+        case KBeauty_EyeSize://MARK: 眼睛大小
         {
             faceAttribute.eyeWidth = value;
             faceAttribute.eyeHeight = value;
         }
             break;
-        case KBeauty_EyeWidth://MARK:眼睛宽度
+        case KBeauty_EyeWidth://MARK: 眼睛宽度
         {
             faceAttribute.eyeWidth = value;
         }
             break;
-        case KBeauty_EyeHeight://MARK:眼睛高度
+        case KBeauty_EyeHeight://MARK: 眼睛高度
         {
             faceAttribute.eyeHeight = value;
         }
             break;
-        case KBeauty_EyeSlant://MARK:眼睛倾斜
+        case KBeauty_EyeSlant://MARK: 眼睛倾斜
         {
             faceAttribute.eyeSlant = value;
         }
             break;
-        case KBeauty_EyeDistance://MARK:眼睛距离
+        case KBeauty_EyeDistance://MARK: 眼睛距离
         {
             faceAttribute.eyeDistance = value;
         }
             break;
-        case KBeauty_NoseSize://MARK:鼻子大小
+        case KBeauty_NoseSize://MARK: 鼻子大小
         {
             faceAttribute.noseWidth = value;
             faceAttribute.noseHeight = value;
         }
             break;
-        case KBeauty_NoseWidth://MARK:鼻子宽度
+        case KBeauty_NoseWidth://MARK: 鼻子宽度
         {
             faceAttribute.noseWidth = value;
         }
             break;
-        case KBeauty_NoseHeight://MARK:鼻子高度
+        case KBeauty_NoseHeight://MARK: 鼻子高度
         {
             faceAttribute.noseHeight = value;
         }
             break;
-        case KBeauty_MouthWidth://MARK:嘴巴宽度
+        case KBeauty_MouthWidth://MARK: 嘴巴宽度
         {
             faceAttribute.mouthWidth = value;
         }
             break;
-        case KBeauty_LipUpper://MARK:上嘴唇
+        case KBeauty_LipUpper://MARK: 上嘴唇
         {
             faceAttribute.lipUpper = value;
         }
             break;
-        case KBeauty_LipLower://MARK:下嘴唇
+        case KBeauty_LipLower://MARK: 下嘴唇
         {
             faceAttribute.lipLower = value;
         }
             break;
-        case KBeauty_Smile://MARK:微笑
+        case KBeauty_Smile://MARK: 微笑
         {
             faceAttribute.smile = value;
         }
             break;
-        case KBeauty_BlurIntensity://MARK:磨皮
+        case KBeauty_BlurIntensity://MARK: 磨皮
         {
             asset.beautyBlurIntensity = value;
         }
             break;
-        case KBeauty_ToneIntensity://MARK:红润
+        case KBeauty_ToneIntensity://MARK: 红润
         {
             asset.beautyToneIntensity = value;
         }
             break;
-        case KBeauty_BrightIntensity://MARK:美白
+        case KBeauty_BrightIntensity://MARK: 美白
         {
             asset.beautyBrightIntensity = value;
         }
             break;
-        case KBeauty_BigEyes://MARK:大眼
+        case KBeauty_BigEyes://MARK: 大眼
         {
             faceAttribute.beautyBigEyeIntensity = value;
 //            asset.beautyBigEyeIntensity = value;
         }
             break;
-        case KBeauty_FaceLift://MARK:瘦脸
+        case KBeauty_FaceLift://MARK: 瘦脸
         {
             faceAttribute.beautyThinFaceIntensity = value;
 //            asset.beautyThinFaceIntensity = value;
@@ -4102,8 +4110,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             
             [VEHelp setTransition:transition file:file atConfigPath:configPath];
             
-            transition.networkCategoryId = [transitionList[file.transitionTypeIndex - 1] objectForKey:@"id"];
-            transition.networkResourceId = obj[@"id"];
+            file.transitionNetworkCategoryId = transition.networkCategoryId = [transitionList[file.transitionTypeIndex - 1] objectForKey:@"id"];
+            file.transitionNetworkResourceId = transition.networkResourceId = obj[@"id"];
+            
         }
     }
 }
@@ -4179,7 +4188,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     [self setVeCoreSDKSecens:veCoreSDK withTemplateInfo:templateInfo folderPath:folderPath];
     
     NSMutableArray *overlays = [NSMutableArray array];
-    //MARK:画中画
+    //MARK: 画中画
     if (templateInfo.overlays.count > 0) {
         [templateInfo.overlays enumerateObjectsUsingBlock:^(VECoreTemplateOverlay * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             Overlay *overlay = [obj getOverlayWithFolderPath:folderPath];
@@ -4244,7 +4253,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
         }];
     }
-    //MARK:封面
+    //MARK: 封面
     if (templateInfo.coverPath.length > 0 || (coverUrl && [self isImageUrl:coverUrl])) {
         Overlay *coverOverlay = [[Overlay alloc] init];
         coverOverlay.type = OverlayTypeCover;
@@ -4273,7 +4282,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         coverOverlay.media.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(KPICDURATION, TIMESCALE));
         [overlays addObject:coverOverlay];
     }
-    //MARK:涂鸦
+    //MARK: 涂鸦
     if (templateInfo.doodles.count > 0) {
         [templateInfo.doodles enumerateObjectsUsingBlock:^(VECoreTemplateOverlay * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             Overlay *doodle = [obj getOverlayWithFolderPath:folderPath];
@@ -4286,7 +4295,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
         }];
     }
-    //MARK:水印
+    //MARK: 水印
     if (isExport && templateInfo.logoOverlay.path.length > 0) {
         Overlay *logoOverlay = [templateInfo.logoOverlay getOverlayWithFolderPath:folderPath];
         if (logoOverlay) {
@@ -4302,7 +4311,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (overlays.count > 0) {
         veCoreSDK.overlayArray = overlays;
     }
-    //MARK:滤镜、特效
+    //MARK: 滤镜、特效
     NSMutableArray *customMultipleFilterArray = [NSMutableArray array];
     if (templateInfo.customFilters.count > 0) {
         [templateInfo.customFilters enumerateObjectsUsingBlock:^(VECoreTemplateCustomFilter * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -4338,7 +4347,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         veCoreSDK.customMultipleFilterArray = customMultipleFilterArray;
     }
     NSMutableArray *captions = [NSMutableArray array];
-    //MARK:字幕
+    //MARK: 字幕
     if (templateInfo.subtitles.count > 0) {
         [templateInfo.subtitles enumerateObjectsUsingBlock:^(VECoreTemplateSubtitle * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             Caption *caption = [obj getSubtitleWithFolderPath:folderPath videoSize:templateInfo.size];
@@ -4731,7 +4740,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }];
     }
     NSMutableArray *captionExs = [NSMutableArray array];
-    //MARK:新版字幕
+    //MARK: 新版字幕
     if (templateInfo.subtitleExs.count > 0) {
         CGRect videoFrame = CGRectMake(0, 0, kWIDTH, kHEIGHT - kPlayerViewOriginX - 234 - 44 - (kToolbarHeight+16) );
         CGRect videoRect = AVMakeRectWithAspectRatioInsideRect(templateInfo.size, videoFrame);
@@ -4911,7 +4920,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
         }];
     }
-    //MARK:文字模板
+    //MARK: 文字模板
     if (templateInfo.subtitlesTemplate.count > 0) {
         CGRect videoFrame = CGRectMake(0, 0, kWIDTH, kHEIGHT - kPlayerViewOriginX - 234 - 44 - (kToolbarHeight+16) );
         CGRect videoRect = AVMakeRectWithAspectRatioInsideRect(templateInfo.size, videoFrame);
@@ -4962,7 +4971,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (captionExs.count > 0) {
         veCoreSDK.captionExs = captionExs;
     }
-    //MARK:贴纸
+    //MARK: 贴纸
     if (templateInfo.stickers.count > 0) {
         [templateInfo.stickers enumerateObjectsUsingBlock:^(VECoreTemplateSticker * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             Caption *caption = [obj getStickerWithFolderPath:folderPath];
@@ -5025,7 +5034,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (captions.count > 0) {
         veCoreSDK.captions = captions;
     }
-    //MARK:配乐
+    //MARK: 配乐
     NSMutableArray *multiTrackMusics = [NSMutableArray array];
     if (templateInfo.musics.count > 0) {
         [templateInfo.musics enumerateObjectsUsingBlock:^(VECoreTemplateMusic * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -5063,7 +5072,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (multiTrackMusics.count > 0) {
         [veCoreSDK setMusics:multiTrackMusics];
     }
-    //MARK:马赛克
+    //MARK: 马赛克
     NSMutableArray *mosaics = [NSMutableArray array];
     NSMutableArray *blurs = [NSMutableArray array];
     NSMutableArray *dewatermarks = [NSMutableArray array];
@@ -5093,7 +5102,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         veCoreSDK.dewatermarks = dewatermarks;
     }
     
-    //MARK:色调
+    //MARK: 色调
     if (templateInfo.tonings.count > 0) {
         NSMutableArray *tonings = [NSMutableArray array];
         [templateInfo.tonings enumerateObjectsUsingBlock:^(VECoreTemplateToningInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -5562,7 +5571,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     captionItem.backgroundColor = nil;
                 }
                 
-                //MARK:文字模版 花字
+                //MARK: 文字模版 花字
                 {
                     NSString *flowerWordPath = obj[@"color_text"];
                     [self getTextTemplateFlowerWord:captionItem atPath:configPath atFlowerWordName:flowerWordPath];
@@ -6098,8 +6107,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     
                     {
                         captionItem.text = VELocalizedString(@"点击输入字幕", nil);
-                        captionItem.fontName = subtitleEffectConfig[@"textFont"];//@"Helvetica-Bold";//
-                        captionItem.fontName = [[UIFont systemFontOfSize:10] fontName];
+                        if ([[NSFileManager defaultManager] fileExistsAtPath:kDefaultFontPath]) {
+                            captionItem.fontPath = kDefaultFontPath;
+                            captionItem.fontName = [VEHelp customFontArrayWithPath:kDefaultFontPath].firstObject;
+                        }else {
+                            captionItem.fontName = [[UIFont systemFontOfSize:10] fontName];
+                        }
                         captionItem.frame = CGRectMake(fx, fy, fw, fh);
                         NSArray *textColors = subtitleEffectConfig[@"textColor"];
                         float r = [(textColors[0]) floatValue]/255.0;
@@ -6621,4 +6634,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
     return cachedFilePath;
 }
+
++(MaskObject * )getMaskObject:(NSString *) maskName
+{
+    return [VEHelp getMaskWithName:maskName];
+}
+
 @end

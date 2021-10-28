@@ -33,6 +33,19 @@
     {
         VEPasterTextView * PasterText = (VEPasterTextView *)_currentPasterTextView;
         [PasterText pinchGestureRecognizer:recognizer];
+        if(recognizer.state == UIGestureRecognizerStateEnded)
+        {
+            if( self.syncContainer_X_Right )
+            {
+                self.syncContainer_Y_Right.hidden = YES;
+                self.syncContainer_Y_Left.hidden = YES;
+            }
+            if( self.syncContainer_X_Right )
+            {
+                self.syncContainer_X_Right.hidden = YES;
+                self.syncContainer_X_Left.hidden = YES;
+            }
+        }
     }
 }
 
@@ -42,6 +55,20 @@
     {
         VEPasterTextView * PasterText = (VEPasterTextView *)_currentPasterTextView;
         [PasterText moveGesture:recognizer];
+        
+        if(recognizer.state == UIGestureRecognizerStateEnded)
+        {
+            if( self.syncContainer_X_Right )
+            {
+                self.syncContainer_Y_Right.hidden = YES;
+                self.syncContainer_Y_Left.hidden = YES;
+            }
+            if( self.syncContainer_X_Right )
+            {
+                self.syncContainer_X_Right.hidden = YES;
+                self.syncContainer_X_Left.hidden = YES;
+            }
+        }
     }
 }
 
@@ -51,6 +78,19 @@
     {
         VEPasterTextView * PasterText = (VEPasterTextView *)_currentPasterTextView;
         [PasterText Rotation_GestureRecognizer:rotation];
+        if(rotation.state == UIGestureRecognizerStateEnded)
+        {
+            if( self.syncContainer_X_Right )
+            {
+                self.syncContainer_Y_Right.hidden = YES;
+                self.syncContainer_Y_Left.hidden = YES;
+            }
+            if( self.syncContainer_X_Right )
+            {
+                self.syncContainer_X_Right.hidden = YES;
+                self.syncContainer_X_Left.hidden = YES;
+            }
+        }
     }
 }
 

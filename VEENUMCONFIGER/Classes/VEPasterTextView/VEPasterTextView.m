@@ -161,13 +161,13 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     }
     if (self = [super initWithFrame:frame]) {
         _captionTextIndex = 0;
-        
+        _isDrag_Upated = false;
         _isSizePrompt = true;
         
         _isViewHidden_GestureRecognizer = false;
         _isEditImage = false;
         _dragaAlpha = -1;
-        _isDrag_Upated = true;
+//        _isDrag_Upated = true;
         _isDrag = false;
         _minScale = 0;
         isShock = true;
@@ -311,6 +311,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     
     _captionTextIndex = 0;
     _isSizePrompt = false;
+    _isDrag_Upated = false;
     globalInset = 8;
     _syncContainerRect = syncContainerRect;
     _needStretching = needStretching;
@@ -337,7 +338,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         _isViewHidden_GestureRecognizer = false;
         _isEditImage = false;
         _dragaAlpha = -1;
-        _isDrag_Upated = true;
+//        _isDrag_Upated = true;
+        _isDrag_Upated = false;
         _isDrag = false;
         _minScale = 0;
         _tScale = 1.0;
@@ -609,6 +611,11 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 - (void)contentTapped:(UITapGestureRecognizer*)tapGesture
 {
+    if( _isCanCurrent )
+    {
+        _isCanCurrent = false;
+        return;
+    }
     if( _isSubtitleView )
         return;
     
@@ -624,13 +631,21 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         
     if (_isShowingEditingHandles) {
         [self hideEditingHandles];
-        [self.superview bringSubviewToFront:self];
+        if( CGRectContainsPoint(self.bounds, [tapGesture locationInView:self]) )
+        {
+            _isCanCurrent = true;
+        }
+//        [self.superview bringSubviewToFront:self];
         if( [_delegate respondsToSelector:@selector(pasterViewShowText:)] )
         {
             [_delegate pasterViewShowText:self];
         }
     } else {
         [self showEditingHandles];
+        if( CGRectContainsPoint(self.bounds, [tapGesture locationInView:self]) && ( self.syncContainer.currentPasterTextView == nil ) )
+        {
+            _isCanCurrent = true;
+        }
         if( [_delegate respondsToSelector:@selector(pasterViewShowText:)] )
         {
             [_delegate pasterViewShowText:self];
@@ -2617,11 +2632,11 @@ static VEPasterTextView *lastTouchedView;
     }
     NSLog(@"frame1:%@", NSStringFromCGRect(frame));
     if (self = [super initWithFrame:frame]) {
-        
+        _isDrag_Upated = false;
         _isViewHidden_GestureRecognizer = false;
         _isEditImage = false;
         _dragaAlpha = -1;
-        _isDrag_Upated = true;
+//        _isDrag_Upated = true;
         _isDrag = true;
         _minScale = 0;
         _tScale = 1.0;

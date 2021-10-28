@@ -165,6 +165,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_Fillet                = 51,   //圆角
     VEAdvanceEditType_MIXEDMODE     =52,    //  混合模式
     VEAdvanceEditType_MASK              = 52,   //  蒙版
+    VEAdvanceEditType_DOF                   = 53,   // 景深
 };
 
 /*
@@ -358,6 +359,7 @@ typedef NS_ENUM(NSInteger, VENetworkMaterialType){
     VENetworkMaterialType_CameraTemplate    = 12,   //拍同款
 };
 
+
 typedef NS_ENUM(NSInteger, VEMaskType)
 {
     VEMaskType_NONE             =0,
@@ -417,7 +419,15 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 
 //#define iPhone_X (  (([[UIScreen mainScreen] bounds].size.height == 812.0 && [[UIScreen mainScreen] bounds].size.width == 375.0) || ([[UIScreen mainScreen] bounds].size.height == 375.0 && [[UIScreen mainScreen] bounds].size.width == 812.0))   ||   (([[UIScreen mainScreen] bounds].size.height == 896.0 && [[UIScreen mainScreen] bounds].size.width == 414.0) || ([[UIScreen mainScreen] bounds].size.height == 414.0 && [[UIScreen mainScreen] bounds].size.width == 896.0)) ||VE_isIPhone_iPhone12|| VE_isIPhone_iPhone12_ProMax)
 
-#define iPhone_X (MAX([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height) >= 780 && (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad))
+#define iPhone_X ({\
+BOOL isPhoneX = NO;\
+if ((UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) && @available(iOS 11.0, *)) {\
+    if ([[UIApplication sharedApplication].windows firstObject].safeAreaInsets.bottom > 0) {\
+    isPhoneX = YES;\
+    }\
+}\
+isPhoneX;\
+})
 #define Color(r,g,b,a)   [UIColor colorWithRed:(r/(float)255) green:(g/(float)255) blue:(b/(float)255) alpha:a]
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 #define VE_EXPORTBTN_TITLE_COLOR [VEConfigManager sharedManager].exportButtonTitleColor
@@ -462,7 +472,7 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 //#define kToolbarHeight (iPhone_X ? 78 : 44)
 //#define kPlayerViewHeight (kHEIGHT - (iPhone_X ? 44 + 34 : 0) - ( 0.523 * kWIDTH ) - 20)
 #define kPlayerViewOriginX (iPhone_X ? 44 : 0)
-#define kIs_iPhoneX kWIDTH >=375.0f && kHEIGHT >=812.0f&& kIs_iphone
+#define kIs_iPhoneX iPhone_X
 #define kIs_iphone (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
 
 /*状态栏高度+ NavgationBar高度*/
@@ -570,6 +580,7 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 #define kFontIconPlistPath [kFontFolder stringByAppendingPathComponent:@"fontIconList2020.plist"]
 #define kFontCheckPlistPath [kFontFolder stringByAppendingPathComponent:@"fontCheckList2020.plist"]
 #define kFontType @"font_family_2"
+#define kDefaultFontPath [VEEditResourceBundle pathForResource:@"New_EditVideo/text_sample/PingFang-SC-Regular" ofType:@"otf"]
 
 #define kStickerFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"Effect"]
 #define kStickerIconPath [kStickerFolder stringByAppendingPathComponent:@"icon"]

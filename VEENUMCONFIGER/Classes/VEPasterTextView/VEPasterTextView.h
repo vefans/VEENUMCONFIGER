@@ -48,6 +48,7 @@
 @property( nonatomic, assign )BOOL  isSizePrompt;
 
 @property( nonatomic, strong)MediaAsset * _Nullable media;
+@property( nonatomic, strong)MediaAsset * _Nullable backgroundMedia;
 
 
 @property (nonatomic, weak) UIButton * _Nullable textEditBtn;
@@ -93,6 +94,8 @@
 @property (nonatomic,assign) BOOL                           isLabelHeight;
 @property (nonatomic,assign) CGSize tsize;
 @property (nonatomic,assign) float rectW;//配置文件中，初始字幕大小，相对于实际视频size的字幕大小(0.0〜1.0)
+
+@property(nonatomic , assign)BOOL isCanCurrent;
 
 @property (nonatomic,assign) BOOL                           isCutout;       //是否为抠图
 @property (nonatomic,assign) float                          cutout_Height;
@@ -207,6 +210,7 @@
 -(void)remove_Recognizer;
 
 - (void)contentTapped:(UITapGestureRecognizer*)tapGesture;
+-(void)setCancelIsCanCurrent;
 
 @property (nonatomic, assign)BOOL   isCoverText;
 

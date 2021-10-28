@@ -85,6 +85,11 @@
 - (void)eraseSreen {
     [_drawView eraseSreen];
 }
+/**箭头*/
+- (void)setDoodleType:(VEDoodleType)doodleType {
+    _doodleType = doodleType;
+    _drawView.doodleType = doodleType;
+}
 
 /** 设置画笔颜色 */
 - (void)setStrokeColor:(UIColor *)lineColor {
@@ -214,6 +219,8 @@
 
 @interface VEDrawTouchPointView () {
     CGMutablePathRef currentPath;
+    
+    VEDWStroke * currentStroke;
 }
 
 
@@ -236,15 +243,24 @@
     }
     currentPath = CGPathCreateMutable();
     VEDWStroke *stroke = [[VEDWStroke alloc] init];
+    stroke.filletWidth = 5.0;
     stroke.path = currentPath;
     stroke.blendMode = _isEarse ? kCGBlendModeDestinationIn : kCGBlendModeNormal;
     stroke.strokeWidth = _lineWidth;
     stroke.lineColor = _isEarse ? [UIColor clearColor] : _lineColor;
+    stroke.doodleType = _doodleType;
+    currentStroke = stroke;
     [_stroks addObject:stroke];
     
     UITouch *touch = [touches anyObject];
     CGPoint point = [touch locationInView:self];
-    CGPathMoveToPoint(currentPath, NULL, point.x, point.y);
+    if(_doodleType != VEDoodleType_pencil)
+    {
+        currentStroke.beganPoint = point;
+        currentStroke.endPoint = point;
+    }
+    else
+        CGPathMoveToPoint(currentPath, NULL, point.x, point.y);
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -256,7 +272,11 @@
     }
     UITouch *touch = [touches anyObject];
     CGPoint point = [touch locationInView:self];
-    CGPathAddLineToPoint(currentPath, NULL, point.x, point.y);
+    if(_doodleType != VEDoodleType_pencil){
+        currentStroke.endPoint = point;
+    }
+    else
+        CGPathAddLineToPoint(currentPath, NULL, point.x, point.y);
     [self setNeedsDisplay];
 }
 
@@ -306,10 +326,15 @@
     }
     [self setNeedsDisplay];
 }
+- (void)setDoodleType:(VEDoodleType)doodleType {
+    _doodleType = doodleType;
+    _isEarse = NO;
+}
 
 /** 擦除 */
 - (void)eraseSreen {
     self.isEarse = YES;
+    _doodleType = VEDoodleType_pencil;
 }
 /** 设置画笔颜色 */
 - (void)setStrokeColor:(UIColor *)lineColor {
@@ -323,11 +348,11 @@
 }
 /** 设置画笔大小 */
 - (void)setStrokeWidth:(CGFloat)lineWidth {
-    if (CGColorEqualToColor(self.lineColor.CGColor, [UIColor clearColor].CGColor)) {
-        _isEarse = YES;
-    }else {
-        _isEarse = NO;
-    }
+//    if (CGColorEqualToColor(self.lineColor.CGColor, [UIColor clearColor].CGColor)) {
+//        _isEarse = YES;
+//    }else {
+//        _isEarse = NO;
+//    }
     self.lineWidth = lineWidth;
 }
 
@@ -353,13 +378,138 @@
 
 @implementation VEDWStroke
 
+-(void)setFilletWidth:(CGFloat)filletWidth
+{
+    _filletWidth = filletWidth;
+}
+
 - (void)strokeWithContext:(CGContextRef)context {
-    CGContextSetStrokeColorWithColor(context, [_lineColor CGColor]);
-    CGContextSetLineWidth(context, _strokeWidth);
-    CGContextSetBlendMode(context, _blendMode);
-    CGContextBeginPath(context);
-    CGContextAddPath(context, _path);
-    CGContextStrokePath(context);
+    
+    if(_doodleType == VEDoodleType_rectangle)
+    {
+        float x = _beganPoint.x;
+        float y = _beganPoint.y;
+        float width = _beganPoint.x - _endPoint.x;
+        if( width > 0 )
+        {
+            x = _endPoint.x;
+        }
+        else{
+            width = fabsf(width);
+        }
+        float height = _beganPoint.y - _endPoint.y;
+        if( height > 0 )
+        {
+            y = _endPoint.y;
+        }
+        else{
+            height = fabsf(height);
+        }
+        if( width <= 0 )
+        {
+            width = 0.1;
+        }
+        if( height == 0 )
+        {
+            height = 0.1;
+        }
+        
+        CGFloat strokeFiletWidth = _filletWidth;
+        if(  (strokeFiletWidth*2.0) > width )
+        {
+            strokeFiletWidth = width/2.0;
+        }
+        else if( (strokeFiletWidth*2.0) > height )
+        {
+            strokeFiletWidth = height/2.0;
+        }
+        NSLog(@"filetWidth:%.2f,width:%.2f",strokeFiletWidth,width);
+        //颜色的填充
+        CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);
+        //线宽
+        CGContextSetLineWidth(context, _strokeWidth);
+        CGContextSetStrokeColorWithColor(context, [_lineColor CGColor]);
+        CGContextSetBlendMode(context, _blendMode);
+        //绘制图像及圆角
+        CGContextMoveToPoint(context, x+width, y+strokeFiletWidth * 2);  // 开始坐标右边开始
+        CGContextAddArcToPoint(context, x+width, y+height, x+width - 10, y+height, strokeFiletWidth);  // 右下角
+        CGContextAddArcToPoint(context, x, y+height, x, y+height - 10, strokeFiletWidth); // 左下角
+        CGContextAddArcToPoint(context, x, y, x+strokeFiletWidth * 2, y, strokeFiletWidth); // 左上角
+        CGContextAddArcToPoint(context, x+width, y, x+width, y+strokeFiletWidth * 2, strokeFiletWidth); // 右上角
+        CGContextAddArcToPoint(context, x+width, y+strokeFiletWidth * 2,  x+width, y+strokeFiletWidth * 2,strokeFiletWidth); // 右上角
+        //渲染
+        CGContextDrawPath(context, kCGPathFillStroke);
+    }
+    else if(_doodleType == VEDoodleType_arrow)
+    {
+        float width = _endPoint.x - _beganPoint.x;
+        float height =_endPoint.y - _beganPoint.y;
+        float angle = atanf(fabsf(height)/fabsf(width));
+        angle = angle * (180.0 / M_PI);
+        
+        if(  ( height > 0 ) && ( width > 0 ) )
+        {
+            angle = 360 - angle;
+        }
+        else if( ( height > 0 ) && ( width < 0 ) )
+        {
+            angle = 180 + angle;
+        }
+        else if( ( height < 0 ) && ( width < 0 ) )
+        {
+            angle = 180 - angle;
+        }
+        
+        NSLog(@"ArrowAngle:%.2f",angle);
+        angle = (360 - angle)/(180.0 / M_PI);
+        
+        
+        width =  sqrtf((_beganPoint.x - _endPoint.x)*(_beganPoint.x - _endPoint.x) + (_beganPoint.y - _endPoint.y)*(_beganPoint.y - _endPoint.y));
+        height = width*0.4;
+        
+        NSLog(@"ArrowHeight:%.2f  ArrowWidth:%.2f",height,width);
+        
+        //颜色的填充
+        CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);
+        //线宽
+        CGContextSetLineWidth(context, 0.1);
+        CGContextSetStrokeColorWithColor(context, [_lineColor CGColor]);
+        CGContextSetFillColorWithColor(context, [_lineColor CGColor]);//填充颜色
+        CGContextSetBlendMode(context, _blendMode);
+        CGContextMoveToPoint(context, _beganPoint.x, _beganPoint.y);  // 开始坐标右边开始
+        
+        int count = 8;
+        CGPoint sPoints[8];//坐标点
+        
+        sPoints[0] = CGPointMake(0, 0);//坐标1
+        sPoints[1] = CGPointMake(0, height/2.0*0.15);
+        sPoints[2] = CGPointMake(width*0.84,height/2.0*0.30);
+        sPoints[3] = CGPointMake(width*0.8,  height/2.0*0.7);
+        sPoints[4] = CGPointMake(width, 0);
+        sPoints[5] = CGPointMake(width*0.8, -height/2.0*0.7);
+        sPoints[6] = CGPointMake(width*0.84, -height/2.0*0.30);
+        sPoints[7] = CGPointMake(0,-height/2.0*0.15);
+        
+        for (int i = 0;  i < 8; i++) {
+           float x = sPoints[i].x*cosf(angle) - sPoints[i].y*sinf(angle);
+           float y = sPoints[i].x*sinf(angle) + sPoints[i].y*cosf(angle);
+            NSLog(@"index:%d x:%.2f  y:%.2f",i,x,y);
+            sPoints[i] = CGPointMake(_beganPoint.x + x, _beganPoint.y + y);
+        }
+        CGContextAddLines(context, sPoints, count);//添加线
+        
+        CGContextClosePath(context);//封起来
+        //渲染
+        CGContextDrawPath(context, kCGPathFillStroke);
+    }
+    else{
+        CGContextSetStrokeColorWithColor(context, [_lineColor CGColor]);
+        CGContextSetLineWidth(context, _strokeWidth);
+        CGContextSetBlendMode(context, _blendMode);
+        CGContextBeginPath(context);
+        CGContextAddPath(context, _path);
+        CGContextStrokePath(context);
+    }
 }
 
 @end

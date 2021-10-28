@@ -6,6 +6,13 @@
 //  Copyright © 2017年 iOS VESDK Team. All rights reserved.
 //
 
+//画笔
+typedef NS_ENUM(NSInteger, VEDoodleType){
+    VEDoodleType_rectangle,   //矩形
+    VEDoodleType_arrow,       //箭头
+    VEDoodleType_pencil,      //画笔
+};
+
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import <Foundation/Foundation.h>
@@ -20,7 +27,7 @@
 @interface VEDrawView : UIImageView
 
 @property (nonatomic, weak) VEDrawTouchPointView *drawView;
-
+@property (nonatomic, assign) VEDoodleType doodleType;
 @property (nonatomic,weak) id <VEDrawViewDelegate> delegate;
 
 + (VEDrawView *)initWithImage:(UIImage *)image frame:(CGRect)frame lineWidth:(CGFloat)lineWidth lineColor:(UIColor *)lineColor;
@@ -56,6 +63,7 @@
 @property (nonatomic, strong) NSMutableArray <UILabel *> *textDescs;
 @property (nonatomic, assign,readonly) CGPoint touchupCurrentPoint;
 @property (nonatomic,assign)BOOL canDrawLine;
+@property (nonatomic, assign) VEDoodleType doodleType;
 
 /** 清屏 */
 - (void)clearScreen;
@@ -76,10 +84,15 @@ typedef struct CGPath *CGMutablePathRef;
 typedef enum CGBlendMode CGBlendMode;
 
 @interface VEDWStroke : NSObject
+@property (nonatomic, assign) CGPoint beganPoint;
+@property (nonatomic, assign) CGPoint endPoint;
+@property (nonatomic, assign) VEDoodleType doodleType;
+@property (nonatomic, assign) BOOL isEarse;                //涂抹
 
 @property (nonatomic) CGMutablePathRef path;
 @property (nonatomic, assign) CGBlendMode blendMode;
 @property (nonatomic, assign) CGFloat strokeWidth;
+@property (nonatomic, assign) CGFloat filletWidth;
 @property (nonatomic, strong) UIColor *lineColor;
 - (void)strokeWithContext:(CGContextRef)context;
 
