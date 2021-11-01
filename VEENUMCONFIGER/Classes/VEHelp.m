@@ -3679,8 +3679,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 + (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize
 {
-    UIGraphicsBeginImageContext(CGSizeMake(image.size.width * scaleSize, image.size.height * scaleSize));
-    [image drawInRect:CGRectMake(0, 0, image.size.width * scaleSize, image.size.height * scaleSize)];
+    UIGraphicsBeginImageContext(CGSizeMake(((int)(image.size.width * scaleSize))/2*2.0, ((int)(image.size.height * scaleSize))/2*2.0));
+    [image drawInRect:CGRectMake(0, 0, ((int)(image.size.width * scaleSize))/2*2.0, ((int)(image.size.height * scaleSize))/2*2.0)];
     UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
@@ -6640,4 +6640,21 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return [VEHelp getMaskWithName:maskName];
 }
 
++(NSArray *)getShowFiles:( NSString * ) path
+{
+    NSArray * dirArray = nil;
+    
+    // 1.判断文件还是目录
+    NSFileManager * fileManger = [NSFileManager defaultManager];
+    BOOL isDir = NO;
+    BOOL isExist = [fileManger fileExistsAtPath:path isDirectory:&isDir];
+    
+    if (isExist) {
+        // 2. 判断是不是目录
+        if (isDir) {
+            dirArray = [fileManger contentsOfDirectoryAtPath:path error:nil];
+        }
+    }
+    return dirArray;
+}
 @end

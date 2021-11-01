@@ -217,6 +217,7 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KINTELLIGENT_KEY    = 42,//智能抠像
     KNOISE              = 43,//降噪
     KMONGOLIANKEYFRAME  = 44,//蒙板关键帧
+    kVEUSEDSINGLEFILTER     =45, //所有滤镜
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -567,6 +568,10 @@ isPhoneX;\
 #define kSubtitlePlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleListType.plist"]
 #define kSubtitleIconPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleIconList.plist"]
 #define kSubtitleCategoryPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleCategoryListType.plist"]
+#pragma mark- 换背景
+#define KChangeBackgroundFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeBackground"]
+#define kChangeBackgroundPath [KChangeBackgroundFolder stringByAppendingPathComponent:@"ChangeBackgroundPath.plist"]
+
 #pragma mark- 字幕动画
 #define KSubtitleAnimationFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SubtitleAnimation"]
 #define kSubtitleAnimationPath [KSubtitleAnimationFolder stringByAppendingPathComponent:@"SubtitleAnimationPath.plist"]

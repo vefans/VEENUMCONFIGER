@@ -281,4 +281,6 @@
 +(  CustomFilter * )getSubtitleAnmation:( NSString * ) configPath atPath:( NSString * ) path atCaptionItem:( CaptionItem * ) captionItem;
 
 +(MaskObject * )getMaskObject:(NSString *) maskName;
+
++(NSArray *)getShowFiles:( NSString * ) path;
 @end

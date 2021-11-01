@@ -11,10 +11,8 @@ Xcode 8及更高版本
 
 一、通过cocoapods集成
 1、pod "VEENUMCONFIGER", :git => 'https://github.com/vefans/VEENUMCONFIGER.git'
-2、如果项目中没有demo中的以下三个功能时，通过pod "VEENUMCONFIGER/ExcludeDemoBundle", :git => 'https://github.com/vefans/VEENUMCONFIGER.git'来集成，以减少APP大小
-    （1）音乐相册示例-API实现（仿Quik）
-    （2）创意搞怪小视频-API实现
-    （3）字说-字说（API）
+2、如果项目中没有demo中的以下功能时，通过pod "VEENUMCONFIGER/ExcludeDemoBundle", :git => 'https://github.com/vefans/VEENUMCONFIGER.git'来集成，以减少APP大小
+    （1）文字动画-文字动画（API）
 
 接下来执行：
 pod install
