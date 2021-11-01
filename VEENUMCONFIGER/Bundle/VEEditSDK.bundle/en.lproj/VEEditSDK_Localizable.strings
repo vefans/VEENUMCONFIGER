@@ -1942,3 +1942,6 @@
 "标记" = "Mark";
 "添加标记" = "Add Mark";
 "草稿不存在" = "The draft does not exist";
+
+"你想要调整全部图片的时长吗？" = "Do you want to adjust the duration of all pictures?";
+"当前图片" = "Current Picture";
