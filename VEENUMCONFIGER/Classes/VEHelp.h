@@ -13,7 +13,7 @@
 +(NSMutableAttributedString *)getAttrString:(NSString *) string atForegroundColor:(UIColor *) foregroundColor atStrokeColor:(UIColor *) strokeColor atShadowBlurRadius:(float) shadowBlurRadius atShadowOffset:(CGSize) shadowOffset atShadowColor:(UIColor *) shadowColor;
 
 +(NSString *)pathForURL_font:(NSString *)name extStr:(NSString *)extStr hasNew:(BOOL)hasNew;
-
++ (UIImage *)image:(UIImage *)image withBackgroundColor:(UIColor *)color;
 //MARK: 添加特效
 +(CustomMultipleFilter *)getCustomMultipleFilter:( NSDictionary * ) itemDic atPath:( NSString * ) path atTimeRange:( CMTimeRange ) timeRange atImage:( UIImage * ) FXFrameTexture atFXFrameTexturePath:( NSString * )  fXFrameTexturePath atEffectArray:( NSMutableArray * ) effectArray;
 + (NSString *)getEffectCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
@@ -283,4 +283,6 @@
 +(MaskObject * )getMaskObject:(NSString *) maskName;
 
 +(NSArray *)getShowFiles:( NSString * ) path;
+
++(NSString*)getBackgroundStyleConfigPath:(NSDictionary *)obj atPath:( NSString * ) path;
 @end

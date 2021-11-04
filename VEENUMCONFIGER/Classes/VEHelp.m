@@ -6657,4 +6657,41 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     return dirArray;
 }
+
++(NSString*)getBackgroundStyleConfigPath:(NSDictionary *)obj atPath:( NSString * ) folderPath
+{
+    NSString *pExtension = [[obj[@"file"] lastPathComponent] pathExtension];
+    NSString *fileName = [[obj[@"file"] lastPathComponent] stringByDeletingPathExtension];
+    
+    NSString *name = fileName;
+    
+    fileName = [fileName stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSString *folderName = [NSString stringWithFormat:@"/%@",[[obj[@"file"] stringByDeletingLastPathComponent] lastPathComponent]];
+    NSString *path = [NSString stringWithFormat:@"%@%@/%@.%@",folderPath,folderName,fileName,pExtension];
+    NSFileManager *manager = [[NSFileManager alloc] init];
+    if(![manager fileExistsAtPath:[path stringByDeletingLastPathComponent]]){
+        [manager createDirectoryAtPath:[path stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSArray *fileArray = [manager contentsOfDirectoryAtPath:[path stringByDeletingLastPathComponent] error:nil];
+    
+    if(fileArray.count > 0){
+        for (NSString *fileName in fileArray) {
+            if (![fileName isEqualToString:@"__MACOSX"]) {
+                NSString *folderPath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:fileName];
+                BOOL isDirectory = NO;
+                BOOL isExists = [manager fileExistsAtPath:folderPath isDirectory:&isDirectory];
+                if (isExists && isDirectory) {
+                    name = fileName;
+                    break;
+                }
+            }
+        }
+    }
+    
+    NSString *configPath = nil;
+    
+    configPath = [NSString stringWithFormat:@"%@/%@.jpg",[path stringByDeletingLastPathComponent],name];
+    
+    return configPath;
+}
 @end
