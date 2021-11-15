@@ -82,6 +82,9 @@ typedef void(^VECloudBackupCompletionHandler) (int completionCount);
 
 + (instancetype)sharedManager;
 
+//是否为新字体
+@property (nonatomic, assign) BOOL  isNewFont;
+
 @property (nonatomic,strong) NSMutableArray          *edit_functionLists;
 @property (nonatomic,strong) VEExportConfiguration   *exportConfiguration;
 @property (nonatomic,strong) VEEditConfiguration     *editConfiguration;
@@ -106,6 +109,9 @@ typedef void(^VECloudBackupCompletionHandler) (int completionCount);
 @property (copy,nonatomic)NSString  * appKey;
 @property (copy,nonatomic)NSString  * licenceKey;
 @property (copy,nonatomic)NSString  * appSecret;
+/** 视频抠像功能的appKey
+ */
+@property (copy,nonatomic)NSString *videoMattingAppKey;
 
 @property (nonatomic, assign) BOOL       statusBarHidden;
 @property (nonatomic, assign) float      videoAverageBitRate;

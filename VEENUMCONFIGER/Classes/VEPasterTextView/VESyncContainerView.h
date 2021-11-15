@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class VESyncContainerView;
+@protocol VESyncContainerViewDelegate <NSObject>
+-(void)selectePasterTextView:( UITapGestureRecognizer * _Nullable ) tapGesture atView:( VESyncContainerView * ) view;
+@end
 
 @interface VESyncContainerView : UIView
 
@@ -21,9 +24,16 @@
 
 @property(nonatomic,weak)UIView *currentPasterTextView;
 
+@property(nonatomic, assign)BOOL               isCalculateSelected;
+
+@property (weak, nonatomic,nullable) id<VESyncContainerViewDelegate>   delegate;
+
 -(void)pasterMidline:(UIView *) PasterTextView isHidden:(bool) ishidden;
 -(void)setMark;
 
 - (void)pinchGestureRecognizer:(UIPinchGestureRecognizer *)recognizer;
 
+- (void)contentTapped:(UITapGestureRecognizer*)tapGesture;
+
+@property(nonatomic, assign)BOOL isMask;
 @end

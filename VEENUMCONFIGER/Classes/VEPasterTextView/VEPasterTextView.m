@@ -245,10 +245,10 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         
 //        [_moveGesture requireGestureRecognizerToFail:rotateGesture];//优先识别rotateGesture手势
         
-        UITapGestureRecognizer *singleTapShowHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(contentTapped:)];
-        singleTapShowHide.delegate = self;
-        singleTapShowHide.numberOfTapsRequired = 1;
-        [self addGestureRecognizer:singleTapShowHide];
+//        UITapGestureRecognizer *singleTapShowHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(contentTapped:)];
+//        singleTapShowHide.delegate = self;
+//        singleTapShowHide.numberOfTapsRequired = 1;
+//        [self addGestureRecognizer:singleTapShowHide];
         
         //        if( _isEditImage )
         //        {
@@ -257,7 +257,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         singleTapShowHide1.numberOfTapsRequired = 2;
         [self addGestureRecognizer:singleTapShowHide1];
         
-        [singleTapShowHide requireGestureRecognizerToFail:singleTapShowHide1];
+//        [singleTapShowHide requireGestureRecognizerToFail:singleTapShowHide1];
 //        [_moveGesture requireGestureRecognizerToFail:singleTapShowHide1];//优先识别singleTapShowHide1手势
 //        }
         
@@ -362,15 +362,6 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 //        [_closeBtn setImage:[VEHelp imageNamed:@"jianji/fenge/剪辑_删除素材_"] forState:UIControlStateNormal];
         [_closeBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-删除_"] forState:UIControlStateNormal];
         [_closeBtn addTarget:self action:@selector(touchClose) forControlEvents:UIControlEventTouchUpInside];
-    
-        
-        
-        _alignBtn = [[UIButton alloc] initWithFrame:CGRectMake(-globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3)];
-        _alignBtn.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin ;
-        _alignBtn.backgroundColor = [UIColor clearColor];
-        [_alignBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-字幕居中_"] forState:UIControlStateNormal];
-        [_alignBtn addTarget:self action:@selector(alignBtnAction:) forControlEvents:UIControlEventTouchUpInside];
-        _alignBtn.hidden = YES;
         
         rotateView = [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3)];
         rotateView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin ;
@@ -487,10 +478,10 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         
 //        [_moveGesture requireGestureRecognizerToFail:rotateGesture];//优先识别rotateGesture手势
         
-        UITapGestureRecognizer *singleTapShowHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(contentTapped:)];
-        singleTapShowHide.delegate = self;
-        singleTapShowHide.numberOfTapsRequired = 1;
-        [self addGestureRecognizer:singleTapShowHide];
+//        UITapGestureRecognizer *singleTapShowHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(contentTapped:)];
+//        singleTapShowHide.delegate = self;
+//        singleTapShowHide.numberOfTapsRequired = 1;
+//        [self addGestureRecognizer:singleTapShowHide];
         
         //        if( _isEditImage )
         //        {
@@ -499,7 +490,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         singleTapShowHide1.numberOfTapsRequired = 2;
         [self addGestureRecognizer:singleTapShowHide1];
         
-        [singleTapShowHide requireGestureRecognizerToFail:singleTapShowHide1];
+//        [singleTapShowHide requireGestureRecognizerToFail:singleTapShowHide1];
 //        [_moveGesture requireGestureRecognizerToFail:singleTapShowHide1];//优先识别singleTapShowHide1手势
         //        }
         
@@ -523,6 +514,19 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     }
     //initialBounds   = self.bounds;
     return self;
+}
+
+-(void)addCopyBtn
+{
+    _alignBtn = [[UIButton alloc] initWithFrame:CGRectMake(-globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3)];
+    _alignBtn.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin ;
+    _alignBtn.backgroundColor = [UIColor clearColor];
+    [_alignBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-字幕居中_"] forState:UIControlStateNormal];
+//    [_alignBtn addTarget:self action:@selector(alignBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+    _alignBtn.hidden = NO;
+    [self addSubview:_alignBtn];
+    _alignBtn.transform =  CGAffineTransformMakeScale(1, 1);
+    _alignBtn.transform =  CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
 }
 
 - (UIButton *)mirrorBtn {
@@ -611,6 +615,17 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 - (void)contentTapped:(UITapGestureRecognizer*)tapGesture
 {
+    if( self.syncContainer.isCalculateSelected )
+    {
+        [self.syncContainer contentTapped:tapGesture];
+        return;
+    }
+    
+    if( self.syncContainer == nil )
+    {
+        return;
+    }
+    
     if( _isCanCurrent )
     {
         _isCanCurrent = false;
@@ -883,6 +898,9 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 -(void)Rotation_GestureRecognizer:(UIRotationGestureRecognizer *)rotation
 {
+    if( self.isMainPicture )
+        return;
+    
     if( rotation.numberOfTouches == 1 )
     {
         return;
@@ -972,6 +990,9 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 - (void)pinchGestureRecognizer:(UIPinchGestureRecognizer *)recognizer {
 
+    if( self.isMainPicture )
+        return;
+    
     if( _isViewHidden_GestureRecognizer && _syncContainer.currentPasterTextView != self )
         return;
     
@@ -1125,6 +1146,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 }
 
 - (void) moveGesture:(UIGestureRecognizer *) recognizer{
+    if( self.isMainPicture )
+        return;
     
     if( recognizer.numberOfTouches == 2 )
     {
@@ -1552,6 +1575,9 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 }
 
 - (void) rotateGesture:(UIGestureRecognizer *) recognizer{
+    
+    if( self.isMainPicture )
+        return;
     
     if( _isViewHidden_GestureRecognizer && _syncContainer.currentPasterTextView != self )
         return;
@@ -2310,7 +2336,7 @@ static VEPasterTextView *lastTouchedView;
     {
         _closeBtn.hidden = NO;
         _textEditBtn.hidden = NO;
-        _alignBtn.hidden = (_contentLabel.text.length == 0);
+        _alignBtn.hidden = NO;
         _mirrorBtn.hidden = NO;
     }
     
@@ -2591,6 +2617,9 @@ static VEPasterTextView *lastTouchedView;
 #pragma mark- 双击 文字编辑
 -(void)DoubleClick:(UITapGestureRecognizer*)tapGesture
 {
+    if( self.isMainPicture )
+        return;
+    
     if( _isSubtitleView )
         return;
     
@@ -2659,12 +2688,12 @@ static VEPasterTextView *lastTouchedView;
         [_closeBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-删除_"] forState:UIControlStateNormal];
         [_closeBtn addTarget:self action:@selector(touchClose) forControlEvents:UIControlEventTouchUpInside];
     
-        _alignBtn = [[UIButton alloc] initWithFrame:CGRectMake(-globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3)];
-        _alignBtn.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin ;
-        _alignBtn.backgroundColor = [UIColor clearColor];
-        [_alignBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-字幕居中_"] forState:UIControlStateNormal];
-        [_alignBtn addTarget:self action:@selector(alignBtnAction:) forControlEvents:UIControlEventTouchUpInside];
-        _alignBtn.hidden = YES;
+//        _alignBtn = [[UIButton alloc] initWithFrame:CGRectMake(-globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3)];
+//        _alignBtn.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin ;
+//        _alignBtn.backgroundColor = [UIColor clearColor];
+//        [_alignBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-字幕居中_"] forState:UIControlStateNormal];
+//        [_alignBtn addTarget:self action:@selector(alignBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+//        _alignBtn.hidden = YES;
         
         rotateView = [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3)];
         rotateView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin ;
@@ -2720,8 +2749,8 @@ static VEPasterTextView *lastTouchedView;
         UIPanGestureRecognizer* rotateGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(rotateGesture:)];
         [rotateView addGestureRecognizer:rotateGesture];
         
-        UITapGestureRecognizer *singleTapShowHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(contentTapped:)];
-        [self addGestureRecognizer:singleTapShowHide];
+//        UITapGestureRecognizer *singleTapShowHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(contentTapped:)];
+//        [self addGestureRecognizer:singleTapShowHide];
         
         UITapGestureRecognizer *singleTapShowHide1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(DoubleClick:)];
         singleTapShowHide1.delegate = self;
@@ -2802,10 +2831,15 @@ static VEPasterTextView *lastTouchedView;
     }
     
     [_textEditBtnArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if( _isPESDK )
+        {
+            [obj setEnabled:YES];
+            [obj setUserInteractionEnabled:YES];
+        }
         NSMutableArray * array = [NSMutableArray new];
         {
             CAShapeLayer *layer   = [[CAShapeLayer alloc] init];
-//            layer.t
+            //            layer.t
             layer.frame            = CGRectMake(0, 0 , obj.frame.size.width, obj.frame.size.height);
             layer.backgroundColor   = [UIColor clearColor].CGColor;
             UIBezierPath *path    = [UIBezierPath bezierPathWithRoundedRect:layer.frame cornerRadius:4.0f/_selfScale];

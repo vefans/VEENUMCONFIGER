@@ -799,30 +799,36 @@ static dispatch_once_t onceToken;
         return NO;
     
     __block BOOL isiCloud = YES;
-    if(asset.mediaType == PHAssetMediaTypeVideo){
-        PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
-        options.networkAccessAllowed = NO;
-        
-        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-        PHVideoRequestOptions *option = [PHVideoRequestOptions new];
-        [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:option resultHandler:^(AVAsset * avasset, AVAudioMix * audioMix, NSDictionary * info) {
-            if(avasset){
-                isiCloud = NO;
-            }
-            dispatch_semaphore_signal(semaphore);
-        }];
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    }else{
-        PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-        options.networkAccessAllowed = NO;
-        options.synchronous = YES;
-        //在这里用这种方法判断是否下载到了本地会打印日志 ： Failed to load image data for asset 这应该是PHPhotokit框架的问题，
-        [[PHImageManager defaultManager] requestImageDataForAsset:asset options:options resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-//            NSLog(@"info:%@",info);
-            if(info[@"PHImageFileURLKey"] || info[@"PHImageFileUTIKey"]){
-                isiCloud = NO;
-            }
-        }];
+    NSArray *resourceArray = [PHAssetResource assetResourcesForAsset:asset];
+    if (resourceArray.count > 0) {
+        BOOL isLocal = [[resourceArray.lastObject valueForKey:@"locallyAvailable"] boolValue];
+        NSLog(@"asset:%@ isLocal:%@", asset.localIdentifier, isLocal ? @"YES" : @"NO");
+        isiCloud = !isLocal;
+    }else {//20211115 使用下面的方法获取视频比较耗时
+        if(asset.mediaType == PHAssetMediaTypeVideo){
+            PHVideoRequestOptions *option = [[PHVideoRequestOptions alloc] init];
+            option.networkAccessAllowed = NO;
+            
+            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+            [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset * avasset, AVAudioMix * audioMix, NSDictionary * info) {
+                if(avasset){
+                    isiCloud = NO;
+                }
+                dispatch_semaphore_signal(semaphore);
+            }];
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        }else{
+            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+            options.networkAccessAllowed = NO;
+            options.synchronous = YES;
+            //在这里用这种方法判断是否下载到了本地会打印日志 ： Failed to load image data for asset 这应该是PHPhotokit框架的问题，
+            [[PHImageManager defaultManager] requestImageDataForAsset:asset options:options resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+    //            NSLog(@"info:%@",info);
+                if(info[@"PHImageFileURLKey"] || info[@"PHImageFileUTIKey"]){
+                    isiCloud = NO;
+                }
+            }];
+        }
     }
     return isiCloud;
 }

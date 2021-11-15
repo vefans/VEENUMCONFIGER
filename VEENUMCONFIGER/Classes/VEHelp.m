@@ -3482,11 +3482,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             
             ppCaption.scale = 1;
             ppCaption.angle = 0;
-            if([subtitleEffectConfig[@"music"] isKindOfClass:[NSMutableDictionary class]]){
-                ppCaption.music.name = subtitleEffectConfig[@"music"][@"src"];
-            }else{
-                ppCaption.music.name = nil;
-            }
+//            if([subtitleEffectConfig[@"music"] isKindOfClass:[NSMutableDictionary class]]){
+//                ppCaption.music.name = subtitleEffectConfig[@"music"][@"src"];
+//            }else{
+//                ppCaption.music.name = nil;
+//            }
             if(ppCaption.type == CaptionTypeHasText){
                 if( captionType == 2 ){
 //                    [self.stickerScrollview setContentTextFieldText:subtitleEffectConfig[@"textContent"]];
@@ -3563,9 +3563,17 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSString *uploadUrl = (hasNewFont ? editConfig.fontResourceURL : getFontTypeUrl);
     NSMutableDictionary *fontListDic;
     if(hasNewFont){
-        fontListDic = [VEHelp getNetworkMaterialWithType:kFontType
+        
+        if( [VEConfigManager sharedManager].isNewFont )
+            fontListDic = [VEHelp getNetworkMaterialWithType:kPESDKFontType
                                                              appkey:[VEConfigManager sharedManager].appKey
                                                       urlPath:uploadUrl];
+        else
+            fontListDic = [VEHelp getNetworkMaterialWithType:kFontType
+                                                             appkey:[VEConfigManager sharedManager].appKey
+                                                      urlPath:uploadUrl];
+        
+
     }else{
         fontListDic = [VEHelp updateInfomation:nil andUploadUrl:uploadUrl];
     }
@@ -6087,6 +6095,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 int     h = [subtitleEffectConfig[@"height"] intValue];
                 captionItem.isVertical =  [subtitleEffectConfig[@"vertical"] boolValue];
                 
+                
                 captionEx.imageFolderPath =[configPath stringByAppendingString:@"/"];
                 captionEx.position= CGPointMake(x, y);
                 captionEx.originalSize = CGSizeMake(w, h);
@@ -6693,5 +6702,43 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     configPath = [NSString stringWithFormat:@"%@/%@.jpg",[path stringByDeletingLastPathComponent],name];
     
     return configPath;
+}
+
++(float)getMediaAssetScale:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark
+{
+    if (CGRectEqualToRect(corp, CGRectZero)) {
+        corp = CGRectMake(0, 0, 1, 1);
+    }
+    
+    float scale = 1;
+    
+    
+    float width;
+    float height;
+    if (syncContainerSize.width == syncContainerSize.height) {
+        if( isWatermark )
+            width = syncContainerSize.width/4.0/4.0;
+        else
+            width = syncContainerSize.width/4.0;
+        height = width / (size.width / size.height);
+    }else if (syncContainerSize.width < syncContainerSize.height) {
+        if( isWatermark )
+            width = syncContainerSize.width/2.0/4.0;
+        else
+            width = syncContainerSize.width/2.0;
+        height = width / (size.width / size.height);
+    }else {
+        if( isWatermark )
+            height = syncContainerSize.height/2.0/4.0;
+        else
+            height = syncContainerSize.height/2.0;
+        width = height * (size.width / size.height);
+    }
+    
+    size = CGSizeMake(width * corp.size.width, height * corp.size.height);
+    
+    scale = rect.size.height*syncContainerSize.height/size.height;
+    
+    return scale;
 }
 @end

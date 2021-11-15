@@ -182,6 +182,7 @@
  */
 @property (nonatomic, assign) float whiteBalance;
 
+
 /**滤镜资源分类ID
  */
 @property (nonatomic, strong) NSString *filterNetworkCategoryId;

@@ -166,6 +166,8 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_MIXEDMODE     =52,    //  混合模式
     VEAdvanceEditType_MASK              = 52,   //  蒙版
     VEAdvanceEditType_DOF                   = 53,   // 景深
+    
+    
 };
 
 /*
@@ -422,9 +424,11 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 
 #define iPhone_X ({\
 BOOL isPhoneX = NO;\
-if ((UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) && @available(iOS 11.0, *)) {\
-    if ([[UIApplication sharedApplication].windows firstObject].safeAreaInsets.bottom > 0) {\
-    isPhoneX = YES;\
+if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {\
+    if (@available(iOS 11.0, *)) {\
+        if ([[UIApplication sharedApplication].windows firstObject].safeAreaInsets.bottom > 0) {\
+            isPhoneX = YES;\
+        }\
     }\
 }\
 isPhoneX;\
@@ -585,6 +589,7 @@ isPhoneX;\
 #define kFontIconPlistPath [kFontFolder stringByAppendingPathComponent:@"fontIconList2020.plist"]
 #define kFontCheckPlistPath [kFontFolder stringByAppendingPathComponent:@"fontCheckList2020.plist"]
 #define kFontType @"font_family_2"
+#define kPESDKFontType @"font_family_3"
 #define kDefaultFontPath [VEEditResourceBundle pathForResource:@"New_EditVideo/text_sample/PingFang-SC-Regular" ofType:@"otf"]
 
 #define kStickerFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"Effect"]

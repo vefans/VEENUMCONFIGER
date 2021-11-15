@@ -18,18 +18,32 @@
 
 @implementation VESyncContainerView
 
+-(void)setCurrentPasterTextView:(UIView *)currentPasterTextView
+{
+    if( !_isMask )
+        _currentPasterTextView = currentPasterTextView;
+}
+
 - (void)contentTapped:(UITapGestureRecognizer*)tapGesture
 {
-    if( _currentPasterTextView )
+    if( _isMask )
+        return;
+    
+    if( _isCalculateSelected )
     {
-        VEPasterTextView * PasterText = (VEPasterTextView *)_currentPasterTextView;
-        [PasterText contentTapped:tapGesture];
+        if( _delegate && [_delegate respondsToSelector:@selector(selectePasterTextView:atView:)] )
+        {
+            [_delegate selectePasterTextView:tapGesture atView:self];
+        }
     }
 }
 
 - (void)pinchGestureRecognizer:(UIPinchGestureRecognizer *)recognizer
 {
-    if( _currentPasterTextView )
+    if( _isMask )
+        return;
+    
+    if( _currentPasterTextView && (!((VEPasterTextView*)_currentPasterTextView).isMainPicture) )
     {
         VEPasterTextView * PasterText = (VEPasterTextView *)_currentPasterTextView;
         [PasterText pinchGestureRecognizer:recognizer];
@@ -51,7 +65,10 @@
 
 -(void)moveGesture:(UIGestureRecognizer *) recognizer
 {
-    if( _currentPasterTextView )
+    if( _isMask )
+        return;
+    
+    if( _currentPasterTextView && (!((VEPasterTextView*)_currentPasterTextView).isMainPicture)  )
     {
         VEPasterTextView * PasterText = (VEPasterTextView *)_currentPasterTextView;
         [PasterText moveGesture:recognizer];
@@ -74,6 +91,9 @@
 
 -(void)imageViewroRotation:(UIRotationGestureRecognizer *)rotation
 {
+    if( _isMask )
+        return;
+    
     if( _currentPasterTextView )
     {
         VEPasterTextView * PasterText = (VEPasterTextView *)_currentPasterTextView;

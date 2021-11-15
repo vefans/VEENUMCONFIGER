@@ -285,4 +285,6 @@
 +(NSArray *)getShowFiles:( NSString * ) path;
 
 +(NSString*)getBackgroundStyleConfigPath:(NSDictionary *)obj atPath:( NSString * ) path;
+
++(float)getMediaAssetScale:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark;
 @end

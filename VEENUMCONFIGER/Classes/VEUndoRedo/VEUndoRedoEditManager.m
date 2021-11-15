@@ -46,7 +46,7 @@
     _enableUndo = self.undoList.count == 0 ? NO:YES;
     _enableRedo = self.redoList.count == 0 ? NO:YES;
     if (completionHandler) {
-        NSLog(@"撤销类型:%lu",(unsigned long)_currentObject.undoRedoType);
+        NSLog(@"撤销类型:%lu",(unsigned long)_currentObject.type);
         completionHandler(_enableUndo, _enableRedo);
     }
 }
@@ -62,7 +62,7 @@
     _enableUndo = self.undoList.count == 0 ? NO:YES;
     _enableRedo = self.redoList.count == 0 ? NO:YES;
     if (completionHandler) {
-        NSLog(@"撤销类型:%lu",(unsigned long)_currentObject.undoRedoType);
+        NSLog(@"撤销类型:%lu",(unsigned long)_currentObject.type);
         completionHandler(_enableUndo, _enableRedo, _currentObject);
     }
 }
@@ -78,7 +78,7 @@
     _enableUndo = self.undoList.count == 0 ? NO:YES;
     _enableRedo = self.redoList.count == 0 ? NO:YES;
     if (completionHandler) {
-        NSLog(@"恢复类型:%lu",(unsigned long)_currentObject.undoRedoType);
+        NSLog(@"恢复类型:%lu",(unsigned long)_currentObject.type);
         completionHandler(_enableUndo, _enableRedo, _currentObject);
     }
 }

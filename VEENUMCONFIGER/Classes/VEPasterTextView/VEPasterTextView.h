@@ -33,7 +33,13 @@
 
 @interface VEPasterTextView : UIView
 
+@property( nonatomic, assign ) BOOL isPressTouch;
+
+@property(nonatomic, assign)BOOL    isMainPicture;
+
 @property(nonatomic, assign) BOOL   isTextTemplateEdit;
+
+@property(nonatomic, assign)BOOL    isPESDK;
 
 -(UIImageView *_Nullable)getselectImageView;
 
@@ -47,14 +53,15 @@
 
 @property( nonatomic, assign )BOOL  isSizePrompt;
 
-@property( nonatomic, strong)MediaAsset * _Nullable media;
-@property( nonatomic, strong)MediaAsset * _Nullable backgroundMedia;
+@property( nonatomic, strong)id _Nullable media;
+@property( nonatomic, strong)id _Nullable backgroundMedia;
 
 
 @property (nonatomic, weak) UIButton * _Nullable textEditBtn;
 @property (nonatomic, strong) UIButton * _Nullable closeBtn;
 
 @property (nonatomic, strong)UIButton * _Nullable alignBtn;
+-(void)addCopyBtn;
 
 @property (nonatomic, weak)UIButton  * _Nullable TextEditBtn;
 
