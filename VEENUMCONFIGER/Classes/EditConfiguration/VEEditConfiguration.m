@@ -54,6 +54,7 @@
         _enableAuidoCurveSpeed = true;
         _enableMediaCurveSpeed = true;
         _enableCaptionKeyframe = true;
+        _enableCaptionTrack = true;
         _enableMediaKeyframe = true;
         _enableAudioKeyframe = true;
         
@@ -147,6 +148,7 @@
     copy.enableAuidoCurveSpeed = _enableAuidoCurveSpeed;
     copy.enableMediaCurveSpeed = _enableMediaCurveSpeed;
     copy.enableCaptionKeyframe = _enableCaptionKeyframe;
+    copy.enableCaptionTrack = _enableCaptionTrack;
     copy.enableMediaKeyframe = _enableMediaKeyframe;
     copy.enableAudioKeyframe = _enableAudioKeyframe;
     
@@ -216,6 +218,7 @@
     copy.enableShowBackTipView          = _enableShowBackTipView;
     copy.enableShowRepeatView           = _enableShowRepeatView;
     copy.templatePath                   = _templatePath;
+    copy.stickerResourceMinVersion      = _stickerResourceMinVersion;
 
     return copy;
 }
@@ -264,6 +267,7 @@
     copy.enableAuidoCurveSpeed = _enableAuidoCurveSpeed;
     copy.enableMediaCurveSpeed = _enableMediaCurveSpeed;
     copy.enableCaptionKeyframe = _enableCaptionKeyframe;
+    copy.enableCaptionTrack = _enableCaptionTrack;
     copy.enableMediaKeyframe = _enableMediaKeyframe;
     copy.enableAudioKeyframe = _enableAudioKeyframe;
     
@@ -322,6 +326,7 @@
     copy.enableShowBackTipView          = _enableShowBackTipView;
     copy.enableShowRepeatView           = _enableShowRepeatView;
     copy.templatePath                   = _templatePath;
+    copy.stickerResourceMinVersion      = _stickerResourceMinVersion;
 
     return copy;
 }

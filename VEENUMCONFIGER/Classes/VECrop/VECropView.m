@@ -62,6 +62,10 @@
         
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
         self.cropSizeMin = CGSizeMake(VE_CROPWIDTH_MIN, VE_CROPHEIGHT_MIN);
+        if( [VEConfigManager sharedManager].isPictureEditing )
+        {
+            self.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
+        }
         CGFloat width = frame.size.width;
         CGFloat height = frame.size.height;
         
@@ -225,6 +229,26 @@
         
         self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/4)*3, VE_CROPHEIGHT_MIN);
         
+    }
+    else if(cropType == VE_VECROPTYPE_1TO2){
+        [self ratioLessThan1WithValueX:1.0 WithToValueY:2.0];
+        [self setTrackButtonState:YES];
+        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/1)*2, VE_CROPHEIGHT_MIN);
+    }
+    else if(cropType == VE_VECROPTYPE_2TO1){
+        [self ratioLessThan1WithValueX:2.0 WithToValueY:1.0];
+        [self setTrackButtonState:YES];
+        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/2.0)*1.0, VE_CROPHEIGHT_MIN);
+    }
+    else if(cropType == VE_VECROPTYPE_2TO3){
+        [self ratioLessThan1WithValueX:2.0 WithToValueY:3.0];
+        [self setTrackButtonState:YES];
+        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/2.0)*3.0, VE_CROPHEIGHT_MIN);
+    }
+    else if(cropType == VE_VECROPTYPE_3TO2){
+        [self ratioLessThan1WithValueX:3.0 WithToValueY:2.0];
+        [self setTrackButtonState:YES];
+        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/3.0)*2.0, VE_CROPHEIGHT_MIN);
     }
     if(self.cropType != VE_VECROPTYPE_FIXEDRATIO){
         self.ratio = self.cropWidth / self.cropHeight;

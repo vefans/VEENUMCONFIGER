@@ -49,7 +49,6 @@
         self.layer.borderWidth = 2;
         if( [cropTypeModel.title isKindOfClass:[NSString class]] )
         {
-            
             NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12/90.0*cropTypeModel.height], NSForegroundColorAttributeName: Main_Color, NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:Main_Color
             }];
             self.titleLabel.attributedText = string;

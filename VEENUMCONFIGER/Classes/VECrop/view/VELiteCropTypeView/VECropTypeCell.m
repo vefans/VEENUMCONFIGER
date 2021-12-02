@@ -55,6 +55,9 @@
         else  if( [cropTypeModel.title isKindOfClass:[NSMutableAttributedString class]] ){
             self.titleLabel.attributedText = cropTypeModel.selecctTitle;
         }
+        self.iconImageView.image = cropTypeModel.iconSelecct;
+        self.iconImageView.contentMode = UIViewContentModeScaleAspectFit;
+        self.iconImageView.tintColor = Main_Color;
     }else{
         self.layer.borderColor = UIColorFromRGB(0x808080).CGColor;
         self.layer.borderWidth = 0;
@@ -66,7 +69,8 @@
         }
         else if( [cropTypeModel.title isKindOfClass:[NSMutableAttributedString class]] )
             self.titleLabel.attributedText = cropTypeModel.title;
-        
+        self.iconImageView.contentMode = UIViewContentModeScaleAspectFit;
+        self.iconImageView.image = cropTypeModel.iconNormal;
     }
     _height = cropTypeModel.height;
     [self.titleLabel setFrame:CGRectMake(0, (self.frame.size.height-40.0/90.0*_height)/2, self.frame.size.width, 40.0/90.0*_height)];

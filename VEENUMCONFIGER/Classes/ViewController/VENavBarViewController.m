@@ -33,7 +33,7 @@
         
         _navBar = [[UIView alloc] initWithFrame:CGRectMake(0,0,kWIDTH,kNavgationBar_Height)];
         [self.view addSubview:_navBar];
-        
+
         self.titlelab = [[UILabel alloc] initWithFrame:CGRectMake(50,kStatusBarHeight,kWIDTH-100, kNavgationBar_Height-kStatusBarHeight)];
         self.titlelab.textColor = VE_NAV_TITLE_COLOR;
         [self.titlelab setFont:NAVIBARTITLEFONT];
@@ -67,7 +67,7 @@
         _toolBar = [[UIView alloc] initWithFrame:CGRectMake(0, kHEIGHT - kToolbarHeight, kWIDTH, kToolbarHeight)];
         _toolBar.backgroundColor = TOOLBAR_COLOR;
         [self.view addSubview:_toolBar];
-        
+
         self.titlelab = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, kWIDTH-100, 44)];
         self.titlelab.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
         [self.titlelab setFont:[UIFont boldSystemFontOfSize:17.0]];
@@ -80,7 +80,17 @@
         _finishToolBarBtn = [VENavBarButton buttonWithType:UIButtonTypeCustom];
         _finishToolBarBtn.frame = CGRectMake(kWIDTH - 44, 0, 44, 44);
         [_finishToolBarBtn setImage:[VEHelp imageWithContentOfFile:@"剪辑_勾_"] forState:UIControlStateNormal];
+        
+        
+        
         [_toolBar addSubview:_finishToolBarBtn];
+        
+        if( [VEConfigManager sharedManager].isPictureEditing )
+        {
+            _toolBar.backgroundColor = [UIColor whiteColor];
+            self.titlelab.textColor = PESDKTEXT_COLOR;
+            [_finishToolBarBtn setImage:[VEHelp imageNamed:@"/PESDKImage/PESDK_勾@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]] forState:UIControlStateNormal];
+        }
     }
     return _toolBar;
 }
@@ -115,7 +125,13 @@
             [_backBtn setImage:[VEHelp imageWithContentOfFile:@"/jianji/剪辑_返回默认_"] forState:UIControlStateNormal];
         }else {
             [_backBtn setImage:[VEHelp imageWithContentOfFile:@"剪辑_叉_"] forState:UIControlStateNormal];
-        }        
+        }
+        
+        if( [VEConfigManager sharedManager].isPictureEditing )
+        {
+            [_backBtn setImage:[VEHelp imageNamed:@"/PESDKImage/PESDK_返回@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]] forState:UIControlStateNormal];
+        }
+        
         [_backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _backBtn;

@@ -84,6 +84,7 @@ typedef void(^VECloudBackupCompletionHandler) (int completionCount);
 
 //是否为新字体
 @property (nonatomic, assign) BOOL  isNewFont;
+@property (nonatomic, assign) BOOL isPictureEditing;
 
 @property (nonatomic,strong) NSMutableArray          *edit_functionLists;
 @property (nonatomic,strong) VEExportConfiguration   *exportConfiguration;

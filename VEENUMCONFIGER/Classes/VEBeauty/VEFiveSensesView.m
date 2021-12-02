@@ -234,7 +234,7 @@
     
     __block FaceAttribute *faceAttribute = nil;
     [_currentMedia.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (CGRectEqualToRect(_currentFaceRect, obj.faceRect)) {
+        if ((CGRectContainsPoint(_currentFaceRect, CGPointMake(obj.faceRect.origin.x + obj.faceRect.size.width / 2.0, obj.faceRect.origin.y + obj.faceRect.size.height / 2.0)))) {
             faceAttribute = obj;
             *stop = YES;
         }

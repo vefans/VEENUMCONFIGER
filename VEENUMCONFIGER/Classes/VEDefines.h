@@ -89,6 +89,10 @@ typedef NS_ENUM(NSInteger, VECropType){
     VE_VECROPTYPE_4TO3 = 7,      //4:3
     VE_VECROPTYPE_3TO4 = 8,      //3:4
     VE_VECROPTYPE_FIXEDRATIO = 9,    /**< 固定比例裁切*/
+    VE_VECROPTYPE_1TO2 = 10,      //1:2
+    VE_VECROPTYPE_2TO1 = 11,      //2:1
+    VE_VECROPTYPE_2TO3 = 12,      //2:3
+    VE_VECROPTYPE_3TO2 = 13,      //3:2
 };
 
 typedef NS_ENUM(NSInteger,TimeFilterType)
@@ -328,7 +332,10 @@ typedef NS_ENUM(NSInteger,AdjustType){
     Adjust_Vignette,        //暗角
     Adjust_Highlight,       //高光
     Adjust_Shadow,          //阴影
-    Adjust_Granule,     //颗粒
+    Adjust_Granule,         //颗粒
+    Adjust_LightSensation,  //光感
+    Adjust_Tint,            //色调
+    Adjust_Fade,            //褪色
 };
 
 /**相册返回数据类型

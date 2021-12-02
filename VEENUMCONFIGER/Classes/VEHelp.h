@@ -159,6 +159,7 @@
 + (MaskObject *)getMaskWithName:(NSString *)maskName;
 
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath;
++ (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath caption:(Caption *)caption;
 #pragma mark- 多脚本json加载
 + (CustomMultipleFilter *)getCustomMultipleFilerWithFolderPath:(NSString *) folderPath currentFrameImagePath:(NSString *)currentFrameImagePath;
 
@@ -279,7 +280,7 @@
 + (BOOL)OpenZipp:(NSString*)zipPath  unzipto:(NSString*)_unzipto;
 
 +(  CustomFilter * )getSubtitleAnmation:( NSString * ) configPath atPath:( NSString * ) path atCaptionItem:( CaptionItem * ) captionItem;
-
++(CustomFilter *)getAnmationDic:( NSMutableDictionary * ) effectDic atPath:(NSString *)path;
 +(MaskObject * )getMaskObject:(NSString *) maskName;
 
 +(NSArray *)getShowFiles:( NSString * ) path;
@@ -287,4 +288,9 @@
 +(NSString*)getBackgroundStyleConfigPath:(NSDictionary *)obj atPath:( NSString * ) path;
 
 +(float)getMediaAssetScale:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark;
+
++(CGSize)URL_ImageSize:(NSURL *) url atCrop:(CGRect) crop;
+
++(CGRect)pasterView_RectinScene:(CGSize) size atRect:(CGRect) rect atSyncContainerSize:(CGSize) syncContainerSize atScale:(float *) scale atOtherSyncontainerSize:(CGSize) otherSyncContainerSize;
+
 @end

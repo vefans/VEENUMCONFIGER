@@ -1550,6 +1550,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         _textEditBtn.center = center;
     }
     
+    [self refreshTextEidtFrameEx];
 //    [self refreshTextEidtFrameEx];
 }
 
@@ -2355,7 +2356,7 @@ static VEPasterTextView *lastTouchedView;
     
     _TextEditBtn.hidden = NO;
     
-    [self setFramescale:_selfScale];
+//    [self setFramescale:_selfScale];
     
     if( _isCoverText )
     {

@@ -308,6 +308,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 贴纸网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *effectResourceURL;
+/** 贴纸网络资源显示的最小版本号，默认为0
+ */
+@property (nonatomic,assign)int stickerResourceMinVersion;
 /** 特效网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *specialEffectResourceURL;
@@ -421,6 +424,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 字幕，贴纸关键帧 (default true)
  */
 @property (nonatomic,assign) bool enableCaptionKeyframe;
+/** 字幕，贴纸跟踪 (default true)
+ */
+@property (nonatomic,assign) bool enableCaptionTrack;
 /** 媒体关键帧 (default true)
  */
 @property (nonatomic,assign) bool enableMediaKeyframe;

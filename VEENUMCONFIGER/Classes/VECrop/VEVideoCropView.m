@@ -16,6 +16,10 @@
     if (self) {
         self.videoCropType = videoCropType;
         [self setupViews];
+        if( [VEConfigManager sharedManager].isPictureEditing )
+        {
+            self.backgroundColor = [UIColor whiteColor];
+        }
     }
     return self;
 }

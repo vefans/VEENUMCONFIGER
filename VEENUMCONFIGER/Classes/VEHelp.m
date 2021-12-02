@@ -2067,6 +2067,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (effectDic[@"script"]) {
         NSString *scriptPath = [folderPath stringByAppendingPathComponent:effectDic[@"script"]];
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+        customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
     }
     
     //输入纹理
@@ -2177,6 +2178,173 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 }
             }
             [customFilter setShaderTextureParams:param];
+        }
+    }
+    effectDic = nil;
+    return customFilter;
+}
+
++ (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath caption:(Caption *)caption
+{
+    NSString *configPath = [folderPath stringByAppendingPathComponent:@"config.json"];
+    CustomFilter *customFilter = [[CustomFilter alloc] init];
+    
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
+    NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
+    jsonData = nil;
+    NSError * error = nil;
+    customFilter.folderPath = folderPath;
+    customFilter.name = effectDic[@"name"];
+    if(!customFilter.name) //必须设置名字，多脚本滤镜根据名字确定绘制顺序
+        customFilter.name = @"linghunchuqiao";
+    
+    NSString *fragPath = [folderPath stringByAppendingPathComponent:effectDic[@"fragShader"]];
+    customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
+    if (effectDic[@"vertShader"]) {
+        NSString *vertPath = [folderPath stringByAppendingPathComponent:effectDic[@"vertShader"]];
+        customFilter.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
+    }
+    if (effectDic[@"script"]) {
+        NSString *scriptPath = [folderPath stringByAppendingPathComponent:effectDic[@"script"]];
+        customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+        customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
+    }
+    
+    //输入纹理
+    NSArray* inputFilterName = effectDic[@"inputEffect"];
+    [inputFilterName enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [customFilter.inputFilterName addObject:obj];
+    }];
+    
+    NSString *builtIn = effectDic[@"builtIn"];
+    if ([builtIn isEqualToString:@"illusion"]) {
+        customFilter.builtInType = BuiltInFilter_illusion;
+    }
+    customFilter.cycleDuration = [effectDic[@"duration"] floatValue];
+    NSArray *uniformParams = effectDic[@"uniformParams"];
+    [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *type = obj[@"type"];
+        NSMutableArray *paramArray = [NSMutableArray array];
+        NSArray *frameArray = obj[@"frameArray"];
+        [frameArray enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+            ShaderParams *param = [[ShaderParams alloc] init];
+            param.time = [obj1[@"time"] floatValue];
+            if ([type isEqualToString:@"floatArray"]) {
+                param.type = UNIFORM_ARRAY;
+                param.array = [NSMutableArray array];
+                [obj1[@"value"] enumerateObjectsUsingBlock:^(id  _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
+                    [param.array addObject:[NSNumber numberWithFloat:[obj2 floatValue]]];
+                }];
+            }else if ([type isEqualToString:@"float"]) {
+                param.type = UNIFORM_FLOAT;
+                if ([obj1[@"value"] isKindOfClass:[NSArray class]]) {
+                    param.fValue = [[obj1[@"value"] firstObject] floatValue];
+                }else {
+                    param.fValue = [obj1[@"value"] floatValue];
+                }
+            }else if ([type isEqualToString:@"Matrix4x4"]) {
+                param.type = UNIFORM_MATRIX4X4;
+                GLMatrix4x4 matrix4;
+                NSArray *valueArray = obj1[@"value"];
+                matrix4.one = (GLVectore4){[valueArray[0][0] floatValue], [valueArray[0][1] floatValue], [valueArray[0][2] floatValue], [valueArray[0][3] floatValue]};
+                matrix4.two = (GLVectore4){[valueArray[1][0] floatValue], [valueArray[1][1] floatValue], [valueArray[1][2] floatValue], [valueArray[1][3] floatValue]};
+                matrix4.three = (GLVectore4){[valueArray[2][0] floatValue], [valueArray[2][1] floatValue], [valueArray[2][2] floatValue], [valueArray[2][3] floatValue]};
+                matrix4.four = (GLVectore4){[valueArray[3][0] floatValue], [valueArray[3][1] floatValue], [valueArray[3][2] floatValue], [valueArray[3][3] floatValue]};
+                param.matrix4 = matrix4;
+            }else {
+                param.type = UNIFORM_INT;
+                if ([obj1[@"value"] isKindOfClass:[NSArray class]]) {
+                    param.iValue = [[obj1[@"value"] firstObject] intValue];
+                }else {
+                    param.iValue = [obj1[@"value"] intValue];
+                }
+            }
+            [paramArray addObject:param];
+        }];
+        [customFilter setShaderUniformParams:paramArray isRepeat:[obj[@"repeat"] boolValue] forUniform:obj[@"paramName"]];
+    }];
+    NSArray *textureParams = effectDic[@"textureParams"];
+    
+   for(id  _Nonnull obj in textureParams) {
+        @autoreleasepool {
+            
+            TextureParams *param = [[TextureParams alloc] init];
+            param.type = TextureType_Sample2DBuffer;
+            param.name = obj[@"paramName"];
+            
+            //输入纹理对应的索引号
+            if(obj[@"inputEffectIndex"])
+                param.index = [obj[@"inputEffectIndex"] intValue];
+            
+            NSString *warpMode = obj[@"warpMode"];
+            if (warpMode.length > 0) {
+                if ([warpMode isEqualToString:@"Repeat"]) {
+                    param.warpMode = TextureWarpModeRepeat;
+                }else if ([warpMode isEqualToString:@"MirroredRepeat"]) {
+                    param.warpMode = TextureWarpModeMirroredRepeat;
+                }
+            }
+            NSString *filterMode = obj[@"filterMode"];
+            if (filterMode.length > 0) {
+                if ([filterMode isEqualToString:@"Nearest"]) {
+                    param.filterMode = TextureFilterNearest;
+                }else if ([filterMode isEqualToString:@"Linear"]) {
+                    param.filterMode = TextureFilterLinear;
+                }
+            }
+            if ([[obj objectForKey:@"paramName"] isEqualToString:@"currentFrameTexture"]
+                && [[NSFileManager defaultManager] fileExistsAtPath:currentFrameImagePath]) {
+                param.type = TextureType_Sample2DMain;
+                NSMutableArray *paths = [NSMutableArray arrayWithObject:currentFrameImagePath];
+                param.pathArray = paths;
+            }else {
+                NSString *sourceName = obj[@"source"];
+                if ([sourceName isKindOfClass:[NSString class]]) {
+                    if (sourceName.length > 0) {
+                        NSString *newPath = [folderPath stringByAppendingPathComponent:sourceName];
+                        NSMutableArray *paths = [NSMutableArray arrayWithObject:newPath];
+                        param.pathArray = paths;
+                    }
+                }
+                else if ([sourceName isKindOfClass:[NSArray class]]) {
+                    NSMutableArray *sourceArray = [obj[@"source"] mutableCopy];
+                    NSMutableArray *arr = [NSMutableArray array];
+                    for (NSString * imageName in sourceArray) {
+                        NSString *newpath = [folderPath stringByAppendingPathComponent:imageName];
+
+                        [arr addObject:newpath];
+                    }
+                    param.pathArray = [NSMutableArray arrayWithArray:arr];
+                }
+            }
+            [customFilter setShaderTextureParams:param];
+        }
+    }
+    if( caption )
+    {
+        if( effectDic[@"other"] )
+        {
+            if( [effectDic[@"other"] isKindOfClass:[NSArray class]] )
+            {
+                caption.otherAnimates = [NSMutableArray new];
+                NSArray *array = effectDic[@"other"];
+                [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    [caption.otherAnimates addObject:[VEHelp getAnmationDic:(NSMutableDictionary*)obj atPath:folderPath]];
+                }];
+            }
+            else
+            {
+                [caption.otherAnimates addObject:[VEHelp getAnmationDic:(NSMutableDictionary*)effectDic[@"other"] atPath:folderPath]];
+            }
+        }
+        else{
+            if( customFilter.animateType == CustomAnimationTypeIn )
+            {
+                [caption.otherAnimates enumerateObjectsUsingBlock:^(CustomFilter * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    obj = nil;
+                }];
+                caption.otherAnimates = nil;
+            }
         }
     }
     effectDic = nil;
@@ -3476,6 +3644,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             ppCaption.position= CGPointMake(x, y);
             ppCaption.size = CGSizeMake(w, h);
             ppCaption.duration = [subtitleEffectConfig[@"duration"] floatValue];
+            if( ppCaption.duration == 0 )
+            {
+                ppCaption.duration = 1.0;
+            }
             ppCaption.imageName = subtitleEffectConfig[@"name"];
             
 //            ppCaption.tFontSize = 10;
@@ -3527,6 +3699,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
             ppCaption.frameArray = subtitleEffectConfig[@"frameArray"];
             ppCaption.timeArray = subtitleEffectConfig[@"timeArray"];
+            if( (ppCaption.frameArray == nil) || ( ppCaption.frameArray.count == 0 ) )
+            {
+                ppCaption.captionImagePath = [configPath stringByAppendingString:[NSString stringWithFormat:@"/%@.png",ppCaption.imageName]];
+            }
             
             ppCaption.timeRange = CMTimeRangeMake(CMTimeMakeWithSeconds(startTime/*+0.1*/, TIMESCALE), CMTimeMakeWithSeconds(ppCaption.duration, TIMESCALE));
             
@@ -5018,7 +5194,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     }
                 }
                 if (caption.customAnimate) {
-                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:caption.customAnimate.folderPath currentFrameImagePath:nil];
+                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:caption.customAnimate.folderPath currentFrameImagePath:nil caption:caption];
                     animate.timeRange = caption.customAnimate.timeRange;
                     animate.cycleDuration = caption.customAnimate.cycleDuration;
                     animate.networkCategoryId = caption.customAnimate.networkCategoryId;
@@ -5027,7 +5203,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     
                 }
                 if (caption.customOutAnimate) {
-                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:caption.customOutAnimate.folderPath currentFrameImagePath:nil];
+                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:caption.customOutAnimate.folderPath currentFrameImagePath:nil caption:caption];
                     animate.timeRange = caption.customOutAnimate.timeRange;
                     animate.cycleDuration = caption.customOutAnimate.cycleDuration;
                     animate.networkCategoryId = caption.customOutAnimate.networkCategoryId;
@@ -6741,4 +6917,66 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     return scale;
 }
+
++(CGSize)URL_ImageSize:(NSURL *) url atCrop:(CGRect) crop
+{
+    UIImage *image = [VEHelp getFullScreenImageWithUrl:url];
+    
+    CGSize size = CGSizeZero;
+    
+    if( ![VEHelp isImageUrl:url] )
+    {
+        image = [VEHelp geScreenShotImageFromVideoURL:url atTime:CMTimeMakeWithSeconds(0.1, TIMESCALE) atSearchDirection:FALSE];
+        
+        AVURLAsset *asset = [AVURLAsset assetWithURL:url];
+        
+        NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+        if([tracks count] > 0) {
+            AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
+            size = CGSizeApplyAffineTransform(videoTrack.naturalSize, videoTrack.preferredTransform);
+        }
+    }
+    
+    image = [VEHelp image:image rotation:0 cropRect:crop];
+    return image.size;
+}
+
++(CGRect)pasterView_RectinScene:(CGSize) size atRect:(CGRect) rect atSyncContainerSize:(CGSize) syncContainerSize atScale:(float *) scale atOtherSyncontainerSize:(CGSize) otherSyncContainerSize
+{
+//    float scale;
+    float width;
+    float height;
+    if (syncContainerSize.width == syncContainerSize.height) {
+        width = syncContainerSize.width/4.0;
+        height = width / (size.width / size.height);
+    }else if (syncContainerSize.width < syncContainerSize.height) {
+        width = syncContainerSize.width/2.0;
+        height = width / (size.width / size.height);
+    }else {
+        height = syncContainerSize.height/2.0;
+        width = height * (size.width / size.height);
+    }
+    
+    float fwidth = otherSyncContainerSize.width*rect.size.width/(*scale);
+    float fheight = otherSyncContainerSize.height*rect.size.height/(*scale);
+    
+    CGPoint point = CGPointMake(rect.origin.x +  rect.size.width/2.0, rect.origin.y + rect.size.height/2.0);
+    
+    if( fwidth > fheight )
+    {
+        (*scale) = rect.size.width*syncContainerSize.width/width;
+        rect.size = CGSizeMake(rect.size.width, height*(*scale)/ syncContainerSize.height);
+    }
+    else{
+        (*scale) = rect.size.height*syncContainerSize.height/height;
+        rect.size = CGSizeMake(width*(*scale)/ syncContainerSize.width, rect.size.height);
+    }
+    rect.origin = CGPointMake(point.x - rect.size.width/2.0, point.y - rect.size.height/2.0);
+//    CGPoint point = CGPointMake(rect.origin.x +  rect.size.width/2.0, rect.origin.y + rect.size.height/2.0);
+//
+//    rect.size = CGSizeMake(width*scale/syncContainerSize.width, height*scale / syncContainerSize.height);
+//    rect.origin = CGPointMake(point.x - rect.size.width/2.0, point.y - rect.size.height/2.0);
+    return rect;
+}
+
 @end

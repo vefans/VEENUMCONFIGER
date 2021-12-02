@@ -44,6 +44,9 @@
 @property(nonatomic,strong)VECropTypeView            * cropTypeView;
 @property(nonatomic,strong) NSMutableArray           * dataCropTypeArray;
 
+@property(nonatomic, weak)UIScrollView                     *cropTypeScrollView;
+@property(nonatomic, weak)UIButton                          *cropTypeSelectBtn;
+
 
 @property(nonatomic,strong)NSMutableArray * scenesArray;
 @property(nonatomic,strong)VECore         * videoCoreSDK;
@@ -82,6 +85,10 @@
 #pragma mark - 1.Life Cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+    if( [VEConfigManager sharedManager].isPictureEditing )
+    {
+        self.view.backgroundColor = [UIColor whiteColor];
+    }
     
     [self initConfiguration];
     [self setupNavBar];
@@ -107,7 +114,22 @@
         if( (selectFile.rotate != -90 ) && ( selectFile.rotate != -270 ) && (selectFile.rotate != 90 ) && ( selectFile.rotate != 270 ))
             selectFile.crop = CGRectMake( 1.0 - corp.origin.x - corp.size.width, 1.0 -  corp.origin.y - corp.size.height, corp.size.width, corp.size.height);
     }
-
+//    if([VEConfigManager sharedManager].isPictureEditing)
+//    {
+//        _cropType = selectFile.fileCropModeType;
+//        if( self.cropTypeSelectBtn )
+//        {
+//            self.cropTypeSelectBtn.selected = NO;
+//            if( self.cropTypeSelectBtn.tag == VE_VECROPTYPE_ORIGINAL )
+//                ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = PESDKTEXT_COLOR;
+//        }
+//
+//        self.cropTypeSelectBtn = [_cropTypeScrollView viewWithTag:_cropType];
+//        self.cropTypeSelectBtn.selected = YES;
+//        if( self.cropTypeSelectBtn.tag == VE_VECROPTYPE_ORIGINAL )
+//            ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = PESDKMain_Color;
+//    }
+        
     _selectFile = selectFile;
 }
 
@@ -116,6 +138,7 @@
     self.navigationController.navigationBarHidden = YES;
     self.navigationController.navigationBar.translucent = YES;
     [self prefersStatusBarHidden];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -153,7 +176,13 @@
             label.frame = CGRectMake(0, kNavgationBar_Height, self.view.frame.size.width, 45);
         }
         label.text = VELocalizedString(@"拖动选择视频显示区域", nil);
-        label.textColor = [UIColor whiteColor];
+        if( [VEConfigManager sharedManager].isPictureEditing )
+        {
+            label.text = VELocalizedString(@"拖动选择图片显示区域", nil);
+            label.textColor = PESDKTEXT_COLOR;
+        }
+        else
+            label.textColor = [UIColor whiteColor];
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont systemFontOfSize:16];
         [self.view addSubview:label];
@@ -254,79 +283,229 @@
         return;
     }
     float shaow = -5.0/90.0*self.cropTypeView.frame.size.height;
-    for (int i = 0; i< 9; i++) {
-        VECropTypeModel * cropTypeModel = [[VECropTypeModel alloc] init];
-        cropTypeModel.height = _cropTypeView.frame.size.height;
-        NSString * str = nil;
-        if (i == 0) {
-            cropTypeModel.cropType = VE_VECROPTYPE_FREE;
-            str = VELocalizedString(@"自由", nil);
-            cropTypeModel.iconNormal = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_free_nomal"];
-            cropTypeModel.iconSelecct = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_free_select"];
-            cropTypeModel.isHaveIcon = YES;
-            cropTypeModel.isSelect = YES;
-            
-        }else if (i == 1){
-            cropTypeModel.cropType = VE_VECROPTYPE_ORIGINAL;
-            str = VELocalizedString(@"原比例", nil);
-            cropTypeModel.isHaveIcon = NO;
-            cropTypeModel.isSelect = NO;
-            
-        }else if (i == 2){
-            cropTypeModel.cropType = VE_VECROPTYPE_9TO16;
-            str = VELocalizedString(@"9:16", nil);
-            cropTypeModel.iconNormal = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_9to16_nomal"];
-            cropTypeModel.iconSelecct = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_9to16_select"];
-            cropTypeModel.isHaveIcon = YES;
-            cropTypeModel.isSelect = NO;
-            
-        }else if (i == 3){
-            cropTypeModel.cropType = VE_VECROPTYPE_16TO9;
-            str = VELocalizedString(@"16:9", nil);
-            cropTypeModel.iconNormal = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_16to9_nomal"];
-            cropTypeModel.iconSelecct = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_16to9_select"];
-            cropTypeModel.isHaveIcon = YES;
-            cropTypeModel.isSelect = NO;
-            
-        }else if (i == 4){
-            cropTypeModel.cropType = VE_VECROPTYPE_1TO1;
-            str = VELocalizedString(@"1:1", nil);
-            cropTypeModel.isHaveIcon = NO;
-            cropTypeModel.isSelect = NO;
-            
-        }else if (i == 5){
-            cropTypeModel.cropType = VE_VECROPTYPE_6TO7;
-            str = VELocalizedString(@"6:7", nil);
-            cropTypeModel.iconNormal = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_6to7_nomal"];
-            cropTypeModel.iconSelecct = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_6to7_select"];
-            cropTypeModel.isHaveIcon = YES;
-            cropTypeModel.isSelect = NO;
-            
-        }else if (i == 6){
-            cropTypeModel.cropType = VE_VECROPTYPE_4TO5;
-            str = VELocalizedString(@"4:5", nil);
-            cropTypeModel.isHaveIcon = NO;
-            cropTypeModel.isSelect = NO;
-            
-        }else if (i == 7){
-            cropTypeModel.cropType = VE_VECROPTYPE_4TO3;
-            str = VELocalizedString(@"4:3", nil);
-            cropTypeModel.isHaveIcon = NO;
-            cropTypeModel.isSelect = NO;
-            
-        }else if (i == 8){
-            cropTypeModel.cropType = VE_VECROPTYPE_3TO4;
-            str = VELocalizedString(@"3:4", nil);
-            cropTypeModel.isHaveIcon = NO;
-            cropTypeModel.isSelect = NO;
+    if([VEConfigManager sharedManager].isPictureEditing)
+    {
+        self.cropTypeView.hidden = YES;
+        {
+            UIScrollView *scrollView= [[UIScrollView alloc] initWithFrame:self.cropTypeView.frame];
+            [_photoView addSubview:scrollView];
+            _cropTypeScrollView = scrollView;
+            _cropTypeScrollView.tag = 222221;
         }
-        [self.dataCropTypeArray addObject:cropTypeModel];
         
-        cropTypeModel.selecctTitle = [[NSMutableAttributedString alloc] initWithString:str attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12.0/90.0*self.cropTypeView.frame.size.height], NSForegroundColorAttributeName: Main_Color, NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:Main_Color}];
-        cropTypeModel.title = [[NSMutableAttributedString alloc] initWithString:str attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12.0/90.0*self.cropTypeView.frame.size.height], NSForegroundColorAttributeName: UIColorFromRGB(0x808080), NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:UIColorFromRGB(0x808080)}];
+        float cropTypeWidth = _cropTypeScrollView.frame.size.width/6.0;
+        float cropTypeHeight =  _cropTypeScrollView.frame.size.height;
+        for( int i = 0; i < 12; i++ )
+        {
+            VECropType type = VE_VECROPTYPE_FREE;
+            NSString * str = nil;
+            UIImage * namedImage = nil;
+            UIImage *selectImage = nil;
+            
+            UIButton   *sender = [[UIButton alloc] initWithFrame:CGRectMake(cropTypeWidth * i, 0, cropTypeWidth, cropTypeHeight)];
+            
+            switch (i) {
+                case 0://原比例
+                {
+                    type = VE_VECROPTYPE_ORIGINAL;
+                    str = VELocalizedString(@"原比例", nil);
+                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_自由默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_自由选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                }
+                    break;
+                case 1://1:1
+                {
+                    type = VE_VECROPTYPE_1TO1;
+                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_1-1默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_1-1选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                }
+                    break;
+                case 2://4:5
+                {
+                    type = VE_VECROPTYPE_4TO5;
+                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_4-5默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_4-5选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                }
+                    break;
+                case 3://9:16
+                {
+                    type = VE_VECROPTYPE_9TO16;
+                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_9-16默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_9-16选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                }
+                    break;
+                case 4://16:9
+                {
+                    type = VE_VECROPTYPE_16TO9;
+                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_16-9默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_16-9选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                }
+                    break;
+                case 5://6:7
+                {
+                    type = VE_VECROPTYPE_6TO7;
+                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_6-7默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_6-7选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                }
+                    break;
+                case 6://1:2
+                {
+                    type = VE_VECROPTYPE_1TO2;
+                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_1-2默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_1-2选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                }
+                    break;
+                case 7://2:1
+                {
+                    type = VE_VECROPTYPE_2TO1;
+                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_2-1默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_2-1选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                }
+                    break;
+                case 8://2:3
+                {
+                    type = VE_VECROPTYPE_2TO3;
+                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_2-3默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_2-3选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                }
+                    break;
+                case 9://3:2
+                {
+                    type = VE_VECROPTYPE_3TO2;
+                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_3-2默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_3-2选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                }
+                    break;
+                case 10://4:3
+                {
+                    type = VE_VECROPTYPE_4TO3;
+                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_4-3默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_4-3选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                }
+                    break;
+                case 11://3:4
+                {
+                    type = VE_VECROPTYPE_3TO4;
+                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_3-4默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_3-4选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                }
+                    break;
+                default:
+                    break;
+            }
+            
+            if( str )
+            {
+                UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, sender.frame.size.height - 15 - 8, sender.frame.size.width, 15)];
+                label.tag = 22222;
+                label.textColor = PESDKTEXT_COLOR;
+                label.textAlignment = NSTextAlignmentCenter;
+                label.font = [UIFont systemFontOfSize:8];
+                label.text = str;
+                [sender addSubview:label];
+            }
+            
+            sender.tag = type;
+            [sender setImage:namedImage forState:UIControlStateNormal];
+            [sender setImage:selectImage forState:UIControlStateSelected];
+            [self.cropTypeScrollView addSubview:sender];
+            
+            if( (_selectFile.fileCropModeType == sender.tag) || ( (VE_VECROPTYPE_FREE == _cropType) && ( sender.tag == VE_VECROPTYPE_ORIGINAL ) ) )
+            {
+                if( self.cropTypeSelectBtn )
+                {
+                    self.cropTypeSelectBtn.selected = NO;
+                    if( self.cropTypeSelectBtn.tag == VE_VECROPTYPE_ORIGINAL )
+                        ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = PESDKTEXT_COLOR;
+                }
+                
+                _cropType = sender.tag;
+                [sender setSelected:YES];
+                if( VE_VECROPTYPE_ORIGINAL == sender.tag )
+                    ((UILabel*)[sender viewWithTag:22222]).textColor = PESDKMain_Color;
+                self.cropTypeSelectBtn = sender;
+                _cropType = VE_VECROPTYPE_ORIGINAL;
+            }
+            [sender addTarget:self action:@selector(cropType_Btn:) forControlEvents:UIControlEventTouchUpInside];
+        }
+        [self.cropTypeScrollView setContentSize:CGSizeMake(cropTypeWidth * 12, self.cropTypeScrollView.frame.size.height)];
+        self.cropTypeScrollView.showsVerticalScrollIndicator = NO;
+        self.cropTypeScrollView.showsHorizontalScrollIndicator = NO;
     }
-    [self.cropTypeView reloadDataForDataArray:self.dataCropTypeArray];
-    
+    else{
+        for (int i = 0; i< 9; i++) {
+            VECropTypeModel * cropTypeModel = [[VECropTypeModel alloc] init];
+            cropTypeModel.height = _cropTypeView.frame.size.height;
+            NSString * str = nil;
+            if (i == 0) {
+                cropTypeModel.cropType = VE_VECROPTYPE_FREE;
+                str = VELocalizedString(@"自由", nil);
+                cropTypeModel.iconNormal = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_free_nomal"];
+                cropTypeModel.iconSelecct = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_free_select"];
+                cropTypeModel.isHaveIcon = YES;
+                cropTypeModel.isSelect = YES;
+                
+            }else if (i == 1){
+                cropTypeModel.cropType = VE_VECROPTYPE_ORIGINAL;
+                str = VELocalizedString(@"原比例", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 2){
+                cropTypeModel.cropType = VE_VECROPTYPE_9TO16;
+                str = VELocalizedString(@"9:16", nil);
+                cropTypeModel.iconNormal = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_9to16_nomal"];
+                cropTypeModel.iconSelecct = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_9to16_select"];
+                cropTypeModel.isHaveIcon = YES;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 3){
+                cropTypeModel.cropType = VE_VECROPTYPE_16TO9;
+                str = VELocalizedString(@"16:9", nil);
+                cropTypeModel.iconNormal = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_16to9_nomal"];
+                cropTypeModel.iconSelecct = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_16to9_select"];
+                cropTypeModel.isHaveIcon = YES;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 4){
+                cropTypeModel.cropType = VE_VECROPTYPE_1TO1;
+                str = VELocalizedString(@"1:1", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 5){
+                cropTypeModel.cropType = VE_VECROPTYPE_6TO7;
+                str = VELocalizedString(@"6:7", nil);
+                cropTypeModel.iconNormal = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_6to7_nomal"];
+                cropTypeModel.iconSelecct = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_6to7_select"];
+                cropTypeModel.isHaveIcon = YES;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 6){
+                cropTypeModel.cropType = VE_VECROPTYPE_4TO5;
+                str = VELocalizedString(@"4:5", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 7){
+                cropTypeModel.cropType = VE_VECROPTYPE_4TO3;
+                str = VELocalizedString(@"4:3", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 8){
+                cropTypeModel.cropType = VE_VECROPTYPE_3TO4;
+                str = VELocalizedString(@"3:4", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+            }
+            [self.dataCropTypeArray addObject:cropTypeModel];
+            
+            cropTypeModel.selecctTitle = [[NSMutableAttributedString alloc] initWithString:str attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12.0/90.0*self.cropTypeView.frame.size.height], NSForegroundColorAttributeName: Main_Color, NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:Main_Color}];
+            cropTypeModel.title = [[NSMutableAttributedString alloc] initWithString:str attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12.0/90.0*self.cropTypeView.frame.size.height], NSForegroundColorAttributeName: UIColorFromRGB(0x808080), NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:UIColorFromRGB(0x808080)}];
+        }
+        [self.cropTypeView reloadDataForDataArray:self.dataCropTypeArray];
+    }
 }
 
 /**初始化播放器
@@ -390,6 +569,11 @@
     vvasset.isHorizontalMirror = _selectFile.isHorizontalMirror;
     [scene.media addObject:vvasset];
     
+    if( [VEConfigManager sharedManager].isPictureEditing )
+    {
+        scene.backgroundColor = UIColorFromRGB(0xffffff);
+    }
+    
     [self.scenesArray addObject:scene];
 
     _editVideoSize = [VEHelp getEditOrginSizeWithFile:_selectFile];
@@ -416,7 +600,19 @@
     originalvideoCropViewFrame = _videoCoreSDK.frame;
     originalCoreSDKSize = self.videoCropView.videoSize;
     
+    if( [VEConfigManager sharedManager].isPictureEditing )
+    {
+        _videoCoreSDK.view.backgroundColor = [UIColor whiteColor];
+        _videoCropView.backgroundColor = [UIColor whiteColor];
+//        _videoCropView.videoView.backgroundColor = [UIColor whiteColor];
+//        _videoCropView.maskView.backgroundColor = [UIColor whiteColor];
+//        _videoCropView.cropView.backgroundColor = [UIColor whiteColor];
+//        _videoCropView.inputView.backgroundColor = [UIColor whiteColor];
+//        _videoCropView.superview.backgroundColor = [UIColor whiteColor];
+    }
     [_videoCoreSDK setScenes:self.scenesArray];
+    
+    
     
     {
         //视频分辨率
@@ -1135,6 +1331,40 @@
     
 }
 
+-(void)cropType_Btn:( UIButton * ) sender
+{
+    if( self.cropTypeSelectBtn == sender )
+    {
+        return;
+    }
+ 
+    if( self.cropTypeSelectBtn )
+    {
+        self.cropTypeSelectBtn.selected = NO;
+        if( self.cropTypeSelectBtn.tag == VE_VECROPTYPE_ORIGINAL )
+            ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = PESDKTEXT_COLOR;
+    }
+    
+    [_videoCropView.cropView setCropRectViewFrame:sender.tag];
+    self.cropType = sender.tag;
+    self.cropTypeSelectBtn = sender;
+    self.cropTypeSelectBtn.selected = YES;
+    if( self.cropTypeSelectBtn.tag == VE_VECROPTYPE_ORIGINAL )
+        ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = PESDKMain_Color;
+    
+    CGPoint point = self.videoCropView.cropView.cropRectView.frame.origin;
+    point = [self.videoCropView.cropView convertPoint:point toView:self.syncContainerView];
+    self.pasterTextView.cropRect = CGRectMake(point.x, point.y, self.videoCropView.cropView.cropRectView.frame.size.width, self.videoCropView.cropView.cropRectView.frame.size.height);
+    float scale = [self.pasterTextView getCropREct_Scale:self.pasterTextView.selfscale];
+    CGAffineTransform transform2 = CGAffineTransformMakeRotation( -_selectFile.rotate/(180.0/M_PI) );
+    self.pasterTextView.transform = CGAffineTransformScale(transform2, scale, scale);
+    [self.pasterTextView setFramescale:scale];
+    [self.pasterTextView setCenter:[self.pasterTextView  getCropRect_Center:self.pasterTextView .center]];
+    
+    [self svae_PaterText];
+    [self.videoCoreSDK refreshCurrentFrame];
+}
+
 #pragma mark VECropTypeDelegate
 -(void)cropTypeView:(VECropTypeView *)cropTypeView selectItemAtIndexPath:(NSIndexPath *)indexPath{
     VECropTypeModel * cropTypeModel = [self.dataCropTypeArray objectAtIndex:indexPath.section];
@@ -1291,6 +1521,10 @@
             _toolView = [[UIView alloc] initWithFrame:CGRectMake(0,kHEIGHT - kToolbarHeight - 240, kWIDTH, 240)];
         }
         _toolView.backgroundColor = UIColorFromRGB(0x10100F);
+        if( [VEConfigManager sharedManager].isPictureEditing )
+        {
+            _toolView.backgroundColor = [UIColor whiteColor];
+        }
     }
     return _toolView;
 }
@@ -1438,16 +1672,20 @@
 
 -(VECropTypeView *)cropTypeView{
     if (_cropTypeView == nil) {
-       
         if( _cutMmodeType == kCropTypeFixed )
         {
             if( _photoView )
-                _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _photoView.frame.size.height - 65, kWIDTH - 16, 65)];
-            else
-                _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _videoView.frame.size.height - 65, kWIDTH - 16, 65)];
+                if( _cutMmodeType == kCropTypeFixed )
+                    _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _photoView.frame.size.height - 65, kWIDTH - 16, 65)];
+                else
+                    _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _videoView.frame.size.height - 65, kWIDTH - 16, 65)];
         }
         else{
             _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, 130, kWIDTH - 16, 90)];
+        }
+        if( [VEConfigManager sharedManager].isPictureEditing )
+        {
+            _cropTypeView.backgroundColor = [UIColor whiteColor];
         }
         _cropTypeView.delegate = self;
     }
@@ -1505,7 +1743,15 @@
         }
         view.backgroundColor = UIColorFromRGB(0x10100F);
         [self.view addSubview:view];
+        if( [VEConfigManager sharedManager].isPictureEditing )
+        {
+            view.backgroundColor = [UIColor whiteColor];
+        }
         _photoView = view;
+        if( [VEConfigManager sharedManager].isPictureEditing )
+        {
+            view.backgroundColor = [UIColor whiteColor];
+        }
         if( _isCropTypeViewHidden )
         {
             view.frame = CGRectMake(0,kHEIGHT - kToolbarHeight, kWIDTH, 0);
@@ -1721,6 +1967,11 @@
     point.y = point.y + size.height/2.0;
     CGRect rect = CGRectZero;
     CGSize videoSize = CGSizeMake(_syncContainerRect.size.width - 40, _syncContainerRect.size.height - 90);
+    
+    if( [VEConfigManager sharedManager].isPictureEditing )
+    {
+        videoSize = CGSizeMake(_syncContainerRect.size.width, _syncContainerRect.size.height);
+    }
     
     float proportion = size.width/size.height;
     float width = proportion*videoSize.height;
