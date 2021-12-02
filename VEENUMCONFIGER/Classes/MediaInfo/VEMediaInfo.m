@@ -14,6 +14,8 @@
 - (instancetype)init{
     self = [super init];
     if(self){
+        _contrast = 1.0;
+        _saturation = 1.0;
         _chromaColor = UIColorFromRGB(0x000000);
         _backgroundColor = UIColorFromRGB(0x000000);
         _rectInFile = CGRectZero;
@@ -114,6 +116,12 @@
     copy.filterNetworkResourceId = _filterNetworkResourceId;
     copy.filterIndex             = _filterIndex;
     copy.filterIntensity         = _filterIntensity;
+    copy.brightness              = _brightness;
+    copy.contrast                = _contrast;
+    copy.saturation              = _saturation;
+    copy.vignette                = _vignette;
+    copy.sharpness               = _sharpness;
+    copy.whiteBalance            = _whiteBalance;
     copy.adjustments             = _adjustments;
     copy.speed                   = _speed;
     copy.speedIndex              = _speedIndex;
@@ -271,6 +279,12 @@
     copy.filterNetworkResourceId = _filterNetworkResourceId;
     copy.filterIndex             = _filterIndex;
     copy.filterIntensity         = _filterIntensity;
+    copy.brightness              = _brightness;
+    copy.contrast                = _contrast;
+    copy.saturation              = _saturation;
+    copy.vignette                = _vignette;
+    copy.sharpness               = _sharpness;
+    copy.whiteBalance            = _whiteBalance;
     copy.adjustments             = _adjustments;
     copy.speed                   = _speed;
     copy.speedIndex              = _speedIndex;
@@ -740,6 +754,12 @@
     media.beautyBigEyeIntensity = _beautyBigEyeIntensity;
     media.multipleFaceAttribute = _multipleFaceAttribute;
     //调色
+    media.brightness = _brightness;
+    media.contrast = _contrast;
+    media.saturation = _saturation;
+    media.sharpness = _sharpness;
+    media.whiteBalance = _whiteBalance;
+    media.vignette = _vignette;
     media.adjustments = _adjustments;
     
     //降噪
@@ -924,6 +944,12 @@
                 NSMutableArray * adjustArray = [NSMutableArray new];
                 [adjustArray addObject:[NSNumber numberWithFloat:obj1.rotate]];
                 [adjustArray addObject:[NSNumber numberWithFloat:obj1.opacity]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.brightness]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.contrast]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.saturation]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.vignette]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.sharpness]];
+                [adjustArray addObject:[NSNumber numberWithFloat:obj1.whiteBalance]];
                 if (obj1.adjustments) {
                     [adjustArray addObject:[obj1.adjustments copy]];
                 }

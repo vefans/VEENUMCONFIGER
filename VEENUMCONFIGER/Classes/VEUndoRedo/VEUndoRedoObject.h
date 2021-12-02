@@ -58,6 +58,7 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_Subtitle_Edit,//字幕编辑
     VEUndoRedoEditType_Subtitle_Delete,//字幕删除
     VEUndoRedoEditType_Subtitle_Keyframe,//字幕关键帧
+    VEUndoRedoEditType_Subtitle_Move,//字幕移动
     
     VEUndoRedoEditType_TextTemplate_Add,//文字模板添加
     VEUndoRedoEditType_TextTemplate_Split,//文字模板分割
@@ -139,9 +140,13 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_Proportion,//比例调整
     VEUndoRedoEditType_Canvas,//画布
     VEUndoRedoEditType_Cover,//封面
+    
+    VEUndoRedoEditType_Ton_Add,//调色添加
 };
 
 @interface VEUndoRedoObject : NSObject
+
+@property (nonatomic, assign) VEAdvanceEditType editType;
 
 @property (nonatomic, assign) VEUndoRedoEditType type;
 
@@ -150,14 +155,27 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
 @property (nonatomic, strong) NSMutableArray *oriFileList;
 @property (nonatomic, strong) NSMutableArray *dstFileList;
 
+//背景
 @property (nonatomic, assign) NSInteger currentIndex;
 @property (nonatomic, strong) VEMediaInfo *oriFile;
 @property (nonatomic, strong) VEMediaInfo *dstFile;
-
+//字幕
 @property (nonatomic, strong) CaptionEx *oriSubtitle;
 @property (nonatomic, strong) CaptionEx *dstSubtitle;
-
+//贴纸
+@property (nonatomic, strong)Caption    *orSticker;
+@property (nonatomic, strong)Caption    *dstSticker;
+//滤镜 特效 边框
 @property (nonatomic, strong) CustomMultipleFilter *oriFilter;
 @property (nonatomic, strong) CustomMultipleFilter *dstFilter;
+//图层 画笔(涂鸦)
+@property (nonatomic, strong) id orOverlay;
+@property (nonatomic, strong) id dstOverlay;
+//调色
+@property (nonatomic, strong) ToningInfo   *orToningInfo;
+@property (nonatomic, strong) ToningInfo   *dstToningInfo;
+
+@property (nonatomic, strong) NSMutableArray    *orArray;
+@property (nonatomic, strong) NSMutableArray    *dstArray;
 
 @end
