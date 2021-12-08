@@ -39,6 +39,9 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_Media_Copy,//复制
     VEUndoRedoEditType_Media_Trim,//截取
     VEUndoRedoEditType_Media_Sort,//排序
+    VEUndoRedoEditType_Media_Background,//背景
+    VEUndoRedoEditType_Media_AboutMirror,//左右翻转
+    VEUndoRedoEditType_Media_UpDownMirror,//上下翻转
     
     VEUndoRedoEditType_MusicAdd,//音乐添加
     VEUndoRedoEditType_SoundEffectsAdd,//音效添加
@@ -69,11 +72,12 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     
     VEUndoRedoEditType_Stick_Add,//贴纸添加
     VEUndoRedoEditType_Stick_Split,//贴纸分割
-    VEUndoRedoEditType_Stick_nCopy,//贴纸复制
+    VEUndoRedoEditType_Stick_Copy,//贴纸复制
     VEUndoRedoEditType_Stick_Animation,//贴纸动画
     VEUndoRedoEditType_Stick_Mirror,//贴纸镜像
     VEUndoRedoEditType_Stick_Delete,//贴纸删除
     VEUndoRedoEditType_Stick_Keyframe,//贴纸关键帧
+    VEUndoRedoEditType_Stick_Move,//贴纸移动
     
     VEUndoRedoEditType_Overlay_Add,//画中画添加
     VEUndoRedoEditType_Overlay_Split,//分割
@@ -160,11 +164,15 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
 @property (nonatomic, strong) VEMediaInfo *oriFile;
 @property (nonatomic, strong) VEMediaInfo *dstFile;
 //字幕
-@property (nonatomic, strong) CaptionEx *oriSubtitle;
+@property (nonatomic, assign)NSInteger  orSubtitleIndex;
+@property (nonatomic, strong) NSString *dstSubtitleIdentifier;
+@property (nonatomic, strong) CaptionEx *orSubtitle;
 @property (nonatomic, strong) CaptionEx *dstSubtitle;
+
 //贴纸
-@property (nonatomic, strong)Caption    *orSticker;
-@property (nonatomic, strong)Caption    *dstSticker;
+@property (nonatomic, assign)NSInteger  orStickerIndex;
+@property (nonatomic, strong)CaptionEx    *orSticker;
+@property (nonatomic, strong)CaptionEx    *dstSticker;
 //滤镜 特效 边框
 @property (nonatomic, strong) CustomMultipleFilter *oriFilter;
 @property (nonatomic, strong) CustomMultipleFilter *dstFilter;

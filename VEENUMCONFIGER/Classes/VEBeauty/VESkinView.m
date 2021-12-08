@@ -120,7 +120,7 @@
     
     __block FaceAttribute *faceAttribute = nil;
     [_currentMedia.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (CGRectEqualToRect(_currentFaceRect, obj.faceRect)) {
+        if ( CGRectContainsPoint(_currentFaceRect, CGPointMake(obj.faceRect.origin.x+obj.faceRect.size.width/2.0, obj.faceRect.origin.y+obj.faceRect.size.height/2.0)) ) {
             faceAttribute = obj;
             *stop = YES;
         }
@@ -177,6 +177,10 @@
 }
 
 - (void)compareBtnDown:(UIButton *)sender {
+    _editMedia = [_currentMedia copy];
+    _adjustmentSlider.value = 0;
+    _adjustmentNumberLabel.text = @"0";
+    
     if( _delegate && [_delegate respondsToSelector:@selector(skinCompare:)] )
     {
         [_delegate skinCompare:self];
@@ -184,6 +188,28 @@
 }
 
 - (void)compareBtnUp:(UIButton *)sender {
+    __block FaceAttribute *faceAttribute = nil;
+    [_editMedia.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ( CGRectContainsPoint(_currentFaceRect, CGPointMake(obj.faceRect.origin.x+obj.faceRect.size.width/2.0, obj.faceRect.origin.y+obj.faceRect.size.height/2.0)) ) {
+            faceAttribute = obj;
+            *stop = YES;
+        }
+    }];
+    if (_beautyCategoryType == KBeautyCategory_Rosy) {
+        _adjustmentSlider.value = _editMedia.beautyToneIntensity;
+    }
+    else if (_beautyCategoryType == KBeautyCategory_WHitening) {
+        _adjustmentSlider.value = _editMedia.beautyBrightIntensity;
+    }else if (_beautyCategoryType == KBeautyCategory_BlurIntensity) {
+        _adjustmentSlider.value = _editMedia.beautyBlurIntensity;
+    }else if (_beautyCategoryType == KBeautyCategory_BigEyes) {
+        _adjustmentSlider.value = faceAttribute.beautyBigEyeIntensity;
+    }
+    else if (_beautyCategoryType == KBeautyCategory_FaceLift) {
+        _adjustmentSlider.value = faceAttribute.beautyThinFaceIntensity;
+    }
+    _adjustmentNumberLabel.text = [NSString stringWithFormat:@"%d",(int)(_adjustmentSlider.value*100)];
+    
     if( _delegate && [_delegate respondsToSelector:@selector(skinCompareCompletion:atVIew:)] )
     {
         [_delegate skinCompareCompletion:_adjustmentSlider atVIew:self];

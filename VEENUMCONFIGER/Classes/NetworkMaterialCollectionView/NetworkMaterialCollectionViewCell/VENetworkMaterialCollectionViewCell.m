@@ -167,39 +167,39 @@
 
 #pragma mark- UICollectionViewDelegate/UICollectViewdataSource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-    NSInteger count = ((float)self.bounds.size.height)/_cellHeight;
-    return count;
+    //NSInteger count = ((float)self.bounds.size.height)/_cellHeight;
+    return 1;
 }
 
 
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    
-    NSInteger count = self.bounds.size.height/_cellHeight;
-    NSInteger  cellCount = _indexCount/count;
-   if( (section +1) < count )
-   {
-       return  (_indexCount == (cellCount*count) )?cellCount:(cellCount+1);
-   }
-    else
-    {
-        if( count == 1  )
-        {
-            return _indexCount;
-        }
-        else if(_indexCount == cellCount*count){
-            return  cellCount;
-        }
-        else{
-            return _indexCount - (cellCount*section);
-        }
-    }
+    return _indexCount;
+//    NSInteger count = self.bounds.size.height/_cellHeight;
+//    NSInteger  cellCount = _indexCount/count;
+//   if( (section +1) < count )
+//   {
+//       return  (_indexCount == (cellCount*count) )?cellCount:(cellCount+1);
+//   }
+//    else
+//    {
+//        if( count == 1  )
+//        {
+//            return _indexCount;
+//        }
+//        else if(_indexCount == cellCount*count){
+//            return  cellCount;
+//        }
+//        else{
+//            return _indexCount - (cellCount*section);
+//        }
+//    }
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"VENetworkMaterialBtn_Cell";
     VENetworkMaterialBtn_Cell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    
+    NSLog(@"VENetworkMaterialBtn_Cell:%zd,%zd",indexPath.section,indexPath.row);
     if(!cell){
         cell = [[VENetworkMaterialBtn_Cell alloc] initWithFrame:CGRectMake(0, 0, _cellWidth, _cellHeight)];
     }

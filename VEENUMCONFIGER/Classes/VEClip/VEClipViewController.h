@@ -67,6 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
                                 );
 
 -(void)seekTime:(CMTime) time;
+@property(nonatomic,assign)BOOL            flowPicture;
 @end
 
 NS_ASSUME_NONNULL_END

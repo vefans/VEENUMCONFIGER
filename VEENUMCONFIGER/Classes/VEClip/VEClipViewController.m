@@ -95,7 +95,11 @@
     [self setupViews];
     [self setupData];
     
-    
+    if(_flowPicture){
+        _videoView.backgroundColor = SCREEN_BACKGROUND_COLOR;
+        _photoView.backgroundColor = SCREEN_BACKGROUND_COLOR;
+        self.toolView.backgroundColor = SCREEN_BACKGROUND_COLOR;
+    }
 #ifdef kEnterBackgroundCancelExport
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationEnterHome:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 #endif
@@ -234,6 +238,7 @@
     if(self.cropType != VE_VECROPTYPE_FIXEDRATIO)
     self.cropType = VE_VECROPTYPE_FREE;
     [self reloadDataCropTypeView];
+   
     if (_selectFile.isGif) {
         self.seekTime = _selectFile.imageTimeRange.start;
     }
@@ -895,12 +900,17 @@
     
     oldselectFile.crop = r;
     oldselectFile.cropRect = cropRect;
-    if([VEConfigManager sharedManager].isSingleFunc && [VEConfigManager sharedManager].callbackBlock){
+    if(_flowPicture){
         _selectFile.crop = r;
-        [self exportMovie];
-    }else {
-        [self dismissViewControllerAnimated:NO completion:nil];
+    }else{
+        if([VEConfigManager sharedManager].isSingleFunc && [VEConfigManager sharedManager].callbackBlock){
+            _selectFile.crop = r;
+            [self exportMovie];
+        }else {
+            [self dismissViewControllerAnimated:NO completion:nil];
+        }
     }
+    
 
     CGPoint point = [_videoCropView.cropView convertPoint:_videoCropView.cropView.cropRectView.frame.origin toView:self.pasterTextView.contentImage ];
     CGSize size = _videoCropView.cropView.cropRectView.frame.size;

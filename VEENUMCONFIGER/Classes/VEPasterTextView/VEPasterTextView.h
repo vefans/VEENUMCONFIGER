@@ -65,7 +65,8 @@
 
 @property (nonatomic, weak)UIButton  * _Nullable TextEditBtn;
 
-@property (nonatomic, strong)Caption * _Nullable caption;
+//@property (nonatomic, strong)Caption * _Nullable caption;
+@property (nonatomic, strong)CaptionEx * _Nullable captionSticker;
 
 @property (nonatomic, strong)NSString   * _Nullable captionExCover;
 @property (nonatomic, strong)CaptionEx * _Nullable captionSubtitle;

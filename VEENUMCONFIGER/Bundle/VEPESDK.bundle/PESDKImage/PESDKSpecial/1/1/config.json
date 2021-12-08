@@ -1,0 +1,14 @@
+{
+	"ver" : 2,
+	"minCoreVer":120,
+	"color" : [153,102,51, 0.6],
+	"name" : "oldfs",
+	"fragShader" : "frag.txt",
+    "duration" : 3,
+    "textureParams":[{
+        "paramName": "inputImageTextureBlend_9_16",
+		"aspectRatioMode":"9_16",
+        "source": "texture/3.png"
+    }
+    ]
+}

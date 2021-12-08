@@ -454,6 +454,52 @@
 }
 
 - (void)compareBtnDown:(UIButton *)sender {
+    _editMedia = [_currentMedia copy];
+    float value =  0.5;
+    switch (_currentType) {
+        case 0://MARK: 脸型
+        {
+            [_adjustmentSliders[0] setValue:value];
+        }
+            break;
+        case 1://MARK: 下巴
+        {
+            [_adjustmentSliders[0] setValue:value];
+            [_adjustmentSliders[3] setValue:value];
+        }
+            break;
+        case 2://MARK: 额头
+        {
+            [_adjustmentSliders[0] setValue:value];
+        }
+            break;
+        case 3://MARK: 微笑
+        {
+            [_adjustmentSliders[0] setValue:value];
+        }
+            break;
+        case 4://MARK: 眼睛
+        {
+            [_adjustmentSliders[1] setValue:value];
+            [_adjustmentSliders[2] setValue:value];
+            [_adjustmentSliders[3] setValue:value];
+        }
+            break;
+        case 5://MARK: 嘴唇
+        {
+            [_adjustmentSliders[1] setValue:value];
+            [_adjustmentSliders[2] setValue:value];
+            [_adjustmentSliders[3] setValue:value];
+        }
+            break;
+        case 6://MARK: 鼻子
+        {
+            [_adjustmentSliders[0] setValue:value];
+        }
+            break;
+        default:
+            break;
+    }
     if( _delegate && [_delegate respondsToSelector:@selector(fiveSensesCompare:atVIew:)] )
     {
         [_delegate fiveSensesCompare:_currentType atVIew:self];
@@ -461,6 +507,106 @@
 }
 
 - (void)compareBtnUp:(UIButton *)sender {
+    __block FaceAttribute *faceAttribute = nil;
+    [_editMedia.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ((CGRectContainsPoint(_currentFaceRect, CGPointMake(obj.faceRect.origin.x + obj.faceRect.size.width / 2.0, obj.faceRect.origin.y + obj.faceRect.size.height / 2.0)))) {
+            faceAttribute = obj;
+            *stop = YES;
+        }
+    }];
+    float value =  0.5;
+    switch (_currentType) {
+        case 0://MARK: 脸型
+        {
+            if( faceAttribute )
+            {
+                value = faceAttribute.faceWidth;
+            }
+            [_adjustmentSliders[0] setValue:value];
+        }
+            break;
+        case 1://MARK: 下巴
+        {
+            if( faceAttribute )
+            {
+                value = faceAttribute.chinWidth;
+            }
+            [_adjustmentSliders[0] setValue:value];
+            if( faceAttribute )
+            {
+                value = faceAttribute.chinHeight;
+            }
+            [_adjustmentSliders[3] setValue:value];
+        }
+            break;
+        case 2://MARK: 额头
+        {
+            if( faceAttribute )
+            {
+                value = faceAttribute.forehead;
+            }
+            [_adjustmentSliders[0] setValue:value];
+        }
+            break;
+        case 3://MARK: 微笑
+        {
+            if( faceAttribute )
+            {
+                value = faceAttribute.smile;
+            }
+            [_adjustmentSliders[0] setValue:value];
+        }
+            break;
+        case 4://MARK: 眼睛
+        {
+            if( faceAttribute )
+            {
+                value = faceAttribute.eyeSlant;
+            }
+            [_adjustmentSliders[1] setValue:value];
+            if( faceAttribute )
+            {
+                value = faceAttribute.eyeDistance;
+            }
+            [_adjustmentSliders[2] setValue:value];
+            if( faceAttribute )
+            {
+                value = faceAttribute.eyeWidth;
+            }
+            [_adjustmentSliders[3] setValue:value];
+        }
+            break;
+        case 5://MARK: 嘴唇
+        {
+            if( faceAttribute )
+            {
+                value = faceAttribute.lipUpper;
+            }
+            [_adjustmentSliders[1] setValue:value];
+            if( faceAttribute )
+            {
+                value = faceAttribute.lipLower;
+            }
+            [_adjustmentSliders[2] setValue:value];
+            if( faceAttribute )
+            {
+                value = faceAttribute.mouthWidth;
+            }
+            [_adjustmentSliders[3] setValue:value];
+        }
+            break;
+        case 6://MARK: 鼻子
+        {
+            if( faceAttribute )
+            {
+                value = faceAttribute.noseWidth;
+            }
+            [_adjustmentSliders[0] setValue:value];
+        }
+            break;
+        default:
+            break;
+    }
     if( _delegate && [_delegate respondsToSelector:@selector(fiveSensesCompareCompletion:atVIew:)] )
     {
         [_delegate fiveSensesCompareCompletion:_currentType atVIew:self];

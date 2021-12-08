@@ -274,7 +274,8 @@
 
 #pragma mark- 气泡
 +(void)getConfig_CaptionEx:( CaptionEx * ) captionEx atCaptionConfig:( NSString * ) configPath atConfig:( NSDictionary** ) config;
-
+#pragma mark- 贴纸
++(void)getConfig_CaptionStickerEx:( CaptionEx * ) captionEx atCaptionConfig:( NSString * ) configPath atConfig:( NSDictionary** ) config;
 
 + (NSString *)getVerBationAnimationFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 + (BOOL)OpenZipp:(NSString*)zipPath  unzipto:(NSString*)_unzipto;

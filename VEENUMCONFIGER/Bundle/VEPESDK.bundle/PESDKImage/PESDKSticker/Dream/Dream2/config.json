@@ -1,0 +1,16 @@
+﻿{
+	"ver": 1,
+	"apng": 1,
+	"type": 1,
+	"unLoop":0,
+	"name": "Dream2",
+	"width": 282,
+	"height": 282,
+	"centerX": 0.5,
+	"centerY": 0.5,
+	"count": 0,
+	"duration": 0,
+	"frameArray": [],
+	"timeArray": [
+	]
+}

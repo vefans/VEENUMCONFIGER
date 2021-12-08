@@ -6240,6 +6240,60 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return hasAlpha;
 }
 
+#pragma mark- 贴纸
++(void)getConfig_CaptionStickerEx:( CaptionEx * ) captionEx atCaptionConfig:( NSString * ) configPath atConfig:( NSDictionary** ) config
+{
+    @try {
+        {
+            NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+            NSFileManager *manager = [[NSFileManager alloc] init];
+            if([manager fileExistsAtPath:path]){
+                NSLog(@"have");
+            }else{
+                NSLog(@"nohave");
+            }
+            NSData *data = [[NSData alloc] initWithContentsOfFile:path];
+            data = [[NSData alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path]];
+            
+            NSError *err;
+            if(data){
+                NSDictionary *subtitleEffectConfig = [NSJSONSerialization JSONObjectWithData:data
+                                                                                     options:NSJSONReadingMutableContainers
+                                                                                       error:&err];
+                (*config) = subtitleEffectConfig;
+                if(err) {
+                    NSLog(@"json解析失败：%@",err);
+                }
+                CaptionImage * captionImage = [CaptionImage new];
+                float   x = [subtitleEffectConfig[@"centerX"] floatValue];
+                float   y = [subtitleEffectConfig[@"centerY"] floatValue];
+                int     w = [subtitleEffectConfig[@"width"] intValue];
+                int     h = [subtitleEffectConfig[@"height"] intValue];
+                captionImage.imageFolderPath =[configPath stringByAppendingString:@"/"];
+                captionImage.captionImagePath = captionImage.imageFolderPath;
+                captionEx.position= CGPointMake(x, y);
+                captionEx.originalSize = CGSizeMake(w, h);
+                captionImage.imageName = subtitleEffectConfig[@"name"];
+                captionEx.scale = 1;
+                captionImage.frameArray = subtitleEffectConfig[@"frameArray"];
+                captionImage.timeArray = subtitleEffectConfig[@"timeArray"];
+                captionEx.captionImage = captionImage;
+                {
+                    float duration = [subtitleEffectConfig[@"duration"] floatValue];
+                    if( duration == 0 )
+                    {
+                        duration = 3.0;
+                    }
+                    captionEx.duration = duration;
+                }
+            }
+        }
+    }@catch (NSException * exception)
+    {
+        NSLog(@"%@",exception);
+    }
+}
+
 #pragma mark- 气泡
 +(void)getConfig_CaptionEx:( CaptionEx * ) captionEx atCaptionConfig:( NSString * ) configPath atConfig:( NSDictionary** ) config
 {

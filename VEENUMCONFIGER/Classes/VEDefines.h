@@ -24,18 +24,18 @@ typedef NS_ENUM(NSInteger ,KBeautyType) {
     KBeauty_EyeHeight           = 6,    //眼睛高度
     KBeauty_EyeSlant            = 7,    //眼睛倾斜
     KBeauty_EyeDistance         = 8,    //眼睛距离
-    KBeauty_NoseSize             = 9,    //鼻子大小
-    KBeauty_NoseWidth          = 10,   //鼻子宽度
-    KBeauty_NoseHeight         = 11,   //鼻子高度
-    KBeauty_MouthWidth        = 12,   //嘴巴宽度
-    KBeauty_LipUpper             = 13,   //上嘴唇
-    KBeauty_LipLower             = 14,   //下嘴唇
-    KBeauty_Smile                   = 15,   //微笑
-    KBeauty_BlurIntensity        = 16,   //磨皮
+    KBeauty_NoseSize            = 9,    //鼻子大小
+    KBeauty_NoseWidth           = 10,   //鼻子宽度
+    KBeauty_NoseHeight          = 11,   //鼻子高度
+    KBeauty_MouthWidth          = 12,   //嘴巴宽度
+    KBeauty_LipUpper            = 13,   //上嘴唇
+    KBeauty_LipLower            = 14,   //下嘴唇
+    KBeauty_Smile               = 15,   //微笑
+    KBeauty_BlurIntensity       = 16,   //磨皮
     KBeauty_BrightIntensity     = 17,   //美白
     KBeauty_ToneIntensity       = 18,   // 红润
-    KBeauty_BigEyes               = 19,//大眼
-    KBeauty_FaceLift               = 20, //瘦脸
+    KBeauty_BigEyes             = 19,   //大眼
+    KBeauty_FaceLift            = 20,   //瘦脸
 };
 
 typedef NS_ENUM(NSInteger ,MediaType) {

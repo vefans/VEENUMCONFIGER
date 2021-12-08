@@ -26,6 +26,9 @@
 @end
 
 @interface VESkinView : UIView
+{
+    MediaAsset *_editMedia;//用于对比
+}
 
 @property(nonatomic, strong)UILabel *titleLbl;
 @property(nonatomic, weak)UIView            *toolbarView;

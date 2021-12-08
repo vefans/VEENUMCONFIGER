@@ -26,6 +26,9 @@
 @end
 
 @interface VEFiveSensesView : UIView
+{
+    MediaAsset *_editMedia;//用于对比
+}
 
 @property(nonatomic, assign)NSInteger       currentType;
 @property(nonatomic, assign)UIButton        *currentBtn;

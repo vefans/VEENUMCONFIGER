@@ -158,30 +158,6 @@
 */
 @property (nonatomic, assign) float backgroundAlpha;
 
-/** 亮度 ranges from -1.0 to 1.0, with 0.0 as the normal level
- */
-@property (nonatomic, assign) float brightness;
-
-/** 对比度 ranges from 0.0 to 4.0 (max contrast), with 1.0 as the normal level
- */
-@property (readwrite, nonatomic) float contrast;
-
-/** 饱和度 ranges from 0.0 (fully desaturated) to 2.0 (max saturation), with 1.0 as the normal level
- */
-@property (nonatomic, assign) float saturation;
-
-/** 暗角 ranges from 0.0 to 1.0 , with 0.0 as the normal level
- */
-@property (nonatomic, assign) float vignette;
-
-/** 锐度 ranges from -4.0 to 4.0 , with 0.0 as the normal level
- */
-@property (nonatomic, assign) float sharpness;
-
-/** 色温 ranges from -1.0 to 1.0 , with 0.0 as the normal level
- */
-@property (nonatomic, assign) float whiteBalance;
-
 /** 调色
  */
 @property (nonatomic, strong) ToningInfo *adjustments;

@@ -1945,3 +1945,12 @@
 
 "你想要调整全部图片的时长吗？" = "Do you want to adjust the duration of all pictures?";
 "当前图片" = "Current Picture";
+"处理中，请稍等..." = "Processing, please wait...";
+"优化抠像中：" = "Optimizing Cutout:";
+"跟踪处理完成" = "Tracking completion";
+"跟踪" = "Track";
+"开始跟踪" = "Start track";
+"跟踪处理中" = "Tracking in progress";
+"AI识别到%d人，请选择一位进行跟踪！" = "AI recognized %d people, please choose one to track!";
+"AI识别到多人，请选择一位进行美颜！" = "AI recognizes multiple people, please choose one to beautify!";
+"光感" = "Light Sensation";

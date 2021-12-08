@@ -802,7 +802,7 @@ static dispatch_once_t onceToken;
     NSArray *resourceArray = [PHAssetResource assetResourcesForAsset:asset];
     if (resourceArray.count > 0) {
         BOOL isLocal = [[resourceArray.lastObject valueForKey:@"locallyAvailable"] boolValue];
-        NSLog(@"asset:%@ isLocal:%@", asset.localIdentifier, isLocal ? @"YES" : @"NO");
+//        NSLog(@"asset:%@ isLocal:%@", asset.localIdentifier, isLocal ? @"YES" : @"NO");
         isiCloud = !isLocal;
     }else {//20211115 使用下面的方法获取视频比较耗时
         if(asset.mediaType == PHAssetMediaTypeVideo){
