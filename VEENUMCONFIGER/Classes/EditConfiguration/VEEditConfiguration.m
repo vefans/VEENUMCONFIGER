@@ -54,7 +54,7 @@
         _enableAuidoCurveSpeed = true;
         _enableMediaCurveSpeed = true;
         _enableCaptionKeyframe = true;
-        _enableCaptionTrack = true;
+        _enableCaptionTrack = false;
         _enableMediaKeyframe = true;
         _enableAudioKeyframe = true;
         
