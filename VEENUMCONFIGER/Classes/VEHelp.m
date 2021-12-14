@@ -3861,6 +3861,23 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return  attrString;
 }
 
+//压缩图片至指定尺寸
++ (UIImage *)rescaleImage:(UIImage *)image size:(CGSize)size
+{
+    CGRect rect = (CGRect){CGPointZero, size};
+    
+    UIGraphicsBeginImageContext(rect.size);
+    
+    [image drawInRect:rect];
+    
+    UIImage *resImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return resImage;
+}
+
+
 + (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize
 {
     UIGraphicsBeginImageContext(CGSizeMake(((int)(image.size.width * scaleSize))/2*2.0, ((int)(image.size.height * scaleSize))/2*2.0));
@@ -5253,6 +5270,17 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
         }];
     }
+    if (templateInfo.speechs.count > 0) {
+        [templateInfo.speechs enumerateObjectsUsingBlock:^(VECoreTemplateMusic * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            MusicInfo *music = [obj getMusicInfoWithFolderPath:folderPath];
+            if (music) {
+                if (!folderPath) {
+                    music.url = [VEHelp getFileURLFromAbsolutePath:music.url.path];
+                }
+                [multiTrackMusics addObject:music];
+            }
+        }];
+    }
     if (multiTrackMusics.count > 0) {
         [veCoreSDK setMusics:multiTrackMusics];
     }
@@ -6271,6 +6299,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 int     h = [subtitleEffectConfig[@"height"] intValue];
                 captionImage.imageFolderPath =[configPath stringByAppendingString:@"/"];
                 captionImage.captionImagePath = captionImage.imageFolderPath;
+                NSString * str = subtitleEffectConfig[@"blendMode"];
+                if(  [str isEqualToString:@"screen"] )
+                {
+                    captionImage.blendType =  FilterBlendTypeScreen;
+                }
                 captionEx.position= CGPointMake(x, y);
                 captionEx.originalSize = CGSizeMake(w, h);
                 captionImage.imageName = subtitleEffectConfig[@"name"];
@@ -7032,5 +7065,45 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 //    rect.origin = CGPointMake(point.x - rect.size.width/2.0, point.y - rect.size.height/2.0);
     return rect;
 }
+
++(CGRect)getCrop:( CGSize ) size atOriginalSize:( CGSize ) originalSize
+{
+    float videoR = size.width / size.height;
+    
+    CGRect rect = CGRectZero;
+    if ( originalSize.width > originalSize.height) {
+        
+        if( videoR > 1.0 ){
+            float croporiginX = 0;
+            float croporiginY = 0+ (originalSize.height -originalSize.width/videoR)/2;
+            float cropWidth = originalSize.width;
+            float cropHeight = originalSize.width /videoR;
+            rect = CGRectMake(croporiginX/originalSize.width, croporiginY/originalSize.height, cropWidth/originalSize.width, cropHeight/originalSize.height);
+        }else{
+            float croporiginX = 0+ (originalSize.width - originalSize.height *size.width/size.height)/2;
+            float croporiginY = 0;
+            float cropWidth = originalSize.height *size.width/size.height;
+            float cropHeight = originalSize.height;
+            rect = CGRectMake(croporiginX/originalSize.width, croporiginY/originalSize.height, cropWidth/originalSize.width, cropHeight/originalSize.height);
+        }
+    }else{
+        if (videoR > originalSize.width / originalSize.height) {
+            float  croporiginX = 0;
+            float  croporiginY = 0 + (originalSize.height - originalSize.width* size.height/size.width)/2;
+            float  cropWidth = originalSize.width;
+            float  cropHeight = originalSize.width* size.height/size.width;
+            rect = CGRectMake(croporiginX/originalSize.width, croporiginY/originalSize.height, cropWidth/originalSize.width, cropHeight/originalSize.height);
+        }else{
+            
+            float  croporiginX = 0+ (originalSize.width - originalSize.height *size.width/size.height)/2;
+            float  croporiginY = 0;
+            float  cropWidth = originalSize.height *size.width/size.height;
+            float  cropHeight = originalSize.height;
+            rect = CGRectMake(croporiginX/originalSize.width, croporiginY/originalSize.height, cropWidth/originalSize.width, cropHeight/originalSize.height);
+        }
+    }
+    return rect;
+}
+
 
 @end

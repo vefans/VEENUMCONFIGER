@@ -54,5 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 -(void)cell_MoveGesture:(UIGestureRecognizer *) recognizer;
 
+#pragma mark- 释放
+-(void)freedCell:(  id ) cell;
+
 @end
 NS_ASSUME_NONNULL_END

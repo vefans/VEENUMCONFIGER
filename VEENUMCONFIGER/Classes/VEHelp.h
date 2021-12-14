@@ -224,6 +224,7 @@
 +(void)downloadFonts:(void(^)(NSError *error))callBack;
 
 + (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize;
++ (UIImage *)rescaleImage:(UIImage *)image size:(CGSize)size;
 
 + (UIImage*)drawImages:(NSMutableArray *)images size:(CGSize)size animited:(BOOL)animited;
 
@@ -294,4 +295,7 @@
 
 +(CGRect)pasterView_RectinScene:(CGSize) size atRect:(CGRect) rect atSyncContainerSize:(CGSize) syncContainerSize atScale:(float *) scale atOtherSyncontainerSize:(CGSize) otherSyncContainerSize;
 
++(CGRect)getCrop:( CGSize ) size atOriginalSize:( CGSize ) originalSize;
+
++(void )getOriginaImage:( CVPixelBufferRef  ) originaImage atGrayscaleImage:( CVPixelBufferRef ) grayscaleImage atSize:( CGSize ) size;
 @end

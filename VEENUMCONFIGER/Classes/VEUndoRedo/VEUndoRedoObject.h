@@ -146,6 +146,8 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_Cover,//封面
     
     VEUndoRedoEditType_Ton_Add,//调色添加
+    
+    VEUndoRedoEditType_BOX_Add,//边框添加
 };
 
 @interface VEUndoRedoObject : NSObject

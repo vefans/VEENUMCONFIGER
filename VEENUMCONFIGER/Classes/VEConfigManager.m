@@ -7,6 +7,8 @@
 
 #import "VEConfigManager.h"
 
+NSString *const VEStartExportNotification = @"VEStartExportNotification";
+
 @implementation VEConfigManager
 
 + (instancetype)sharedManager
@@ -51,6 +53,11 @@
             break;
     }
     [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)startExportWithMinWH:(int)minWH {
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:VEStartExportNotification object:[NSNumber numberWithInt:minWH]];
 }
 
 @end

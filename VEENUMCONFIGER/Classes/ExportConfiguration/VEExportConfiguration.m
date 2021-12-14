@@ -37,7 +37,7 @@
         //设置水印是否可用
         _watermarkDisabled = true;
         _watermarkPosition = VEWatermarkPosition_leftBottom;
-        
+        _enableSetExportParams = true;
     }
     return self;
 }
@@ -88,6 +88,7 @@
     copy.deleteCloudBackupPath = _deleteCloudBackupPath;
     copy.cloudBackupListPath = _cloudBackupListPath;
     copy.userUniqueId = _userUniqueId;
+    copy.enableSetExportParams = _enableSetExportParams;
     
     return copy;
 }
@@ -123,6 +124,7 @@
     copy.deleteCloudBackupPath = _deleteCloudBackupPath;
     copy.cloudBackupListPath = _cloudBackupListPath;
     copy.userUniqueId = _userUniqueId;
+    copy.enableSetExportParams = _enableSetExportParams;
     
     return copy;
     

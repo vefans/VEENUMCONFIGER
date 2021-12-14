@@ -170,8 +170,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_MIXEDMODE     =52,    //  混合模式
     VEAdvanceEditType_MASK              = 52,   //  蒙版
     VEAdvanceEditType_DOF                   = 53,   // 景深
-    
-    
+    VEAdvanceEditType_BOX                   = 54,   //  边框
 };
 
 /*
@@ -615,6 +614,12 @@ isPhoneX;\
 
 #define kTemplateRecordFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/TemplateRecord"]
 #define kTemplateRecordPlist [kTemplateRecordFolder stringByAppendingPathComponent:@"TemplateRecord.plist"]
+
+#pragma mark-媒体动画
+#define KAnimationFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Animation"]
+#define kAnimationPath [KAnimationFolder stringByAppendingPathComponent:@"AnimationPath.plist"]
+
+#define kTextToSpeechFolder [kVEDirectory stringByAppendingPathComponent:@"TextToSpeech"]
 
 #define kStickerMinScale   0.1
 #define kStickerMaxScale   4.0

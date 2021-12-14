@@ -423,7 +423,7 @@
         {
             strokeFiletWidth = height/2.0;
         }
-        NSLog(@"filetWidth:%.2f,width:%.2f",strokeFiletWidth,width);
+//        NSLog(@"filetWidth:%.2f,width:%.2f",strokeFiletWidth,width);
         //颜色的填充
         CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);
         //线宽

@@ -45,6 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
             lineItemCount:(NSInteger)lineItemCount
         selectedItemIndex:(NSInteger)selectedItemIndex;
 
+-(void)freNetWorkMaterialVIew;
 @end
 
 @protocol VENetworkMaterialViewDelegate <NSObject>
@@ -72,6 +73,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)netWrokMaterial_ScrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate;
 
 -(void)netWrokMaterial_MoveGesture:(UIGestureRecognizer *) recognizer;
+
+#pragma mark- 释放
+-(void)freedCell:( id ) cell;
+
+
 
 @end
 

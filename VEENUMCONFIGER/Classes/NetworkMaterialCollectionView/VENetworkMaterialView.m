@@ -9,7 +9,7 @@
 #import "VENetworkMaterialView.h"
 #import "VENetworkMaterialCollectionViewCell.h"
 #import <SDWebImage/SDWebImage.h>
-
+#import "VENetworkMaterialBtn_Cell.h"
 @interface VENetworkMaterialView()<UICollectionViewDataSource,UICollectionViewDelegate,VENetworkMaterialCollectionViewCellDelegate
 //,UIScrollViewDelegate
 >
@@ -200,6 +200,27 @@
     return  _CollectionViewCount;
 }
 
+-(void)freNetWorkMaterialVIew
+{
+    [_collectionView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+       
+        if( [obj isKindOfClass:[VENetworkMaterialCollectionViewCell class]] )
+        {
+            VENetworkMaterialCollectionViewCell *cell = ( VENetworkMaterialCollectionViewCell * )obj;
+            [cell.collectionView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+                if(  [obj1 isKindOfClass:[VENetworkMaterialBtn_Cell class]] )
+                {
+                    if( _delegate && [_delegate respondsToSelector:@selector(freedCell:)] )
+                    {
+                        [_delegate freedCell:obj1];
+                    }
+                }
+            }];
+        }
+        
+    }];
+}
+
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"NetworkMaterialCollectionViewCell";
     VENetworkMaterialCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
@@ -280,6 +301,15 @@
     else
         [_currentCell.collectionView setContentOffset:CGPointMake(_currentCell.collectionView.contentSize.width -  _currentCell.collectionView.frame.size.width, 0)];
     _currentCellIndex = -1;
+}
+
+#pragma mark- 释放
+-(void)freedCell:( id ) cell
+{
+    if( _delegate && [_delegate respondsToSelector:@selector(freedCell:)] )
+    {
+        [_delegate freedCell:cell];
+    }
 }
 
 #pragma mark- 界面组装

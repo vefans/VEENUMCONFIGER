@@ -163,6 +163,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         _captionTextIndex = 0;
         _isDrag_Upated = false;
         _isSizePrompt = true;
+        iswatermark = NO;
         
         _isViewHidden_GestureRecognizer = false;
         _isEditImage = false;
@@ -334,7 +335,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     }
     NSLog(@"frame1:%@", NSStringFromCGRect(frame));
     if (self = [super initWithFrame:frame]) {
-        
+        iswatermark = NO;
         _isViewHidden_GestureRecognizer = false;
         _isEditImage = false;
         _dragaAlpha = -1;
@@ -615,11 +616,11 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 - (void)contentTapped:(UITapGestureRecognizer*)tapGesture
 {
-    if( self.syncContainer.isCalculateSelected )
-    {
-        [self.syncContainer contentTapped:tapGesture];
-        return;
-    }
+//    if( self.syncContainer.isCalculateSelected )
+//    {
+//        [self.syncContainer contentTapped:tapGesture];
+//        return;
+//    }
     
     if( self.syncContainer == nil )
     {
@@ -1056,9 +1057,23 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 newScale = _minScale;
             }
             
-            
-            if( newScale < 0.20 )
-                newScale = 0.2;
+
+//            if( newScale < 0.20 )
+//                newScale = 0.2;
+            float scaleHeight = 40;
+            if( _contentImage.frame.size.width > _contentImage.frame.size.height )
+            {
+                if( scaleHeight > ( _contentImage.frame.size.height*newScale) )
+                {
+                    newScale = scaleHeight/_contentImage.frame.size.height;
+                }
+            }
+            else{
+                if( scaleHeight > ( _contentImage.frame.size.width*newScale) )
+                {
+                    newScale = scaleHeight/_contentImage.frame.size.width;
+                }
+            }
             
             if( _isFixedCrop )
             {
@@ -2666,6 +2681,7 @@ static VEPasterTextView *lastTouchedView;
         _isViewHidden_GestureRecognizer = false;
         _isEditImage = false;
         _dragaAlpha = -1;
+        iswatermark = NO;
 //        _isDrag_Upated = true;
         _isDrag = true;
         _minScale = 0;
@@ -2957,5 +2973,14 @@ static VEPasterTextView *lastTouchedView;
     shockY = center.y;
     return center;
 }
+- (void)setHidden:(BOOL)hidden{
+    if(hidden){
+        NSLog(@"sss");
+    }
+    [super setHidden:hidden];
+}
 
+- (void)removeFromSuperview{
+    [super removeFromSuperview];
+}
 @end

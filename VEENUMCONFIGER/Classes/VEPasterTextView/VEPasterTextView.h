@@ -226,6 +226,12 @@
 
 -(float)getCropREct_Scale:(float) scale;
 -(CGPoint)getCropRect_Center:(CGPoint) center;
+@property (nonatomic, strong)CaptionEx * _Nullable old_captionSubtitle;
+@property (nonatomic, assign)CGPoint  oldCenter;
+@property (nonatomic, assign)CGAffineTransform  oldTransform;
+@property (nonatomic, strong)NSDictionary  * _Nullable info;
+@property (nonatomic, strong)NSDictionary  * _Nullable old_info;
+@property (nonatomic, strong)NSString  * _Nullable old_cover;
 @end
 
 

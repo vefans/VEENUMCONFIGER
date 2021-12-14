@@ -204,6 +204,11 @@
         cell = [[VENetworkMaterialBtn_Cell alloc] initWithFrame:CGRectMake(0, 0, _cellWidth, _cellHeight)];
     }
     
+    if( _delegate && [_delegate respondsToSelector:@selector(freedCell:)] )
+    {
+        [_delegate freedCell:cell];
+    }
+    
     if( cell.btnCollectBtn )
     {
         if([cell.btnCollectBtn isKindOfClass:[UIButton class]] )

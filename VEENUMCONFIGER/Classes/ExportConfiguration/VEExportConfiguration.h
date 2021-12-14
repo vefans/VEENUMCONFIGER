@@ -119,6 +119,10 @@ typedef NS_ENUM(NSInteger,VEWatermarkPosition){
  */
 @property (nonatomic,copy)NSString *userUniqueId;
 
+/** 是否可以设置导出参数，(default true)
+ */
+@property (nonatomic,assign) bool enableSetExportParams;
+
 
 
 /** 是否禁用片尾，(default true)

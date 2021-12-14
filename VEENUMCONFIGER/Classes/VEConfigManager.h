@@ -25,6 +25,9 @@ typedef NS_ENUM(NSInteger, SUPPORTLANGUAGE){
     OtherLanguages,// 其他语言
 };
 
+//导出前回调
+typedef void(^VEPrepareExportHandler) (void);
+
 //编辑完成导出结束回调
 typedef void(^VECompletionHandler) (NSString * videoPath);
 //编辑取消回调
@@ -35,6 +38,8 @@ typedef void(^VEFailedHandler) (NSError * error);
 typedef void(^VECloudBackingUpHandler) (int completionCount, int totalCount);
 //云备份结束回调
 typedef void(^VECloudBackupCompletionHandler) (int completionCount);
+
+UIKIT_EXTERN NSString * const VEStartExportNotification;
 
 @protocol VESDKDelegate <NSObject>
 
@@ -123,6 +128,7 @@ typedef void(^VECloudBackupCompletionHandler) (int completionCount);
 @property(nonatomic,copy) VEFailedHandler failedHandler;
 @property(nonatomic,copy) VECloudBackingUpHandler cloudBackingUpHandler;
 @property(nonatomic,copy) VECloudBackupCompletionHandler cloudBackupCompletionHandler;
+@property(nonatomic,copy) VEPrepareExportHandler prepareExportHandler;
 
 @property (nonatomic, weak) id<VESDKDelegate> veSDKDelegate;
 
@@ -166,5 +172,10 @@ typedef void(^VECloudBackupCompletionHandler) (int completionCount);
  *  默认为：57685258
  */
 @property (nonatomic, assign) int freezeFXCategoryId;
+
+/** 开始导出
+ @param minWH 视频分辨率宽高的最小值；例导出720P视频，则设置为720
+ */
+- (void)startExportWithMinWH:(int)minWH;
 
 @end
