@@ -5270,17 +5270,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
         }];
     }
-    if (templateInfo.speechs.count > 0) {
-        [templateInfo.speechs enumerateObjectsUsingBlock:^(VECoreTemplateMusic * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            MusicInfo *music = [obj getMusicInfoWithFolderPath:folderPath];
-            if (music) {
-                if (!folderPath) {
-                    music.url = [VEHelp getFileURLFromAbsolutePath:music.url.path];
-                }
-                [multiTrackMusics addObject:music];
-            }
-        }];
-    }
     if (multiTrackMusics.count > 0) {
         [veCoreSDK setMusics:multiTrackMusics];
     }
