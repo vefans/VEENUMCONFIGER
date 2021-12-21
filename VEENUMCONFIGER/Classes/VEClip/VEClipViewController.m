@@ -26,6 +26,7 @@
 @property(nonatomic, assign)float                               pasterTextViewScale;
 @property( nonatomic, weak ) VESyncContainerView    *syncContainerView;
 @property( nonatomic, weak ) VEPasterTextView          *pasterTextView;
+@property( nonatomic, assign)CGRect                          originalRect;
 
 @property(nonatomic,strong) VEVideoCropView             * videoCropView;
 @property(nonatomic,strong) UIView                  * toolView;
@@ -259,7 +260,8 @@
     
     _pasterTextCenter = CGPointMake(rect.origin.x, rect.origin.y);
     
-    [_videoCropView.cropView setCropRectViewFrame:self.cropType];
+    if( _videoCropView.cropView.cropType != self.cropType )
+        [_videoCropView.cropView setCropRectViewFrame:self.cropType];
     //    if (!CGRectEqualToRect(_selectFile.cropRect, CGRectZero)) {
     //        [_videoCropView.cropView setCropRect:_selectFile.cropRect];
     //    }else{
@@ -268,6 +270,11 @@
     r.size.height = rect.size.height;
     r.origin.x = (_videoCropView.cropView.cropRectView.frame.size.width-rect.size.width)/2.0;
     r.origin.y =  (_videoCropView.cropView.cropRectView.frame.size.height - rect.size.height)/2.0;
+    if( self.cropType == VE_VECROPTYPE_ORIGINAL )
+    {
+        r.origin.x = (_syncContainerRect.size.width-rect.size.width)/2.0;
+        r.origin.y =  (_syncContainerRect.size.height - rect.size.height)/2.0;
+    }
     [_videoCropView.cropView setCropRect:r];
     [_videoCropView.cropView trackButton_hidden:YES];
     //    }
@@ -1366,6 +1373,10 @@
     point = [self.videoCropView.cropView convertPoint:point toView:self.syncContainerView];
     self.pasterTextView.cropRect = CGRectMake(point.x, point.y, self.videoCropView.cropView.cropRectView.frame.size.width, self.videoCropView.cropView.cropRectView.frame.size.height);
     float scale = [self.pasterTextView getCropREct_Scale:self.pasterTextView.selfscale];
+//    if( self.cropType == VE_VECROPTYPE_ORIGINAL )
+//    {
+//        scale = [VEHelp getMediaAssetScale_File:[self canvasImage].size atRect:self.originalRect atCorp:CGRectMake(0, 0, 1, 1) atSyncContainerHeihgt:self.syncContainerView.bounds.size atIsWatermark:NO];
+//    }
     CGAffineTransform transform2 = CGAffineTransformMakeRotation( -_selectFile.rotate/(180.0/M_PI) );
     self.pasterTextView.transform = CGAffineTransformScale(transform2, scale, scale);
     [self.pasterTextView setFramescale:scale];
@@ -1515,6 +1526,8 @@
 //            rect.size.width =  rect.size.width-10;
 //            rect.size.height =  rect.size.height-90;
             _videoCropView = [[VEVideoCropView alloc] initWithFrame:rect withVideoCropType:VEVideoCropType_FixedCrop];
+            UIImage * image = [self canvasImage];
+            _videoCropView.cropView.cropRatio = image.size.width/image.size.height;
         }
         else
             _videoCropView = [[VEVideoCropView alloc] initWithFrame:rect withVideoCropType:VEVideoCropType_Crop];
@@ -2221,6 +2234,11 @@
         else
             [self.pasterTextView setFramescale:2.0];
         [self pasterView_Rect:&rectInScene atRotate:&rotate];
+        
+        if( self.originalRect.size.width == 0 )
+        {
+            self.originalRect = rectInScene;
+        }
         
         [self svae_PaterText];
         [self.videoCoreSDK refreshCurrentFrame];

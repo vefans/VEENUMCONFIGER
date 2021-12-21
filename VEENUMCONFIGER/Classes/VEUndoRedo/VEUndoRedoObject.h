@@ -148,6 +148,13 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_Ton_Add,//调色添加
     
     VEUndoRedoEditType_BOX_Add,//边框添加
+    VEUndoRedoEditType_BOX_Move,//边框背景移动
+    
+    VEUndoRedoEditType_Superposi_Add,//叠加添加
+    VEUndoRedoEditType_Superposi_Copy,//叠加复制
+    VEUndoRedoEditType_Superposi_Move,//叠加移动
+    
+    VEUndoRedoEditType_ErasePen_Add, // 添加消除笔
 };
 
 @interface VEUndoRedoObject : NSObject
@@ -181,6 +188,15 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
 //图层 画笔(涂鸦)
 @property (nonatomic, strong) id orOverlay;
 @property (nonatomic, strong) id dstOverlay;
+
+@property (nonatomic, assign) CGRect   dstCropAssetRect;
+@property (nonatomic, assign) CGRect   orCropAssetRect;
+
+@property (nonatomic, assign) CGRect   dstRectInImageAssetRect;
+@property (nonatomic, assign) CGRect   orRectInImageAssetRect;
+@property (nonatomic, assign) float         dstAssetAngle;
+@property (nonatomic, assign) float         orAssetAngle;
+
 //调色
 @property (nonatomic, strong) ToningInfo   *orToningInfo;
 @property (nonatomic, strong) ToningInfo   *dstToningInfo;

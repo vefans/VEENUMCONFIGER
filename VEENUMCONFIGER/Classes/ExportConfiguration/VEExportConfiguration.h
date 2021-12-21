@@ -76,6 +76,9 @@ typedef NS_ENUM(NSInteger,VEWatermarkPosition){
 /** 是否禁用水印(default true)
  */
 @property (nonatomic,assign) bool watermarkDisabled;
+/** 是否可删除水印(default true)
+ */
+@property (nonatomic,assign) bool isCanDeleteWatermark;
 /** 图片水印
  */
 @property (nonatomic,strong) UIImage *watermarkImage;

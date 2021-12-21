@@ -38,6 +38,7 @@
         _watermarkDisabled = true;
         _watermarkPosition = VEWatermarkPosition_leftBottom;
         _enableSetExportParams = true;
+        _isCanDeleteWatermark = true;
     }
     return self;
 }
@@ -73,6 +74,7 @@
     copy.watermarkDisabled  = _watermarkDisabled;
     copy.watermarkImage     = _watermarkImage;
     copy.watermarkPosition  = _watermarkPosition;
+    copy.isCanDeleteWatermark = _isCanDeleteWatermark;
     copy.endPicDisabled     = _endPicDisabled;
     copy.waterDisabled      = _waterDisabled;
     copy.waterImage         = _waterImage;
@@ -109,6 +111,7 @@
     copy.watermarkDisabled  = _watermarkDisabled;
     copy.watermarkImage     = _watermarkImage;
     copy.watermarkPosition  = _watermarkPosition;
+    copy.isCanDeleteWatermark = _isCanDeleteWatermark;
     copy.endPicDisabled     = _endPicDisabled;
     copy.waterDisabled      = _waterDisabled;
     copy.waterImage         = _waterImage;

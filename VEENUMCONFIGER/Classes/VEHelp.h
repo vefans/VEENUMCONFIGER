@@ -158,7 +158,7 @@
 
 + (MaskObject *)getMaskWithName:(NSString *)maskName;
 
-+ (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath;
++ (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath atMedia:( id ) mediaOrFile;
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath caption:(Caption *)caption;
 #pragma mark- 多脚本json加载
 + (CustomMultipleFilter *)getCustomMultipleFilerWithFolderPath:(NSString *) folderPath currentFrameImagePath:(NSString *)currentFrameImagePath;
@@ -172,6 +172,7 @@
 
 +(CGSize)getPEexpSize:(NSMutableArray *) peMediaInfos;
 + (UIImage *)getFullScreenImageWithUrl:(NSURL *)url;
++ (UIImage *)getFullImageWithUrl:(NSURL *)url;
 
 #pragma mark- 居中处理，计算对应的Crop
 + (CGRect)getFixedRatioCropWithMediaSize:(CGSize)mediaSize newSize:(CGSize)newSize;
@@ -182,6 +183,7 @@
 +(UIView *)initReversevideoProgress:(  UIViewController * ) viewController atLabelTag:(int *) labelTag atCancel:(SEL)cancel;
 + (NSString *) getResourceFromBundle : (NSString *) bundleName resourceName:(NSString *)name Type : (NSString *) type;
 + (UIImage *)imageWithContentOfPath:(NSString *)path;
++ (UIImage *)imageWithContentOfPathFull:(NSString *)path;
 + (UIImage *)imageWithWebP:(NSString *)filePath error:(NSError **)error;
 ///获取当前时间戳作为文件名
 + (NSString *)getFileNameForNowTime;
@@ -244,6 +246,7 @@
 + (void)setTransition:(Transition *)transition file:(VEMediaInfo *)file atConfigPath:(NSString *) configPath;
 
 +(NSString *)getCollageIdentifier;
++(NSString *)getSuperposiIdentifier;
 
 + (NSString *) getVideoUUID;
 

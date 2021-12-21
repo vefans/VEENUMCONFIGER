@@ -166,18 +166,16 @@
         
     }else if (cropType == VE_VECROPTYPE_ORIGINAL){
         
-        [self ratioFreeAandOriginal];
+        [self ratioLessThan1WithValueX:self.cropRatio WithToValueY:1.0];
+//        [self ratioFreeAandOriginal];
         [self setTrackButtonState:YES];
+        
         if (self.cropWidth / self.cropHeight> 1.0) {
-            
             self.cropSizeMin = CGSizeMake(VE_CROPWIDTH_MIN, VE_CROPHEIGHT_MIN/(self.cropWidth / self.cropHeight));
-            
         }else{
-            
             self.cropSizeMin = CGSizeMake(VE_CROPWIDTH_MIN * (self.cropWidth / self.cropHeight), VE_CROPHEIGHT_MIN);
         }
-        
-        
+
         
     }else if (cropType == VE_VECROPTYPE_9TO16){
         
@@ -410,7 +408,6 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(cropViewCrop:withCropRect:)]) {
         [self.delegate cropViewCrop:[self getCropRect] withCropRect:self.cropRect];
     }
-    
 }
 
 

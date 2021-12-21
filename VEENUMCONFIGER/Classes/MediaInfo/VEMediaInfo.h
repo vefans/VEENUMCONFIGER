@@ -381,10 +381,13 @@
  */
 @property (nonatomic, strong) CustomFilter* customOutAnimate;
 
+/**设置媒体其他动画（例如：手绘画笔）
+ */
+@property (nonatomic, strong) CustomFilter* customOtherAnimate;
+
 /** 动画类型 入场，组合
 */
 @property (nonatomic, assign) CustomAnimationType animationType;
-
 /** 动画序号
 */
 @property (nonatomic, assign) NSInteger animationIndex;

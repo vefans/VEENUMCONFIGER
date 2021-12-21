@@ -62,6 +62,7 @@
     
     copy.customAnimate = _customAnimate;
     copy.customOutAnimate = _customOutAnimate;
+    copy.customOtherAnimate = _customOtherAnimate;
     copy.isSelfieSegmentation = _isSelfieSegmentation;
     copy.animate = _animate;
     
@@ -236,6 +237,11 @@
     copy.voiceFXIndex = _voiceFXIndex;
     copy.pitch = _pitch;
     copy.rectInFile = _rectInFile;
+    copy.customAnimate = _customAnimate;
+    copy.customOutAnimate = _customOutAnimate;
+    copy.customOtherAnimate = _customOtherAnimate;
+    copy.isSelfieSegmentation = _isSelfieSegmentation;
+    copy.animate = _animate;
     //降噪
     copy.denoiseLevel = _denoiseLevel;
     copy.isIntelligentKey = _isIntelligentKey;
@@ -569,7 +575,7 @@
         if( _customAnimate.folderPath )
             _customAnimate.folderPath = [VEHelp getFileURLFromAbsolutePath_str:_customAnimate.folderPath];
         
-        CustomFilter * filter = [VEHelp getAnimateCustomFilter: _customAnimate.folderPath];
+        CustomFilter * filter = [VEHelp getCustomFilterWithFolderPath:_customAnimate.folderPath currentFrameImagePath:nil atMedia:self];
         filter.networkCategoryId = _customAnimate.networkCategoryId;
         filter.networkResourceId = _customAnimate.networkResourceId;
         filter.timeRange = _customAnimate.timeRange;

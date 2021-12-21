@@ -2045,7 +2045,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 
 #pragma mark- 单脚本json加载
-+ (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath {
++ (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath atMedia:(id) mediaOrFile{
     NSString *configPath = [folderPath stringByAppendingPathComponent:@"config.json"];
     CustomFilter *customFilter = [[CustomFilter alloc] init];
     
@@ -2178,6 +2178,31 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 }
             }
             [customFilter setShaderTextureParams:param];
+        }
+    }
+    if( mediaOrFile )
+    {
+        __block CustomFilter *animate;
+        if( effectDic[@"other"] )
+        {
+            if( [effectDic[@"other"] isKindOfClass:[NSArray class]] )
+            {
+                NSArray *array = effectDic[@"other"];
+                [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    animate = [VEHelp getAnmationDic:(NSMutableDictionary*)obj atPath:folderPath];
+                }];
+            }
+            else
+            {
+                animate = [VEHelp getAnmationDic:(NSMutableDictionary*)effectDic[@"other"] atPath:folderPath];
+            }
+        }
+        if ([mediaOrFile isKindOfClass:[MediaAsset class]]) {
+            MediaAsset *asset = (MediaAsset *)mediaOrFile;
+            asset.customOtherAnimate = animate;
+        }else if ([mediaOrFile isKindOfClass:[VEMediaInfo class]]) {
+            VEMediaInfo *file = (VEMediaInfo *)mediaOrFile;
+            file.customOtherAnimate = animate;
         }
     }
     effectDic = nil;
@@ -2628,6 +2653,20 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return expSize;
 }
 
++ (UIImage *)getFullImageWithUrl:(NSURL *)url {
+    if([self isSystemPhotoUrl:url]){//
+        UIImage * image = [VEHelp getSystemPhotoImage:url];
+        return image;
+    }else{
+        if([self isImageUrl:url]){
+            UIImage * image = [self imageWithContentOfPathFull:url.path];
+            return image;
+        }else{
+            return [self assetGetThumImage:0.0 url:url urlAsset:nil];
+        }
+    }
+}
+
 + (UIImage *)getFullScreenImageWithUrl:(NSURL *)url {
     if([self isSystemPhotoUrl:url]){//
         __block UIImage *image;
@@ -2680,6 +2719,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
             image = [self scaleImage:image toScale:(scale*(480.0/1080.0))];
         }
+        image = [self fixOrientation:image];
+        return image;
+    }
+}
+
++ (UIImage *)imageWithContentOfPathFull:(NSString *)path{
+    @autoreleasepool {
+        NSData *image_data = [NSData dataWithContentsOfFile:path];
+        UIImage *image = [UIImage imageWithData:image_data];
+        image_data = nil;
         image = [self fixOrientation:image];
         return image;
     }
@@ -3163,6 +3212,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         options = nil;
         phAsset = nil;
     }
+    
+    
     return image;
 }
 
@@ -4076,7 +4127,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     float scale = 1;
     
-    
     float width;
     float height;
     if (syncContainerSize.width == syncContainerSize.height) {
@@ -4370,6 +4420,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return  [NSString stringWithFormat:@"collage_%@", [formatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:0]]];
 }
 
++(NSString *)getSuperposiIdentifier
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"yyyyMMddHHmmssSSS";
+    return  [NSString stringWithFormat:@"superposi_%@", [formatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:0]]];
+}
+
 + (NSString *) getVideoUUID {
     CFUUIDRef uuid_ref = CFUUIDCreate(NULL);
     CFStringRef uuid_string_ref= CFUUIDCreateString(NULL, uuid_ref);
@@ -4413,7 +4470,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     if (!folderPath) {
                         overlay.media.customAnimate.folderPath = [VEHelp getFileURLFromAbsolutePath_str:overlay.media.customAnimate.folderPath];
                     }
-                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:overlay.media.customAnimate.folderPath currentFrameImagePath:nil];
+                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:overlay.media.customAnimate.folderPath currentFrameImagePath:nil atMedia:overlay.media];
                     animate.timeRange = overlay.media.customAnimate.timeRange;
                     animate.networkCategoryId = overlay.media.customAnimate.networkCategoryId;
                     animate.networkResourceId = overlay.media.customAnimate.networkResourceId;
@@ -4425,7 +4482,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     if (!folderPath) {
                         overlay.media.customOutAnimate.folderPath = [VEHelp getFileURLFromAbsolutePath_str:overlay.media.customOutAnimate.folderPath];
                     }
-                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:overlay.media.customOutAnimate.folderPath currentFrameImagePath:nil];
+                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:overlay.media.customOutAnimate.folderPath currentFrameImagePath:nil atMedia:overlay.media];
                     animate.timeRange = overlay.media.customOutAnimate.timeRange;
                     animate.networkCategoryId = overlay.media.customOutAnimate.networkCategoryId;
                     animate.networkResourceId = overlay.media.customOutAnimate.networkResourceId;
@@ -4954,6 +5011,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     NSBundle *bundle = [VEHelp getEditBundle];
                     caption.imageFolderPath = [bundle pathForResource:@"New_EditVideo/text_sample" ofType:@""];
                 }
+                if (caption.speechPath) {
+                    caption.speechPath = [VEHelp getFileURLFromAbsolutePath_str:caption.speechPath];
+                }
                 NSArray *images = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:caption.imageFolderPath error:nil];
                 [images enumerateObjectsUsingBlock:^(NSString * _Nonnull imageName, NSUInteger idx, BOOL * _Nonnull stop) {
                     if ([imageName.pathExtension isEqualToString:@"webp"]) {
@@ -5130,6 +5190,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             CaptionEx *caption = [obj getSubtitleWithFolderPath:folderPath videoSize:templateInfo.size];
             if (caption) {
                 caption.imageFolderPath = [VEHelp getFileURLFromAbsolutePath_str:caption.imageFolderPath];
+                if (caption.speechPath) {
+                    caption.speechPath = [VEHelp getFileURLFromAbsolutePath_str:caption.speechPath];
+                }
                 
                 NSArray *images = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:caption.imageFolderPath error:nil];
                 [images enumerateObjectsUsingBlock:^(NSString * _Nonnull imageName, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -5164,6 +5227,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         item.frame = CGRectMake((item.frame.origin.x + item.frame.size.width/2.0)*scaleValue, (item.frame.origin.y + item.frame.size.height/2.0)*scaleValue, item.frame.size.width*scaleValue, item.frame.size.height*scaleValue);
                     }];
                     textTemplate.keyFrameAnimate = caption.keyFrameAnimate;
+                    textTemplate.speechPath = caption.speechPath;
                     [captionExs addObject:textTemplate];
                 }
             }
@@ -5252,6 +5316,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [templateInfo.dubbings enumerateObjectsUsingBlock:^(VECoreTemplateMusic * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             MusicInfo *music = [obj getMusicInfoWithFolderPath:folderPath];
             if (music) {
+                music.type = MusicTypeDubbing;
                 if (!folderPath) {
                     music.url = [VEHelp getFileURLFromAbsolutePath:music.url.path];
                 }
@@ -5263,6 +5328,19 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [templateInfo.soundEffects enumerateObjectsUsingBlock:^(VECoreTemplateMusic * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             MusicInfo *music = [obj getMusicInfoWithFolderPath:folderPath];
             if (music) {
+                music.type = MusicTypeSoundEffect;
+                if (!folderPath) {
+                    music.url = [VEHelp getFileURLFromAbsolutePath:music.url.path];
+                }
+                [multiTrackMusics addObject:music];
+            }
+        }];
+    }
+    if (templateInfo.speechs.count > 0) {
+        [templateInfo.speechs enumerateObjectsUsingBlock:^(VECoreTemplateMusic * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            MusicInfo *music = [obj getMusicInfoWithFolderPath:folderPath];
+            if (music) {
+                music.type = MusicTypeSpeech;
                 if (!folderPath) {
                     music.url = [VEHelp getFileURLFromAbsolutePath:music.url.path];
                 }
@@ -5357,7 +5435,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     if (!folderPath) {
                         asset.customAnimate.folderPath = [VEHelp getFileURLFromAbsolutePath_str:asset.customAnimate.folderPath];
                     }
-                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:asset.customAnimate.folderPath currentFrameImagePath:nil];
+                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:asset.customAnimate.folderPath currentFrameImagePath:nil atMedia:asset];
                     animate.timeRange = asset.customAnimate.timeRange;
                     animate.networkCategoryId = asset.customAnimate.networkCategoryId;
                     animate.networkResourceId = asset.customAnimate.networkResourceId;
@@ -5369,7 +5447,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     if (!folderPath) {
                         asset.customOutAnimate.folderPath = [VEHelp getFileURLFromAbsolutePath_str:asset.customOutAnimate.folderPath];
                     }
-                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:asset.customOutAnimate.folderPath currentFrameImagePath:nil];
+                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:asset.customOutAnimate.folderPath currentFrameImagePath:nil atMedia:asset];
                     animate.timeRange = asset.customOutAnimate.timeRange;
                     animate.networkCategoryId = asset.customOutAnimate.networkCategoryId;
                     animate.networkResourceId = asset.customOutAnimate.networkResourceId;
@@ -7094,5 +7172,41 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return rect;
 }
 
-
++(void )getOriginaImage:( CVPixelBufferRef  ) originaImage atGrayscaleImage:( CVPixelBufferRef ) grayscaleImage atSize:( CGSize ) size
+{
+    @autoreleasepool {
+        NSAssert(CVPixelBufferGetPixelFormatType(originaImage) == kCVPixelFormatType_32BGRA,
+                 @"Image buffer must have 32BGRA pixel format type");
+        size_t width = CVPixelBufferGetWidth(grayscaleImage);
+        size_t height = CVPixelBufferGetHeight(grayscaleImage);
+        NSAssert(CVPixelBufferGetWidth(originaImage) == width, @"Height must match");
+        NSAssert(CVPixelBufferGetHeight(originaImage) == height, @"Width must match");
+        
+        CVPixelBufferLockBaseAddress(originaImage, 0);
+        CVPixelBufferLockBaseAddress(grayscaleImage, 0);
+        
+        unsigned char *tempAddress = (unsigned char *)CVPixelBufferGetBaseAddress(grayscaleImage);
+        size_t maskBytesPerRow = CVPixelBufferGetBytesPerRow(grayscaleImage);
+        
+        unsigned char *imageAddress = (unsigned char *)CVPixelBufferGetBaseAddress(originaImage);
+        size_t bytesPerRow = CVPixelBufferGetBytesPerRow(originaImage);
+        static const int kBGRABytesPerPixel = 4;
+        
+        for (int row = 0; row < height; ++row) {
+            for (int col = 0; col < width; ++col) {
+                int pixelOffset = col * kBGRABytesPerPixel;
+                int alphaOffset = pixelOffset + 3;
+                
+                imageAddress[alphaOffset] = tempAddress[alphaOffset];
+            }
+            imageAddress += bytesPerRow / sizeof(unsigned char);
+            tempAddress += maskBytesPerRow / sizeof(unsigned char);
+        }
+        CVPixelBufferUnlockBaseAddress(originaImage, 0);
+        CVPixelBufferUnlockBaseAddress(grayscaleImage, 0);
+        if (grayscaleImage) {
+            CVPixelBufferRelease(grayscaleImage);
+        }
+    }
+}
 @end

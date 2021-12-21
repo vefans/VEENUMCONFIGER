@@ -55,6 +55,7 @@
 
 @property( nonatomic, strong)id _Nullable media;
 @property( nonatomic, strong)id _Nullable backgroundMedia;
+@property( nonatomic, strong)id _Nullable superposiMedia;
 
 
 @property (nonatomic, weak) UIButton * _Nullable textEditBtn;

@@ -171,6 +171,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_MASK              = 52,   //  蒙版
     VEAdvanceEditType_DOF                   = 53,   // 景深
     VEAdvanceEditType_BOX                   = 54,   //  边框
+    VEAdvanceEditType_Superposi                   = 55,   // 叠加
 };
 
 /*
@@ -556,6 +557,8 @@ isPhoneX;\
 
 #define kWatermarkFolder [NSTemporaryDirectory() stringByAppendingString:@"watermark/"]
 
+
+#define kErasePenFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ErasePenFloatder"]
 #define kCoverFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/cover"]
 #define kCanvasFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Canvas"]
 

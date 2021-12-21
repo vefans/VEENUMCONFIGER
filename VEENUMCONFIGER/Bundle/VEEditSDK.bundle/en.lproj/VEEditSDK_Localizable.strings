@@ -1758,7 +1758,8 @@
 "删除音效" = "Delete the sound";
 "删除音乐" = "Delete the music";
 "删除配音" = "Delete the voice ";
-
+"删除文本朗读" = "Delete the text speaking";
+"替换文本朗读" = "Replace the speech audio";
 "动画网络素材更新完成！" = "The animation network material update is complete!";
 "视频大小与画布大小一致，会遮盖背景！" = "The video size is the same as the canvas size and will cover the background!";
 "撤销"    = "Undo";
@@ -1855,7 +1856,7 @@
 
 "导出模板" = "Export Template";
 "片段" = "Fragment";
-"片段%d" = "Fragment%d"
+"片段%d" = "Fragment%d";
 "编组" = "Group";
 "主轨道" = "Main video";
 "画中画%d" = "Overlay%d";
@@ -1954,3 +1955,19 @@
 "AI识别到%d人，请选择一位进行跟踪！" = "AI recognized %d people, please choose one to track!";
 "AI识别到多人，请选择一位进行美颜！" = "AI recognizes multiple people, please choose one to beautify!";
 "光感" = "Light Sensation";
+"文本朗读" = "Text Reading";
+"当前时间无法添加配音！" = "Cannot add dubbing at the current time!";
+"当前时间无法添加音效！" = "Cannot add sound effects at the current time!";
+"当前时间无法添加音乐！" = "Cannot add music at the current time!";
+"当前时间无法添加文本朗读！" = "Cannot add text to read aloud at the current time!";
+"音频生成中" = "Audio generation in progress";
+"音频已生成，请到音频模块查看" = "Audio has been generated, please go to the audio module to check";
+"音频生成失败" = "Audio generation failed";
+"您确定替换原朗读音频吗?" = "Are you sure to replace the original speech audio?";
+"音频重新生成中" = "Audio regenerating";
+"生成为新朗读音频" = "Generate as new spoken audio";
+"确认替换" = "Confirm to replace";
+"已存在文本朗读，是否替换原朗读音频？" = "A text spoken audio already exists, do you want to replace the original spoken audio?";
+"草稿箱" = "Draft Box";
+"文字模板" = "Text Template";
+"无资源" = "No resources";

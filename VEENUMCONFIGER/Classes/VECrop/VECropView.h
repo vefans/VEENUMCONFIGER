@@ -54,6 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,assign)VECropViewTrackType cropViewTrackType;
 @property(nonatomic,weak)id<VECropViewDelegate> delegate;
 
+@property(nonatomic,assign)float cropRatio;
+
 @property(nonatomic,assign)CGRect crop;
 @property(nonatomic,assign)CGRect cropRect;
 

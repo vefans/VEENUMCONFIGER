@@ -46,6 +46,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 @interface VEPasterTextView()<UIGestureRecognizerDelegate>
 {
     CGFloat globalInset;
+    float       rotateViewWidth;
     UIImageView* rotateView;
     
     CGRect initialBounds;
@@ -82,6 +83,11 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     float  _zoomLastScale;
     CGRect _syncContainerRect;
     UIImageView * selectImageView;
+    
+    UIImageView *topImageView;
+    
+    float selectImageViewBorderWidth;
+    float selectImageViewShadowRadius;
     bool    iscanvas;
     BOOL    iswatermark;
     
@@ -108,6 +114,50 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 -(UIImageView *)getselectImageView
 {
     return  selectImageView;
+}
+
+-(void)initCloseRotate
+{
+    rotateViewWidth = globalInset*3.0 + globalInset/4.0;
+    _closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(-rotateViewWidth/2.0 + globalInset, -rotateViewWidth/2.0 + globalInset, rotateViewWidth, rotateViewWidth)];
+    _closeBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin ;
+    _closeBtn.backgroundColor = [UIColor clearColor];
+    [_closeBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-删除_"] forState:UIControlStateNormal];
+    [_closeBtn addTarget:self action:@selector(touchClose) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:_closeBtn];
+    
+    rotateView =  [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - rotateViewWidth/2.0 - globalInset, self.bounds.size.height - rotateViewWidth/2.0 - globalInset, rotateViewWidth, rotateViewWidth)];
+    rotateView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin ;
+    rotateView.backgroundColor = [UIColor clearColor];
+    rotateView.image = [VEHelp imageNamed:@"next_jianji/剪辑-字幕旋转_"];
+    rotateView.image = [rotateView.image imageWithTintColor];
+    rotateView.userInteractionEnabled = YES;
+    
+    rotateView.userInteractionEnabled = YES;
+    [self addSubview:rotateView];
+    UIPanGestureRecognizer* rotateGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(rotateGesture:)];
+    [rotateView addGestureRecognizer:rotateGesture];
+}
+
+-(void)initSelectImageView
+{
+    selectImageViewBorderWidth = 2.0;
+    selectImageViewShadowRadius = 2.0;
+    selectImageView = [[UIImageView alloc] init];
+    selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
+    selectImageView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
+    selectImageView.layer.borderWidth = selectImageViewBorderWidth;
+    selectImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    selectImageView.layer.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.1].CGColor;
+    selectImageView.layer.shadowOffset = CGSizeZero;
+    selectImageView.layer.shadowOpacity = 0.2;
+    selectImageView.layer.shadowRadius = selectImageViewShadowRadius;
+    selectImageView.layer.masksToBounds = true;
+    selectImageView.clipsToBounds = NO;
+    selectImageView.layer.allowsEdgeAntialiasing = YES;
+    [self addSubview:selectImageView];
+    
+    
 }
 
 -(UIImageView *)getRotateView
@@ -190,6 +240,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         _syncContainerRect = syncContainerRect;
         originRect = frame;
         globalInset = 8;
+        rotateViewWidth = globalInset*3.0 + globalInset/4.0;
         _selfScale = 1.0;
         _alignment = NSTextAlignmentCenter;
         self.backgroundColor = [UIColor clearColor];
@@ -204,35 +255,9 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         
         [selectImageView removeFromSuperview];
         selectImageView = nil;
-        selectImageView = [[UIImageView alloc] init];
-        selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
-        selectImageView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
-        selectImageView.layer.borderWidth = 1.0;
-        selectImageView.layer.borderColor = [UIColor whiteColor].CGColor;
-        selectImageView.layer.shadowColor = [UIColor blackColor].CGColor;
-        selectImageView.layer.shadowOffset = CGSizeZero;
-        selectImageView.layer.shadowOpacity = 0.5;
-        selectImageView.layer.shadowRadius = 2.0;
-        selectImageView.clipsToBounds = NO;
-        selectImageView.layer.allowsEdgeAntialiasing = YES;
-        //        selectImageView.hidden = YES;
+        [self initSelectImageView];
         
-        [self addSubview:selectImageView];
-        
-        _closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3)];
-        _closeBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin ;
-        _closeBtn.backgroundColor = [UIColor clearColor];
-        [_closeBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-删除_"] forState:UIControlStateNormal];
-        [_closeBtn addTarget:self action:@selector(touchClose) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:_closeBtn];
-        
-        rotateView = [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3)];
-        rotateView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin ;
-        rotateView.backgroundColor = [UIColor clearColor];
-        rotateView.image = [VEHelp imageNamed:@"next_jianji/剪辑-字幕旋转_"];
-//        rotateView.image = [rotateView.image imageWithTintColor];
-        rotateView.userInteractionEnabled = YES;
-        [self addSubview:rotateView];
+        [self initCloseRotate];
         
 //        CGPoint center = CGRectGetCenter(self.frame);
 //        CGPoint rotateViewCenter = CGRectGetCenter(rotateView.frame);
@@ -241,8 +266,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 //        _moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
 //        [self addGestureRecognizer:_moveGesture];
         
-        UIPanGestureRecognizer* rotateGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(rotateGesture:)];
-        [rotateView addGestureRecognizer:rotateGesture];
+//        UIPanGestureRecognizer* rotateGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(rotateGesture:)];
+//        [rotateView addGestureRecognizer:rotateGesture];
         
 //        [_moveGesture requireGestureRecognizerToFail:rotateGesture];//优先识别rotateGesture手势
         
@@ -314,6 +339,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     _isSizePrompt = false;
     _isDrag_Upated = false;
     globalInset = 8;
+    rotateViewWidth = globalInset*3.0 + globalInset/4.0;
     _syncContainerRect = syncContainerRect;
     _needStretching = needStretching;
     _tsize = tsize;
@@ -357,40 +383,15 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         
          self.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
         
-        _closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3)];
-        _closeBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin ;
-        _closeBtn.backgroundColor = [UIColor clearColor];
-//        [_closeBtn setImage:[VEHelp imageNamed:@"jianji/fenge/剪辑_删除素材_"] forState:UIControlStateNormal];
-        [_closeBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-删除_"] forState:UIControlStateNormal];
-        [_closeBtn addTarget:self action:@selector(touchClose) forControlEvents:UIControlEventTouchUpInside];
-        
-        rotateView = [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3)];
-        rotateView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin ;
-        rotateView.backgroundColor = [UIColor clearColor];
-        rotateView.image = [VEHelp imageNamed:@"next_jianji/剪辑-字幕旋转_"];
-        rotateView.image = [rotateView.image imageWithTintColor];
-        rotateView.userInteractionEnabled = YES;
-        
         [selectImageView removeFromSuperview];
         selectImageView = nil;
-        selectImageView = [[UIImageView alloc] init];
-        selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
-        selectImageView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
-        selectImageView.layer.borderWidth = 1.0;
-        selectImageView.layer.borderColor = [UIColor whiteColor].CGColor;
-        selectImageView.layer.shadowColor = [UIColor blackColor].CGColor;
-        selectImageView.layer.shadowOffset = CGSizeZero;
-        selectImageView.layer.shadowOpacity = 0.5;
-        selectImageView.layer.shadowRadius = 2.0;
-        selectImageView.clipsToBounds = NO;
-        selectImageView.layer.allowsEdgeAntialiasing = YES;
-//        selectImageView.hidden = YES;
+        [self initSelectImageView];
         
-        [self addSubview:selectImageView];
+        [self initCloseRotate];
         
-        [self addSubview:_closeBtn];
+//        [self addSubview:_closeBtn];
         [self addSubview:_alignBtn];
-        [self addSubview:rotateView];
+//        [self addSubview:rotateView];
         
         [_contentImage removeFromSuperview];
         _contentImage = contentImageView;
@@ -474,8 +475,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 //        _moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
 //        [self addGestureRecognizer:_moveGesture];
         
-        UIPanGestureRecognizer* rotateGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(rotateGesture:)];
-        [rotateView addGestureRecognizer:rotateGesture];
+//        UIPanGestureRecognizer* rotateGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(rotateGesture:)];
+//        [rotateView addGestureRecognizer:rotateGesture];
         
 //        [_moveGesture requireGestureRecognizerToFail:rotateGesture];//优先识别rotateGesture手势
         
@@ -519,7 +520,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 -(void)addCopyBtn
 {
-    _alignBtn = [[UIButton alloc] initWithFrame:CGRectMake(-globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3)];
+    _alignBtn = [[UIButton alloc] initWithFrame:CGRectMake(-rotateViewWidth/2.0 + globalInset, self.bounds.size.height - rotateViewWidth/2.0 - globalInset, rotateViewWidth, rotateViewWidth)];
     _alignBtn.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin ;
     _alignBtn.backgroundColor = [UIColor clearColor];
     [_alignBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-字幕居中_"] forState:UIControlStateNormal];
@@ -532,7 +533,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 - (UIButton *)mirrorBtn {
     if ( (!_mirrorBtn) && (!_isMirror) ) {
-        _mirrorBtn = [[UIButton alloc] initWithFrame:CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3)];
+        _mirrorBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.bounds.size.width - rotateViewWidth/2.0 - globalInset, -rotateViewWidth/2.0 + globalInset, rotateViewWidth, rotateViewWidth)];
         [_mirrorBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-画中画镜像左右_"] forState:UIControlStateNormal];
         [_mirrorBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-画中画镜像上下_"] forState:UIControlStateSelected];
         [_mirrorBtn addTarget:self action:@selector(mirrorBtnAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -1492,8 +1493,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 //    NSLog(@"frame2:%@", NSStringFromCGRect(self.frame));
     _selfScale = value;
     
-    selectImageView.layer.borderWidth = 1.0*1/value;
-    selectImageView.layer.shadowRadius = 2.0*1/value;
+    selectImageView.layer.borderWidth = selectImageViewBorderWidth*1/value;
+    selectImageView.layer.shadowRadius = selectImageViewShadowRadius*1/value;
     
     _cutout_MagnifierView.layer.borderWidth = 1.0*1/value;
     _cutout_MagnifierView.layer.shadowRadius = 2.0*1/value;
@@ -2659,6 +2660,7 @@ static VEPasterTextView *lastTouchedView;
 {
     _captionTextIndex = 0;
     globalInset = 8;
+    rotateViewWidth = globalInset*3.0 + globalInset/4.0;
     _syncContainerRect = syncContainerRect;
     if( !isREstroe )
     {
@@ -2699,46 +2701,15 @@ static VEPasterTextView *lastTouchedView;
         
          self.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
         
-        _closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3)];
-        _closeBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin ;
-        _closeBtn.backgroundColor = [UIColor clearColor];
-        [_closeBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-删除_"] forState:UIControlStateNormal];
-        [_closeBtn addTarget:self action:@selector(touchClose) forControlEvents:UIControlEventTouchUpInside];
-    
-//        _alignBtn = [[UIButton alloc] initWithFrame:CGRectMake(-globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3)];
-//        _alignBtn.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin ;
-//        _alignBtn.backgroundColor = [UIColor clearColor];
-//        [_alignBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-字幕居中_"] forState:UIControlStateNormal];
-//        [_alignBtn addTarget:self action:@selector(alignBtnAction:) forControlEvents:UIControlEventTouchUpInside];
-//        _alignBtn.hidden = YES;
-        
-        rotateView = [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3)];
-        rotateView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin ;
-        rotateView.backgroundColor = [UIColor clearColor];
-        rotateView.image = [VEHelp imageNamed:@"next_jianji/剪辑-字幕旋转_"];
-        rotateView.image = [rotateView.image imageWithTintColor];
-        rotateView.userInteractionEnabled = YES;
-        
         [selectImageView removeFromSuperview];
         selectImageView = nil;
-        selectImageView = [[UIImageView alloc] init];
-        selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
-        selectImageView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
-        selectImageView.layer.borderWidth = 1.0;
-        selectImageView.layer.borderColor = [UIColor whiteColor].CGColor;
-        selectImageView.layer.shadowColor = [UIColor blackColor].CGColor;
-        selectImageView.layer.shadowOffset = CGSizeZero;
-        selectImageView.layer.shadowOpacity = 0.5;
-        selectImageView.layer.shadowRadius = 2.0;
-        selectImageView.clipsToBounds = NO;
-        selectImageView.layer.allowsEdgeAntialiasing = YES;
-//        selectImageView.hidden = YES;
+        [self initSelectImageView];
         
-        [self addSubview:selectImageView];
+        [self initCloseRotate];
         
-        [self addSubview:_closeBtn];
+//        [self addSubview:_closeBtn];
         [self addSubview:_alignBtn];
-        [self addSubview:rotateView];
+//        [self addSubview:rotateView];
         
         [_contentImage removeFromSuperview];
         _contentImage = contentImageView;
@@ -2802,6 +2773,7 @@ static VEPasterTextView *lastTouchedView;
     btn.tag = _textEditBtnArray.count + 2300;
     [self addSubview:btn];
     [_textEditBtnArray addObject:btn];
+    
     
     [self addSubview:_closeBtn];
     [self addSubview:_alignBtn];
@@ -2928,16 +2900,28 @@ static VEPasterTextView *lastTouchedView;
     
     float wScale = scale;
     float  hScale = scale;
-    
-    if( width < _cropRect.size.width )
+    if( _cropRect.size.width < _cropRect.size.height )
     {
-        wScale = _cropRect.size.width/_contentImage.frame.size.width;
+        if( width < _cropRect.size.width )
+        {
+            wScale = _cropRect.size.width/_contentImage.frame.size.width;
+        }
+        if( height <  _cropRect.size.height  )
+        {
+            hScale = _cropRect.size.height/_contentImage.frame.size.height;
+        }
     }
-    if( height <  _cropRect.size.height  )
-    {
-        hScale = _cropRect.size.height/_contentImage.frame.size.height;
+    else{
+        if( width > _cropRect.size.width )
+        {
+            wScale = _cropRect.size.height/_contentImage.frame.size.height;
+        }
+        if( height >  _cropRect.size.height  )
+        {
+            hScale = _cropRect.size.width/_contentImage.frame.size.width;
+        }
     }
-    
+
     if( hScale > wScale )
     {
         scale = hScale;
