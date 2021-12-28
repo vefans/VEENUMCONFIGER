@@ -6,6 +6,8 @@
 
 @interface VEHelp : NSObject
 
++ (void)webpToPng:(NSString *)webpPath;
+
 + (UIImage *)geScreenShotImageFromVideoURL:(NSURL *)fileURL atTime:(CMTime)time  atSearchDirection:(bool) isForward;
 
 +(float)getMediaAssetScale_File:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark;
@@ -17,7 +19,8 @@
 //MARK: 添加特效
 +(CustomMultipleFilter *)getCustomMultipleFilter:( NSDictionary * ) itemDic atPath:( NSString * ) path atTimeRange:( CMTimeRange ) timeRange atImage:( UIImage * ) FXFrameTexture atFXFrameTexturePath:( NSString * )  fXFrameTexturePath atEffectArray:( NSMutableArray * ) effectArray;
 + (NSString *)getEffectCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
-
++ (NSString *)getSuperposiCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
++ (NSString *)getBoxCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 +(id)objectForData:(NSData *)data;
 
 + (BOOL)isLowDevice;
@@ -215,7 +218,8 @@
 #pragma mark- 压缩
 + (void)OpenZip:(NSString*)zipPath  unzipto:(NSString*)_unzipto caption:(BOOL)caption;
 + (BOOL)OpenZip:(NSString*)zipPath unzipto:(NSString*)_unzipto fileName:(NSString *)fileName;
-
++ (BOOL)OpenZipp:(NSString*)zipPath  unzipto:(NSString*)_unzipto;
++ (BOOL)OpenZip:(NSString*)zipPath  unzipto:(NSString*)_unzipto;
 +(NSString *)objectToJson:(id)obj;
 
 
@@ -267,6 +271,7 @@
 + (CustomFilter *)getSubtitleAnimation:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId atAnimationPath:(NSString *) animationPath atCaptionItem:( CaptionItem * ) captionItem;
 #pragma mark- 花字
 + (CaptionEffectCfg *)getFLowerWordConfigWithIndex:(NSInteger)index;
++(CaptionEffectCfg *)getFLowerWordConfig:( NSString * ) configPath;
 
 #pragma mark- 文字模版
 +(NSDictionary *)getTextTemplateEffectConfig:( NSString * ) configPath;
@@ -301,4 +306,42 @@
 +(CGRect)getCrop:( CGSize ) size atOriginalSize:( CGSize ) originalSize;
 
 +(void )getOriginaImage:( CVPixelBufferRef  ) originaImage atGrayscaleImage:( CVPixelBufferRef ) grayscaleImage atSize:( CGSize ) size;
+
+
++ (NSMutableArray *)getAnimationArrayWithAppkey:(NSString *)appKey
+                             typeUrlPath:(NSString *)typeUrlPath
+                           specialEffectUrlPath:(NSString *)specialEffectUrlPath;
++ (NSMutableArray *)getStickerAnimationArrayWithAppkey:(NSString *)appKey
+                             typeUrlPath:(NSString *)typeUrlPath
+                                  specialEffectUrlPath:(NSString *)specialEffectUrlPath;
++ (NSString *)getStickerAnimationFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
++ (CustomFilter *)getStickerAnimationCustomFilter:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId atType:(NSInteger) typeIndex atCaption:( CaptionEx *) captionex;
++ (CustomFilter *)getStickerAnimationCustomFilterWithPath:(NSString *) path atType:(NSInteger) typeIndex atCaption:( CaptionEx *) captionex;
++ (void)downloadIconFile:(VEAdvanceEditType)type
+              editConfig:(VEEditConfiguration *)editConfig
+                  appKey:(NSString *)appKey
+               cancelBtn:(UIButton *)cancelBtn
+           progressBlock:(void(^)(float progress))progressBlock
+                callBack:(void(^)(NSError *error))callBack
+             cancelBlock:(void(^)(void))cancelBlock;
++ (void)getNetworkMaterialWithParams:(NSMutableDictionary *)params
+                            appkey:(NSString *)appkey
+                           urlPath:(NSString *)urlPath
+                           completed:(void(^)(id result,NSError *))completed;
+
++ (CustomFilter *)getAnimationCustomFilter:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId;
++ (CustomFilter *)getAnimationCustomFilterWithPath:(NSString *) path;
++ (NSString *)getAnimationFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
+#pragma mark 读取视频文件大小
++ (long long) fileSizeAtPath:(NSString*) filePath;
++ (long long)getNetworkFileBytesWithURLStr:(NSString*)urlStr;//获取网络文件大小
+
+//MARK: 提示
++(void)initCommonAlertViewWithTitle:(nullable NSString *)title
+                            message:(nullable NSString *)message
+                  cancelButtonTitle:(nullable NSString *)cancelButtonTitle
+                  otherButtonTitles:(nullable NSString *)otherButtonTitles
+                   atViewController:( UIViewController * ) viewController
+                      atCancelBlock:(void(^_Nullable)(void))cancelBlock atOtherBlock:(void(^_Nullable)(void))otherBlock;
++ (NSString *)timeToStringNoSecFormat:(float)time;
 @end

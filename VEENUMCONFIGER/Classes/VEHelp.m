@@ -3517,6 +3517,33 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [zip UnzipCloseFile];
     }
 }
++ (BOOL)OpenZip:(NSString*)zipPath  unzipto:(NSString*)_unzipto
+{
+    ZipArchive* zip = [[ZipArchive alloc] init];
+    if( [zip UnzipOpenFile:zipPath] )
+    {
+        //NSInteger index =0;
+        BOOL ret = [zip UnzipFileTo:_unzipto overWrite:YES];
+        if( NO==ret )
+        {
+            NSLog(@"error");
+        }else{
+            unlink([zipPath UTF8String]);
+        }
+        [zip UnzipCloseFile];
+        if (ret) {
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSArray *fileArray = [fileManager contentsOfDirectoryAtPath:_unzipto error:nil];
+            [fileArray enumerateObjectsUsingBlock:^(NSString * _Nonnull fileName, NSUInteger idx, BOOL * _Nonnull stop) {
+                if([fileName containsString:@"__MACOSX"]) {
+                    [fileManager removeItemAtPath:[_unzipto stringByAppendingPathComponent:fileName] error:nil];
+                }
+            }];
+        }
+        return YES;
+    }
+    return NO;
+}
 + (BOOL)OpenZipp:(NSString*)zipPath  unzipto:(NSString*)_unzipto
 {
     ZipArchive* zip = [[ZipArchive alloc] init];
@@ -3566,6 +3593,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             NSString *path = [_unzipto stringByAppendingPathComponent:fileName];
             NSFileManager *fileManager = [NSFileManager defaultManager];
             NSArray *fileArray = [fileManager contentsOfDirectoryAtPath:path error:nil];
+//            if( fileArray == nil )
+//            {
+//                NSString *path1 = [_unzipto stringByAppendingPathComponent:[NSString stringWithFormat:@"%@/file",fileName.lastPathComponent]];
+//                NSFileManager *manager = [[NSFileManager alloc] init];
+//                [manager moveItemAtPath:path toPath:path1 error:nil];
+//                fileArray = [fileManager contentsOfDirectoryAtPath:path1 error:nil];
+//            }
             [fileArray enumerateObjectsUsingBlock:^(NSString * _Nonnull fileName, NSUInteger idx, BOOL * _Nonnull stop) {
                 if([[[fileName pathExtension] lowercaseString] isEqualToString:@"webp"] && ![fileName containsString:@"__MACOSX"]) {
                     [self webpToPng:[path stringByAppendingPathComponent:fileName]];
@@ -3876,7 +3910,17 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             NSString *updateTime = obj1[@"updatetime"];
             [oldList enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
                 if ([obj2[@"id"] intValue] == [obj1[@"id"] intValue]) {
-                    if (![obj2[@"updatetime"] isEqualToString:updateTime]) {
+                    if( [obj2[@"updatetime"] isKindOfClass:[NSString class]] )
+                    {
+                        if (![obj2[@"updatetime"] isEqualToString:updateTime]) {
+                            NSString *file = [[obj2[@"file"] stringByDeletingLastPathComponent] lastPathComponent];
+                            NSString *path = [folderPath stringByAppendingPathComponent:file];
+                            if ([fileManager fileExistsAtPath:path]) {
+                                [fileManager removeItemAtPath:path error:nil];
+                            }
+                        }
+                    }
+                    else  if (!([obj2[@"updatetime"] longLongValue] == [updateTime longLongValue])) {
                         NSString *file = [[obj2[@"file"] stringByDeletingLastPathComponent] lastPathComponent];
                         NSString *path = [folderPath stringByAppendingPathComponent:file];
                         if ([fileManager fileExistsAtPath:path]) {
@@ -4301,6 +4345,15 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         {
             faceAttribute.beautyThinFaceIntensity = value;
 //            asset.beautyThinFaceIntensity = value;
+        }
+            break;
+        case KBeauty_beauty://MARK: 一键美颜
+        {
+            asset.beautyBlurIntensity = value;
+            asset.beautyToneIntensity = value;
+            asset.beautyBrightIntensity = value;
+            faceAttribute.beautyBigEyeIntensity = value;
+            faceAttribute.beautyThinFaceIntensity = value;
         }
             break;
         default:
@@ -5096,26 +5149,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         }
                         caption.isStretch = [[configDic objectForKey:@"stretchability"] boolValue];
                         if (caption.isStretch) {
-                            NSArray* lines = [item.text componentsSeparatedByString:@"\n"];
-                            NSInteger lineCount = MAX(1, lines.count);
-                            if (lineCount > 2) {
-                                lineCount--;
-                            }
-                            CGSize showOriginalSize = CGSizeMake(obj.showRectF.size.width / obj.scale, obj.showRectF.size.height / obj.scale / lineCount);//20210914 跟安卓统一
-#if 1
-                                float scale = showOriginalSize.height / caption.originalSize.height;
-                                if (item.isVertical) {
-                                    scale = showOriginalSize.width / caption.originalSize.width;
-                                }
-                                caption.scale *= scale;
-#else
-                            if (!item.isVertical && (int)(showOriginalSize.height * 100) != (int)(caption.originalSize.height * 100)) {
-                                caption.originalSize = showOriginalSize;
-                            }
-                            else if (item.isVertical && (int)(showOriginalSize.width * 100) != (int)(caption.originalSize.width * 100)) {
-                                caption.originalSize = showOriginalSize;
-                            }
-#endif
                             NSArray *borderPadding = configDic[@"borderPadding"];
                             double contentsCenter_x = [borderPadding[0] doubleValue];
                             double contentsCenter_w = imageW - contentsCenter_x - [borderPadding[2] doubleValue];
@@ -5123,28 +5156,52 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                             double contentsCenter_h = imageH -contentsCenter_y - [borderPadding[3] doubleValue];
                             CGRect contentsCenter = CGRectMake(contentsCenter_x/imageW, contentsCenter_y/imageH, contentsCenter_w/imageW, contentsCenter_h/imageH);
                             caption.stretchRect = contentsCenter;
+                            
+                            NSArray *textPadding = configDic[@"textPadding"];
+                            double t_left = [textPadding[0] doubleValue];
+                            double t_right = [textPadding[2] doubleValue];
+                            double t_top = [textPadding[1] doubleValue];
+                            double t_buttom = [textPadding[3] doubleValue];
                             //20210914 跟安卓统一
                             if (obj.folderPath.length == 0) {
                                 item.padding = CGRectMake(0, 0, 1, 1);
                             }else {
-                                NSArray *textPadding = configDic[@"textPadding"];
-                                double t_left = [textPadding[0] doubleValue];
-                                double t_right = [textPadding[2] doubleValue];
-                                double t_top = [textPadding[1] doubleValue];
-                                double t_buttom = [textPadding[3] doubleValue];
                                 CGRect textLabelRect = CGRectMake(t_left + 8, t_top + 8, imageW - t_left - t_right, imageH - t_top - t_buttom);
                                 CGRect textRect = CGRectMake(textLabelRect.origin.x, textLabelRect.origin.y, textLabelRect.size.width, textLabelRect.size.height);
                                 item.padding = CGRectMake(textRect.origin.x/imageW, textRect.origin.y/imageH, textRect.size.width/imageW, textRect.size.height/imageH);
                             }
                             item.frame = CGRectZero;
+                            
+                            NSArray* lines = [item.text componentsSeparatedByString:@"\n"];
+                            NSInteger lineCount = MAX(1, lines.count);
+                            
+                            //20210914 跟安卓统一
+                            if (!CGRectEqualToRect(obj.wordItem.firstObject.showRectF, CGRectZero)) {
+                                if(item.isVertical)
+                                {
+                                    double width = ((obj.showRectF.size.width/ obj.scale * templateInfo.size.width) -  t_left - t_right)/lineCount + t_left + t_right;
+                                    width = width / templateInfo.size.width;
+                                    double scale = width / caption.originalSize.width;
+                                    caption.scale *= scale;
+                                }
+                                else{
+                                    double height = ((obj.showRectF.size.height/ obj.scale * templateInfo.size.height) -  t_top - t_buttom)/lineCount + t_top + t_buttom;
+                                    height = height / templateInfo.size.height;
+                                    double scale = height / caption.originalSize.height;
+                                    caption.scale *= scale;
+                                    if (caption.scale > 1.0) {
+                                        caption.scale *= 0.826;
+                                    }
+                                }
+                            }
                         }else {
                             int fx = 0,fy = 0,fw = 0,fh = 0;
                             NSArray *textPadding = configDic[@"textPadding"];
                             fx =  [textPadding[0] intValue];
-                            fy =  [textPadding[1] intValue]+3;
+                            fy =  [textPadding[1] intValue];
                             fw =  [configDic[@"textWidth"] intValue];
                             fh =  [configDic[@"textHeight"] intValue];
-                            item.frame = CGRectMake(fx * scaleValue, fy * scaleValue, fw * scaleValue, fh * scaleValue);
+                            item.frame = CGRectMake(fx, fy, fw, fh);
                         }
                     }
                 }
@@ -5672,7 +5729,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
             
             CaptionEx *ppCaption = [[CaptionEx alloc]init];
-            ppCaption.isTextTemplate = true;
+            ppCaption.type = CaptionExTypeTemplate;
             //大小
             float width = [subtitleEffectConfig[@"width"] floatValue];
             float height = [subtitleEffectConfig[@"height"] floatValue];
@@ -6359,6 +6416,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 if(err) {
                     NSLog(@"json解析失败：%@",err);
                 }
+                
+                captionEx.type =  CaptionExeTypStickers;
                 CaptionImage * captionImage = [CaptionImage new];
                 float   x = [subtitleEffectConfig[@"centerX"] floatValue];
                 float   y = [subtitleEffectConfig[@"centerY"] floatValue];
@@ -6974,6 +7033,18 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return cachedFilePath;
 }
 
++ (NSString *)getBoxCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
+    NSString *cachedFilePath = [kBoxEffectFolder stringByAppendingPathComponent:[VEHelp cachedFileNameForKey:urlPath]];
+    cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
+    return cachedFilePath;
+}
+
++ (NSString *)getSuperposiCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
+    NSString *cachedFilePath = [kSuperposiEffectFolder stringByAppendingPathComponent:[VEHelp cachedFileNameForKey:urlPath]];
+    cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
+    return cachedFilePath;
+}
+
 +(MaskObject * )getMaskObject:(NSString *) maskName
 {
     return [VEHelp getMaskWithName:maskName];
@@ -7209,4 +7280,1263 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }
     }
 }
+
+
+
+
++ (NSMutableArray *)getAnimationArrayWithAppkey:(NSString *)appKey
+                             typeUrlPath:(NSString *)typeUrlPath
+                    specialEffectUrlPath:(NSString *)specialEffectUrlPath{
+    return [self getCategoryMaterialWithAppkey:appKey typeUrlPath:typeUrlPath materialUrlPath:specialEffectUrlPath materialType:kVEANIMATION];
+}
+
++ (NSMutableArray *)getCategoryMaterialWithAppkey:(NSString *)appKey
+                                      typeUrlPath:(NSString *)typeUrlPath
+                                  materialUrlPath:(NSString *)materialUrlPath
+                                     materialType:(VECustomizationFunctionType)materialType{
+    __block NSMutableArray *materialArray = [NSMutableArray array];
+    NSString *type;
+    NSString *folderPath;
+    NSString *plistPath;
+    if(appKey == nil){
+        return  nil;
+    }
+    Reachability *lexiu = [Reachability reachabilityForInternetConnection];
+    if (materialType == kVEEFFECTS) {
+        plistPath = kNewSpecialEffectPlistPath;
+        folderPath = kSpecialEffectFolder;
+        type = @"specialeffects";
+    }
+    else if (materialType == KTRANSITION) {
+        plistPath = kTransitionPlistPath;
+        folderPath = kTransitionFolder;
+        type = @"transition";
+    }else if (materialType == kVETEXTTITLE) {//字幕
+        plistPath = kSubtitlePlistPath;
+        folderPath = kSubtitleFolder;
+        type = @"sub_title";
+    }else if (materialType == kVEMUSICAE) {
+        plistPath = kMusicAnimatePlistPath;
+        folderPath = kMVAnimateFolder;
+        type = @"mvae2";
+    }else if (materialType == kTEMPLATERECORD) {
+        plistPath = kTemplateRecordPlist;
+        folderPath = kTemplateRecordFolder;
+        type = @"recorderae";
+    } else if(materialType ==  KSTICKERANIMATION)//贴纸动画
+    {
+        plistPath = kStickerAnimationPath;
+        folderPath = KStickerAnimationFolder;
+        type = @"ani_sticker";
+    }
+    else if( kVEANIMATION == materialType )//动画
+    {
+        plistPath = kAnimationPath;
+        folderPath = KAnimationFolder;
+        type = @"animate";
+    }
+    NSMutableArray *oldMaterialArray = [NSMutableArray arrayWithContentsOfFile:plistPath];
+    if ([lexiu currentReachabilityStatus] == NotReachable) {
+        materialArray = oldMaterialArray;
+    }else {
+        NSMutableDictionary *params = [NSMutableDictionary dictionary];
+        [params setObject:appKey forKey:@"appkey"];
+        [params setObject:type forKey:@"type"];
+        NSDictionary *typeDic = [self getNetworkMaterialWithParams:params
+                                                                   appkey:appKey
+                                                                  urlPath:typeUrlPath];
+        if (typeDic && [typeDic[@"code"] intValue] == 0) {
+            NSMutableArray *typeArray = typeDic[@"data"];
+            if(KBGSTYLE == materialType)
+            {
+                if( (oldMaterialArray == nil) || (oldMaterialArray.count == 0) || (oldMaterialArray.count != typeArray.count ) )
+                {
+                    materialArray = typeArray;
+                }
+                else
+                {
+                    [typeArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        
+                        NSString *updateTime = obj[@"updatetime"];
+                        int ID = [obj[@"id"] intValue];
+                        NSString *oldUpdateTime = oldMaterialArray[idx][@"updatetime"];
+                        int oldID = [oldMaterialArray[idx][@"id"] intValue];
+                        if( (oldUpdateTime && ![oldUpdateTime isEqualToString:updateTime]) || (ID != oldID) )
+                        {
+                            [materialArray addObject:obj];
+                        }
+                        else
+                        {
+                            if( oldMaterialArray.count > idx )
+                            {
+                                [materialArray addObject:oldMaterialArray[idx]];
+                            }
+                        }
+                        
+                        
+                    }];
+                }
+            }
+            else if( (materialType == kVETEXTTITLE) || (materialType == KTRANSITION)  )
+            {
+                if( (oldMaterialArray == nil) || (oldMaterialArray.count == 0) || (oldMaterialArray.count != typeArray.count )  )
+                {
+                    materialArray = typeArray;
+                }
+                else
+                {
+                    [typeArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        
+                        NSString *updateTime = obj[@"updatetime"];
+                        int ID = [obj[@"id"] intValue];
+                        NSString *oldUpdateTime = oldMaterialArray[idx][@"updatetime"];
+                        int oldID = [oldMaterialArray[idx][@"id"] intValue];
+                        if( (oldUpdateTime && ![oldUpdateTime isEqualToString:updateTime]) || (ID != oldID) )
+                        {
+                            [materialArray addObject:obj];
+                        }
+                        else
+                        {
+                            if( oldMaterialArray.count > idx )
+                                [materialArray addObject:oldMaterialArray[idx]];
+                        }
+                    }];
+                }
+            }
+            else
+            {
+                [typeArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+                    [params setObject:type forKey:@"type"];
+                    [params setObject:[NSNumber numberWithInt:[obj[@"id"] intValue]] forKey:@"category"];
+                    NSDictionary *resultDic = [self getNetworkMaterialWithParams:params
+                                                                                 appkey:appKey
+                                                                                urlPath:materialUrlPath];
+                    if (resultDic && [resultDic[@"code"] intValue] == 0) {
+                        NSMutableArray *array = [resultDic[@"data"] mutableCopy];
+                        
+                        if (materialType == kVEEFFECTS) {
+                            NSString *coverPath = [VEHelp getEditResource:@"/jianji/effect_icon/剪辑-编辑-特效-无" type:@"png"];
+                            NSMutableDictionary *itemDic = [[NSMutableDictionary alloc] init];
+                            [itemDic setObject:coverPath forKey:@"cover"];
+                            [itemDic setObject:@"无" forKey:@"name"];
+                            [itemDic setObject:[NSNumber numberWithInt:0] forKey:@"id"];
+                            [itemDic setObject:@"1546936928" forKey:@"updatetime"];
+                            [array insertObject:itemDic atIndex:0];
+                        }
+                        
+                        NSDictionary *materialDic = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                     obj[@"name"], @"typeName",
+                                                     obj[@"icon_checked"], @"icon_checked",
+                                                     obj[@"icon_unchecked"], @"icon_unchecked",
+                                                     [NSNumber numberWithInt:[obj[@"id"] intValue]], @"typeId",
+                                                     array, @"data",
+                                                     nil];
+                        [materialArray addObject:materialDic];
+                        
+                        if (oldMaterialArray.count > 0) {
+                            NSFileManager *fileManager = [NSFileManager defaultManager];
+                            [array enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+                                NSString *file = [obj1[@"file"] stringByDeletingPathExtension];
+                                NSString *updateTime = obj1[@"updatetime"];
+                                __block NSString *oldUpdateTime;
+                                __block NSString *oldFile;
+                                [oldMaterialArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
+                                    if ([obj2[@"typeId"] intValue] ==[obj[@"id"] intValue]) {
+                                        [obj2[@"data"] enumerateObjectsUsingBlock:^(id  _Nonnull obj3, NSUInteger idx3, BOOL * _Nonnull stop3) {
+                                            if ([[obj3[@"file"] stringByDeletingPathExtension] isEqualToString:file]) {
+                                                oldFile = obj3[@"file"];
+                                                oldUpdateTime = obj3[@"updatetime"];
+                                                *stop3 = YES;
+                                                *stop2 = YES;
+                                            }
+                                        }];
+                                    }
+                                }];
+                                if(oldUpdateTime && ![oldUpdateTime isEqualToString:updateTime])
+                                {
+                                    NSString *path;
+                                    if (materialType == kVETEXTTITLE) {//字幕
+                                        path = [kSubtitlePlistPath stringByAppendingPathComponent:file];
+                                    }else {
+                                        path = [self getMaterialCachedFilePath:materialType netFilePath:oldFile updatetime:oldUpdateTime];
+                                    }
+                                    if ([fileManager fileExistsAtPath:path]) {
+                                        [fileManager removeItemAtPath:path error:nil];
+                                    }
+                                }
+                            }];
+                        }
+                    }
+                }];
+            }
+            if (![[NSFileManager defaultManager] fileExistsAtPath:folderPath]) {
+                [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+            }
+            BOOL suc = [materialArray writeToFile:plistPath atomically:YES];
+            if (!suc) {
+                //NSLog(@"写入失败");
+            }
+        }
+        [oldMaterialArray removeAllObjects];
+        oldMaterialArray = nil;
+    }
+    return materialArray;
+}
+
++ (NSString *)getMaterialCachedFilePath:(VECustomizationFunctionType)materialType netFilePath:(NSString *)netFilePath updatetime:(NSString *)updatetime {
+    NSString *folderPath;
+    switch (materialType) {
+        case kVEMUSICAE:
+            folderPath = kMVAnimateFolder;
+            break;
+            
+        case kVEEFFECTS:
+            folderPath = kSpecialEffectFolder;
+            break;
+        
+        case KTRANSITION:
+            folderPath = kTransitionFolder;
+            break;
+            
+        case kTEMPLATERECORD:
+            folderPath = kTemplateRecordFolder;
+            break;
+            
+        default:
+            break;
+    }
+    if (folderPath.length == 0) {
+        return nil;
+    }
+    NSString *cachedFilePath = [folderPath stringByAppendingPathComponent:[self cachedFileNameForKey:netFilePath]];
+    cachedFilePath = [NSString stringWithFormat:@"%@%@", cachedFilePath, updatetime];
+    return cachedFilePath;
+}
+
+
++ (void)downloadIconFile:(VEAdvanceEditType)type
+              editConfig:(VEEditConfiguration *)editConfig
+                  appKey:(NSString *)appKey
+               cancelBtn:(UIButton *)cancelBtn
+           progressBlock:(void(^)(float progress))progressBlock
+                callBack:(void(^)(NSError *error))callBack
+             cancelBlock:(void(^)(void))cancelBlock
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        //创建文件夹
+        if(![[NSFileManager defaultManager] fileExistsAtPath:kSubtitleEffectFolder]){
+            [[NSFileManager defaultManager] createDirectoryAtPath:kSubtitleEffectFolder withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+        switch (type) {
+            case VEAdvanceEditType_Subtitle:
+            {
+                [self getCategoryMaterialWithAppkey:appKey
+                                        typeUrlPath:editConfig.netMaterialTypeURL
+                                    materialUrlPath:editConfig.subtitleResourceURL
+                                       materialType:kVETEXTTITLE];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (callBack) {
+                        callBack(nil);
+                    }
+                });
+            }
+                break;
+            case VEAdvanceEditType_Sticker:
+            {
+                if (editConfig.netMaterialTypeURL.length > 0 && editConfig.effectResourceURL.length > 0) {
+                    __block NSDictionary *dic;
+                    __block BOOL hasValue = NO;
+                    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithObjectsAndKeys:@"stickers",@"type", nil];
+                     [self getNetworkMaterialWithParams:params
+                                                             appkey:appKey
+                                                            urlPath:editConfig.netMaterialTypeURL completed:^(id result, NSError *error) {
+                        
+                         dic = result;
+                        hasValue = [[dic objectForKey:@"code"] integerValue]  == 0;
+                       if( (hasValue && [[dic objectForKey:@"data"] count] > 0) ){
+                           NSMutableArray *resultList;
+                           if([[dic allKeys] containsObject:@"result"]){
+                               resultList = [[dic objectForKey:@"result"] objectForKey:@"bgmusic"];
+                           }else{
+                               if([[dic objectForKey:@"data"] isKindOfClass:[NSArray class]]){
+                                   resultList = [dic objectForKey:@"data"];
+                               }else{
+                                   resultList = [dic objectForKey:@"data"][@"data"];
+                               }
+                           }
+                           if(resultList){
+                               if(![[NSFileManager defaultManager] fileExistsAtPath:kStickerFolder]){
+                                   [[NSFileManager defaultManager] createDirectoryAtPath:kStickerFolder withIntermediateDirectories:YES attributes:nil error:nil];
+                               }
+
+                               BOOL suc = [resultList writeToFile:kStickerTypesPath atomically:YES];
+                             
+                               if ([[NSFileManager defaultManager] fileExistsAtPath:kStickerPlistPath]) {
+                                   [[NSFileManager defaultManager] removeItemAtPath:kStickerPlistPath error:nil];
+                               }
+                               if (!suc) {
+                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                       if (callBack) {
+                                           NSString *message = VELocalizedString(@"贴纸分类信息，保存失败！", nil);
+                                           NSDictionary *userInfo = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
+                                           NSError *error = [NSError errorWithDomain:VECustomErrorDomain code:VESDKErrorCode_DownloadSubtitle userInfo:userInfo];
+                                           callBack(error);
+                                       }
+                                   });
+                               }
+
+                               NSMutableArray * stickerArray = [NSMutableArray new];
+
+                               for (int i = 0; i < resultList.count; i++) {
+
+                                   NSMutableDictionary *params = [NSMutableDictionary dictionary];
+                                   [params setObject:@"stickers" forKey:@"type"];
+                                   [params setObject:[resultList[i] objectForKey:@"id"]  forKey:@"category"];
+                                   [params setObject:[NSString stringWithFormat:@"%d" ,0] forKey: @"page_num"];
+                                   NSDictionary *dic2 = [VEHelp getNetworkMaterialWithParams:params
+                                                                                           appkey:appKey urlPath:editConfig.effectResourceURL];
+                                   if(dic2 && [[dic2 objectForKey:@"code"] integerValue] == 0)
+                                   {
+                                       NSMutableArray * currentStickerList = [dic2 objectForKey:@"data"];
+                                       [stickerArray addObject:currentStickerList];
+                                   }
+                                   else
+                                   {
+                                       if (callBack) {
+                                           NSString *message;
+                                           if (dic) {
+                                               if ([[dic2 objectForKey:@"code"] integerValue]) {
+                                                   message = dic2[@"msg"];
+                                               }else {
+                                                   message = dic2[@"message"];
+                                               }
+                                           }
+                                           if (!message || message.length == 0) {
+                                               message = VELocalizedString(@"下载失败，请检查网络!", nil);
+                                           }
+                                           NSDictionary *userInfo = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
+                                           NSError *error = [NSError errorWithDomain:VECustomErrorDomain code:VESDKErrorCode_DownloadSubtitle userInfo:userInfo];
+                                           callBack(error);
+                                       }
+                                   }
+                               }
+
+                               [self updateLocalMaterialWith:VEAdvanceEditType_Sticker newList:stickerArray];
+                               suc = [stickerArray writeToFile:kNewStickerPlistPath atomically:YES];
+
+                               dispatch_async(dispatch_get_main_queue(), ^{
+                                   if (callBack) {
+                                       callBack(nil);
+                                   }
+                               });
+                           }
+                           else
+                           {
+                               if (callBack) {
+                                   NSString *message;
+                                   if (dic) {
+                                       if (hasValue) {
+                                           message = dic[@"msg"];
+                                       }else {
+                                           message = dic[@"message"];
+                                       }
+                                   }
+                                   if (!message || message.length == 0) {
+                                       message = VELocalizedString(@"下载失败，请检查网络!", nil);
+                                   }
+                                   NSDictionary *userInfo = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
+                                   NSError *error = [NSError errorWithDomain:VECustomErrorDomain code:VESDKErrorCode_DownloadSubtitle userInfo:userInfo];
+                                   callBack(error);
+                               }
+                           }
+                       }
+                       else
+                       {
+                           [self oldDownloadIconFileSticker:type editConfig:editConfig appKey:appKey cancelBtn:cancelBtn progressBlock:progressBlock callBack:callBack cancelBlock:cancelBlock];
+                       }
+                     }];
+                   
+                }else
+                {
+                    [self oldDownloadIconFileSticker:type editConfig:editConfig appKey:appKey cancelBtn:cancelBtn progressBlock:progressBlock callBack:callBack cancelBlock:cancelBlock];
+                }
+            }
+                break;
+                
+            case VEAdvanceEditType_None:
+            {
+                BOOL hasNewFont =  editConfig.fontResourceURL.length>0;
+                NSString *uploadUrl = (hasNewFont ? editConfig.fontResourceURL : getFontTypeUrl);
+                NSMutableDictionary *fontListDic;
+                if(hasNewFont){
+                    fontListDic = [self getNetworkMaterialWithType:kFontType
+                                                                   appkey:appKey
+                                                                  urlPath:uploadUrl];
+                }else{
+                    fontListDic = [self updateInfomation:nil andUploadUrl:uploadUrl];
+                }
+                if (hasNewFont ? ([fontListDic[@"code"] intValue] != 0) : ([fontListDic[@"code"] intValue] != 200)){
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (callBack) {
+                            NSString *message;
+                            if (fontListDic) {
+                                if (hasNewFont) {
+                                    message = fontListDic[@"msg"];
+                                }else {
+                                    message = fontListDic[@"message"];
+                                }
+                            }
+                            if (!message || message.length == 0) {
+                                message = VELocalizedString(@"下载失败，请检查网络!", nil);
+                            }
+                            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
+                            NSError *error = [NSError errorWithDomain:VECustomErrorDomain code:VESDKErrorCode_DownloadSubtitle userInfo:userInfo];
+                            callBack(error);
+                        }
+                    });
+                    return;
+                }
+                NSArray *fontList = [fontListDic objectForKey:@"data"];
+                NSDictionary *fontIconDic = [fontListDic objectForKey:@"icon"];
+                NSString *iconUrl = [fontIconDic objectForKey:@"caption"];
+                NSString *cacheFolderPath = [[self pathFontForURL:[NSURL URLWithString:iconUrl]] stringByDeletingLastPathComponent];
+                NSString *cacheIconPath = [cacheFolderPath stringByAppendingPathComponent:@"icon"];
+                if(![[NSFileManager defaultManager] fileExistsAtPath:cacheFolderPath]){
+                    [[NSFileManager defaultManager] createDirectoryAtPath:cacheFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+                }
+                
+                if([[NSFileManager defaultManager] contentsOfDirectoryAtPath:cacheIconPath error:nil].count==0 && !hasNewFont){
+                    //将plist文件写入文件夹
+                    BOOL suc = [fontList writeToFile:kFontPlistPath atomically:YES];
+                    suc = [fontIconDic writeToFile:kFontIconPlistPath atomically:YES];
+                    
+                    [VEFileDownloader downloadFileWithURL:iconUrl cachePath:cacheFolderPath HTTPMethod:VEGET cancelBtn:cancelBtn progress:^(NSNumber *numProgress) {
+                        NSLog(@"progress:%f",[numProgress floatValue]);
+                        if(progressBlock){
+                            progressBlock([numProgress floatValue]);
+                        }
+                    } finish:^(NSString *fileCachePath) {
+                        [VEHelp OpenZipp:fileCachePath unzipto:cacheFolderPath];
+                        if (callBack) {
+                            callBack(nil);
+                        }
+                    } fail:^(NSError *error) {
+                        if (callBack) {
+                            callBack(error);
+                        }
+                    } cancel:^{
+                        if (cancelBlock) {
+                            cancelBlock();
+                        }
+                    }];
+                }else{
+                    [self updateLocalMaterialWithType:type newList:fontList];
+                    BOOL suc = [fontList writeToFile:kFontPlistPath atomically:YES];
+                    suc = [fontIconDic writeToFile:kFontIconPlistPath atomically:YES];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (callBack) {
+                            callBack(nil);
+                        }
+                    });
+                }
+            }
+                break;
+                
+            default:
+                break;
+        }
+    });
+}
+
++(void)updateLocalMaterialWith:(VEAdvanceEditType)type newList:( NSArray * ) newList
+{
+    NSString *folderPath;
+    if (type == VEAdvanceEditType_Subtitle) {
+        folderPath = kSubtitleFolder;
+    }else if (type == VEAdvanceEditType_Sticker) {
+        folderPath = kStickerFolder;
+    }else {
+        folderPath = kFontFolder;
+    }
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *oldList = nil;
+    if (type == VEAdvanceEditType_Sticker) {
+        oldList = [[NSArray alloc] initWithContentsOfFile:kNewStickerPlistPath];
+    }else {
+        return;
+    }
+    [oldList enumerateObjectsUsingBlock:^(NSArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [obj enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+            NSString *oldId = obj1[@"id"];
+            NSString *oldUpdateTime = obj1[@"updatetime"];
+            __block NSString *newUpdateTime;
+            [newList enumerateObjectsUsingBlock:^(NSArray * _Nonnull newObj, NSUInteger newIdx, BOOL * _Nonnull newStop) {
+                [newObj enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull newObj1, NSUInteger newIdx1, BOOL * _Nonnull newStop1) {
+                    if ([newObj1[@"id"] isEqual:oldId]) {
+                        newUpdateTime = newObj1[@"updatetime"];
+                        *newStop1 = YES;
+                        *newStop = YES;
+                    }
+                }];
+            }];
+            if (!newUpdateTime || ![newUpdateTime isEqualToString:oldUpdateTime]) {
+                NSString *file = [[obj1[@"file"] stringByDeletingLastPathComponent] lastPathComponent];
+                NSString *path = [folderPath stringByAppendingPathComponent:file];
+                if ([fileManager fileExistsAtPath:path]) {
+                    [fileManager removeItemAtPath:path error:nil];
+                }
+            }
+        }];
+    }];
+}
+
++ (void)oldDownloadIconFileSticker:(VEAdvanceEditType)type
+                     editConfig:(VEEditConfiguration *)editConfig
+                         appKey:(NSString *)appKey
+                      cancelBtn:(UIButton *)cancelBtn
+                  progressBlock:(void(^)(float progress))progressBlock
+                       callBack:(void(^)(NSError *error))callBack
+                    cancelBlock:(void(^)(void))cancelBlock
+{
+    {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:kStickerTypesPath]) {
+            [fileManager removeItemAtPath:kStickerTypesPath error:nil];
+        }
+        if ([fileManager fileExistsAtPath:kNewStickerPlistPath]) {
+            [fileManager removeItemAtPath:kNewStickerPlistPath error:nil];
+        }
+        
+    }
+    
+    
+    BOOL hasNewEffect =  editConfig.effectResourceURL.length>0;
+    NSString *uploadUrl = (hasNewEffect ? editConfig.effectResourceURL : getEffectTypeUrl);
+    NSMutableDictionary *effectTypeList;
+    if(hasNewEffect){
+        effectTypeList = [self getNetworkMaterialWithType:@"effects"
+                                                          appkey:appKey
+                                                         urlPath:uploadUrl];
+    }else{
+        effectTypeList = [self updateInfomation:nil andUploadUrl:uploadUrl];
+    }
+    
+    if(![effectTypeList isKindOfClass:[NSMutableDictionary class]] || !effectTypeList || (hasNewEffect ? ([effectTypeList[@"code"] intValue] != 0) : ([effectTypeList[@"code"] intValue] != 200))){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (callBack) {
+                NSString *message;
+                if (effectTypeList) {
+                    if (hasNewEffect) {
+                        message = effectTypeList[@"msg"];
+                    }else {
+                        message = effectTypeList[@"message"];
+                    }
+                }
+                if (!message || message.length == 0) {
+                    message = VELocalizedString(@"下载失败，请检查网络!", nil);
+                }
+                NSDictionary *userInfo = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
+                NSError *error = [NSError errorWithDomain:VECustomErrorDomain code:VESDKErrorCode_DownloadSubtitle userInfo:userInfo];
+                callBack(error);
+            }
+        });
+        return ;
+    }
+    NSArray *effectList = [effectTypeList objectForKey:@"data"];
+    NSDictionary *effectIconDic = [effectTypeList objectForKey:@"icon"];
+    
+    NSString *effectIconUrl = [effectIconDic objectForKey:@"caption"];
+    NSString *cacheEffectFolderPath = [[self pathEffectForURL:[NSURL URLWithString:effectIconUrl]] stringByDeletingLastPathComponent];
+    NSString *cacheIconPath = [cacheEffectFolderPath stringByAppendingPathComponent:@"icon"];
+    if(![[NSFileManager defaultManager] fileExistsAtPath:cacheEffectFolderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:cacheEffectFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
+    if([[NSFileManager defaultManager] contentsOfDirectoryAtPath:cacheIconPath error:nil].count==0 && !hasNewEffect){
+        //将plist文件写入文件夹
+        BOOL suc = [effectList writeToFile:kStickerPlistPath atomically:YES];
+        suc = [effectIconDic writeToFile:kStickerIconPlistPath atomically:YES];
+        
+        [VEFileDownloader downloadFileWithURL:effectIconUrl cachePath:cacheEffectFolderPath HTTPMethod:VEGET cancelBtn:cancelBtn progress:^(NSNumber *numProgress) {
+            NSLog(@"progress:%f",[numProgress floatValue]);
+            if(progressBlock){
+                progressBlock([numProgress floatValue]);
+            }
+        } finish:^(NSString *fileCachePath) {
+            [VEHelp OpenZipp:fileCachePath unzipto:cacheEffectFolderPath];
+            if (callBack) {
+                callBack(nil);
+            }
+        } fail:^(NSError *error) {
+            if (callBack) {
+                callBack(error);
+                
+            }
+        } cancel:^{
+            if (cancelBlock) {
+                cancelBlock();
+                
+            }
+        }];
+    }else{
+        [self updateLocalMaterialWithType:type newList:effectList];
+        BOOL suc = [effectList writeToFile:kStickerPlistPath atomically:YES];
+        suc = [effectIconDic writeToFile:kStickerIconPlistPath atomically:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (callBack) {
+                callBack(nil);
+            }
+        });
+    }
+}
++(NSString *)pathEffectForURL:(NSURL *)aURL{
+    return [kStickerFolder stringByAppendingPathComponent:[NSString stringWithFormat:@"EffectType-%lu.zip", (unsigned long)[[aURL description] hash]]];
+}
+
++ (NSMutableArray *)getStickerAnimationArrayWithAppkey:(NSString *)appKey
+                             typeUrlPath:(NSString *)typeUrlPath
+                    specialEffectUrlPath:(NSString *)specialEffectUrlPath{
+    
+    return [self getCategoryMaterialWithAppkey:appKey typeUrlPath:typeUrlPath materialUrlPath:specialEffectUrlPath materialType:KSTICKERANIMATION];
+}
++ (NSString *)getStickerAnimationFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
+    NSString *cachedFilePath = [KStickerAnimationFolder stringByAppendingPathComponent:[self cachedFileNameForKey:urlPath]];
+    cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
+    return cachedFilePath;
+}
+
++ (CustomFilter *)getStickerAnimationCustomFilter:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId atType:(NSInteger) typeIndex atCaption:( CaptionEx *) captionex
+{
+    NSString *path = [self getStickerAnimationFilePath:itemDic[@"file"] updatetime:itemDic[@"updatetime"]];
+    NSInteger fileCount = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil] count];
+    if (fileCount == 0) {
+        return nil;
+    }
+    
+    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
+    NSString *folderName;
+    for (NSString *fileName in files) {
+        if (![fileName isEqualToString:@"__MACOSX"]) {
+            NSString *folderPath = [path stringByAppendingPathComponent:fileName];
+            BOOL isDirectory = NO;
+            BOOL isExists = [[NSFileManager defaultManager] fileExistsAtPath:folderPath isDirectory:&isDirectory];
+            if (isExists && isDirectory) {
+                folderName = fileName;
+                break;
+            }
+        }
+    }
+    if (folderName.length > 0) {
+        path = [path stringByAppendingPathComponent:folderName];
+    }
+    
+    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+    CustomFilter *customFilter = [[CustomFilter alloc] init];
+    if( typeIndex == 0 )
+    {
+        customFilter.animateType = CustomAnimationTypeIn;
+    }
+    else if( typeIndex == 1 )
+    {
+        customFilter.animateType = CustomAnimationTypeOut;
+    }
+    else
+        customFilter.animateType = CustomAnimationTypeCombined;
+    customFilter.networkCategoryId = categoryId;
+    customFilter.networkResourceId = itemDic[@"id"];
+    customFilter.folderPath = path;
+
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
+    NSMutableDictionary *effectDic = [self objectForData:jsonData];
+    jsonData = nil;
+    NSError * error = nil;
+    customFilter.name = effectDic[@"name"];
+    
+    NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
+    NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
+    customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
+    customFilter.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
+    
+    if (effectDic[@"script"]) {
+        NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
+        customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+        customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
+    }
+    
+    NSArray *uniformParams = effectDic[@"uniformParams"];
+    [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *type = obj[@"type"];
+        NSMutableArray *paramArray = [NSMutableArray array];
+        NSArray *frameArray = obj[@"frameArray"];
+        [frameArray enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+            ShaderParams *param = [[ShaderParams alloc] init];
+            param.time = [obj1[@"time"] floatValue];
+            if ([type isEqualToString:@"floatArray"]) {
+                param.type = UNIFORM_ARRAY;
+                param.array = [NSMutableArray array];
+                [obj1[@"value"] enumerateObjectsUsingBlock:^(id  _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
+                    [param.array addObject:[NSNumber numberWithFloat:[obj2 floatValue]]];
+                }];
+            }else if ([type isEqualToString:@"float"]) {
+                param.type = UNIFORM_FLOAT;
+                if ([obj1[@"value"] isKindOfClass:[NSArray class]]) {
+                    param.fValue = [[obj1[@"value"] firstObject] floatValue];
+                }else {
+                    param.fValue = [obj1[@"value"] floatValue];
+                }
+            }else if ([type isEqualToString:@"Matrix4x4"]) {
+                param.type = UNIFORM_MATRIX4X4;
+                GLMatrix4x4 matrix4;
+                NSArray *valueArray = obj1[@"value"];
+                matrix4.one = (GLVectore4){[valueArray[0][0] floatValue], [valueArray[0][1] floatValue], [valueArray[0][2] floatValue], [valueArray[0][3] floatValue]};
+                matrix4.two = (GLVectore4){[valueArray[1][0] floatValue], [valueArray[1][1] floatValue], [valueArray[1][2] floatValue], [valueArray[1][3] floatValue]};
+                matrix4.three = (GLVectore4){[valueArray[2][0] floatValue], [valueArray[2][1] floatValue], [valueArray[2][2] floatValue], [valueArray[2][3] floatValue]};
+                matrix4.four = (GLVectore4){[valueArray[3][0] floatValue], [valueArray[3][1] floatValue], [valueArray[3][2] floatValue], [valueArray[3][3] floatValue]};
+                param.matrix4 = matrix4;
+            }else {
+                param.type = UNIFORM_INT;
+                if ([obj1[@"value"] isKindOfClass:[NSArray class]]) {
+                    param.iValue = [[obj1[@"value"] firstObject] intValue];
+                }else {
+                    param.iValue = [obj1[@"value"] intValue];
+                }
+            }
+            [paramArray addObject:param];
+        }];
+        [customFilter setShaderUniformParams:paramArray isRepeat:[obj[@"repeat"] boolValue] forUniform:obj[@"paramName"]];
+    }];
+    NSArray *textureParams = effectDic[@"textureParams"];
+    
+   for(id  _Nonnull obj in textureParams) {
+        @autoreleasepool {
+            
+            TextureParams *param = [[TextureParams alloc] init];
+            param.type = TextureType_Sample2DBuffer;
+            param.name = obj[@"paramName"];
+            
+            NSString *warpMode = obj[@"warpMode"];
+            if (warpMode.length > 0) {
+                if ([warpMode isEqualToString:@"Repeat"]) {
+                    param.warpMode = TextureWarpModeRepeat;
+                }else if ([warpMode isEqualToString:@"MirroredRepeat"]) {
+                    param.warpMode = TextureWarpModeMirroredRepeat;
+                }
+            }
+            NSString *filterMode = obj[@"filterMode"];
+            if (filterMode.length > 0) {
+                if ([filterMode isEqualToString:@"Nearest"]) {
+                    param.filterMode = TextureFilterNearest;
+                }else if ([filterMode isEqualToString:@"Linear"]) {
+                    param.filterMode = TextureFilterLinear;
+                }
+            }
+            NSString *sourceName = obj[@"source"];
+            if ([sourceName isKindOfClass:[NSString class]]) {
+                if (sourceName.length > 0) {
+                    __weak NSString *newPath = path;
+                    newPath = [newPath stringByAppendingPathComponent:sourceName];
+                     
+                    NSMutableArray *paths = [NSMutableArray arrayWithObject:newPath];
+                    param.pathArray = paths;
+                }
+            }
+            else if ([sourceName isKindOfClass:[NSArray class]]) {
+                NSMutableArray *sourceArray = [obj[@"source"] mutableCopy];
+                NSMutableArray *arr = [NSMutableArray array];
+                for (NSString * _Nonnull imageName in sourceArray) {
+                    NSString *newpath = [path stringByAppendingPathComponent:imageName];
+
+                    [arr addObject:newpath];
+                }
+                param.pathArray = [NSMutableArray arrayWithArray:arr];//
+                
+            }
+            [customFilter setShaderTextureParams:param];
+        }
+    }
+    
+    if( captionex )
+    {
+        if( effectDic[@"other"] )
+        {
+            if( [effectDic[@"other"] isKindOfClass:[NSArray class]] )
+            {
+                NSArray *array = effectDic[@"other"];
+//                [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//                    [captionex.captionImage.otherAnimates addObject:[VEHelp getAnmationDic:(NSMutableDictionary*)obj atPath:path]];
+//                }];
+                captionex.captionImage.otherAnimates = [VEHelp getAnmationDic:(NSMutableDictionary*)[array firstObject] atPath:path];
+            }
+            else
+            {
+                captionex.captionImage.otherAnimates = [VEHelp getAnmationDic:(NSMutableDictionary*)effectDic[@"other"] atPath:path];
+            }
+        }
+        else{
+            if( customFilter.animateType == CustomAnimationTypeIn )
+            {
+                captionex.captionImage.otherAnimates = nil;
+            }
+        }
+    }
+    
+    return  customFilter;
+}
+
++ (CustomFilter *)getStickerAnimationCustomFilterWithPath:(NSString *) path atType:(NSInteger) typeIndex atCaption:( CaptionEx *) captionex
+{
+    NSInteger fileCount = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil] count];
+    if (fileCount == 0) {
+        return nil;
+    }
+    
+    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
+    NSString *folderName;
+    for (NSString *fileName in files) {
+        if (![fileName isEqualToString:@"__MACOSX"]) {
+            NSString *folderPath = [path stringByAppendingPathComponent:fileName];
+            BOOL isDirectory = NO;
+            BOOL isExists = [[NSFileManager defaultManager] fileExistsAtPath:folderPath isDirectory:&isDirectory];
+            if (isExists && isDirectory) {
+                folderName = fileName;
+                break;
+            }
+        }
+    }
+    if (folderName.length > 0) {
+        path = [path stringByAppendingPathComponent:folderName];
+    }
+    
+    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+    CustomFilter *customFilter = [[CustomFilter alloc] init];
+    if( typeIndex == 0 )
+    {
+        customFilter.animateType = CustomAnimationTypeIn;
+    }
+    else if( typeIndex == 1 )
+    {
+        customFilter.animateType = CustomAnimationTypeOut;
+    }
+    else
+        customFilter.animateType = CustomAnimationTypeCombined;
+    customFilter.folderPath = path;
+
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
+    NSMutableDictionary *effectDic = [self objectForData:jsonData];
+    jsonData = nil;
+    NSError * error = nil;
+    customFilter.name = effectDic[@"name"];
+    
+    NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
+    NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
+    customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
+    customFilter.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
+    
+    if (effectDic[@"script"]) {
+        NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
+        customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+        customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
+    }
+    
+    NSArray *uniformParams = effectDic[@"uniformParams"];
+    [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *type = obj[@"type"];
+        NSMutableArray *paramArray = [NSMutableArray array];
+        NSArray *frameArray = obj[@"frameArray"];
+        [frameArray enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+            ShaderParams *param = [[ShaderParams alloc] init];
+            param.time = [obj1[@"time"] floatValue];
+            if ([type isEqualToString:@"floatArray"]) {
+                param.type = UNIFORM_ARRAY;
+                param.array = [NSMutableArray array];
+                [obj1[@"value"] enumerateObjectsUsingBlock:^(id  _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
+                    [param.array addObject:[NSNumber numberWithFloat:[obj2 floatValue]]];
+                }];
+            }else if ([type isEqualToString:@"float"]) {
+                param.type = UNIFORM_FLOAT;
+                if ([obj1[@"value"] isKindOfClass:[NSArray class]]) {
+                    param.fValue = [[obj1[@"value"] firstObject] floatValue];
+                }else {
+                    param.fValue = [obj1[@"value"] floatValue];
+                }
+            }else if ([type isEqualToString:@"Matrix4x4"]) {
+                param.type = UNIFORM_MATRIX4X4;
+                GLMatrix4x4 matrix4;
+                NSArray *valueArray = obj1[@"value"];
+                matrix4.one = (GLVectore4){[valueArray[0][0] floatValue], [valueArray[0][1] floatValue], [valueArray[0][2] floatValue], [valueArray[0][3] floatValue]};
+                matrix4.two = (GLVectore4){[valueArray[1][0] floatValue], [valueArray[1][1] floatValue], [valueArray[1][2] floatValue], [valueArray[1][3] floatValue]};
+                matrix4.three = (GLVectore4){[valueArray[2][0] floatValue], [valueArray[2][1] floatValue], [valueArray[2][2] floatValue], [valueArray[2][3] floatValue]};
+                matrix4.four = (GLVectore4){[valueArray[3][0] floatValue], [valueArray[3][1] floatValue], [valueArray[3][2] floatValue], [valueArray[3][3] floatValue]};
+                param.matrix4 = matrix4;
+            }else {
+                param.type = UNIFORM_INT;
+                if ([obj1[@"value"] isKindOfClass:[NSArray class]]) {
+                    param.iValue = [[obj1[@"value"] firstObject] intValue];
+                }else {
+                    param.iValue = [obj1[@"value"] intValue];
+                }
+            }
+            [paramArray addObject:param];
+        }];
+        [customFilter setShaderUniformParams:paramArray isRepeat:[obj[@"repeat"] boolValue] forUniform:obj[@"paramName"]];
+    }];
+    NSArray *textureParams = effectDic[@"textureParams"];
+    
+   for(id  _Nonnull obj in textureParams) {
+        @autoreleasepool {
+            
+            TextureParams *param = [[TextureParams alloc] init];
+            param.type = TextureType_Sample2DBuffer;
+            param.name = obj[@"paramName"];
+            
+            NSString *warpMode = obj[@"warpMode"];
+            if (warpMode.length > 0) {
+                if ([warpMode isEqualToString:@"Repeat"]) {
+                    param.warpMode = TextureWarpModeRepeat;
+                }else if ([warpMode isEqualToString:@"MirroredRepeat"]) {
+                    param.warpMode = TextureWarpModeMirroredRepeat;
+                }
+            }
+            NSString *filterMode = obj[@"filterMode"];
+            if (filterMode.length > 0) {
+                if ([filterMode isEqualToString:@"Nearest"]) {
+                    param.filterMode = TextureFilterNearest;
+                }else if ([filterMode isEqualToString:@"Linear"]) {
+                    param.filterMode = TextureFilterLinear;
+                }
+            }
+            NSString *sourceName = obj[@"source"];
+            if ([sourceName isKindOfClass:[NSString class]]) {
+                if (sourceName.length > 0) {
+                    __weak NSString *newPath = path;
+                    newPath = [newPath stringByAppendingPathComponent:sourceName];
+                     
+                    NSMutableArray *paths = [NSMutableArray arrayWithObject:newPath];
+                    param.pathArray = paths;
+                }
+            }
+            else if ([sourceName isKindOfClass:[NSArray class]]) {
+                NSMutableArray *sourceArray = [obj[@"source"] mutableCopy];
+                NSMutableArray *arr = [NSMutableArray array];
+                for (NSString * _Nonnull imageName in sourceArray) {
+                    NSString *newpath = [path stringByAppendingPathComponent:imageName];
+
+                    [arr addObject:newpath];
+                }
+                param.pathArray = [NSMutableArray arrayWithArray:arr];//
+                
+            }
+            [customFilter setShaderTextureParams:param];
+        }
+    }
+    
+    if( captionex )
+    {
+        if( effectDic[@"other"] )
+        {
+            if( [effectDic[@"other"] isKindOfClass:[NSArray class]] )
+            {
+                NSArray *array = effectDic[@"other"];
+//                [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//                    [captionex.captionImage.otherAnimates addObject:[VEHelp getAnmationDic:(NSMutableDictionary*)obj atPath:path]];
+//                }];
+                captionex.captionImage.otherAnimates = [VEHelp getAnmationDic:(NSMutableDictionary*)[array firstObject] atPath:path];
+            }
+            else
+            {
+                captionex.captionImage.otherAnimates = [VEHelp getAnmationDic:(NSMutableDictionary*)effectDic[@"other"] atPath:path];
+            }
+        }
+        else{
+            if( customFilter.animateType == CustomAnimationTypeIn )
+            {
+                captionex.captionImage.otherAnimates = nil;
+            }
+        }
+    }
+    
+    return  customFilter;
+}
+
++ (CustomFilter *)getAnimationCustomFilter:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId
+{
+    NSString *path = [self getAnimationFilePath:itemDic[@"file"] updatetime:itemDic[@"updatetime"]];
+    NSInteger fileCount = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil] count];
+    if (fileCount == 0) {
+        return nil;
+    }
+    
+    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
+    NSString *folderName;
+    for (NSString *fileName in files) {
+        if (![fileName isEqualToString:@"__MACOSX"]) {
+            NSString *folderPath = [path stringByAppendingPathComponent:fileName];
+            BOOL isDirectory = NO;
+            BOOL isExists = [[NSFileManager defaultManager] fileExistsAtPath:folderPath isDirectory:&isDirectory];
+            if (isExists && isDirectory) {
+                folderName = fileName;
+                break;
+            }
+        }
+    }
+    if (folderName.length > 0) {
+        path = [path stringByAppendingPathComponent:folderName];
+    }
+    CustomFilter *customFilter = [self getAnimationCustomFilterWithPath:path];
+    customFilter.networkCategoryId = categoryId;
+    customFilter.networkResourceId = itemDic[@"id"];
+    return customFilter;
+}
+
++ (CustomFilter *)getAnimationCustomFilterWithPath:(NSString *) path{
+    
+    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+    CustomFilter *customFilter = [[CustomFilter alloc] init];
+    
+    customFilter.folderPath = path;
+    
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
+    NSMutableDictionary *effectDic = [self objectForData:jsonData];
+    jsonData = nil;
+    NSError * error = nil;
+    customFilter.cycleDuration = 0.0;
+    
+    customFilter.name = effectDic[@"name"];
+    customFilter.folderPath = path;
+    NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
+    NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
+    customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
+    customFilter.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
+    
+    if (effectDic[@"script"]) {
+        NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
+        customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+    }
+    
+    NSArray *uniformParams = effectDic[@"uniformParams"];
+    [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *type = obj[@"type"];
+        NSMutableArray *paramArray = [NSMutableArray array];
+        NSArray *frameArray = obj[@"frameArray"];
+        [frameArray enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+            ShaderParams *param = [[ShaderParams alloc] init];
+            param.time = [obj1[@"time"] floatValue];
+            if ([type isEqualToString:@"floatArray"]) {
+                param.type = UNIFORM_ARRAY;
+                param.array = [NSMutableArray array];
+                [obj1[@"value"] enumerateObjectsUsingBlock:^(id  _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
+                    [param.array addObject:[NSNumber numberWithFloat:[obj2 floatValue]]];
+                }];
+            }else if ([type isEqualToString:@"float"]) {
+                param.type = UNIFORM_FLOAT;
+                if ([obj1[@"value"] isKindOfClass:[NSArray class]]) {
+                    param.fValue = [[obj1[@"value"] firstObject] floatValue];
+                }else {
+                    param.fValue = [obj1[@"value"] floatValue];
+                }
+            }else if ([type isEqualToString:@"Matrix4x4"]) {
+                param.type = UNIFORM_MATRIX4X4;
+                GLMatrix4x4 matrix4;
+                NSArray *valueArray = obj1[@"value"];
+                matrix4.one = (GLVectore4){[valueArray[0][0] floatValue], [valueArray[0][1] floatValue], [valueArray[0][2] floatValue], [valueArray[0][3] floatValue]};
+                matrix4.two = (GLVectore4){[valueArray[1][0] floatValue], [valueArray[1][1] floatValue], [valueArray[1][2] floatValue], [valueArray[1][3] floatValue]};
+                matrix4.three = (GLVectore4){[valueArray[2][0] floatValue], [valueArray[2][1] floatValue], [valueArray[2][2] floatValue], [valueArray[2][3] floatValue]};
+                matrix4.four = (GLVectore4){[valueArray[3][0] floatValue], [valueArray[3][1] floatValue], [valueArray[3][2] floatValue], [valueArray[3][3] floatValue]};
+                param.matrix4 = matrix4;
+            }else {
+                param.type = UNIFORM_INT;
+                if ([obj1[@"value"] isKindOfClass:[NSArray class]]) {
+                    param.iValue = [[obj1[@"value"] firstObject] intValue];
+                }else {
+                    param.iValue = [obj1[@"value"] intValue];
+                }
+            }
+            [paramArray addObject:param];
+        }];
+        [customFilter setShaderUniformParams:paramArray isRepeat:[obj[@"repeat"] boolValue] forUniform:obj[@"paramName"]];
+    }];
+    NSArray *textureParams = effectDic[@"textureParams"];
+    
+   for(id  _Nonnull obj in textureParams) {
+        @autoreleasepool {
+            
+            TextureParams *param = [[TextureParams alloc] init];
+            param.type = TextureType_Sample2DBuffer;
+            param.name = obj[@"paramName"];
+            
+            NSString *warpMode = obj[@"warpMode"];
+            if (warpMode.length > 0) {
+                if ([warpMode isEqualToString:@"Repeat"]) {
+                    param.warpMode = TextureWarpModeRepeat;
+                }else if ([warpMode isEqualToString:@"MirroredRepeat"]) {
+                    param.warpMode = TextureWarpModeMirroredRepeat;
+                }
+            }
+            NSString *filterMode = obj[@"filterMode"];
+            if (filterMode.length > 0) {
+                if ([filterMode isEqualToString:@"Nearest"]) {
+                    param.filterMode = TextureFilterNearest;
+                }else if ([filterMode isEqualToString:@"Linear"]) {
+                    param.filterMode = TextureFilterLinear;
+                }
+            }
+            NSString *sourceName = obj[@"source"];
+            if ([sourceName isKindOfClass:[NSString class]]) {
+                if (sourceName.length > 0) {
+                    __weak NSString *newPath = path;
+                    newPath = [newPath stringByAppendingPathComponent:sourceName];
+                     
+                    NSMutableArray *paths = [NSMutableArray arrayWithObject:newPath];
+                    param.pathArray = paths;
+                }
+            }
+            else if ([sourceName isKindOfClass:[NSArray class]]) {
+                NSMutableArray *sourceArray = [obj[@"source"] mutableCopy];
+                NSMutableArray *arr = [NSMutableArray array];
+                for (NSString * _Nonnull imageName in sourceArray) {
+                    NSString *newpath = [path stringByAppendingPathComponent:imageName];
+
+                    [arr addObject:newpath];
+                }
+                param.pathArray = [NSMutableArray arrayWithArray:arr];//
+                
+            }
+            [customFilter setShaderTextureParams:param];
+        }
+    }
+    
+    
+    
+    return  customFilter;
+}
+
++ (NSString *)getAnimationFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
+    NSString *cachedFilePath = [KAnimationFolder stringByAppendingPathComponent:[self cachedFileNameForKey:urlPath]];
+    if( updatetime )
+        cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
+    return cachedFilePath;
+}
+
++ (NSString *)timeToStringNoSecFormat:(float)time{
+    if(time<=0){
+        time = 0;
+    }
+    int secondsInt  = floorf(time);
+    //    float haomiao=time-secondsInt;
+    int hour        = secondsInt/3600;
+    secondsInt     -= hour*3600;
+    int minutes     =(int)secondsInt/60;
+    secondsInt     -= minutes * 60;
+    NSString *strText;
+    //    if(haomiao==1){
+    //        secondsInt+=1;
+    //        haomiao=0.f;
+    //    }
+    if (hour>0)
+    {
+        strText=[NSString stringWithFormat:@"%02i:%02i:%02if",hour,minutes, secondsInt];
+    }else{
+        
+        strText=[NSString stringWithFormat:@"%02i:%02i",minutes, secondsInt];
+    }
+    return strText;
+}
+
+//MARK: 提示
++(void)initCommonAlertViewWithTitle:(nullable NSString *)title
+                            message:(nullable NSString *)message
+                  cancelButtonTitle:(nullable NSString *)cancelButtonTitle
+                  otherButtonTitles:(nullable NSString *)otherButtonTitles
+                   atViewController:( UIViewController * ) viewController
+                      atCancelBlock:(void(^_Nullable)(void))cancelBlock atOtherBlock:(void(^_Nullable)(void))otherBlock
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    if(cancelButtonTitle != nil)
+    {
+        [alert addAction:[UIAlertAction actionWithTitle:cancelButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            if( cancelBlock )
+                cancelBlock();
+        }]];
+    }
+    if( otherButtonTitles != nil )
+    {
+        [alert addAction:[UIAlertAction actionWithTitle:otherButtonTitles style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            if( otherBlock )
+                otherBlock();
+            
+        }]];
+    }
+    [viewController presentViewController:alert animated:YES completion:nil];
+}
+
+#pragma mark 读取视频文件大小
++ (long long) fileSizeAtPath:(NSString*) filePath
+{
+    NSFileManager* manager = [NSFileManager defaultManager];
+    if ([manager fileExistsAtPath:filePath]){
+        // 总大小
+            unsigned long long size = 0;
+            NSFileManager *manager = [NSFileManager defaultManager];
+            
+            BOOL isDir = NO;
+            BOOL exist = [manager fileExistsAtPath:filePath isDirectory:&isDir];
+            
+            // 判断路径是否存在
+            if (!exist)
+                return size;
+            if (isDir) { // 是文件夹
+                NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath:filePath];
+                for (NSString *subPath in enumerator.allObjects) {
+                    if (subPath.pathExtension.length > 0) {
+                        NSString *fullPath = [filePath stringByAppendingPathComponent:subPath];
+                        size += [manager attributesOfItemAtPath:fullPath error:nil].fileSize;
+                    }
+                }
+            }else{ // 是文件
+                size += [manager attributesOfItemAtPath:filePath error:nil].fileSize;
+            }
+        return size;
+    }
+    return 0;
+}
+
++ (long long)getNetworkFileBytesWithURLStr:(NSString*)urlStr
+
+{
+    if ( urlStr.length == 0 )
+    {
+        return 0;
+    }
+
+    NSURL* URL = [NSURL URLWithString:urlStr ];
+    NSMutableURLRequest* request = [[ NSMutableURLRequest alloc ] initWithURL:URL ];
+
+    //设置请求方式，@“HEAD”请求方式只是获取服务器返回的response响应头数据，这个数据量相当小，并不需要服务器返回响应体(文件数据)，用同步方式相应很快
+    [request setHTTPMethod:@"HEAD"];
+    request.timeoutInterval = 5.0;
+    [request setValue:@"" forHTTPHeaderField:@"Accept-Encoding"];
+    
+    __block NSHTTPURLResponse *resp = nil;
+    NSError *err = nil;
+
+    //同步方式发送网络请求
+    dispatch_semaphore_t disp = dispatch_semaphore_create(0);
+    NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error1) {
+        resp = (NSHTTPURLResponse*)response;
+        dispatch_semaphore_signal(disp);
+    }];
+    [dataTask resume];
+    dispatch_semaphore_wait(disp, DISPATCH_TIME_FOREVER);
+
+    if (err != nil) {
+        NSLog(@"===%@", err);
+        return 0;
+    }
+
+    //从响应头获取文件大小
+    return resp.expectedContentLength;
+}
+
 @end

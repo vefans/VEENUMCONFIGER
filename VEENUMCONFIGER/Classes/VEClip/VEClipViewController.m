@@ -97,9 +97,9 @@
     [self setupData];
     
     if(_flowPicture){
-        _videoView.backgroundColor = SCREEN_BACKGROUND_COLOR;
-        _photoView.backgroundColor = SCREEN_BACKGROUND_COLOR;
-        self.toolView.backgroundColor = SCREEN_BACKGROUND_COLOR;
+//        _videoView.backgroundColor = SCREEN_BACKGROUND_COLOR;
+//        _photoView.backgroundColor = SCREEN_BACKGROUND_COLOR;
+//        self.toolView.backgroundColor = SCREEN_BACKGROUND_COLOR;
     }
 #ifdef kEnterBackgroundCancelExport
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationEnterHome:) name:UIApplicationDidEnterBackgroundNotification object:nil];

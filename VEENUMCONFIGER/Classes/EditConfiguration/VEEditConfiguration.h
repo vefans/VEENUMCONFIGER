@@ -86,7 +86,10 @@ typedef NS_ENUM(NSInteger, ALBUMTYPE){
     kONLYALBUMVIDEO,
     kONLYALBUMIMAGE
 };
-
+typedef NS_ENUM(NSInteger, BackGroundColorType) {
+    BackGroundColorTypeLight,        //亮色
+    BackGroundColorTypeDark, //深色
+};
 NS_ASSUME_NONNULL_BEGIN
 
 @interface VEEditConfiguration : NSObject<NSMutableCopying,NSCopying>

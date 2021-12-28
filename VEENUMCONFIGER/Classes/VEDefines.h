@@ -36,6 +36,7 @@ typedef NS_ENUM(NSInteger ,KBeautyType) {
     KBeauty_ToneIntensity       = 18,   // 红润
     KBeauty_BigEyes             = 19,   //大眼
     KBeauty_FaceLift            = 20,   //瘦脸
+    KBeauty_beauty              = 21,   //一键美颜
 };
 
 typedef NS_ENUM(NSInteger ,MediaType) {
@@ -223,7 +224,7 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KINTELLIGENT_KEY    = 42,//智能抠像
     KNOISE              = 43,//降噪
     KMONGOLIANKEYFRAME  = 44,//蒙板关键帧
-    kVEUSEDSINGLEFILTER     =45, //所有滤镜
+    kVEUSEDSINGLEFILTER = 45, //所有滤镜
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -457,6 +458,7 @@ isPhoneX;\
 
 #define NV_Color 0x27262c
 #define SCREEN_BACKGROUND_COLOR [VEConfigManager sharedManager].viewBackgroundColor
+#define BACKGROUND_WHITE_COLOR UIColorFromRGB(0xefefef)
 #define TOOLBAR_COLOR UIColorFromRGB(0x101010)
 #define CUSTOM_GRAYCOLOR UIColorFromRGB(0xb2b2b2)
 #define TEXT_COLOR UIColorFromRGB(0xb3b3b3)
@@ -549,6 +551,15 @@ isPhoneX;\
 #define kSpecialEffectFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SpecialEffect"]
 #define kNewSpecialEffectPlistPath [kSpecialEffectFolder stringByAppendingPathComponent:@"SpecialEffectList_New.plist"]
 
+#define kBoxEffectFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/BoxEffect"]
+#define kNewBoxEffectPlistPath [kBoxEffectFolder stringByAppendingPathComponent:@"BoxEffectList_New.plist"]
+
+#define kSuperposiEffectFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SuperposiEffect"]
+#define kNewSuperposiEffectPlistPath [kSuperposiEffectFolder stringByAppendingPathComponent:@"SuperposiEffectList_New.plist"]
+
+#define kFlowerEffectFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/FlowerEffect"]
+#define kNewFlowerEffectPlistPath [kFlowerEffectFolder stringByAppendingPathComponent:@"FlowerEffectList_New.plist"]
+
 #define kTransitionFolder [kVEDirectory stringByAppendingPathComponent:@"transitionFiles"]
 #define kTransitionPlistPath [kTransitionFolder stringByAppendingPathComponent:@"TransitionList.plist"]
 
@@ -598,7 +609,7 @@ isPhoneX;\
 #define kFontIconPlistPath [kFontFolder stringByAppendingPathComponent:@"fontIconList2020.plist"]
 #define kFontCheckPlistPath [kFontFolder stringByAppendingPathComponent:@"fontCheckList2020.plist"]
 #define kFontType @"font_family_2"
-#define kPESDKFontType @"font_family_3"
+#define kPESDKFontType @"font"
 #define kDefaultFontPath [VEEditResourceBundle pathForResource:@"New_EditVideo/text_sample/PingFang-SC-Regular" ofType:@"otf"]
 
 #define kStickerFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"Effect"]
@@ -621,6 +632,10 @@ isPhoneX;\
 #pragma mark-媒体动画
 #define KAnimationFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Animation"]
 #define kAnimationPath [KAnimationFolder stringByAppendingPathComponent:@"AnimationPath.plist"]
+
+#pragma mark- 贴纸动画
+#define KStickerAnimationFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/StickerAnimation"]
+#define kStickerAnimationPath [KStickerAnimationFolder stringByAppendingPathComponent:@"StickerAnimationPath.plist"]
 
 #define kTextToSpeechFolder [kVEDirectory stringByAppendingPathComponent:@"TextToSpeech"]
 
