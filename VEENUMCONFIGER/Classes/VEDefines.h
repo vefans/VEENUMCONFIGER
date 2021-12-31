@@ -562,6 +562,8 @@ isPhoneX;\
 
 #define kTransitionFolder [kVEDirectory stringByAppendingPathComponent:@"transitionFiles"]
 #define kTransitionPlistPath [kTransitionFolder stringByAppendingPathComponent:@"TransitionList.plist"]
+#define kTransitionIconFolder [kTransitionFolder stringByAppendingPathComponent:@"TransitionIconFolder"]
+#define kEffectIconFolder [kVEDirectory stringByAppendingPathComponent:@"EffectIconFolder"]
 
 #define kLocalTransitionPlist [kLocalTransitionFolder stringByAppendingPathComponent:@"Transition.plist"]
 #define kDefaultTransitionTypeName @"基础"
@@ -592,6 +594,7 @@ isPhoneX;\
 #define kSubtitlePlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleListType.plist"]
 #define kSubtitleIconPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleIconList.plist"]
 #define kSubtitleCategoryPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleCategoryListType.plist"]
+
 #pragma mark- 换背景
 #define KChangeBackgroundFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeBackground"]
 #define kChangeBackgroundPath [KChangeBackgroundFolder stringByAppendingPathComponent:@"ChangeBackgroundPath.plist"]
@@ -602,6 +605,7 @@ isPhoneX;\
 
 #define kTextTemplateFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"textTemplate"]
 #define kTextTemplatePlistPath [kTextTemplateFolder stringByAppendingPathComponent:@"TextTemplatePlistList.plist"]
+#define kTextTemplateIconFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"TextTemplateIconFolder"]
 
 #define kFontFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"Font"]
 #define kFontIconPath [kFontFolder stringByAppendingPathComponent:@"icon"]

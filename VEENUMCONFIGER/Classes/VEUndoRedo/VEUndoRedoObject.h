@@ -153,6 +153,7 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_Superposi_Add,//叠加添加
     VEUndoRedoEditType_Superposi_Copy,//叠加复制
     VEUndoRedoEditType_Superposi_Move,//叠加移动
+    VEUndoRedoEditType_Superposi_Delete,//叠加删除
     
     VEUndoRedoEditType_ErasePen_Add, // 添加消除笔
 };

@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-NS_ASSUME_NONNULL_BEGIN
+#import "VENetworkMaterialBtn_Cell.h"
 
 @protocol VENetworkMaterialViewDelegate;
 
@@ -51,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol VENetworkMaterialViewDelegate <NSObject>
 @optional
 -(void) CellIndex:(NSInteger) index atNetwork:(VENetworkMaterialView *) network;
--(UIView *)btnCollectCell:(NSInteger) index atIndexCount:(NSInteger) indexCount atNetwork:(VENetworkMaterialView *) network;
+-(UIView *)btnCollectCell:(NSInteger) index atIndexCount:(NSInteger) indexCount atNetwork:(VENetworkMaterialView *) network cell:(VENetworkMaterialBtn_Cell *)btnCell;
 -(NSInteger) indexCountCell:(NSInteger) index atNetwork:(VENetworkMaterialView *) network;
 
 -(UIView *)ImageViewCollectCell:(NSInteger) indexCount atNetwork:(VENetworkMaterialView *) network;
@@ -80,5 +79,3 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @end
-
-NS_ASSUME_NONNULL_END

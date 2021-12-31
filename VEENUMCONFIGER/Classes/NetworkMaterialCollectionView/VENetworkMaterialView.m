@@ -9,7 +9,7 @@
 #import "VENetworkMaterialView.h"
 #import "VENetworkMaterialCollectionViewCell.h"
 #import <SDWebImage/SDWebImage.h>
-#import "VENetworkMaterialBtn_Cell.h"
+
 @interface VENetworkMaterialView()<UICollectionViewDataSource,UICollectionViewDelegate,VENetworkMaterialCollectionViewCellDelegate
 //,UIScrollViewDelegate
 >
@@ -266,13 +266,6 @@
             [cell.collectionView removeFromSuperview];
             cell.collectionView = nil;
         }
-        //        else{
-        //            if(  _isAddCount != 1 )
-        //               [cell.collectionView setContentOffset:CGPointMake(0, 0)];
-        //            else
-        //              [cell.collectionView setContentOffset:CGPointMake((_cellWidth*cell.indexCount ) -  cell.collectionView.frame.size.width, 0)];
-        //            [cell.collectionView reloadData];
-        //        }
         
         cell.isDragToChange = _isDragToChange;
         
@@ -313,7 +306,7 @@
 }
 
 #pragma mark- 界面组装
--(UIView *)btnCollectCell:(NSInteger) index atIndexCount:(NSInteger) indexCount collectionView:(UICollectionView *)collectionView
+-(UIView *)btnCollectCell:(NSInteger) index atIndexCount:(NSInteger) indexCount collectionView:(UICollectionView *)collectionView cell:(nonnull VENetworkMaterialBtn_Cell *)cell
 {
     if (_selectedItemIndex > 0 && collectionView.superview.frame.origin.x == _currentOffsetX) {
         UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)collectionView.collectionViewLayout;
@@ -333,8 +326,8 @@
         }
         _selectedItemIndex = 0;
     }
-    if( _delegate && [_delegate respondsToSelector:@selector(btnCollectCell:atIndexCount:atNetwork:)] )
-        return [_delegate btnCollectCell:index atIndexCount:indexCount atNetwork:self];
+    if( _delegate && [_delegate respondsToSelector:@selector(btnCollectCell:atIndexCount:atNetwork:cell:)] )
+        return [_delegate btnCollectCell:index atIndexCount:indexCount atNetwork:self cell:cell];
     else
         return nil;
 }
@@ -354,6 +347,10 @@
 }
 
 - (void)dealloc{
+    [self.collectionView removeFromSuperview];
+    self.collectionView.delegate = nil;
+    self.collectionView = nil;
+    self.delegate = nil;
     NSLog(@"%s",__func__);
 }
 

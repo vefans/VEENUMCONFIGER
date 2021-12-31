@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <VEENUMCONFIGER/VEAddItemButton.h>
     
 NS_ASSUME_NONNULL_BEGIN
 
 @interface VENetworkMaterialBtn_Cell : UICollectionViewCell
 
+@property (nonatomic , strong)NSURLSessionDataTask *task;
 @property(nonatomic, weak)  UIView * btnCollectBtn;
 
 @end

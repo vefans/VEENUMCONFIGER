@@ -2010,7 +2010,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     param.filterMode = TextureFilterLinear;
                 }
             }
-            if ([[obj objectForKey:@"paramName"] isEqualToString:@"currentFrameTexture"]) {
+            if (currentFrameTexturePath && [[obj objectForKey:@"paramName"] isEqualToString:@"currentFrameTexture"]) {
                 param.type = TextureType_Sample2DMain;
                 NSMutableArray *paths = [NSMutableArray arrayWithObject:currentFrameTexturePath];
                 param.pathArray = paths;
@@ -2152,7 +2152,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     param.filterMode = TextureFilterLinear;
                 }
             }
-            if ([[obj objectForKey:@"paramName"] isEqualToString:@"currentFrameTexture"]
+            if (currentFrameImagePath && [[obj objectForKey:@"paramName"] isEqualToString:@"currentFrameTexture"]
                 && [[NSFileManager defaultManager] fileExistsAtPath:currentFrameImagePath]) {
                 param.type = TextureType_Sample2DMain;
                 NSMutableArray *paths = [NSMutableArray arrayWithObject:currentFrameImagePath];
@@ -2317,7 +2317,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     param.filterMode = TextureFilterLinear;
                 }
             }
-            if ([[obj objectForKey:@"paramName"] isEqualToString:@"currentFrameTexture"]
+            if (currentFrameImagePath && [[obj objectForKey:@"paramName"] isEqualToString:@"currentFrameTexture"]
                 && [[NSFileManager defaultManager] fileExistsAtPath:currentFrameImagePath]) {
                 param.type = TextureType_Sample2DMain;
                 NSMutableArray *paths = [NSMutableArray arrayWithObject:currentFrameImagePath];
@@ -6835,7 +6835,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     param.filterMode = TextureFilterLinear;
                 }
             }
-            if ([[obj objectForKey:@"paramName"] isEqualToString:@"currentFrameTexture"]) {
+            if (currentFrameTexturePath && [[obj objectForKey:@"paramName"] isEqualToString:@"currentFrameTexture"]) {
                 param.type = TextureType_Sample2DMain;
                 NSMutableArray *paths = [NSMutableArray arrayWithObject:currentFrameTexturePath];
                 param.pathArray = paths;
@@ -6980,7 +6980,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     param.filterMode = TextureFilterLinear;
                 }
             }
-            if ([[obj objectForKey:@"paramName"] isEqualToString:@"currentFrameTexture"]) {
+            if (currentFrameTexturePath && [[obj objectForKey:@"paramName"] isEqualToString:@"currentFrameTexture"]) {
                 param.type = TextureType_Sample2DMain;
                 NSMutableArray *paths = [NSMutableArray arrayWithObject:currentFrameTexturePath];
                 param.pathArray = paths;
@@ -8538,5 +8538,24 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     //从响应头获取文件大小
     return resp.expectedContentLength;
 }
-
++ (BOOL)createZip:(NSString *)path zipPath:(NSString *)zipPath {
+    NSFileManager * fileManager = [NSFileManager defaultManager];
+    unlink([zipPath UTF8String]);
+    if ([fileManager fileExistsAtPath:path]) {
+        NSArray *files = [fileManager subpathsOfDirectoryAtPath:path error:nil];
+        if (files.count > 0) {
+            ZipArchive *zip = [[ZipArchive alloc] init];
+            [zip CreateZipFile2:zipPath];
+            [files enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if (obj.pathExtension.length > 0) {
+                    [zip addFileToZip:[path stringByAppendingPathComponent:obj] newname:[path.lastPathComponent stringByAppendingPathComponent:obj]];
+                }
+            }];
+            [zip CloseZipFile2];
+            return YES;
+        }
+    }
+    
+    return NO;
+}
 @end

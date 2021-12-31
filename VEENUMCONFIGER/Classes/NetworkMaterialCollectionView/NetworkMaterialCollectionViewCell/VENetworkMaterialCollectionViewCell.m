@@ -10,6 +10,7 @@
 #import "VENetworkMaterialBtn_Cell.h"
 #import "VENetworkMaterialView.h"
 #import <SDWebImage/SDWebImage.h>
+#import <VEENUMCONFIGER/LongCacheImageView.h>
 
 @interface VENetworkMaterialCollectionViewCell()<UICollectionViewDataSource,UICollectionViewDelegate,UIScrollViewDelegate>
 
@@ -203,40 +204,13 @@
     if(!cell){
         cell = [[VENetworkMaterialBtn_Cell alloc] initWithFrame:CGRectMake(0, 0, _cellWidth, _cellHeight)];
     }
-    
-    if( _delegate && [_delegate respondsToSelector:@selector(freedCell:)] )
+    if( _delegate && [_delegate respondsToSelector:@selector(btnCollectCell:atIndexCount:collectionView:cell:)] )
     {
-        [_delegate freedCell:cell];
-    }
-    
-    if( cell.btnCollectBtn )
-    {
-        if([cell.btnCollectBtn isKindOfClass:[UIButton class]] )
-        {
-            SDAnimatedImageView *imageView = (SDAnimatedImageView *)[cell.btnCollectBtn viewWithTag:22222];
-            imageView.image = nil;
-            [imageView removeFromSuperview];
-        }
-        
-        [cell.btnCollectBtn removeFromSuperview];
-        cell.btnCollectBtn = nil;
-    }
-    else{
-        SDAnimatedImageView *imageView = (SDAnimatedImageView *)[cell viewWithTag:22222];
-        if( imageView )
-        {
-            imageView.image = nil;
-            [imageView removeFromSuperview];
-        }
-    }
-    
-    if( _delegate && [_delegate respondsToSelector:@selector(btnCollectCell:atIndexCount:collectionView:)] )
-    {
-        UIView * view = [_delegate btnCollectCell:indexPath.row atIndexCount:_index collectionView:collectionView];
+        UIView * view = [_delegate btnCollectCell:indexPath.row atIndexCount:_index collectionView:collectionView cell:cell];
         cell.btnCollectBtn = view;
         [cell addSubview:view];
     }
-    
+    [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
     
     return cell;
 }
@@ -348,5 +322,38 @@
 //
 //
 //}
+
+- (void)dealloc{
+    [self.collectionView removeFromSuperview];
+    [[self.collectionView visibleCells] enumerateObjectsUsingBlock:^(__kindof VENetworkMaterialBtn_Cell * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        UIView *iCell = obj.btnCollectBtn;
+        if([iCell isKindOfClass:[VEAddItemButton class]]){
+            VEAddItemButton *btn = (VEAddItemButton *)iCell;
+            [btn.thumbnailIV long_stopAnimating];
+            btn.thumbnailIV.longGifData = nil;
+            btn.thumbnailIV.image = nil;
+            [btn.thumbnailIV removeFromSuperview];
+            btn.thumbnailIV = nil;
+            [btn removeFromSuperview];
+            btn = nil;
+            [iCell removeFromSuperview];
+            iCell = nil;
+        }else{
+            LongCacheImageView *imageView = (LongCacheImageView *)[iCell viewWithTag:200000];
+            if(imageView){
+                [imageView long_stopAnimating];
+                imageView.longGifData = nil;
+                imageView.image = nil;
+                [imageView removeFromSuperview];
+                imageView = nil;
+            }
+            [iCell removeFromSuperview];
+            iCell = nil;
+        }
+    }];
+    self.collectionView = nil;
+    self.delegate = nil;
+//    NSLog(@"%s",__func__);
+}
 
 @end

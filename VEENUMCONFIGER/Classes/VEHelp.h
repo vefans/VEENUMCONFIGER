@@ -344,4 +344,6 @@
                    atViewController:( UIViewController * ) viewController
                       atCancelBlock:(void(^_Nullable)(void))cancelBlock atOtherBlock:(void(^_Nullable)(void))otherBlock;
 + (NSString *)timeToStringNoSecFormat:(float)time;
+
++ (BOOL)createZip:(NSString *)path zipPath:(NSString *)zipPath;
 @end
