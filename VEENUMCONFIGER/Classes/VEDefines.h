@@ -173,6 +173,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_DOF                   = 53,   // 景深
     VEAdvanceEditType_BOX                   = 54,   //  边框
     VEAdvanceEditType_Superposi                   = 55,   // 叠加
+    VEAdvanceEditType_Sky                  = 56,      //天空
 };
 
 /*
@@ -598,6 +599,11 @@ isPhoneX;\
 #pragma mark- 换背景
 #define KChangeBackgroundFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeBackground"]
 #define kChangeBackgroundPath [KChangeBackgroundFolder stringByAppendingPathComponent:@"ChangeBackgroundPath.plist"]
+
+#pragma mark- 天空
+#pragma mark- 换背景
+#define KChangeSkyFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeSky"]
+#define kChangeSkyPath [KChangeSkyFolder stringByAppendingPathComponent:@"ChangeSkyPath.plist"]
 
 #pragma mark- 字幕动画
 #define KSubtitleAnimationFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SubtitleAnimation"]

@@ -2979,14 +2979,14 @@
         }
     }
     float scrollWidth = self.frame.size.width;
-    CGFloat screenWidth = CGRectGetWidth(self.frame);
+//    CGFloat screenWidth = CGRectGetWidth(self.frame);
     
     //    [self.frameView setFrame:CGRectMake(scrollWidth/2-(self.frame.origin.x/2.0), 0, picWidth* self.thumbTimes - 6, CGRectGetHeight(self.frameView.frame))];
     self.frameView.frame = CGRectMake((scrollWidth - picWidth*4.0)/2.0+3, _frameView.frame.origin.y
                                       , picWidth* (self.thumbTimes-1)+endWidth, _frameView.frame.size.height);
 //    [self.videoRangeView setFrame:self.frameView.frame];
         [self.videoRangeView setFrame:CGRectMake(self.frameView.frame.origin.x, self.videoRangeView.frame.origin.y, self.frameView.frame.size.width, self.videoRangeView.frame.size.height)];
-    CGFloat contentViewFrameWidth = duration <= self.maxLength + 0.5 ? screenWidth + 30 : CGRectGetWidth(self.frameView.frame);//frameViewFrameWidth;
+//    CGFloat contentViewFrameWidth = duration <= self.maxLength + 0.5 ? screenWidth + 30 : CGRectGetWidth(self.frameView.frame);//frameViewFrameWidth;
     
     float width = duration/(_trimDuration_OneSpecifyTime/4.0)*picWidth + picWidth*2.0 + 6;
     

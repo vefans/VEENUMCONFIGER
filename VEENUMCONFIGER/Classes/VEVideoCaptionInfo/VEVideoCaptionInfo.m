@@ -19,7 +19,6 @@
         _animationOutTimeRange = kCMTimeRangeZero;
         _stickerAnimationOutTimeRange = kCMTimeRangeZero;
         _collageMaskColorIndex = 11;
-        _fxEffect = nil;
         _scale = 1.0;
         _videoVolume = 1.0;
         _isFxFile = NO; //素材下标（特效作用的素材的下标）

@@ -158,7 +158,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSString *strText;
     if(haomiao==1){
         secondsInt+=1;
-        haomiao=0.f;
+//        haomiao=0.f;
     }
     if (hour>0)
     {
@@ -986,11 +986,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     //    但是在iOS11以上使用这个方法获取剩余空间不准确了，或者跟系统不一样
     //    iOS11上可以使用
     NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:NSTemporaryDirectory()];
-    NSDictionary *results = [fileURL resourceValuesForKeys:@[NSURLVolumeAvailableCapacityForImportantUsageKey] error:nil];
-    // 这里拿到的值的单位是bytes，iOS11是这样算的1000MB = 1，1000进制算的
-    // bytes->KB->MB->G
-    
-    CGFloat freeSize = [results[NSURLVolumeAvailableCapacityForImportantUsageKey] floatValue]/1000.0f/1000.0f/1000.0f;
+    CGFloat freeSize = 0;
+    if (@available(iOS 11.0, *)) {
+        NSDictionary *results = [fileURL resourceValuesForKeys:@[NSURLVolumeAvailableCapacityForImportantUsageKey] error:nil];
+        // 这里拿到的值的单位是bytes，iOS11是这样算的1000MB = 1，1000进制算的
+        // bytes->KB->MB->G
+        
+        freeSize = [results[NSURLVolumeAvailableCapacityForImportantUsageKey] floatValue]/1000.0f/1000.0f/1000.0f;
+    } else {
+        // Fallback on earlier versions
+    }
     
     return freeSize;
 }
@@ -1779,6 +1784,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     [dateformater setDateFormat:@"yyyy-MM-dd_HH-mm-ss"];
     NSString *identifier = [dateformater stringFromDate:date_];
     return identifier;
+}
+
++ (NSString *)geCaptionExSubtitleIdentifier{
+    NSDate *date_ = [NSDate date];
+    NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
+    [dateformater setDateFormat:@"yyyy-MM-dd_HH-mm-ss"];
+    NSString *identifier = [dateformater stringFromDate:date_];
+    return [NSString stringWithFormat:@"subtitle_%@",identifier];
 }
 
 + (NSMutableArray *)getMaskArray {
@@ -3151,8 +3164,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     //设置时区,这个对于时间的处理有时很重要
     NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
     [formatter setTimeZone:timeZone];
-    NSDate *datenow = [NSDate date];//现在时间,你可以输出来看下是什么格式
-    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]*1000];
+//    NSDate *datenow = [NSDate date];//现在时间,你可以输出来看下是什么格式
+//    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]*1000];
     
     NSDate *date_ = [NSDate date];
     NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
@@ -4127,14 +4140,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         CGImageRef image = [gen copyCGImageAtTime:time actualTime:nil error:&error];
         
         float frameRate = 0.0;
-        float duration = 0;
+//        float duration = 0;
         if ([[asset tracksWithMediaType:AVMediaTypeVideo] count] > 0) {
             AVAssetTrack* clipVideoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
             frameRate = clipVideoTrack.nominalFrameRate;
             if (CMTimeCompare(time, clipVideoTrack.timeRange.duration) == 1) {
                 time = clipVideoTrack.timeRange.duration;
             }
-            duration = CMTimeGetSeconds(clipVideoTrack.timeRange.duration);
+//            duration = CMTimeGetSeconds(clipVideoTrack.timeRange.duration);
         }
         while (!image) {
             error = nil;
@@ -5053,9 +5066,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSMutableArray *captionExs = [NSMutableArray array];
     //MARK: 新版字幕
     if (templateInfo.subtitleExs.count > 0) {
-        CGRect videoFrame = CGRectMake(0, 0, kWIDTH, kHEIGHT - kPlayerViewOriginX - 234 - 44 - (kToolbarHeight+16) );
-        CGRect videoRect = AVMakeRectWithAspectRatioInsideRect(templateInfo.size, videoFrame);
-        float scaleValue = ((templateInfo.size.width > templateInfo.size.height)?templateInfo.size.width/videoRect.size.width:templateInfo.size.height/videoRect.size.height);
         [templateInfo.subtitleExs enumerateObjectsUsingBlock:^(VECoreTemplateSubtitleEx * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             CaptionEx *caption = [obj getSubtitleWithFolderPath:folderPath videoSize:templateInfo.size];
             if (caption) {
@@ -5316,12 +5326,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                                                                                 options:NSJSONReadingMutableContainers
                                                                                   error:&error];
                     if (!error) {
-                        int fx = 0,fy = 0,fw = 0,fh = 0;
-                        NSArray *textPadding = configDic[@"textPadding"];
-                        fx =  [textPadding[0] intValue];
-                        fy =  [textPadding[1] intValue]+3;
-                        fw =  [configDic[@"textWidth"] intValue];
-                        fh =  [configDic[@"textHeight"] intValue];
                         if ([configDic[@"apng"] boolValue]) {
                             [VEHelp setApngCaptionFrameArrayWithImagePath:configPath.stringByDeletingLastPathComponent jsonDic:configDic];
                         }
@@ -6478,6 +6482,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     NSLog(@"json解析失败：%@",err);
                 }
                 CaptionItem * captionItem = [CaptionItem new];
+                
+                captionEx.identifier = [VEHelp geCaptionExSubtitleIdentifier];
+                
                 float   x = [subtitleEffectConfig[@"centerX"] floatValue];
                 float   y = [subtitleEffectConfig[@"centerY"] floatValue];
                 int     w = [subtitleEffectConfig[@"width"] intValue];
@@ -6669,12 +6676,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
     NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
     jsonData = nil;
-    NSError * error = nil;
     NSArray* shaderArray = effectDic[@"effect"];
     if (shaderArray.count) {
         [shaderArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSMutableDictionary* shaderDic = obj;
-            NSLog(@"name:%@",shaderDic[@"name"]);
             [filterArray addObject:[self getCustomFilterWithDictionary:obj folderPath:path categoryId:categoryId resourceId:resourceId fxId:fxId filterFxArray:filterFxArray timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath]];
         }];
     }

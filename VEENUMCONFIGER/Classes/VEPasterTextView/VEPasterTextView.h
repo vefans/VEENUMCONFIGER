@@ -219,7 +219,6 @@
 -(void)remove_Recognizer;
 
 - (void)contentTapped:(UITapGestureRecognizer*)tapGesture;
--(void)setCancelIsCanCurrent;
 
 @property (nonatomic, assign)BOOL   isCoverText;
 

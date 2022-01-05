@@ -1032,8 +1032,9 @@
       maxExportVideoDuration:[VEConfigManager sharedManager].exportConfiguration.outputVideoMaxDuration
                     progress:^(float progress) {
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            if(_exportProgressView)
-                                [_exportProgressView setProgress:progress*100.0 animated:NO];
+                            StrongSelf(self);
+                            if(strongSelf && strongSelf->_exportProgressView)
+                                [strongSelf->_exportProgressView setProgress:progress*100.0 animated:NO];
                         });
                     } success:^{
                         dispatch_async(dispatch_get_main_queue(), ^{
@@ -1698,10 +1699,11 @@
         if( _cutMmodeType == kCropTypeFixed )
         {
             if( _photoView )
-                if( _cutMmodeType == kCropTypeFixed )
+                if( _cutMmodeType == kCropTypeFixed ) {
                     _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _photoView.frame.size.height - 65, kWIDTH - 16, 65)];
-                else
+                }else {
                     _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _videoView.frame.size.height - 65, kWIDTH - 16, 65)];
+                }
         }
         else{
             _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, 130, kWIDTH - 16, 90)];

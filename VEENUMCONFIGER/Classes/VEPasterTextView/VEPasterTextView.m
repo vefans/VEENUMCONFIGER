@@ -1644,7 +1644,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         
         float angleDiff = deltaAngle - ang;
         
-        float oldScale = _selfScale;
+//        float oldScale = _selfScale;
         
         _zoomScale = CGPointGetDistance(center, touchLocation)/(initialDistance);
         if( iswatermark )
@@ -1678,7 +1678,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         if( _contentLabel )
         {
             float size = (_selfScale - 1.0)/1.2f;
-            float scale = oldScale;
+            float scale;// = oldScale;
 //
 //            float fontSize = _fontSize * (size*1.2f + 1.0);
 //
@@ -1726,8 +1726,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         }
         else{
             float size = (_selfScale - 1.0)/1.2f;
-            float scale = oldScale;
-                scale = _selfScale;
+            float scale = _selfScale;
             
             if( ((-angleDiff) < (20.0/180.0/3.14)) && ((-angleDiff) >= (-20.0/180.0/3.14))  )
             {

@@ -354,15 +354,12 @@
         
         float angleDiff = deltaAngle - ang;
         
-        float oldScale = self.selfScale;
-        
         self.zoomScale = VECGPointGetDistance(center, touchLocation)/(initialDistance);
         
         self.selfScale = self.oldSelfScale + (self.zoomScale-1.0)*self.oldSelfScale;
         
-        float size = (self.selfScale - 1.0)/1.2f;
-        float scale = oldScale;
-        scale = self.selfScale;
+//        float size = (self.selfScale - 1.0)/1.2f;
+        float scale = self.selfScale;
         
         if( ((-angleDiff) < 0.03) && ((-angleDiff) >= -0.03)  )
         {

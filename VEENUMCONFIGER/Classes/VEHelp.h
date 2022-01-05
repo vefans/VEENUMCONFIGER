@@ -10,6 +10,8 @@
 
 + (UIImage *)geScreenShotImageFromVideoURL:(NSURL *)fileURL atTime:(CMTime)time  atSearchDirection:(bool) isForward;
 
++ (NSString *)geCaptionExSubtitleIdentifier;
+
 +(float)getMediaAssetScale_File:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark;
 
 +(NSMutableAttributedString *)getAttrString:(NSString *) string atForegroundColor:(UIColor *) foregroundColor atStrokeColor:(UIColor *) strokeColor atShadowBlurRadius:(float) shadowBlurRadius atShadowOffset:(CGSize) shadowOffset atShadowColor:(UIColor *) shadowColor;
@@ -287,7 +289,6 @@
 +(void)getConfig_CaptionStickerEx:( CaptionEx * ) captionEx atCaptionConfig:( NSString * ) configPath atConfig:( NSDictionary** ) config;
 
 + (NSString *)getVerBationAnimationFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
-+ (BOOL)OpenZipp:(NSString*)zipPath  unzipto:(NSString*)_unzipto;
 
 +(  CustomFilter * )getSubtitleAnmation:( NSString * ) configPath atPath:( NSString * ) path atCaptionItem:( CaptionItem * ) captionItem;
 +(CustomFilter *)getAnmationDic:( NSMutableDictionary * ) effectDic atPath:(NSString *)path;
@@ -337,12 +338,12 @@
 + (long long)getNetworkFileBytesWithURLStr:(NSString*)urlStr;//获取网络文件大小
 
 //MARK: 提示
-+(void)initCommonAlertViewWithTitle:(nullable NSString *)title
-                            message:(nullable NSString *)message
-                  cancelButtonTitle:(nullable NSString *)cancelButtonTitle
-                  otherButtonTitles:(nullable NSString *)otherButtonTitles
++(void)initCommonAlertViewWithTitle:(NSString *)title
+                            message:(NSString *)message
+                  cancelButtonTitle:(NSString *)cancelButtonTitle
+                  otherButtonTitles:(NSString *)otherButtonTitles
                    atViewController:( UIViewController * ) viewController
-                      atCancelBlock:(void(^_Nullable)(void))cancelBlock atOtherBlock:(void(^_Nullable)(void))otherBlock;
+                      atCancelBlock:(void(^)(void))cancelBlock atOtherBlock:(void(^)(void))otherBlock;
 + (NSString *)timeToStringNoSecFormat:(float)time;
 
 + (BOOL)createZip:(NSString *)path zipPath:(NSString *)zipPath;

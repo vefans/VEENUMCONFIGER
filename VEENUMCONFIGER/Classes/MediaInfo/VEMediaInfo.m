@@ -735,7 +735,7 @@
         media.filterIntensity = _filterIntensity;
     }
     //智能抠图
-    media.autoSegment = _isIntelligentKey;
+    media.autoSegmentType = _autoSegmentType;
     //透明度
     media.alpha = _backgroundAlpha;
     //美颜
