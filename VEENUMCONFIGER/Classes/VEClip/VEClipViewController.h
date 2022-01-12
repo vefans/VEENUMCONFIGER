@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, assign)FileCropModeType    cutMmodeType;
 @property(nonatomic, assign)BOOL                        isCropTypeViewHidden;   //是否显示 裁剪比例选择
-
+@property(nonatomic, assign)CGRect fixedMaxCrop;//固定裁剪最大区域
 @property(nonatomic,assign)VECropType cropType;
 
 /**需要裁剪的文件

@@ -268,6 +268,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 网络素材分类地址
  */
 @property (nonatomic,copy)NSString   * _Nonnull netMaterialTypeURL;
+/** 网络素材地址
+ */
+@property (nonatomic,copy)NSString   * _Nonnull netMaterialURL;
 
 /** 本地音乐 (default true)
  */

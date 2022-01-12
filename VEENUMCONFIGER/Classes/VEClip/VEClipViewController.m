@@ -90,7 +90,9 @@
     {
         self.view.backgroundColor = [UIColor whiteColor];
     }
-    
+    if (CGRectEqualToRect(_fixedMaxCrop, CGRectZero)) {
+        _fixedMaxCrop = CGRectMake(0, 0, 1, 1);
+    }    
     [self initConfiguration];
     [self setupNavBar];
     [self setupViews];
@@ -2018,6 +2020,18 @@
         rect.origin.y = (0.5-(_selectFile.crop.origin.y+_selectFile.crop.size.height/2.0)) * cropSize.height * scale;
         _pasterTextViewScale = scale;
     }
+    size = CGSizeMake(cropSize.width*_fixedMaxCrop.size.width, cropSize.height*_fixedMaxCrop.size.height);
+    float originalProportion = size.width/size.height;
+    width = originalProportion*videoSize.height;
+    float minScale;
+    if( width <= videoSize.width  )
+    {
+        minScale = width/size.width;
+    }else {
+        minScale = videoSize.width/size.width;
+    }
+    [self.pasterTextView setMinScale:minScale];
+    
     return rect;
 }
 

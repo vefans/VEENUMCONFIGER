@@ -141,6 +141,10 @@
  */
 + (VEMediaInfo *)vassetToFile:(MediaAsset *) vvasset;
 
+/**VEMediaInfo转为MediaAsset
+ */
++(MediaAsset *)canvasFile:(VEMediaInfo *) file;
+
 + (void)getNetworkResourcesWithParams:(NSMutableDictionary *)params
                             urlPath:(NSString *)urlPath
                   completionHandler:(void (^)(NSArray *listArray))completionHandler
@@ -156,7 +160,7 @@
 + (NSMutableArray *)getFilterArrayWithListArray:(NSMutableArray *)listArray;
 
 + (NSString *)getFilterDownloadPathWithDic:(NSDictionary *)itemDic;
-
++ (NSString *)getMusicDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getMediaIdentifier;
 
 + (NSMutableArray *)getMaskArray;

@@ -1473,6 +1473,73 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     return size;
 }
++(MediaAsset *)canvasFile:(VEMediaInfo *) file
+{
+    MediaAsset * vvasset = [[MediaAsset alloc] init];
+
+    vvasset.url = file.contentURL;
+    if(file.fileType == kFILEVIDEO){
+        vvasset.type = MediaAssetTypeVideo;
+        vvasset.videoActualTimeRange = file.videoActualTimeRange;
+        if(file.isReverse){
+            vvasset.url = file.reverseVideoURL;
+            if (CMTimeRangeEqual(kCMTimeRangeZero, file.reverseVideoTimeRange)) {
+                vvasset.timeRange = CMTimeRangeMake(kCMTimeZero, file.reverseDurationTime);
+            }else{
+                vvasset.timeRange = file.reverseVideoTimeRange;
+            }
+            if(CMTimeCompare(vvasset.timeRange.duration, file.reverseVideoTrimTimeRange.duration) == 1 && CMTimeGetSeconds(file.reverseVideoTrimTimeRange.duration)>0){
+                vvasset.timeRange = file.reverseVideoTrimTimeRange;
+            }
+            NSLog(@"timeRange : %f : %f ",CMTimeGetSeconds(vvasset.timeRange.start),CMTimeGetSeconds(vvasset.timeRange.duration));
+        }
+        else{
+            if (CMTimeRangeEqual(kCMTimeRangeZero, file.videoTimeRange)) {
+                vvasset.timeRange = CMTimeRangeMake(kCMTimeZero, file.videoDurationTime);
+            }else{
+                vvasset.timeRange = file.videoTimeRange;
+            }
+            if(CMTimeGetSeconds(file.videoTrimTimeRange.duration) > 0.0){
+                vvasset.timeRange = file.videoTrimTimeRange;
+            }
+            NSLog(@"timeRange : %f : %f ",CMTimeGetSeconds(vvasset.timeRange.start),CMTimeGetSeconds(vvasset.timeRange.duration));
+        }
+        vvasset.speed        = file.speed;
+//        vvasset.volume       = file.videoVolume;
+        vvasset.audioFadeInDuration = file.audioFadeInDuration;
+        vvasset.audioFadeOutDuration = file.audioFadeOutDuration;
+        
+        vvasset.videoFillType = VideoMediaFillTypeFull;
+    }else{
+        vvasset.type         = MediaAssetTypeImage;
+        if (CMTimeCompare(file.imageTimeRange.duration, kCMTimeZero) == 1) {
+            vvasset.timeRange = file.imageTimeRange;
+            
+            
+        }else {
+            vvasset.timeRange    = CMTimeRangeMake(kCMTimeZero, file.imageDurationTime);
+        }
+        NSLog(@"场景背景时长：%.2f s",CMTimeGetSeconds(vvasset.timeRange.duration));
+        vvasset.speed        = file.speed;
+#if isUseCustomLayer
+        if (file.fileType == kFILETEXT) {
+            file.imageTimeRange = vvasset.timeRange;
+            vvasset.fillType = ImageMediaFillTypeFit;
+        }
+#endif
+        vvasset.fillType = ImageMediaFillTypeFull;
+    }
+    vvasset.blurIntensity = file.backgroundBlurIntensity;
+    vvasset.rotate = file.rotate;
+    vvasset.isVerticalMirror = file.isVerticalMirror;
+    vvasset.isHorizontalMirror = file.isHorizontalMirror;
+    vvasset.adjustments = file.adjustments;
+    vvasset.mask = file.mask;
+    vvasset.crop = file.crop;
+    vvasset.volume = 0;
+    
+    return vvasset;
+}
 
 +(VEMediaInfo *)vassetToFile:(MediaAsset *) vvasset
 {
@@ -1777,7 +1844,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     return itemPath;
 }
-
++ (NSString *)getMusicDownloadPathWithDic:(NSDictionary *)itemDic {
+    NSString *folderPath = kMusicFolder;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    NSString *itemPath = [[folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[itemDic[@"file"] hash]]] stringByAppendingPathExtension:pathExtension];
+    
+    return itemPath;
+}
 + (NSString *)getMediaIdentifier {
     NSDate *date_ = [NSDate date];
     NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
@@ -3988,6 +4064,15 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 + (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize
 {
+#if 1   //20220105 使用保存到沙盒后再使用的方法iPhone6s（iOS13.7）会崩溃
+    @autoreleasepool {
+        UIGraphicsBeginImageContext(CGSizeMake(((int)(image.size.width * scaleSize))/2*2.0, ((int)(image.size.height * scaleSize))/2*2.0));
+        [image drawInRect:CGRectMake(0, 0, ((int)(image.size.width * scaleSize))/2*2.0, ((int)(image.size.height * scaleSize))/2*2.0)];
+        UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return scaledImage;
+    }
+#else
     UIGraphicsBeginImageContext(CGSizeMake(((int)(image.size.width * scaleSize))/2*2.0, ((int)(image.size.height * scaleSize))/2*2.0));
     [image drawInRect:CGRectMake(0, 0, ((int)(image.size.width * scaleSize))/2*2.0, ((int)(image.size.height * scaleSize))/2*2.0)];
     UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -4001,6 +4086,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     data = nil;
     UIImage *ratioImage = [UIImage imageWithContentsOfFile:imagePath];
     return ratioImage;
+#endif
 }
 
 + (UIImage*)drawImages:(NSMutableArray *)images size:(CGSize)size animited:(BOOL)animited{
@@ -7104,7 +7190,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     NSString *configPath = nil;
     
-    configPath = [NSString stringWithFormat:@"%@/%@.jpg",[path stringByDeletingLastPathComponent],name];
+    configPath = [NSString stringWithFormat:@"%@/%@.%@",[path stringByDeletingLastPathComponent],name,pExtension];
     
     return configPath;
 }
@@ -7429,20 +7515,23 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                             [array insertObject:itemDic atIndex:0];
                         }
                         
-                        NSDictionary *materialDic = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                     obj[@"name"], @"typeName",
-                                                     obj[@"icon_checked"], @"icon_checked",
-                                                     obj[@"icon_unchecked"], @"icon_unchecked",
-                                                     [NSNumber numberWithInt:[obj[@"id"] intValue]], @"typeId",
-                                                     array, @"data",
-                                                     nil];
+                        NSMutableDictionary *materialDic = [NSMutableDictionary new];
+                        if(obj[@"name"])
+                        [materialDic setObject:obj[@"name"] forKey:@"typeName"];
+                        if(obj[@"icon_checked"])
+                        [materialDic setObject:obj[@"icon_checked"] forKey:@"icon_checked"];
+                        if(obj[@"icon_unchecked"])
+                        [materialDic setObject:obj[@"icon_unchecked"] forKey:@"icon_unchecked"];
+                        [materialDic setObject:[NSNumber numberWithInt:[obj[@"id"] intValue]] forKey:@"typeId"];
+                        if(array)
+                        [materialDic setObject:array forKey:@"data"];
                         [materialArray addObject:materialDic];
                         
                         if (oldMaterialArray.count > 0) {
                             NSFileManager *fileManager = [NSFileManager defaultManager];
                             [array enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
                                 NSString *file = [obj1[@"file"] stringByDeletingPathExtension];
-                                NSString *updateTime = obj1[@"updatetime"];
+                                NSString *updateTime = [NSString stringWithFormat:@"%lld",[obj1[@"updatetime"] longLongValue]];
                                 __block NSString *oldUpdateTime;
                                 __block NSString *oldFile;
                                 [oldMaterialArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
@@ -7450,7 +7539,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                                         [obj2[@"data"] enumerateObjectsUsingBlock:^(id  _Nonnull obj3, NSUInteger idx3, BOOL * _Nonnull stop3) {
                                             if ([[obj3[@"file"] stringByDeletingPathExtension] isEqualToString:file]) {
                                                 oldFile = obj3[@"file"];
-                                                oldUpdateTime = obj3[@"updatetime"];
+                                                oldUpdateTime = [NSString stringWithFormat:@"%lld",[obj3[@"updatetime"] longLongValue]];
                                                 *stop3 = YES;
                                                 *stop2 = YES;
                                             }

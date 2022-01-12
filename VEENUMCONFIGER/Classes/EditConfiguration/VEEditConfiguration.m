@@ -219,6 +219,7 @@
     copy.enableShowRepeatView           = _enableShowRepeatView;
     copy.templatePath                   = _templatePath;
     copy.stickerResourceMinVersion      = _stickerResourceMinVersion;
+    copy.netMaterialURL = _netMaterialURL;
 
     return copy;
 }
@@ -327,6 +328,7 @@
     copy.enableShowRepeatView           = _enableShowRepeatView;
     copy.templatePath                   = _templatePath;
     copy.stickerResourceMinVersion      = _stickerResourceMinVersion;
+    copy.netMaterialURL = _netMaterialURL;
 
     return copy;
 }

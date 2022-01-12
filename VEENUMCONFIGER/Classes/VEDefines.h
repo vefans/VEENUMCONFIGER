@@ -174,6 +174,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_BOX                   = 54,   //  边框
     VEAdvanceEditType_Superposi                   = 55,   // 叠加
     VEAdvanceEditType_Sky                  = 56,      //天空
+    VEAdvanceEditType_Cato                 = 57,      //加图
 };
 
 /*
@@ -297,7 +298,7 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_SOUNDORGINAL       = 43,//原声
     KPIP_MUTEVOLUME             = 44,//静音
     
-    
+    kPIP_DEFORMED                   =45,    //变形
 };
 
 //去水印类型
@@ -605,6 +606,10 @@ isPhoneX;\
 #define KChangeSkyFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeSky"]
 #define kChangeSkyPath [KChangeSkyFolder stringByAppendingPathComponent:@"ChangeSkyPath.plist"]
 
+#pragma mark- 图片流动换天空背景
+#define KChangeSkyVideoFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeSkyVideo"]
+#define kChangeSkyVideoPath [KChangeSkyFolder stringByAppendingPathComponent:@"ChangeSkyPath.plist"]
+
 #pragma mark- 字幕动画
 #define KSubtitleAnimationFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SubtitleAnimation"]
 #define kSubtitleAnimationPath [KSubtitleAnimationFolder stringByAppendingPathComponent:@"SubtitleAnimationPath.plist"]
@@ -635,6 +640,12 @@ isPhoneX;\
 #define kFilterFolder [kVEDirectory stringByAppendingPathComponent:@"filters"]
 #define kFilterCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"filterCategory.plist"]
 #define kNewFilterPlistPath [kFilterFolder stringByAppendingPathComponent:@"filterTypeList.plist"]
+
+#pragma mark-图片流动音乐
+#define kMusicFolder [kVEDirectory stringByAppendingPathComponent:@"Musics"]
+#define kMusicCategoryPlist [kMusicFolder stringByAppendingPathComponent:@"MusicCategory.plist"]
+#define kNewMusicPlistPath [kMusicFolder stringByAppendingPathComponent:@"MusicTypeList.plist"]
+
 
 #define kTemplateRecordFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/TemplateRecord"]
 #define kTemplateRecordPlist [kTemplateRecordFolder stringByAppendingPathComponent:@"TemplateRecord.plist"]

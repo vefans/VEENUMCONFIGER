@@ -1075,12 +1075,12 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                     newScale = scaleHeight/_contentImage.frame.size.width;
                 }
             }
-            
+#if 0   //20220106 重新赋值后，就不能放大了
             if( _isFixedCrop )
             {
                 newScale = [self getCropREct_Scale:newScale];
             }
-            
+#endif
             self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(atan2f(self.transform.b, self.transform.a)), newScale, newScale);
             [self setFramescale:newScale];
             
@@ -1490,6 +1490,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     if (isnan(value)) {
         return;
     }
+//    NSLog(@"%s %f", __func__, value);
 //    NSLog(@"frame2:%@", NSStringFromCGRect(self.frame));
     _selfScale = value;
     

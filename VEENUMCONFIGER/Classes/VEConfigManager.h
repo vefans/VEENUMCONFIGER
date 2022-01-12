@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, SUPPORTLANGUAGE){
 };
 
 //导出前回调
-typedef void(^VEPrepareExportHandler) (void);
+typedef void(^VEPrepareExportHandler) (UIViewController *viewController);
 
 //编辑完成导出结束回调
 typedef void(^VECompletionHandler) (NSString * videoPath);

@@ -120,24 +120,25 @@
         __block CGFloat red2 = 0.0, green2 = 0.0, blue2 = 0.0,alpha2 = 0.0;
         //取出color1的背景颜色的RGBA值
         [color getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
-        
-        [_colorArray enumerateObjectsUsingBlock:^(UIColor * _Nonnull objColor, NSUInteger idx, BOOL * _Nonnull stop) {
-            [objColor getRed:&red2 green:&green2 blue:&blue2 alpha:&alpha2];
-            
-            NSString *red1_str = [NSString stringWithFormat:@"%.6f", red1];
-            NSString *red2_str = [NSString stringWithFormat:@"%.6f", red2];
-            NSString *green1_str = [NSString stringWithFormat:@"%.6f", green1];
-            NSString *green2_str = [NSString stringWithFormat:@"%.6f", green2];
-            NSString *blue1_str = [NSString stringWithFormat:@"%.6f", blue1];
-            NSString *blue2_str = [NSString stringWithFormat:@"%.6f", blue2];
-            if ([red1_str isEqualToString:red2_str]
-                && [green1_str isEqualToString:green2_str]
-                && [blue1_str isEqualToString:blue2_str])
-            {
-                index = idx;
-                *stop = TRUE;
-            }
-        }];
+        if (alpha1 > 0) {
+            [_colorArray enumerateObjectsUsingBlock:^(UIColor * _Nonnull objColor, NSUInteger idx, BOOL * _Nonnull stop) {
+                [objColor getRed:&red2 green:&green2 blue:&blue2 alpha:&alpha2];
+                
+                NSString *red1_str = [NSString stringWithFormat:@"%.6f", red1];
+                NSString *red2_str = [NSString stringWithFormat:@"%.6f", red2];
+                NSString *green1_str = [NSString stringWithFormat:@"%.6f", green1];
+                NSString *green2_str = [NSString stringWithFormat:@"%.6f", green2];
+                NSString *blue1_str = [NSString stringWithFormat:@"%.6f", blue1];
+                NSString *blue2_str = [NSString stringWithFormat:@"%.6f", blue2];
+                if ([red1_str isEqualToString:red2_str]
+                    && [green1_str isEqualToString:green2_str]
+                    && [blue1_str isEqualToString:blue2_str])
+                {
+                    index = idx;
+                    *stop = TRUE;
+                }
+            }];
+        }
     }
     
     if( index > 0 )

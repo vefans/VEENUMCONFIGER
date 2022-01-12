@@ -121,6 +121,9 @@ typedef NS_ENUM(NSInteger,VEWatermarkPosition){
 /** 草稿云备份的用户唯一ID
  */
 @property (nonatomic,copy)NSString *userUniqueId;
+/** 草稿云备份的分类（图片编辑，图片流动）
+ */
+@property (nonatomic,copy)NSString *cloudType;
 
 /** 是否可以设置导出参数，(default true)
  */
