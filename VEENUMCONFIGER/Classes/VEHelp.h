@@ -25,6 +25,8 @@
 + (NSString *)getBoxCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 +(id)objectForData:(NSData *)data;
 
++ (BOOL)isSystemPhotoPath:(NSString *)path;
+
 + (BOOL)isLowDevice;
 /**进入系统设置
  */
@@ -132,7 +134,7 @@
 +(NSMutableArray *)getColorArray;
 + (NSInteger)getColorIndex:(UIColor *)color;
 +(NSMutableArray *)getGroupColorArray;
-
++ (UIColor *)colorWithHexStr:(NSString *)hexString;
 /**获取媒体的实际大小
  */
 + (CGSize)getFileActualSize:(VEMediaInfo *)file;
@@ -162,7 +164,7 @@
 + (NSString *)getFilterDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getMusicDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getMediaIdentifier;
-
++ (NSString *)getCollageDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSMutableArray *)getMaskArray;
 
 + (MaskObject *)getMaskWithName:(NSString *)maskName;
@@ -321,6 +323,8 @@
                                   specialEffectUrlPath:(NSString *)specialEffectUrlPath;
 + (NSString *)getStickerAnimationFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 + (CustomFilter *)getStickerAnimationCustomFilter:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId atType:(NSInteger) typeIndex atCaption:( CaptionEx *) captionex;
++ (CustomFilter *)getOverlayAnimationCustomFilter:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId atType:(NSInteger) typeIndex atCaption:( Overlay *) overlay;
++ (CustomFilter *)getOverlayAnimationCustomFilterWithPath:(NSString *) path typeIndex:(NSInteger)typeIndex atCaption:( Overlay *) overlay;
 + (CustomFilter *)getStickerAnimationCustomFilterWithPath:(NSString *) path atType:(NSInteger) typeIndex atCaption:( CaptionEx *) captionex;
 + (void)downloadIconFile:(VEAdvanceEditType)type
               editConfig:(VEEditConfiguration *)editConfig
@@ -351,4 +355,20 @@
 + (NSString *)timeToStringNoSecFormat:(float)time;
 
 + (BOOL)createZip:(NSString *)path zipPath:(NSString *)zipPath;
+
+//剪同款
++ (NSString *)getCachedAPITemplatePathWithUrlStr:(NSString *)urlStr;
+
++ (NSString * _Nullable)getPathFolderName:(NSString * _Nullable)path;
+
++ (CVPixelBufferRef)pixelBufferFromCGImage:(UIImage *)img;
++(void)saveUserInfo:(id) obj forKey:(NSString*) key;
++(BOOL)readUserInfoBoolForKey:(NSString*) key;
+//MARK: 添加区域权限
+/**添加区域权限
+ */
++ (CALayer *)arealayerWithView:(UIView *)view size:(CGSize)size;
+
++(CGRect)getOverlayBackgroundImageCrop:( CGSize ) imageSize atBackgroundImageSize:( CGSize ) backgroundImageSize;
+
 @end

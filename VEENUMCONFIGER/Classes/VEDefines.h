@@ -3,6 +3,7 @@
 #import <VEENUMCONFIGER/VEMusicInfo.h>
 #import "VEConfigManager.h"
 #import <LibVECore/Scene.h>
+#import "VEAuthorizationView.h"
 
 typedef NS_ENUM(NSInteger ,KBeautyCategoryType) {
     KBeautyCategory_None = 0,             //无
@@ -227,6 +228,7 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KNOISE              = 43,//降噪
     KMONGOLIANKEYFRAME  = 44,//蒙板关键帧
     kVEUSEDSINGLEFILTER = 45, //所有滤镜
+    KDEFORMED       = 46,   //变形
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -640,6 +642,11 @@ isPhoneX;\
 #define kFilterFolder [kVEDirectory stringByAppendingPathComponent:@"filters"]
 #define kFilterCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"filterCategory.plist"]
 #define kNewFilterPlistPath [kFilterFolder stringByAppendingPathComponent:@"filterTypeList.plist"]
+
+#pragma mark-图片流动音乐
+#define kCollageFolder [kVEDirectory stringByAppendingPathComponent:@"Collages"]
+#define kCollageCategoryPlist [kCollageFolder stringByAppendingPathComponent:@"CollageCategory.plist"]
+#define kNewCollagePlistPath [kCollageFolder stringByAppendingPathComponent:@"CollageTypeList.plist"]
 
 #pragma mark-图片流动音乐
 #define kMusicFolder [kVEDirectory stringByAppendingPathComponent:@"Musics"]

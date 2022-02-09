@@ -1053,10 +1053,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             else
 //               newScale = (recognizer.scale - 1.0) + _oldSelfScale;
                 newScale =  _oldSelfScale*recognizer.scale;
-            if( _minScale > newScale )
-            {
-                newScale = _minScale;
-            }
+            
+           
             
 
 //            if( newScale < 0.20 )
@@ -1081,6 +1079,10 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 newScale = [self getCropREct_Scale:newScale];
             }
 #endif
+            if( _minScale > newScale )
+            {
+                newScale = _minScale;
+            }
             self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(atan2f(self.transform.b, self.transform.a)), newScale, newScale);
             [self setFramescale:newScale];
             
@@ -1095,6 +1097,10 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                    &&  (size.width >= 0.98) && (size.width <= 1.01) )
                 {
                     newScale = 1.0*_syncContainer.bounds.size.width/_contentImage.frame.size.width;
+                    if( _minScale > newScale )
+                    {
+                        newScale = _minScale;
+                    }
                     self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(atan2f(self.transform.b, self.transform.a)), newScale, newScale);
                     [self setFramescale:newScale];
                     if( isShock )
@@ -1110,6 +1116,10 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                        &&  (size.height >= 0.98) && (size.height <= 1.02))
                     {
                         newScale = 1.0*_syncContainer.bounds.size.height/_contentImage.frame.size.height;
+                        if( _minScale > newScale )
+                        {
+                            newScale = _minScale;
+                        }
                         self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(atan2f(self.transform.b, self.transform.a)), newScale, newScale);
                         [self setFramescale:newScale];
                         if( isShock )
@@ -1758,6 +1768,10 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                    &&  (size.width >= 0.98) && (size.width <= 1.01) )
                 {
                     scale = 1.0*_syncContainer.bounds.size.width/_contentImage.frame.size.width;
+                    if( _minScale > scale )
+                    {
+                        scale = _minScale;
+                    }
                     self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(atan2f(self.transform.b, self.transform.a)), scale, scale);
                     [self setFramescale:scale];
                     if( isShock )
@@ -1773,6 +1787,10 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                        &&  (size.height >= 0.98) && (size.height <= 1.02))
                     {
                         scale = 1.0*_syncContainer.bounds.size.height/_contentImage.frame.size.height;
+                        if( _minScale > scale )
+                        {
+                            scale = _minScale;
+                        }
                         self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(atan2f(self.transform.b, self.transform.a)), scale, scale);
                         [self setFramescale:scale];
                         if( isShock )

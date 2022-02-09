@@ -445,6 +445,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,assign) bool enableShowRepeatView;
 
+//不截取缩略图
+@property (assign, nonatomic)bool isSingletrack;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -165,9 +165,11 @@
         
         
     }else if (cropType == VE_VECROPTYPE_ORIGINAL){
-        
-        [self ratioLessThan1WithValueX:self.cropRatio WithToValueY:1.0];
-//        [self ratioFreeAandOriginal];
+        if (self.cropRatio > 0) {
+            [self ratioLessThan1WithValueX:self.cropRatio WithToValueY:1.0];
+        }else {
+            [self ratioFreeAandOriginal];
+        }
         [self setTrackButtonState:YES];
         
         if (self.cropWidth / self.cropHeight> 1.0) {

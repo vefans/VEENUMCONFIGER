@@ -340,13 +340,13 @@
             iCell = nil;
         }else{
             LongCacheImageView *imageView = (LongCacheImageView *)[iCell viewWithTag:200000];
-            if(imageView){
+            if([imageView isKindOfClass:[LongCacheImageView class]]){
                 [imageView long_stopAnimating];
                 imageView.longGifData = nil;
                 imageView.image = nil;
-                [imageView removeFromSuperview];
-                imageView = nil;
             }
+            [imageView removeFromSuperview];
+            imageView = nil;
             [iCell removeFromSuperview];
             iCell = nil;
         }

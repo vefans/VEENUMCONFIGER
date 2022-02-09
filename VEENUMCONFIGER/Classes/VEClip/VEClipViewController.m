@@ -212,7 +212,10 @@
     else if( _cutMmodeType == kCropTypeFixed ){
         if( _selectFile.fileType == kFILEIMAGE && !_selectFile.isGif)
         {
-            [self initphotoView];
+            if( !_isCropTypeViewHidden )
+            {
+                [self initphotoView];
+            }
         }
         else{
             if (_selectFile.isGif) {
@@ -1376,6 +1379,7 @@
     point = [self.videoCropView.cropView convertPoint:point toView:self.syncContainerView];
     self.pasterTextView.cropRect = CGRectMake(point.x, point.y, self.videoCropView.cropView.cropRectView.frame.size.width, self.videoCropView.cropView.cropRectView.frame.size.height);
     float scale = [self.pasterTextView getCropREct_Scale:self.pasterTextView.selfscale];
+    [self.pasterTextView setMinScale:scale];
 //    if( self.cropType == VE_VECROPTYPE_ORIGINAL )
 //    {
 //        scale = [VEHelp getMediaAssetScale_File:[self canvasImage].size atRect:self.originalRect atCorp:CGRectMake(0, 0, 1, 1) atSyncContainerHeihgt:self.syncContainerView.bounds.size atIsWatermark:NO];
@@ -1387,6 +1391,8 @@
     
     [self svae_PaterText];
     [self.videoCoreSDK refreshCurrentFrame];
+    
+//    [self getFileCrop];
 }
 
 #pragma mark VECropTypeDelegate

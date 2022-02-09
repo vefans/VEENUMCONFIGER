@@ -593,6 +593,7 @@
 "工作室" = "Draft box";
 "您还没有制作任何视频" = "No video made yet";
 "请不要删除草稿箱中使用的视频和图片，否则草稿箱的视频将无法使用" = "Please do not delete the video and pictures in draft box, otherwise the video in draft box will not be usable";
+"请不要删除草稿箱中使用的图片，否则草稿箱的图片将无法使用" = "Please do not delete the pictures in draft box, otherwise the picture in draft box will not be usable";
 "请选择媒体" = "Please select media";
 "请选择视频/图片" = "Please select a video / picture";
 "请选择图片" = "Please select a picture";
@@ -1733,6 +1734,8 @@
 "撤销：画中画" = "Undo Picture-in-Picture";
 "撤销：删除画中画" = "Undo：Delete Picture-in-Picture";
 "撤销：删除画中画分割" = "Undo：Delete Picture-in-Picture Split";
+"撤销：AI识别字幕" = "Undo: AI-recognized subtitles";
+"撤销：删除AI识别字幕" = "Undo: Delete AI-recognized subtitles";
 
 "恢复：原音音量:%.1f" = "Redo：original volum:%.1f";
 "恢复：%@" = "Redo：%@";
@@ -1753,7 +1756,8 @@
 "恢复：画中画" = "Redo：Picture-in-Picture";
 "恢复：删除画中画" = "Redo：Delete Picture-in-Picture";
 "恢复：删除画中画分割" = "Redo：Delete Picture-in-Picture Split";
-
+"恢复：AI识别字幕" = "Redo: AI-recognized subtitles";
+"恢复：删除AI识别字幕" = "Redo: Delete AI-recognized subtitles";
 
 "删除音效" = "Delete the sound";
 "删除音乐" = "Delete the music";
@@ -1971,3 +1975,17 @@
 "草稿箱" = "Draft Box";
 "文字模板" = "Text Template";
 "无资源" = "No resources";
+"只支持iOS 10.0以上系统" = "Only supports iOS 10.0 and above";
+"暂未识别到人声" = "No human voice recognized yet";
+"权限申请" = "Access Request";
+"“%@”需要使用以下权限" = "'%@' requires the following permissions";
+"权限" = "permission";
+"相机" = "Camera";
+"语音识别" = "Speech Recognition";
+"英文字幕" = "English subtitles";
+"单子突出" = "Monad Prominence";
+"搜歌词" = "Search lyrics";
+"清空字幕" = "Clear subtitles";
+"已达文字上限，请新增一行" = "Text limit reached, please add a new line";
+"确认要清空所有字幕吗？" = "Are you sure you want to clear all subtitles?";
+"确认将字幕还原到自动识别状态吗？" = "Are you sure you want to restore subtitles to automatic recognition?";

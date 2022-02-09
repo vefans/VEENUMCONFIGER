@@ -43,6 +43,14 @@
 
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
+    copy.isPasterAssetViewDrag = _isPasterAssetViewDrag;
+    copy.pointsInVideoArray = [NSMutableArray new];
+    [_pointsInVideoArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSMutableArray * array = [NSMutableArray new];
+        [array addObject:((NSMutableArray*)obj)[0]];
+        [array  addObject:((NSMutableArray*)obj)[1]];
+        [copy.pointsInVideoArray addObject:array];
+    }];
     copy.sceneIdentifier = _sceneIdentifier;
     copy.groupId = _groupId;
     copy.fxEffect = _fxEffect;
@@ -225,6 +233,14 @@
 
 - (id)copyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
+    copy.isPasterAssetViewDrag = _isPasterAssetViewDrag;
+    copy.pointsInVideoArray = [NSMutableArray new];
+    [_pointsInVideoArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSMutableArray * array = [NSMutableArray new];
+        [array addObject:((NSMutableArray*)obj)[0]];
+        [array  addObject:((NSMutableArray*)obj)[1]];
+        [copy.pointsInVideoArray addObject:array];
+    }];
     copy.sceneIdentifier = _sceneIdentifier;
     copy.groupId = _groupId;
     copy.fxEffect = _fxEffect;
@@ -465,6 +481,18 @@
             customMultipleFilter.overlayType = obj.overlayType;
             _fxEffect = customMultipleFilter;
             _fxEffectTimeRange = customMultipleFilter.timeRange;
+        }];
+        if (asset.pointsInVideoArray.count > 0) {
+            _pointsInVideoArray = [asset.pointsInVideoArray copy];
+        }
+        [asset.animate enumerateObjectsUsingBlock:^(MediaAssetAnimatePosition * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (obj.pointsArray.count > 0) {
+                MediaAssetAnimatePosition *animate = _animate[idx];
+                [animate setPointsLeftTop:CGPointMake([obj.pointsArray[0][0] floatValue], [obj.pointsArray[0][1] floatValue])
+                                 rightTop:CGPointMake([obj.pointsArray[1][0] floatValue], [obj.pointsArray[1][1] floatValue])
+                              rightBottom:CGPointMake([obj.pointsArray[2][0] floatValue], [obj.pointsArray[2][1] floatValue])
+                               leftBottom:CGPointMake([obj.pointsArray[3][0] floatValue], [obj.pointsArray[3][1] floatValue])];
+            }
         }];
     }
     return self;
@@ -947,6 +975,12 @@
     {
         media.rectInVideo = _rectInScene;
         media.rotate = _rotate;
+    }
+    if (_pointsInVideoArray) {
+        [media setPointsInVideoLeftTop:CGPointMake([_pointsInVideoArray[0][0] floatValue], [_pointsInVideoArray[0][1] floatValue])
+                              rightTop:CGPointMake([_pointsInVideoArray[1][0] floatValue], [_pointsInVideoArray[1][1] floatValue])
+                           rightBottom:CGPointMake([_pointsInVideoArray[2][0] floatValue], [_pointsInVideoArray[2][1] floatValue])
+                            leftBottom:CGPointMake([_pointsInVideoArray[3][0] floatValue], [_pointsInVideoArray[3][1] floatValue])];
     }
     
     return media;

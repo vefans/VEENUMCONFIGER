@@ -420,6 +420,14 @@
  */
 @property (nonatomic, strong) NSArray<MediaAssetAnimatePosition*>*  animate;
 
+/**在video中四个顶点的坐标，可设置非矩形。
+ * (0, 0)为左上角 (1, 1)为右下角
+ * rectInVideo与pointsInVideoArray只有一个有效，以最后设置的为准
+ * 设置媒体动画后，该属性及rectInVideo属性均无效，以动画中的rect或pointsArray值为准
+ */
+@property (nonatomic, strong) NSMutableArray *pointsInVideoArray;
+@property(nonatomic, assign)BOOL    isPasterAssetViewDrag;
+
 @property (nonatomic, strong) NSMutableArray *keyFrameTimeArray;
 
 @property (nonatomic, strong) NSMutableArray *keyFrameRectRotateArray;

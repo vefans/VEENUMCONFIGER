@@ -107,6 +107,8 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_Overlay_Copy,//复制
     VEUndoRedoEditType_Overlay_Freeze,//定格
     VEUndoRedoEditType_Overlay_Trim,//截取
+    VEUndoRedoEditType_Overlay_Background,//背景
+    VEUndoRedoEditType_Overlay_adjustPoint,//调整
     
     VEUndoRedoEditType_Doodle_Add,//涂鸦添加
     VEUndoRedoEditType_Doodle_Copy,//复制
@@ -201,6 +203,8 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
 //调色
 @property (nonatomic, strong) ToningInfo   *orToningInfo;
 @property (nonatomic, strong) ToningInfo   *dstToningInfo;
+
+@property (nonatomic, weak) id   currentPasterTextView;
 
 @property (nonatomic, strong) NSMutableArray    *orArray;
 @property (nonatomic, strong) NSMutableArray    *dstArray;
