@@ -664,6 +664,7 @@
 /**销毁播放器
  */
 - (void)deletePlayer {
+    [_videoCoreSDK pause];
     [_videoCoreSDK stop];
     [_videoCoreSDK.view removeFromSuperview];
     _videoCoreSDK.delegate = nil;

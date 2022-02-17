@@ -42,6 +42,7 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_Media_Background,//背景
     VEUndoRedoEditType_Media_AboutMirror,//左右翻转
     VEUndoRedoEditType_Media_UpDownMirror,//上下翻转
+    VEUndoRedoEditType_Media_adjustPoint,     // 位置调整
     
     VEUndoRedoEditType_MusicAdd,//音乐添加
     VEUndoRedoEditType_SoundEffectsAdd,//音效添加
@@ -186,8 +187,10 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
 @property (nonatomic, strong)CaptionEx    *orSticker;
 @property (nonatomic, strong)CaptionEx    *dstSticker;
 //滤镜 特效 边框
-@property (nonatomic, strong) CustomMultipleFilter *oriFilter;
-@property (nonatomic, strong) CustomMultipleFilter *dstFilter;
+@property (nonatomic, strong) CustomFilter *orFilter;
+@property (nonatomic, strong) CustomFilter *dstFilter;
+@property (nonatomic, assign) float orLookUpFilterIntensity;
+@property (nonatomic, assign) float dstLookUpFilterIntensity;
 //图层 画笔(涂鸦)
 @property (nonatomic, strong) id orOverlay;
 @property (nonatomic, strong) id dstOverlay;

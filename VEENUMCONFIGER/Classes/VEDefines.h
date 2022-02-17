@@ -176,6 +176,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_Superposi                   = 55,   // 叠加
     VEAdvanceEditType_Sky                  = 56,      //天空
     VEAdvanceEditType_Cato                 = 57,      //加图
+    VEAdvanceEditType_Cutout              = 58,   //抠图
 };
 
 /*
@@ -644,14 +645,14 @@ isPhoneX;\
 #define kNewFilterPlistPath [kFilterFolder stringByAppendingPathComponent:@"filterTypeList.plist"]
 
 #pragma mark-图片流动音乐
-#define kCollageFolder [kVEDirectory stringByAppendingPathComponent:@"Collages"]
-#define kCollageCategoryPlist [kCollageFolder stringByAppendingPathComponent:@"CollageCategory.plist"]
-#define kNewCollagePlistPath [kCollageFolder stringByAppendingPathComponent:@"CollageTypeList.plist"]
+#define kFlowCollageFolder [kVEDirectory stringByAppendingPathComponent:@"FlowCollages"]
+#define kCollageCategoryPlist [kFlowCollageFolder stringByAppendingPathComponent:@"CollageCategory.plist"]
+#define kNewCollagePlistPath [kFlowCollageFolder stringByAppendingPathComponent:@"CollageTypeList.plist"]
 
 #pragma mark-图片流动音乐
-#define kMusicFolder [kVEDirectory stringByAppendingPathComponent:@"Musics"]
-#define kMusicCategoryPlist [kMusicFolder stringByAppendingPathComponent:@"MusicCategory.plist"]
-#define kNewMusicPlistPath [kMusicFolder stringByAppendingPathComponent:@"MusicTypeList.plist"]
+#define kFlowMusicFolder [kVEDirectory stringByAppendingPathComponent:@"FlowMusics"]
+#define kMusicCategoryPlist [kFlowMusicFolder stringByAppendingPathComponent:@"MusicCategory.plist"]
+#define kNewMusicPlistPath [kFlowMusicFolder stringByAppendingPathComponent:@"MusicTypeList.plist"]
 
 
 #define kTemplateRecordFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/TemplateRecord"]

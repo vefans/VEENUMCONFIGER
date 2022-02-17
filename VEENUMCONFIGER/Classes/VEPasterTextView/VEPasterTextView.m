@@ -160,6 +160,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     
 }
 
+
 -(UIImageView *)getRotateView
 {
     return rotateView;
@@ -1059,7 +1060,11 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 //            if( newScale < 0.20 )
 //                newScale = 0.2;
-            float scaleHeight = 40;
+            float scaleHeight = 15;
+            if( _captionSubtitle )
+            {
+                scaleHeight = 1;
+            }
             if( _contentImage.frame.size.width > _contentImage.frame.size.height )
             {
                 if( scaleHeight > ( _contentImage.frame.size.height*newScale) )
@@ -2624,7 +2629,7 @@ static VEPasterTextView *lastTouchedView;
     [_textEditBtn removeFromSuperview];
     _textEditBtn = nil;
     
-    UIButton * btn = [[UIButton alloc] initWithFrame:CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3)];
+    UIButton * btn = [[UIButton alloc] initWithFrame:CGRectMake(self.bounds.size.width - rotateViewWidth/2.0 - globalInset, -rotateViewWidth/2.0 + globalInset, rotateViewWidth, rotateViewWidth)];
     _textEditBtn = btn;
     _textEditBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin ;
     _textEditBtn.backgroundColor = [UIColor clearColor];

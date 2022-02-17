@@ -41,6 +41,7 @@
 "用户拒绝访问相机,请在<设置-隐私-相机>中开启" = "User reject to access camera, please open in <Setting-Privacy-Camera>";
 "无法访问麦克风!" = "Can not access mic!";
 "请在\"设置-隐私-麦克风\"中开启" = "Please open in 'Setting-Privacy-Microphone'";
+"用户拒绝访问麦克风,请在\"设置-隐私-麦克风\"中开启" = "User reject to access Microphone, Please open in 'Setting-Privacy-Microphone'";
 "用户拒绝访问相册,请在<隐私>中开启" = "User reject to access album, please open in <Privacy>";
 "无法访问相册!" = "Can not access album!";
 "拍照" = "Takephoto";
@@ -1989,3 +1990,8 @@
 "已达文字上限，请新增一行" = "Text limit reached, please add a new line";
 "确认要清空所有字幕吗？" = "Are you sure you want to clear all subtitles?";
 "确认将字幕还原到自动识别状态吗？" = "Are you sure you want to restore subtitles to automatic recognition?";
+"按住说话" = "Hold and talk";
+"清空" = "Clear";
+"完成" = "Finish";
+"收起" = "Collapse";
+"编辑内容" = "Edit";

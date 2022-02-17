@@ -510,7 +510,7 @@
              @"backgroundAlpha" : @"alpha",
              @"backgroundBlurIntensity" : @"blurIntensity",
              @"rectInScene" : @"rectInVideo",
-             @"isIntelligentKey" : @"autoSegment"
+             @"isIntelligentKey" : @"autoSegmentType"
     };
 }
 

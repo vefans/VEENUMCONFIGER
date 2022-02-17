@@ -257,6 +257,7 @@
 + (void)setTransition_Network:(Transition *)transition file:(VEMediaInfo *)file;
 + (void)setTransition:(Transition *)transition file:(VEMediaInfo *)file atConfigPath:(NSString *) configPath;
 
++(NSString *)getCollageIdentifier:( NSInteger ) idx;
 +(NSString *)getCollageIdentifier;
 +(NSString *)getSuperposiIdentifier;
 
@@ -359,9 +360,11 @@
 //剪同款
 + (NSString *)getCachedAPITemplatePathWithUrlStr:(NSString *)urlStr;
 
-+ (NSString * _Nullable)getPathFolderName:(NSString * _Nullable)path;
++ (NSString *)getPathFolderName:(NSString *)path;
 
 + (CVPixelBufferRef)pixelBufferFromCGImage:(UIImage *)img;
++ (CVPixelBufferRef)pixelBufferFromCIImage:(CIImage *)image;
++ (void)copyPixelBuffer:(CVPixelBufferRef)copyedPixelBuffer toPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 +(void)saveUserInfo:(id) obj forKey:(NSString*) key;
 +(BOOL)readUserInfoBoolForKey:(NSString*) key;
 //MARK: 添加区域权限

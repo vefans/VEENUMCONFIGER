@@ -14,6 +14,7 @@
 @interface VEAuthorizationView()
 {
     NSMutableArray *_typeArray;
+    UIView *_bgView;
 }
 
 @end
@@ -26,32 +27,37 @@
         self.frame = CGRectMake(0, 0, kWIDTH, kHEIGHT);
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.3];
         
-        UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapGesture)];
+        UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapGesture:)];
         singleTap.numberOfTapsRequired = 1;
         [self addGestureRecognizer:singleTap];
         
         float itemBtnSize = 62.0;
         float width = kWIDTH * 0.56;
         float height = itemBtnSize * typeArray.count + 25*2 + 26 + 36;
-        UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake((kWIDTH - width)/2.0, (kHEIGHT - height)/2.0, width, height)];
-        bgView.backgroundColor = [UIColor whiteColor];
-        bgView.layer.cornerRadius = 5.0;
-        bgView.layer.masksToBounds = YES;
-        [self addSubview:bgView];
+        _bgView = [[UIView alloc] initWithFrame:CGRectMake((kWIDTH - width)/2.0, (kHEIGHT - height)/2.0, width, height)];
+        _bgView.backgroundColor = [UIColor whiteColor];
+        _bgView.layer.cornerRadius = 5.0;
+        _bgView.layer.masksToBounds = YES;
+        [self addSubview:_bgView];
         
         UILabel *titleLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, width, 26)];
         titleLbl.text = VELocalizedString(@"权限申请", nil);
         titleLbl.font = [UIFont boldSystemFontOfSize:14];
         titleLbl.textAlignment = NSTextAlignmentCenter;
         titleLbl.textColor = [UIColor blackColor];
-        [bgView addSubview:titleLbl];
+        [_bgView addSubview:titleLbl];
         
+        NSDictionary *bundleDic = [[NSBundle mainBundle] infoDictionary];
+        NSString *bundleName = [bundleDic objectForKey:@"CFBundleDisplayName"];
+        if (bundleName.length == 0) {
+            bundleName = [bundleDic objectForKey:@"CFBundleName"];
+        }
         UILabel *messageLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(titleLbl.frame), width, 36)];
-        messageLbl.text = [NSString stringWithFormat:VELocalizedString(@"“%@”需要使用以下权限", nil), [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"]];
+        messageLbl.text = [NSString stringWithFormat:VELocalizedString(@"“%@”需要使用以下权限", nil), bundleName];
         messageLbl.font = [UIFont systemFontOfSize:12];
         messageLbl.textAlignment = NSTextAlignmentCenter;
         messageLbl.textColor = [UIColor blackColor];
-        [bgView addSubview:messageLbl];
+        [_bgView addSubview:messageLbl];
         
         for (int i = 0; i < typeArray.count; i++) {
             VEAuthorizationType type = [typeArray[i] integerValue];
@@ -100,14 +106,18 @@
             
             itemBtn.tag = type;
             [itemBtn addTarget:self action:@selector(itemBtnAction:) forControlEvents:UIControlEventTouchUpInside];
-            [bgView addSubview:itemBtn];
+            [_bgView addSubview:itemBtn];
         }
     }
     
     return self;
 }
 
-- (void)tapGesture {
+- (void)tapGesture:(UIGestureRecognizer *)gesture {
+    CGPoint point = [gesture locationInView:gesture.view];
+    if (CGRectContainsPoint(_bgView.frame, point)) {
+        return;
+    }
     if (_requestHandler) {
         _requestHandler(VEAuthorizationStatus_NotDetermined);
     }
@@ -152,8 +162,7 @@
         {
             if (_typeArray.count == 1) {
                 [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-                    AVAuthorizationStatus audioAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-                    if (granted && audioAuthStatus == AVAuthorizationStatusAuthorized) {
+                    if (granted) {
                         authorStatus = VEAuthorizationStatus_Authorized;
                     }else {
                         authorStatus = VEAuthorizationStatus_Denied;
@@ -168,8 +177,22 @@
                 }];
             }else {
                 [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-                    StrongSelf(self);
-                    [strongSelf->_typeArray removeObject:[NSNumber numberWithInteger:VEAuthorizationType_Camera]];
+                    AVAuthorizationStatus audioAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+                    if (granted && audioAuthStatus == AVAuthorizationStatusAuthorized) {
+                        authorStatus = VEAuthorizationStatus_Authorized;
+                    }else {
+                        authorStatus = VEAuthorizationStatus_Denied;
+                    }
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        StrongSelf(self);
+                        sender.enabled = NO;
+                        if (audioAuthStatus != AVAuthorizationStatusNotDetermined) {
+                            if (strongSelf.requestHandler) {
+                                strongSelf.requestHandler(authorStatus);
+                            }
+                            [strongSelf removeFromSuperview];
+                        }
+                    });
                 }];
             }
         }
@@ -178,8 +201,7 @@
         {
             if (_typeArray.count == 1) {
                 [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
-                    AVAuthorizationStatus videoAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-                    if (granted && videoAuthStatus == AVAuthorizationStatusAuthorized) {
+                    if (granted) {
                         authorStatus = VEAuthorizationStatus_Authorized;
                     }else {
                         authorStatus = VEAuthorizationStatus_Denied;
@@ -195,7 +217,43 @@
             }else {
                 [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
                     StrongSelf(self);
-                    [strongSelf->_typeArray removeObject:[NSNumber numberWithInteger:VEAuthorizationType_Microphone]];
+                    if ([strongSelf->_typeArray containsObject:[NSNumber numberWithInteger:VEAuthorizationType_Camera]]) {
+                        AVAuthorizationStatus videoAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+                        if (granted && videoAuthStatus == AVAuthorizationStatusAuthorized) {
+                            authorStatus = VEAuthorizationStatus_Authorized;
+                        }else {
+                            authorStatus = VEAuthorizationStatus_Denied;
+                        }
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            sender.enabled = NO;
+                            if (videoAuthStatus != AVAuthorizationStatusNotDetermined) {
+                                if (strongSelf.requestHandler) {
+                                    strongSelf.requestHandler(authorStatus);
+                                }
+                                [strongSelf removeFromSuperview];
+                            }
+                        });
+                    }else if ([strongSelf->_typeArray containsObject:[NSNumber numberWithInteger:VEAuthorizationType_SpeechRecog]]) {
+                        if (@available(iOS 10.0, *)) {
+                            SFSpeechRecognizerAuthorizationStatus speechRecogStatus = [SFSpeechRecognizer authorizationStatus];
+                            if (granted && speechRecogStatus == SFSpeechRecognizerAuthorizationStatusAuthorized) {
+                                authorStatus = VEAuthorizationStatus_Authorized;
+                            }else {
+                                authorStatus = VEAuthorizationStatus_Denied;
+                            }
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                sender.enabled = NO;
+                                if (speechRecogStatus != SFSpeechRecognizerAuthorizationStatusNotDetermined) {
+                                    if (strongSelf.requestHandler) {
+                                        strongSelf.requestHandler(authorStatus);
+                                    }
+                                    [strongSelf removeFromSuperview];
+                                }
+                            });
+                        } else {
+                            // Fallback on earlier versions
+                        }
+                    }
                 }];
             }
         }
@@ -203,16 +261,37 @@
         case VEAuthorizationType_SpeechRecog:
         {
             if (@available(iOS 10.0, *)) {
-                [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        authorStatus = (VEAuthorizationStatus)status;
-                        StrongSelf(self);
-                        if (strongSelf.requestHandler) {
-                            strongSelf.requestHandler(authorStatus);
+                if (_typeArray.count == 1) {
+                    [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            authorStatus = (VEAuthorizationStatus)status;
+                            StrongSelf(self);
+                            if (strongSelf.requestHandler) {
+                                strongSelf.requestHandler(authorStatus);
+                            }
+                            [strongSelf removeFromSuperview];
+                        });
+                    }];
+                }else {
+                    [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
+                        AVAuthorizationStatus audioAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+                        if (status == SFSpeechRecognizerAuthorizationStatusAuthorized && audioAuthStatus == AVAuthorizationStatusAuthorized) {
+                            authorStatus = VEAuthorizationStatus_Authorized;
+                        }else {
+                            authorStatus = VEAuthorizationStatus_Denied;
                         }
-                        [strongSelf removeFromSuperview];
-                    });
-                }];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            StrongSelf(self);
+                            sender.enabled = NO;
+                            if (audioAuthStatus != AVAuthorizationStatusNotDetermined) {
+                                if (strongSelf.requestHandler) {
+                                    strongSelf.requestHandler(authorStatus);
+                                }
+                                [strongSelf removeFromSuperview];
+                            }
+                        });
+                    }];
+                }
             } else {
                 // Fallback on earlier versions
             }

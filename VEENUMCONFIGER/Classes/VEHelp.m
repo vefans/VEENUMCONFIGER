@@ -1895,7 +1895,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return itemPath;
 }
 + (NSString *)getCollageDownloadPathWithDic:(NSDictionary *)itemDic {
-    NSString *folderPath = kCollageFolder;
+    NSString *folderPath = kFlowCollageFolder;
     NSString *itemPath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[itemDic[@"file"] hash]]];
     if(![[NSFileManager defaultManager] fileExistsAtPath:itemPath]){
         [[NSFileManager defaultManager] createDirectoryAtPath:itemPath withIntermediateDirectories:YES attributes:nil error:nil];
@@ -1907,7 +1907,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 + (NSString *)getMusicDownloadPathWithDic:(NSDictionary *)itemDic {
-    NSString *folderPath = kMusicFolder;
+    NSString *folderPath = kFlowMusicFolder;
     if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
         [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
@@ -2826,13 +2826,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         options.resizeMode = PHImageRequestOptionsResizeModeExact;
         options.networkAccessAllowed = YES;//解决草稿箱获取不到缩略图的问题
         PHFetchResult *phAsset = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
-        
-        [[PHImageManager defaultManager] requestImageForAsset:[phAsset firstObject] targetSize:CGSizeMake(IMAGE_MAX_SIZE_WIDTH, IMAGE_MAX_SIZE_HEIGHT) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-            
-            image = result;
-            result = nil;
-            info = nil;
-        }];
+        if (phAsset.count > 0) {
+            [[PHImageManager defaultManager] requestImageForAsset:[phAsset firstObject] targetSize:CGSizeMake(IMAGE_MAX_SIZE_WIDTH, IMAGE_MAX_SIZE_HEIGHT) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                
+                image = result;
+                result = nil;
+                info = nil;
+            }];
+        }        
         options = nil;
         phAsset = nil;
         return image;
@@ -4639,6 +4640,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     transition.maskURL = file.transitionMask;
     transition.duration = file.transitionDuration;
+}
+
++(NSString *)getCollageIdentifier:( NSInteger ) idx
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"yyyyMMddHHmmssSSS";
+    return  [NSString stringWithFormat:@"collage_%@+%lu", [formatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:0]], idx];
 }
 
 +(NSString *)getCollageIdentifier
@@ -6616,7 +6624,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     captionImage.blendType =  FilterBlendTypeScreen;
                 }
                 captionEx.position= CGPointMake(x, y);
-                captionEx.originalSize = CGSizeMake(w, h);
+//                captionEx.originalSize = CGSizeMake(w, h);
                 captionImage.imageName = subtitleEffectConfig[@"name"];
                 captionEx.scale = 1;
                 captionImage.frameArray = subtitleEffectConfig[@"frameArray"];
@@ -6658,7 +6666,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 NSDictionary *subtitleEffectConfig = [NSJSONSerialization JSONObjectWithData:data
                                                                                      options:NSJSONReadingMutableContainers
                                                                                        error:&err];
-                (*config) = subtitleEffectConfig;
+                if (config) {
+                    (*config) = subtitleEffectConfig;
+                }                
                 if(err) {
                     NSLog(@"json解析失败：%@",err);
                 }
@@ -6671,7 +6681,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 int     w = [subtitleEffectConfig[@"width"] intValue];
                 int     h = [subtitleEffectConfig[@"height"] intValue];
                 captionItem.isVertical =  [subtitleEffectConfig[@"vertical"] boolValue];
-                
                 
                 captionEx.imageFolderPath =[configPath stringByAppendingString:@"/"];
                 captionEx.position= CGPointMake(x, y);
@@ -6690,6 +6699,23 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     captionEx.timeArray = subtitleEffectConfig[@"timeArray"];
                     captionItem.angle = 0;
                     captionEx.texts = [NSMutableArray<CaptionItem *> new];
+                    captionEx.isStretch = [[subtitleEffectConfig objectForKey:@"stretchability"] boolValue];
+                    if (captionEx.isStretch) {
+                        double contentsCenter_x = [textPadding[0] doubleValue];
+                        double contentsCenter_w = w - contentsCenter_x - [textPadding[2] doubleValue];
+                        double contentsCenter_y = [textPadding[1] doubleValue];
+                        double contentsCenter_h = h -contentsCenter_y - [textPadding[3] doubleValue];
+                        captionEx.stretchRect = CGRectMake(contentsCenter_x/h, contentsCenter_y/h, contentsCenter_w/w, contentsCenter_h/h);
+                        captionItem.frame = CGRectZero;
+                        double t_left = [textPadding[0] doubleValue];
+                        double t_right = [textPadding[2] doubleValue];
+                        double t_top = [textPadding[1] doubleValue];
+                        double t_buttom = [textPadding[3] doubleValue];
+                        CGRect textRect = CGRectMake(t_left, t_top, w - t_left - t_right, h - t_top - t_buttom);
+                        captionItem.padding = CGRectMake(textRect.origin.x/w, textRect.origin.y/h, textRect.size.width/w, textRect.size.height/h);
+                    }else {
+                        captionItem.frame = CGRectMake(fx, fy, fw, fh);
+                    }
                     
                     {
                         captionItem.text = VELocalizedString(@"点击输入字幕", nil);
@@ -6699,7 +6725,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         }else {
                             captionItem.fontName = [[UIFont systemFontOfSize:10] fontName];
                         }
-                        captionItem.frame = CGRectMake(fx, fy, fw, fh);
+                        
                         NSArray *textColors = subtitleEffectConfig[@"textColor"];
                         float r = [(textColors[0]) floatValue]/255.0;
                         float g = [(textColors[1]) floatValue]/255.0;
@@ -9209,6 +9235,73 @@ static OSType help_inputPixelFormat(){
         return pxbuffer;
     }
 }
+
++ (CVPixelBufferRef)pixelBufferFromCIImage:(CIImage *)image {
+    CFDictionaryRef empty = CFDictionaryCreate(kCFAllocatorDefault,
+                                               NULL,
+                                               NULL,
+                                               0,
+                                               &kCFTypeDictionaryKeyCallBacks,
+                                               &kCFTypeDictionaryValueCallBacks);
+    CFMutableDictionaryRef attributes = CFDictionaryCreateMutable(kCFAllocatorDefault,
+                                                             1,
+                                                             &kCFTypeDictionaryKeyCallBacks,
+                                                             &kCFTypeDictionaryValueCallBacks);
+
+    CFDictionarySetValue(attributes,kCVPixelBufferIOSurfacePropertiesKey,empty);
+
+    CVPixelBufferRef resultPixelBuffer = NULL;
+    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault,
+                                          image.extent.size.width,
+                                          image.extent.size.height,
+                                          kCVPixelFormatType_32BGRA,
+                                          attributes,
+                                          &resultPixelBuffer);
+
+    if (status == kCVReturnSuccess && resultPixelBuffer != NULL) {
+
+        CVPixelBufferLockBaseAddress(resultPixelBuffer, 0);
+        CIContext *context = [CIContext new];
+        [context render:image toCVPixelBuffer:resultPixelBuffer];
+        CVPixelBufferUnlockBaseAddress(resultPixelBuffer, 0);
+    }
+    
+    return resultPixelBuffer;
+}
+
++ (void)copyPixelBuffer:(CVPixelBufferRef)copyedPixelBuffer toPixelBuffer:(CVPixelBufferRef)pixelBuffer {
+    @autoreleasepool {
+        NSAssert(CVPixelBufferGetPixelFormatType(pixelBuffer) == kCVPixelFormatType_32BGRA,
+                 @"Image buffer must have 32BGRA pixel format type");
+        size_t width = CVPixelBufferGetWidth(copyedPixelBuffer);
+        size_t height = CVPixelBufferGetHeight(copyedPixelBuffer);
+        NSAssert(CVPixelBufferGetWidth(pixelBuffer) == width, @"Height must match");
+        NSAssert(CVPixelBufferGetHeight(pixelBuffer) == height, @"Width must match");
+        
+        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+        CVPixelBufferLockBaseAddress(copyedPixelBuffer, 0);
+        
+        //    float *maskAddress = (float *)CVPixelBufferGetBaseAddress(copyedPixelBuffer);
+        unsigned char *tempAddress = (unsigned char *)CVPixelBufferGetBaseAddress(copyedPixelBuffer);
+        size_t maskBytesPerRow = CVPixelBufferGetBytesPerRow(copyedPixelBuffer);
+        
+        unsigned char *imageAddress = (unsigned char *)CVPixelBufferGetBaseAddress(pixelBuffer);
+        size_t bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer);
+        static const int kBGRABytesPerPixel = 4;
+        
+        for (int row = 0; row < height; ++row) {
+            for (int col = 0; col < width; ++col) {
+                int pixelOffset = col * kBGRABytesPerPixel;
+                int alphaOffset = pixelOffset + 3;
+                imageAddress[alphaOffset] = tempAddress[alphaOffset];
+            }
+            imageAddress += bytesPerRow / sizeof(unsigned char);
+            tempAddress += maskBytesPerRow / sizeof(unsigned char);
+        }
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+        CVPixelBufferUnlockBaseAddress(copyedPixelBuffer, 0);
+    }
+}
 //MARK:添加区域权限
 /**添加区域权限
  */
@@ -9303,4 +9396,6 @@ static OSType help_inputPixelFormat(){
     }
     return crop;
 }
+
+
 @end
