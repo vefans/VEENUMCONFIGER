@@ -223,6 +223,10 @@
  */
 @property (nonatomic, assign) BOOL isIntelligentKey;
 
+/** fileType为kFILEIMAGE，且不是GIF的智能抠图地址
+ */
+@property (nonatomic, strong) NSURL *autoSegmentImageUrl;
+
 /** 混合模式
 */
 @property (nonatomic, assign) FilterBlendType blendType;

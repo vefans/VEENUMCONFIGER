@@ -81,7 +81,7 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
     //MARK: 左上
     {
         if( self.dragUpLeftBtn == nil ){
-            self.dragUpLeftBtn = [self getDirectionBtn:CGRectMake(0, 0, self.fIntervalWidth, self.fIntervalWidth) atDirection:0];
+            self.dragUpLeftBtn = [self getDirectionBtn:CGRectMake(0, 0, self.fIntervalWidth*2.0, self.fIntervalWidth*2.0) atDirection:0];
             UIPanGestureRecognizer* movGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movGestureUpLeft:)];
             [self.dragUpLeftBtn addGestureRecognizer:movGesture];
             self.dragUpLeftBtn.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1/_scale, 1/_scale);
@@ -94,18 +94,19 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
                 rect.size.height = 1;
             }
             else{
-                rect.size.width = _fIntervalWidth/_scale;
-                rect.size.height = _fIntervalWidth/_scale;
+                rect.size.width = _fIntervalWidth*2.0/_scale;
+                rect.size.height = _fIntervalWidth*2.0/_scale;
             }
             rect.origin = CGPointMake(upLeftPoint.x - rect.size.width, upLeftPoint.y - rect.size.height);
             self.dragUpLeftBtn.frame = rect;
+            self.dragUpLeftBtn.center = upLeftPoint;
             self.dragUpLeftBtn.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1/_scale, 1/_scale);
         }
     }
     //MARK: 右上
     {
         if( self.dragUpRightBtn == nil ){
-            self.dragUpRightBtn = [self getDirectionBtn:CGRectMake(self.bounds.size.width - self.fIntervalWidth, 0, self.fIntervalWidth, self.fIntervalWidth) atDirection:1];
+            self.dragUpRightBtn = [self getDirectionBtn:CGRectMake(self.bounds.size.width - self.fIntervalWidth*2.0, 0, self.fIntervalWidth*2.0, self.fIntervalWidth*2.0) atDirection:1];
             UIPanGestureRecognizer* movGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movGestureUpRight:)];
             [self.dragUpRightBtn addGestureRecognizer:movGesture];
             self.dragUpRightBtn.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1/_scale, 1/_scale);
@@ -118,18 +119,19 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
                 rect.size.height = 1;
             }
             else{
-                rect.size.width = _fIntervalWidth/_scale;
-                rect.size.height = _fIntervalWidth/_scale;
+                rect.size.width = _fIntervalWidth*2.0/_scale;
+                rect.size.height = _fIntervalWidth*2.0/_scale;
             }
             rect.origin = CGPointMake(upRightPoint.x, upRightPoint.y - rect.size.height);
             self.dragUpRightBtn.frame = rect;
+            self.dragUpRightBtn.center = upRightPoint;
             self.dragUpRightBtn.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1/_scale, 1/_scale);
         }
     }
     //MARK: 右下
     {
         if( self.dragBottomRightBtn == nil ){
-            self.dragBottomRightBtn = [self getDirectionBtn:CGRectMake(self.bounds.size.width - self.fIntervalWidth, self.bounds.size.height - self.fIntervalWidth, self.fIntervalWidth, self.fIntervalWidth) atDirection:2];
+            self.dragBottomRightBtn = [self getDirectionBtn:CGRectMake(self.bounds.size.width - self.fIntervalWidth*2.0, self.bounds.size.height - self.fIntervalWidth*2.0, self.fIntervalWidth*2.0, self.fIntervalWidth*2.0) atDirection:2];
             UIPanGestureRecognizer* movGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movGestureBottomRight:)];
             [self.dragBottomRightBtn addGestureRecognizer:movGesture];
             self.dragBottomRightBtn.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1/_scale, 1/_scale);
@@ -142,18 +144,19 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
                 rect.size.height = 1;
             }
             else{
-                rect.size.width = _fIntervalWidth/_scale;
-                rect.size.height = _fIntervalWidth/_scale;
+                rect.size.width = _fIntervalWidth*2.0/_scale;
+                rect.size.height = _fIntervalWidth*2.0/_scale;
             }
             rect.origin = CGPointMake(bottomRight.x, bottomRight.y);
             self.dragBottomRightBtn.frame = rect;
+            self.dragBottomRightBtn.center = bottomRight;
             self.dragBottomRightBtn.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1/_scale, 1/_scale);
         }
     }
     //MARK: 左下
     {
         if( self.dragBottomLeftBtn == nil ){
-            self.dragBottomLeftBtn = [self getDirectionBtn:CGRectMake(0, self.bounds.size.height - self.fIntervalWidth, self.fIntervalWidth, self.fIntervalWidth) atDirection:3];
+            self.dragBottomLeftBtn = [self getDirectionBtn:CGRectMake(0, self.bounds.size.height - self.fIntervalWidth, self.fIntervalWidth*2.0, self.fIntervalWidth*2.0) atDirection:3];
             UIPanGestureRecognizer* movGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movGestureBottomLeft:)];
             [self.dragBottomLeftBtn addGestureRecognizer:movGesture];
             self.dragBottomLeftBtn.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1/_scale, 1/_scale);
@@ -166,11 +169,12 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
                 rect.size.height = 1;
             }
             else{
-                rect.size.width = _fIntervalWidth/_scale;
-                rect.size.height = _fIntervalWidth/_scale;
+                rect.size.width = _fIntervalWidth*2.0/_scale;
+                rect.size.height = _fIntervalWidth*2.0/_scale;
             }
             rect.origin = CGPointMake(bottomLeftPoint.x - rect.size.width, bottomLeftPoint.y);
             self.dragBottomLeftBtn.frame = rect;
+            self.dragBottomLeftBtn.center = bottomLeftPoint;
             self.dragBottomLeftBtn.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1/_scale, 1/_scale);
         }
     }
@@ -183,31 +187,46 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
 {
     UIImageView * sender = [[UIImageView alloc] initWithFrame:rect];
     NSString *imagePath = nil;
-    switch (directionInteger) {
-        case 0://左上
-        {
-            imagePath = [VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/New_EditVideo/scrollViewChildImage/剪辑_剪辑变形左上默认_@3x" Type:@"png"];
-        }
-            break;
-        case 1://右上
-        {
-            imagePath = [VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/New_EditVideo/scrollViewChildImage/剪辑_剪辑变形右上默认_@3x" Type:@"png"];
-        }
-            break;
-        case 2://右下
-        {
-            imagePath = [VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/New_EditVideo/scrollViewChildImage/剪辑_剪辑变形右下默认_@3x" Type:@"png"];
-        }
-            break;
-        case 3://左下
-        {
-            imagePath = [VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/New_EditVideo/scrollViewChildImage/剪辑_剪辑变形左下默认_@3x" Type:@"png"];
-        }
-            break;
-        default:
-            break;
+    
+    
+//    switch (directionInteger) {
+//        case 0://左上
+//        {
+//            imagePath = [VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/New_EditVideo/scrollViewChildImage/剪辑_剪辑变形左上默认_@3x" Type:@"png"];
+//        }
+//            break;
+//        case 1://右上
+//        {
+//            imagePath = [VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/New_EditVideo/scrollViewChildImage/剪辑_剪辑变形右上默认_@3x" Type:@"png"];
+//        }
+//            break;
+//        case 2://右下
+//        {
+//            imagePath = [VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/New_EditVideo/scrollViewChildImage/剪辑_剪辑变形右下默认_@3x" Type:@"png"];
+//        }
+//            break;
+//        case 3://左下
+//        {
+//            imagePath = [VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/New_EditVideo/scrollViewChildImage/剪辑_剪辑变形左下默认_@3x" Type:@"png"];
+//        }
+//            break;
+//        default:
+//            break;
+//    }
+//    sender.image = [VEHelp imageWithContentOfPath:imagePath];
+    
+    {
+        UIImageView * imageView = [[UIImageView alloc] init];
+        imageView.frame = CGRectMake(0, 0, 15, 15);
+        imageView.layer.borderColor = [UIColor blackColor].CGColor;
+        imageView.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.95];
+        imageView.layer.borderWidth = 0.1;
+        imageView.layer.cornerRadius = imageView.frame.size.width/2.0;
+        imageView.layer.masksToBounds = true;
+        [sender addSubview:imageView];
+        imageView.center = CGPointMake(rect.size.width/2.0, rect.size.height/2.0);
+        imageView.tag = 22221;
     }
-    sender.image = [VEHelp imageWithContentOfPath:imagePath];
     
     sender.userInteractionEnabled = YES;
     [self addSubview:sender];
@@ -333,13 +352,17 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
     CGPoint bottomLeftPoint = CGPointZero;
     {
         self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), _scale, _scale);
-        upLeftPoint = CGPointMake(self.dragUpLeftBtn.frame.origin.x + self.dragUpLeftBtn.frame.size.width, self.dragUpLeftBtn.frame.origin.y + self.dragUpLeftBtn.frame.size.height);
+//        upLeftPoint = CGPointMake(self.dragUpLeftBtn.frame.origin.x + self.dragUpLeftBtn.frame.size.width, self.dragUpLeftBtn.frame.origin.y + self.dragUpLeftBtn.frame.size.height);
+        upLeftPoint = self.dragUpLeftBtn.center;
         upLeftPoint = [self convertPoint:upLeftPoint toView:self.syncContainer];
-        upRightPoint = CGPointMake(self.dragUpRightBtn.frame.origin.x, self.dragUpRightBtn.frame.origin.y + self.dragUpRightBtn.frame.size.height);
+//        upRightPoint = CGPointMake(self.dragUpRightBtn.frame.origin.x, self.dragUpRightBtn.frame.origin.y + self.dragUpRightBtn.frame.size.height);
+        upRightPoint = self.dragUpRightBtn.center;
         upRightPoint = [self convertPoint:upRightPoint toView:self.syncContainer];
-        bottomRightPoint = CGPointMake(self.dragBottomRightBtn.frame.origin.x, self.dragBottomRightBtn.frame.origin.y);
+//        bottomRightPoint = CGPointMake(self.dragBottomRightBtn.frame.origin.x, self.dragBottomRightBtn.frame.origin.y);
+        bottomRightPoint = self.dragBottomRightBtn.center;
         bottomRightPoint = [self convertPoint:bottomRightPoint toView:self.syncContainer];
-        bottomLeftPoint = CGPointMake(self.dragBottomLeftBtn.frame.origin.x + self.dragBottomLeftBtn.frame.size.width, self.dragBottomLeftBtn.frame.origin.y);
+//        bottomLeftPoint = CGPointMake(self.dragBottomLeftBtn.frame.origin.x + self.dragBottomLeftBtn.frame.size.width, self.dragBottomLeftBtn.frame.origin.y);
+        bottomLeftPoint = self.dragBottomLeftBtn.center;
         bottomLeftPoint = [self convertPoint:bottomLeftPoint toView:self.syncContainer];
         self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-_angle), _scale, _scale);
     }
@@ -440,13 +463,17 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
     CGPoint bottomLeftPoint = CGPointZero;
     
     {
-        upLeftPoint = CGPointMake(self.dragUpLeftBtn.frame.origin.x + self.dragUpLeftBtn.frame.size.width, self.dragUpLeftBtn.frame.origin.y + self.dragUpLeftBtn.frame.size.height);
+//        upLeftPoint = CGPointMake(self.dragUpLeftBtn.frame.origin.x + self.dragUpLeftBtn.frame.size.width, self.dragUpLeftBtn.frame.origin.y + self.dragUpLeftBtn.frame.size.height);
+        upLeftPoint = self.dragUpLeftBtn.center;
         upLeftPoint = [self convertPoint:upLeftPoint toView:self.syncContainer];
-        upRightPoint = CGPointMake(self.dragUpRightBtn.frame.origin.x, self.dragUpRightBtn.frame.origin.y + self.dragUpRightBtn.frame.size.height);
+//        upRightPoint = CGPointMake(self.dragUpRightBtn.frame.origin.x, self.dragUpRightBtn.frame.origin.y + self.dragUpRightBtn.frame.size.height);
+        upRightPoint = self.dragUpRightBtn.center;
         upRightPoint = [self convertPoint:upRightPoint toView:self.syncContainer];
-        bottomRightPoint = CGPointMake(self.dragBottomRightBtn.frame.origin.x, self.dragBottomRightBtn.frame.origin.y);
+//        bottomRightPoint = CGPointMake(self.dragBottomRightBtn.frame.origin.x, self.dragBottomRightBtn.frame.origin.y);
+        bottomRightPoint = self.dragBottomRightBtn.center;
         bottomRightPoint = [self convertPoint:bottomRightPoint toView:self.syncContainer];
-        bottomLeftPoint = CGPointMake(self.dragBottomLeftBtn.frame.origin.x + self.dragBottomLeftBtn.frame.size.width, self.dragBottomLeftBtn.frame.origin.y);
+//        bottomLeftPoint = CGPointMake(self.dragBottomLeftBtn.frame.origin.x + self.dragBottomLeftBtn.frame.size.width, self.dragBottomLeftBtn.frame.origin.y);
+        bottomLeftPoint = self.dragBottomLeftBtn.center;
         bottomLeftPoint = [self convertPoint:bottomLeftPoint toView:self.syncContainer];
     }
     
@@ -490,7 +517,7 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
     [basePath closePath];
     [basePath stroke];
     
-    maskLayer.lineWidth = 2/_scale;
+    maskLayer.lineWidth = 1.0/_scale;
     maskLayer.strokeColor = [UIColor whiteColor].CGColor;
     maskLayer.path = basePath.CGPath;
     maskLayer.fillColor = nil; // 默认为blackColor
@@ -779,13 +806,17 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
     CGPoint bottomRightPoint = CGPointZero;
     CGPoint bottomLeftPoint = CGPointZero;
     
-    upLeftPoint = CGPointMake(self.dragUpLeftBtn.frame.origin.x + self.dragUpLeftBtn.frame.size.width, self.dragUpLeftBtn.frame.origin.y + self.dragUpLeftBtn.frame.size.height);
+//    upLeftPoint = CGPointMake(self.dragUpLeftBtn.frame.origin.x + self.dragUpLeftBtn.frame.size.width, self.dragUpLeftBtn.frame.origin.y + self.dragUpLeftBtn.frame.size.height);
+    upLeftPoint = self.dragUpLeftBtn.center;
     upLeftPoint = [self convertPoint:upLeftPoint toView:self.syncContainer];
-    upRightPoint = CGPointMake(self.dragUpRightBtn.frame.origin.x, self.dragUpRightBtn.frame.origin.y + self.dragUpRightBtn.frame.size.height);
+//    upRightPoint = CGPointMake(self.dragUpRightBtn.frame.origin.x, self.dragUpRightBtn.frame.origin.y + self.dragUpRightBtn.frame.size.height);
+    upRightPoint = self.dragUpRightBtn.center;
     upRightPoint = [self convertPoint:upRightPoint toView:self.syncContainer];
-    bottomRightPoint = CGPointMake(self.dragBottomRightBtn.frame.origin.x, self.dragBottomRightBtn.frame.origin.y);
+//    bottomRightPoint = CGPointMake(self.dragBottomRightBtn.frame.origin.x, self.dragBottomRightBtn.frame.origin.y);
+    bottomRightPoint = self.dragBottomRightBtn.center;
     bottomRightPoint = [self convertPoint:bottomRightPoint toView:self.syncContainer];
-    bottomLeftPoint = CGPointMake(self.dragBottomLeftBtn.frame.origin.x + self.dragBottomLeftBtn.frame.size.width, self.dragBottomLeftBtn.frame.origin.y);
+//    bottomLeftPoint = CGPointMake(self.dragBottomLeftBtn.frame.origin.x + self.dragBottomLeftBtn.frame.size.width, self.dragBottomLeftBtn.frame.origin.y);
+    bottomLeftPoint = self.dragBottomLeftBtn.center;
     bottomLeftPoint = [self convertPoint:bottomLeftPoint toView:self.syncContainer];
     
 //    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-_angle), _scale, _scale);
@@ -806,13 +837,17 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
     CGPoint bottomRightPoint = CGPointZero;
     CGPoint bottomLeftPoint = CGPointZero;
     
-    upLeftPoint = CGPointMake(self.dragUpLeftBtn.frame.origin.x + self.dragUpLeftBtn.frame.size.width, self.dragUpLeftBtn.frame.origin.y + self.dragUpLeftBtn.frame.size.height);
+//    upLeftPoint = CGPointMake(self.dragUpLeftBtn.frame.origin.x + self.dragUpLeftBtn.frame.size.width, self.dragUpLeftBtn.frame.origin.y + self.dragUpLeftBtn.frame.size.height);
+    upLeftPoint = self.dragUpLeftBtn.center;
     upLeftPoint = [self convertPoint:upLeftPoint toView:self.syncContainer];
-    upRightPoint = CGPointMake(self.dragUpRightBtn.frame.origin.x, self.dragUpRightBtn.frame.origin.y + self.dragUpRightBtn.frame.size.height);
+//    upRightPoint = CGPointMake(self.dragUpRightBtn.frame.origin.x, self.dragUpRightBtn.frame.origin.y + self.dragUpRightBtn.frame.size.height);
+    upRightPoint = self.dragUpRightBtn.center;
     upRightPoint = [self convertPoint:upRightPoint toView:self.syncContainer];
-    bottomRightPoint = CGPointMake(self.dragBottomRightBtn.frame.origin.x, self.dragBottomRightBtn.frame.origin.y);
+//    bottomRightPoint = CGPointMake(self.dragBottomRightBtn.frame.origin.x, self.dragBottomRightBtn.frame.origin.y);
+    bottomRightPoint = self.dragBottomRightBtn.center;
     bottomRightPoint = [self convertPoint:bottomRightPoint toView:self.syncContainer];
-    bottomLeftPoint = CGPointMake(self.dragBottomLeftBtn.frame.origin.x + self.dragBottomLeftBtn.frame.size.width, self.dragBottomLeftBtn.frame.origin.y);
+//    bottomLeftPoint = CGPointMake(self.dragBottomLeftBtn.frame.origin.x + self.dragBottomLeftBtn.frame.size.width, self.dragBottomLeftBtn.frame.origin.y);
+    bottomLeftPoint = self.dragBottomLeftBtn.center;
     bottomLeftPoint = [self convertPoint:bottomLeftPoint toView:self.syncContainer];
     
     [array addObject:[NSValue valueWithCGPoint:upLeftPoint]];

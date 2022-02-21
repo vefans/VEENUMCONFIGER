@@ -67,6 +67,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)contentTapped:(UITapGestureRecognizer*)tapGesture;
 
 -( NSMutableArray * )getPasterAssetViewArray;
+
+-( void )recoverPasterAssetView;
 @end
 
 NS_ASSUME_NONNULL_END

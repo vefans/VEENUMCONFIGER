@@ -89,6 +89,7 @@
     //降噪
     copy.denoiseLevel = _denoiseLevel;
     copy.isIntelligentKey = _isIntelligentKey;
+    copy.autoSegmentImageUrl = _autoSegmentImageUrl;
     copy.animationType = _animationType;
     copy.animationIndex= _animationIndex;
     copy.transitionIndex = _transitionIndex;
@@ -261,6 +262,7 @@
     //降噪
     copy.denoiseLevel = _denoiseLevel;
     copy.isIntelligentKey = _isIntelligentKey;
+    copy.autoSegmentImageUrl = _autoSegmentImageUrl;
     copy.animationType = _animationType;
     copy.animationIndex= _animationIndex;
     copy.transitionIndex = _transitionIndex;
@@ -447,6 +449,12 @@
                 }
                 if (source) {
                     CFRelease(source);
+                }
+            }
+            if (_isIntelligentKey) {
+                NSString *autoSegmentImagePath = [VEHelp getAutoSegmentImagePath:_contentURL];
+                if ([[NSFileManager defaultManager] fileExistsAtPath:autoSegmentImagePath]) {
+                    _autoSegmentImageUrl = [NSURL fileURLWithPath:autoSegmentImagePath];
                 }
             }
         }else {

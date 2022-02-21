@@ -452,7 +452,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }];
         }
         
-        
         options = nil;
         phAsset = nil;
         return image;
@@ -472,7 +471,22 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             image = [self fixOrientation:image];
             return image;//[UIImage imageWithContentsOfFile:url.path];
         }else{
-            return [self assetGetThumImage:0.5 url:url urlAsset:nil];
+            UIImage *image = [VEHelp imageWithWebP:url.path error:nil];
+            if( !image )
+                return [self assetGetThumImage:0.5 url:url urlAsset:nil];
+            else{
+                if (MIN(image.size.width, image.size.height) > IMAGE_MAX_SIZE_WIDTH) {
+                    float scale;
+                    if (image.size.width >= image.size.height) {
+                        scale = IMAGE_MAX_SIZE_WIDTH / image.size.width;
+                    }else {
+                        scale = IMAGE_MAX_SIZE_WIDTH / image.size.height;
+                    }
+                    image = [self scaleImage:image toScale:(scale*(480.0/1080.0))];
+                }
+                image = [self fixOrientation:image];
+                return image;//[UIImage imageWithContentsOfFile:url.path];
+            }
         }
     }
 }
@@ -4690,6 +4704,31 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 if (!folderPath && ![VEHelp isSystemPhotoUrl:overlay.media.url]) {
                     overlay.media.url = [VEHelp getFileURLFromAbsolutePath:overlay.media.url.path];
                 }
+                if ([VEHelp isSystemPhotoUrl:overlay.media.url]) {
+                    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+                    option.synchronous = YES;
+                    option.resizeMode = PHImageRequestOptionsResizeModeExact;
+                    PHFetchResult<PHAsset *> *result = [PHAsset fetchAssetsWithALAssetURLs:@[overlay.media.url] options:nil];
+                    if (result.count > 0) {
+                        PHAsset* phAsset = [result objectAtIndex:0];
+                        if ([[phAsset valueForKey:@"uniformTypeIdentifier"] isEqualToString:@"com.compuserve.gif"]) {
+                            overlay.media.isGIF = YES;
+                        }
+                    }
+                }else {
+                    NSData *data = [NSData dataWithContentsOfURL:overlay.media.url];
+                    if (data) {
+                        CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
+                        size_t count = CGImageSourceGetCount(source);
+                        if (count > 1) {
+                            overlay.media.isGIF = YES;
+                        }
+                        if (source) {
+                            CFRelease(source);
+                        }
+                        data = nil;
+                    }
+                }
                 overlay.identifier = [NSString stringWithFormat:@"overlay%lu", (unsigned long)idx];
                 overlay.media.fillType = ImageMediaFillTypeFit;
                 if (overlay.media.mask) {
@@ -5486,6 +5525,31 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             [scene.media enumerateObjectsUsingBlock:^(MediaAsset * _Nonnull asset, NSUInteger idx1, BOOL * _Nonnull stop1) {
                 if (!folderPath && ![VEHelp isSystemPhotoUrl:asset.url]) {
                     asset.url = [VEHelp getFileURLFromAbsolutePath:asset.url.path];
+                }
+                if ([VEHelp isSystemPhotoUrl:asset.url]) {
+                    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+                    option.synchronous = YES;
+                    option.resizeMode = PHImageRequestOptionsResizeModeExact;
+                    PHFetchResult<PHAsset *> *result = [PHAsset fetchAssetsWithALAssetURLs:@[asset.url] options:nil];
+                    if (result.count > 0) {
+                        PHAsset* phAsset = [result objectAtIndex:0];
+                        if ([[phAsset valueForKey:@"uniformTypeIdentifier"] isEqualToString:@"com.compuserve.gif"]) {
+                            asset.isGIF = YES;
+                        }
+                    }
+                }else {
+                    NSData *data = [NSData dataWithContentsOfURL:asset.url];
+                    if (data) {
+                        CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
+                        size_t count = CGImageSourceGetCount(source);
+                        if (count > 1) {
+                            asset.isGIF = YES;
+                        }
+                        if (source) {
+                            CFRelease(source);
+                        }
+                        data = nil;
+                    }
                 }
                 asset.identifier = [NSString stringWithFormat:@"media%lu", (unsigned long)idx];
                 if (asset.mask) {
@@ -9288,7 +9352,7 @@ static OSType help_inputPixelFormat(){
         unsigned char *imageAddress = (unsigned char *)CVPixelBufferGetBaseAddress(pixelBuffer);
         size_t bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer);
         static const int kBGRABytesPerPixel = 4;
-        
+#if 0
         for (int row = 0; row < height; ++row) {
             for (int col = 0; col < width; ++col) {
                 int pixelOffset = col * kBGRABytesPerPixel;
@@ -9298,6 +9362,16 @@ static OSType help_inputPixelFormat(){
             imageAddress += bytesPerRow / sizeof(unsigned char);
             tempAddress += maskBytesPerRow / sizeof(unsigned char);
         }
+#else
+        //2022.02.18 修复数据边缘锯齿问题
+        if(maskBytesPerRow == bytesPerRow)
+            memcpy(imageAddress, tempAddress, bytesPerRow*height);
+        else
+        {
+            for (int row = 0; row < height; row++)
+                memcpy(imageAddress+bytesPerRow, tempAddress+maskBytesPerRow, bytesPerRow);
+        }
+#endif
         CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
         CVPixelBufferUnlockBaseAddress(copyedPixelBuffer, 0);
     }
@@ -9395,6 +9469,27 @@ static OSType help_inputPixelFormat(){
         crop = CGRectMake(0, (1.0 - heightScale)/2.0, 1.0, heightScale);
     }
     return crop;
+}
+
++ (NSString *)getAutoSegmentImagePath:(NSURL *)url {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:kAutoSegmentImageFolder]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:kAutoSegmentImageFolder withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *fileName = @"";
+    if ([url.scheme.lowercaseString isEqualToString:@"ipod-library"]
+        || [url.scheme.lowercaseString isEqualToString:@"assets-library"])
+    {
+        NSRange range = [url.absoluteString rangeOfString:@"?id="];
+        if (range.location != NSNotFound) {
+            fileName = [url.absoluteString substringFromIndex:range.length + range.location];
+            range = [fileName rangeOfString:@"&ext"];
+            fileName = [fileName substringToIndex:range.location];
+        }
+    }else {
+        fileName = [NSString stringWithFormat:@"%ld",[url.path hash]];
+    }
+    NSString *autoSegmentImagePath = [[kAutoSegmentImageFolder stringByAppendingPathComponent:fileName] stringByAppendingPathExtension:@"png"];
+    return autoSegmentImagePath;
 }
 
 

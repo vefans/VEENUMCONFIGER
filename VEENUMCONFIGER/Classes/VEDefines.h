@@ -668,6 +668,8 @@ isPhoneX;\
 
 #define kTextToSpeechFolder [kVEDirectory stringByAppendingPathComponent:@"TextToSpeech"]
 
+#define kAutoSegmentImageFolder [kVEDirectory stringByAppendingPathComponent:@"AutoSegmentImage"]
+
 #define kStickerMinScale   0.1
 #define kStickerMaxScale   4.0
 #define kTransitionMinValue   0.1

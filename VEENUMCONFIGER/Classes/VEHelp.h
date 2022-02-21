@@ -374,4 +374,6 @@
 
 +(CGRect)getOverlayBackgroundImageCrop:( CGSize ) imageSize atBackgroundImageSize:( CGSize ) backgroundImageSize;
 
++ (NSString *)getAutoSegmentImagePath:(NSURL *)url;
+
 @end
