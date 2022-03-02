@@ -41,4 +41,7 @@
 //根据editType和id得到VEUndoRedoCaptionModel
 //- (VEUndoRedoCaptionModel *)getCaptionModelWithId:(NSInteger)modelId undoRedoType:(VEUndoRedoType)undoRedoType;
 
+-(NSMutableArray<VEUndoRedoObject *> *)getUndoList;
+-(NSMutableArray<VEUndoRedoObject *> *)getRedoList;
+
 @end

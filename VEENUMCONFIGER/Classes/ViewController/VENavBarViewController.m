@@ -64,9 +64,13 @@
 
 - (UIView *)toolBar {
     if (!_toolBar) {
-        _toolBar = [[UIView alloc] initWithFrame:CGRectMake(0, kHEIGHT - kToolbarHeight, kWIDTH, kToolbarHeight)];
-        _toolBar.backgroundColor = TOOLBAR_COLOR;
-        [self.view addSubview:_toolBar];
+        if([VEConfigManager sharedManager].iPad_HD){
+            _toolBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWIDTH, kToolbarHeight)];
+        }else{
+            _toolBar = [[UIView alloc] initWithFrame:CGRectMake(0, kHEIGHT - kToolbarHeight, kWIDTH, kToolbarHeight)];
+            _toolBar.backgroundColor = TOOLBAR_COLOR;
+            [self.view addSubview:_toolBar];
+        }
 
         self.titlelab = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, kWIDTH-100, 44)];
         self.titlelab.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];

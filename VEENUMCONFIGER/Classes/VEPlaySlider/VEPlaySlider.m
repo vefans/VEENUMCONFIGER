@@ -43,10 +43,15 @@
     [self setContinuous:YES];
 
 
-    // minimumTrackTintColor : 小于滑块当前值滑块条的颜色，默认为蓝色
-    self.minimumTrackTintColor = Main_Color;
-    // maximumTrackTintColor: 大于滑块当前值滑块条的颜色，默认为白色
-    self.maximumTrackTintColor = Color(255,255,255,0.32);
+    if([VEConfigManager sharedManager].iPad_HD){
+        [self setMinimumTrackImage:[VEHelp imageWithColor:Main_Color size:CGSizeMake(self.frame.size.width, 2) cornerRadius:1] forState:UIControlStateNormal];
+        [self setMaximumTrackImage:[VEHelp imageWithColor:Color(255,255,255,0.32) size:CGSizeMake(self.frame.size.width, 2) cornerRadius:1] forState:UIControlStateNormal];
+    }else{
+        // minimumTrackTintColor : 小于滑块当前值滑块条的颜色，默认为蓝色
+        self.minimumTrackTintColor = Main_Color;
+        // maximumTrackTintColor: 大于滑块当前值滑块条的颜色，默认为白色
+        self.maximumTrackTintColor = Color(255,255,255,0.32);
+    }
     // thumbTintColor : 当前滑块的颜色，默认为白色
     [self setThumbImage:[VEHelp imageWithContentOfFile:@"play_slider_thumb"] forState:UIControlStateNormal];
 

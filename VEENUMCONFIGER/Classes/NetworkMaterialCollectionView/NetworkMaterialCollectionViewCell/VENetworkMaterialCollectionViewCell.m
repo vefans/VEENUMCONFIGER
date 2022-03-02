@@ -69,7 +69,8 @@
     _collectionView.backgroundColor = [UIColor clearColor];
     _collectionView.showsHorizontalScrollIndicator = NO;
     _collectionView.showsVerticalScrollIndicator = NO;
-    
+    if(isVertical_Cell && [VEConfigManager sharedManager].iPad_HD)
+    _collectionView.contentInset = UIEdgeInsetsMake(10, 0, 10, 0);
 //    UIPanGestureRecognizer* moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
 //    [_collectionView addGestureRecognizer:moveGesture];
     

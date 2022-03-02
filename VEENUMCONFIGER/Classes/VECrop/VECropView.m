@@ -60,11 +60,11 @@
         self.cropType = VE_VECROPTYPE_FREE;
         
         
-        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:([VEConfigManager sharedManager].iPad_HD ? 0.0 : 0.5)];
         self.cropSizeMin = CGSizeMake(VE_CROPWIDTH_MIN, VE_CROPHEIGHT_MIN);
         if( [VEConfigManager sharedManager].isPictureEditing )
         {
-            self.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
+            self.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:([VEConfigManager sharedManager].iPad_HD ? 0.0 : 0.9)];
         }
         CGFloat width = frame.size.width;
         CGFloat height = frame.size.height;

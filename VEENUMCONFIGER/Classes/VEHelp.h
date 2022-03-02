@@ -6,6 +6,8 @@
 
 @interface VEHelp : NSObject
 
++(UIImage*) imageWithColor:(UIColor*)color atSize:( CGSize ) size;
+
 + (void)webpToPng:(NSString *)webpPath;
 
 + (UIImage *)geScreenShotImageFromVideoURL:(NSURL *)fileURL atTime:(CMTime)time  atSearchDirection:(bool) isForward;
@@ -240,6 +242,8 @@
 + (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize;
 + (UIImage *)rescaleImage:(UIImage *)image size:(CGSize)size;
 
++ (UIImage *)rescaleImageArray:(NSMutableArray *)imageArray size:(CGSize)size;
+
 + (UIImage*)drawImages:(NSMutableArray *)images size:(CGSize)size animited:(BOOL)animited;
 
 + (CaptionAnimationType)captionAnimateToCaptionAnimation:(CaptionAnimateType)type;
@@ -376,4 +380,8 @@
 
 + (NSString *)getAutoSegmentImagePath:(NSURL *)url;
 
++ (NSString *)getMaterialCachedFilePath:(VECustomizationFunctionType)materialType netFilePath:(NSString *)netFilePath updatetime:(NSString *)updatetime;
++ (UIImage *)screenCapture;
++ (UIImage *)blurScreenCapture;
++(UIImage *)boxblurImage:(UIImage *)image withBlurNumber:(CGFloat)blur;
 @end

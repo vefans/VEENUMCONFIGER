@@ -33,7 +33,7 @@
         
         float itemBtnSize = 62.0;
         float width = kWIDTH * 0.56;
-        float height = itemBtnSize * typeArray.count + 25*2 + 26 + 36;
+        float height = itemBtnSize * typeArray.count + 25*2 + 26 + 36 + 44;
         _bgView = [[UIView alloc] initWithFrame:CGRectMake((kWIDTH - width)/2.0, (kHEIGHT - height)/2.0, width, height)];
         _bgView.backgroundColor = [UIColor whiteColor];
         _bgView.layer.cornerRadius = 5.0;
@@ -105,7 +105,29 @@
             [itemBtn addSubview:titleLbl];
             
             itemBtn.tag = type;
-            [itemBtn addTarget:self action:@selector(itemBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+//            [itemBtn addTarget:self action:@selector(itemBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+            [_bgView addSubview:itemBtn];
+        }
+        
+        width = _bgView.frame.size.width * 0.43;
+        for (int i = 0; i < 2; i++) {
+            UIButton *itemBtn = [[UIButton alloc] init];
+            if (i == 0) {
+                itemBtn.frame = CGRectMake((_bgView.frame.size.width - width * 2.0) / 3.0, CGRectGetMaxY(messageLbl.frame) + typeArray.count * itemBtnSize + (44 - 35)/2.0, width, 35);
+                itemBtn.backgroundColor = UIColorFromRGB(0xa1a1a1);
+                [itemBtn setTitle:VELocalizedString(@"拒绝", nil) forState:UIControlStateNormal];
+                [itemBtn setTitleColor:VE_EXPORTBTN_TITLE_COLOR forState:UIControlStateNormal];
+            }else {
+                itemBtn.frame = CGRectMake((_bgView.frame.size.width - width * 2.0) / 3.0 * 2.0 + width, CGRectGetMaxY(messageLbl.frame) + typeArray.count * itemBtnSize + (44 - 35)/2.0, width, 35);
+                itemBtn.backgroundColor = Main_Color;
+                [itemBtn setTitle:VELocalizedString(@"同意", nil) forState:UIControlStateNormal];
+                [itemBtn setTitleColor:VE_EXPORTBTN_TITLE_COLOR forState:UIControlStateNormal];
+            }
+            itemBtn.layer.cornerRadius = itemBtn.frame.size.height / 2.0;
+            itemBtn.layer.masksToBounds = YES;
+            itemBtn.titleLabel.font = [UIFont systemFontOfSize:14];
+            itemBtn.tag = i + 1;
+            [itemBtn addTarget:self action:@selector(authorizeBtnAction:) forControlEvents:UIControlEventTouchUpInside];
             [_bgView addSubview:itemBtn];
         }
     }
@@ -124,174 +146,90 @@
     [self removeFromSuperview];
 }
 
-- (void)itemBtnAction:(UIButton *)sender {
-    VEAuthorizationType type = sender.tag;
-    
+- (void)authorizeBtnAction:(UIButton *)sender {
+    if (sender.tag == 1) {
+        if (_requestHandler) {
+            _requestHandler(VEAuthorizationStatus_NotDetermined);
+        }
+        [self removeFromSuperview];
+    }else {
+        VEAuthorizationType type = [_typeArray.firstObject integerValue];
+        [self authorizationWithType:type];
+    }
+}
+
+- (void)authorizationWithType:(VEAuthorizationType)type {
+    if (_typeArray.count > 0) {
+        [_typeArray removeObjectAtIndex:0];
+    }
     WeakSelf(self);
     __block VEAuthorizationStatus authorStatus = VEAuthorizationStatus_NotDetermined;
     switch (type) {
         case VEAuthorizationType_Album:
         {
             [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                switch (status) {
+                    case PHAuthorizationStatusNotDetermined:
+                        authorStatus = VEAuthorizationStatus_NotDetermined;
+                        break;
+                    case PHAuthorizationStatusRestricted:
+                        authorStatus = VEAuthorizationStatus_Restricted;
+                        break;
+                    case PHAuthorizationStatusDenied:
+                        authorStatus = VEAuthorizationStatus_Denied;
+                        break;
+                        
+                    default:
+                        authorStatus = VEAuthorizationStatus_Authorized;
+                        break;
+                }
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    StrongSelf(self);
-                    switch (status) {
-                        case PHAuthorizationStatusNotDetermined:
-                            authorStatus = VEAuthorizationStatus_NotDetermined;
-                            break;
-                        case PHAuthorizationStatusRestricted:
-                            authorStatus = VEAuthorizationStatus_Restricted;
-                            break;
-                        case PHAuthorizationStatusDenied:
-                            authorStatus = VEAuthorizationStatus_Denied;
-                            break;
-                            
-                        default:
-                            authorStatus = VEAuthorizationStatus_Authorized;
-                            break;
-                    }
-                    if (strongSelf.requestHandler) {
-                        strongSelf.requestHandler(authorStatus);
-                    }
-                    [strongSelf removeFromSuperview];
+                    [weakSelf authorizationCompletion:authorStatus];
                 });
             }];
         }
             break;
         case VEAuthorizationType_Camera:
         {
-            if (_typeArray.count == 1) {
-                [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-                    if (granted) {
-                        authorStatus = VEAuthorizationStatus_Authorized;
-                    }else {
-                        authorStatus = VEAuthorizationStatus_Denied;
-                    }
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        StrongSelf(self);
-                        if (strongSelf.requestHandler) {
-                            strongSelf.requestHandler(authorStatus);
-                        }
-                        [strongSelf removeFromSuperview];
-                    });
-                }];
-            }else {
-                [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-                    AVAuthorizationStatus audioAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-                    if (granted && audioAuthStatus == AVAuthorizationStatusAuthorized) {
-                        authorStatus = VEAuthorizationStatus_Authorized;
-                    }else {
-                        authorStatus = VEAuthorizationStatus_Denied;
-                    }
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        StrongSelf(self);
-                        sender.enabled = NO;
-                        if (audioAuthStatus != AVAuthorizationStatusNotDetermined) {
-                            if (strongSelf.requestHandler) {
-                                strongSelf.requestHandler(authorStatus);
-                            }
-                            [strongSelf removeFromSuperview];
-                        }
-                    });
-                }];
-            }
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+                if (granted) {
+                    authorStatus = VEAuthorizationStatus_Authorized;
+                }else {
+                    authorStatus = VEAuthorizationStatus_Denied;
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf authorizationCompletion:authorStatus];
+                });
+            }];
         }
             break;
         case VEAuthorizationType_Microphone:
         {
-            if (_typeArray.count == 1) {
-                [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
-                    if (granted) {
-                        authorStatus = VEAuthorizationStatus_Authorized;
-                    }else {
-                        authorStatus = VEAuthorizationStatus_Denied;
-                    }
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        StrongSelf(self);
-                        if (strongSelf.requestHandler) {
-                            strongSelf.requestHandler(authorStatus);
-                        }
-                        [strongSelf removeFromSuperview];
-                    });
-                }];
-            }else {
-                [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
-                    StrongSelf(self);
-                    if ([strongSelf->_typeArray containsObject:[NSNumber numberWithInteger:VEAuthorizationType_Camera]]) {
-                        AVAuthorizationStatus videoAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-                        if (granted && videoAuthStatus == AVAuthorizationStatusAuthorized) {
-                            authorStatus = VEAuthorizationStatus_Authorized;
-                        }else {
-                            authorStatus = VEAuthorizationStatus_Denied;
-                        }
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            sender.enabled = NO;
-                            if (videoAuthStatus != AVAuthorizationStatusNotDetermined) {
-                                if (strongSelf.requestHandler) {
-                                    strongSelf.requestHandler(authorStatus);
-                                }
-                                [strongSelf removeFromSuperview];
-                            }
-                        });
-                    }else if ([strongSelf->_typeArray containsObject:[NSNumber numberWithInteger:VEAuthorizationType_SpeechRecog]]) {
-                        if (@available(iOS 10.0, *)) {
-                            SFSpeechRecognizerAuthorizationStatus speechRecogStatus = [SFSpeechRecognizer authorizationStatus];
-                            if (granted && speechRecogStatus == SFSpeechRecognizerAuthorizationStatusAuthorized) {
-                                authorStatus = VEAuthorizationStatus_Authorized;
-                            }else {
-                                authorStatus = VEAuthorizationStatus_Denied;
-                            }
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                sender.enabled = NO;
-                                if (speechRecogStatus != SFSpeechRecognizerAuthorizationStatusNotDetermined) {
-                                    if (strongSelf.requestHandler) {
-                                        strongSelf.requestHandler(authorStatus);
-                                    }
-                                    [strongSelf removeFromSuperview];
-                                }
-                            });
-                        } else {
-                            // Fallback on earlier versions
-                        }
-                    }
-                }];
-            }
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+                if (granted) {
+                    authorStatus = VEAuthorizationStatus_Authorized;
+                }else {
+                    authorStatus = VEAuthorizationStatus_Denied;
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf authorizationCompletion:authorStatus];
+                });
+            }];
         }
             break;
         case VEAuthorizationType_SpeechRecog:
         {
             if (@available(iOS 10.0, *)) {
-                if (_typeArray.count == 1) {
-                    [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            authorStatus = (VEAuthorizationStatus)status;
-                            StrongSelf(self);
-                            if (strongSelf.requestHandler) {
-                                strongSelf.requestHandler(authorStatus);
-                            }
-                            [strongSelf removeFromSuperview];
-                        });
-                    }];
-                }else {
-                    [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
-                        AVAuthorizationStatus audioAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-                        if (status == SFSpeechRecognizerAuthorizationStatusAuthorized && audioAuthStatus == AVAuthorizationStatusAuthorized) {
-                            authorStatus = VEAuthorizationStatus_Authorized;
-                        }else {
-                            authorStatus = VEAuthorizationStatus_Denied;
-                        }
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            StrongSelf(self);
-                            sender.enabled = NO;
-                            if (audioAuthStatus != AVAuthorizationStatusNotDetermined) {
-                                if (strongSelf.requestHandler) {
-                                    strongSelf.requestHandler(authorStatus);
-                                }
-                                [strongSelf removeFromSuperview];
-                            }
-                        });
-                    }];
-                }
+                [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
+                    authorStatus = (VEAuthorizationStatus)status;
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf authorizationCompletion:authorStatus];
+                    });
+                }];
             } else {
                 // Fallback on earlier versions
             }
@@ -302,13 +240,10 @@
             if (@available(iOS 9.3, *)) {
                 [MPMediaLibrary requestAuthorization:^(MPMediaLibraryAuthorizationStatus authorizationStatus)
                  {
+                    authorStatus = (VEAuthorizationStatus)authorizationStatus;
+                    
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        authorStatus = (VEAuthorizationStatus)authorizationStatus;
-                        StrongSelf(self);
-                        if (strongSelf.requestHandler) {
-                            strongSelf.requestHandler(authorStatus);
-                        }
-                        [strongSelf removeFromSuperview];
+                        [weakSelf authorizationCompletion:authorStatus];
                     });
                 }];
             }else {
@@ -319,11 +254,7 @@
                         authorStatus = VEAuthorizationStatus_Denied;
                     }
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        StrongSelf(self);
-                        if (strongSelf.requestHandler) {
-                            strongSelf.requestHandler(authorStatus);
-                        }
-                        [strongSelf removeFromSuperview];
+                        [weakSelf authorizationCompletion:authorStatus];
                     });
                 }];
             }
@@ -332,6 +263,18 @@
             
         default:
             break;
+    }
+}
+
+- (void)authorizationCompletion:(VEAuthorizationStatus)authorStatus {
+    if (_typeArray.count == 0 || authorStatus != VEAuthorizationStatus_Authorized) {
+        if (_requestHandler) {
+            _requestHandler(authorStatus);
+        }
+        [self removeFromSuperview];
+    }else {
+        VEAuthorizationType type = [_typeArray.firstObject integerValue];
+        [self authorizationWithType:type];
     }
 }
 

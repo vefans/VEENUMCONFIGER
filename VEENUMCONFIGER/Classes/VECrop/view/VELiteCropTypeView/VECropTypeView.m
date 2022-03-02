@@ -74,6 +74,51 @@ static NSString *cellIconID = @"VECropIconTypeCell";
 -(void)reloadDataForDataArray:(NSMutableArray*)dataArray{
     self.dataArray = dataArray;
     [self.collectionView reloadData];
+    float width =0;
+    if([VEConfigManager sharedManager].iPad_HD){
+        for (VECropTypeModel *cropTypeModel in self.dataArray) {
+            if (cropTypeModel.cropType == VE_VECROPTYPE_FREE) {
+                width += 52.0/90.0*self.frame.size.height;
+            }else if(cropTypeModel.cropType == VE_VECROPTYPE_ORIGINAL){
+
+                width += 52.0/90.0*self.frame.size.height;
+
+            }else if(cropTypeModel.cropType == VE_VECROPTYPE_9TO16){
+
+                width += 52.0/90.0*self.frame.size.height;
+
+            }else if(cropTypeModel.cropType == VE_VECROPTYPE_16TO9){
+
+                width += 90.0/90.0*self.frame.size.height;
+
+            }else if(cropTypeModel.cropType == VE_VECROPTYPE_1TO1){
+
+                width += 52.0/90.0*self.frame.size.height;
+
+            }else if(cropTypeModel.cropType == VE_VECROPTYPE_6TO7){
+
+                width += 55.0/90.0*self.frame.size.height;
+
+            }else if(cropTypeModel.cropType == VE_VECROPTYPE_4TO5){
+
+                width += 56.0/90.0*self.frame.size.height;
+
+            }else if(cropTypeModel.cropType == VE_VECROPTYPE_4TO3){
+
+                width += 70.0/90.0*self.frame.size.height;
+
+            }else if(cropTypeModel.cropType == VE_VECROPTYPE_3TO4){
+
+                width += 52.0/90.0*self.frame.size.height;
+
+            }
+            width += 10;
+        }
+        CGRect r = self.collectionView.frame;
+        r.size.width = width;
+        r.origin.x = (CGRectGetWidth(self.frame) - r.size.width)/2.0;
+        self.collectionView.frame = r;
+    }
 }
 
 -(void)didSelectItemAtIndexPathRow:(NSInteger)row{

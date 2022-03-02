@@ -7,7 +7,7 @@
 //
 
 #import "VENavigationController.h"
-
+#import "VEConfigManager.h"
 @interface VENavigationController ()<UIGestureRecognizerDelegate>
 
 @end
@@ -51,25 +51,66 @@
     // Dispose of any resources that can be recreated.
 }
 
-
+- (void)setIpadInterfaceOrientation:(UIInterfaceOrientation)ipadInterfaceOrientation{
+    _ipadInterfaceOrientation = ipadInterfaceOrientation;
+}
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation{
-    return UIInterfaceOrientationPortrait;
+    if([VEConfigManager sharedManager].iPad_HD){
+        if(_ipadInterfaceOrientation != 0){
+            return _ipadInterfaceOrientation;
+        }else{
+            self.ipadInterfaceOrientation = UIInterfaceOrientationLandscapeLeft;
+            return _ipadInterfaceOrientation;
+        }
+    }else{
+        return UIInterfaceOrientationPortrait;
+    }
+    //(UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight);
 }
 - (BOOL)shouldAutorotate{
     return YES;
 }
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    return UIInterfaceOrientationMaskPortrait;
+    if([VEConfigManager sharedManager].iPad_HD){
+        return UIInterfaceOrientationMaskLandscape;
+    }else{
+        return UIInterfaceOrientationMaskPortrait;
+    }
+    
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 }
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    UIDevice *device = [UIDevice currentDevice]; //Get the device object
+    [nc removeObserver:self name:UIDeviceOrientationDidChangeNotification object:device];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+      UIDevice *device = [UIDevice currentDevice]; //Get the device object
+      [device beginGeneratingDeviceOrientationNotifications]; //Tell it to start monitoring the accelerometer for orientation
+      NSNotificationCenter *nc = [NSNotificationCenter defaultCenter]; //Get the notification centre for the app
+      [nc addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification  object:device];
 }
 
 - (void)dealloc{
     NSLog(@"%s",__func__);
 }
 
+- (void)orientationChanged:(NSNotification *)notification{
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+    if(!iPad){
+        self.ipadInterfaceOrientation = UIInterfaceOrientationPortrait;
+    }else{
+        if(orientation == UIInterfaceOrientationLandscapeLeft){
+            self.ipadInterfaceOrientation = UIInterfaceOrientationLandscapeLeft;
+        // 左横屏
+        }else {
+            self.ipadInterfaceOrientation = UIInterfaceOrientationLandscapeRight;
+            //右横屏
+        }
+    }
+}
 @end

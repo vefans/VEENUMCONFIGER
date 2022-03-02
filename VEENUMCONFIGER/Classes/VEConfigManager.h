@@ -178,4 +178,5 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
  */
 - (void)startExportWithMinWH:(int)minWH;
 
+@property (nonatomic, assign) BOOL       iPad_HD;
 @end

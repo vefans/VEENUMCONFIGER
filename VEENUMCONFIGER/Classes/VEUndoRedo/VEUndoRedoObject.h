@@ -159,6 +159,10 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_Superposi_Delete,//叠加删除
     
     VEUndoRedoEditType_ErasePen_Add, // 添加消除笔
+    VEUndoRedoEditType_Cutout_Add,   //添加抠图
+    VEUndoRedoEditType_MergeLayers,     //图层合并
+    
+    VEUndoRedoEditType_BackgroundReplace, // 背景替换
 };
 
 @interface VEUndoRedoObject : NSObject
@@ -195,6 +199,9 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
 @property (nonatomic, strong) id orOverlay;
 @property (nonatomic, strong) id dstOverlay;
 
+@property (nonatomic, strong) NSURL  * orUrl;
+@property (nonatomic, strong) NSURL  * dstUrl;
+
 @property (nonatomic, assign) CGRect   dstCropAssetRect;
 @property (nonatomic, assign) CGRect   orCropAssetRect;
 
@@ -202,6 +209,8 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
 @property (nonatomic, assign) CGRect   orRectInImageAssetRect;
 @property (nonatomic, assign) float         dstAssetAngle;
 @property (nonatomic, assign) float         orAssetAngle;
+
+
 
 //调色
 @property (nonatomic, strong) ToningInfo   *orToningInfo;

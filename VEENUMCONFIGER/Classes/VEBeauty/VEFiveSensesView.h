@@ -36,7 +36,7 @@
 @property(nonatomic, weak)UIView            *toolbarView;
 @property(nonatomic, weak)UIScrollView    *ribbonScrollView;
 
-
+@property(nonatomic, strong)UIScrollView *beautyView;
 
 @property(nonatomic,weak)id<VEFiveSensesViewDelegate>   delegate;
 

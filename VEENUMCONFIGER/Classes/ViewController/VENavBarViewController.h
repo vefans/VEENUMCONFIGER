@@ -19,7 +19,6 @@ typedef NS_ENUM(NSInteger, BackTypeCode) {
 
 
 @interface VENavBarViewController : UIViewController
-
 @property(nonatomic, strong)UIView               *navBar;       //导航栏
 
 @property(nonatomic, strong)VENavBarButton       *backBtn;      //返回按钮

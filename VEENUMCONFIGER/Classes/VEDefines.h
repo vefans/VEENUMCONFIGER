@@ -176,7 +176,8 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_Superposi                   = 55,   // 叠加
     VEAdvanceEditType_Sky                  = 56,      //天空
     VEAdvanceEditType_Cato                 = 57,      //加图
-    VEAdvanceEditType_Cutout              = 58,   //抠图
+    VEAdvanceEditType_Cutout              = 58,     //抠图
+    VEAdvanceEditType_MergeLayers     = 59,     //图层合并
 };
 
 /*
@@ -419,6 +420,8 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 
 //判断是否为iPad
 #define iPad ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+//#define iPad_HD ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+#define iPadToolWidth 130
 #define DEGREES_TO_RADIANS(d) (d * M_PI / 180)
 #define kThumbnailFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/thumbnailFolder"]
 
@@ -460,6 +463,8 @@ isPhoneX;\
 #define PESDKTEXT_COLOR UIColorFromRGB(0x2B2B2B)
 
 #define VIEW_COLOR UIColorFromRGB(0x1a1a1a)
+#define VIEW_IPAD_COLOR UIColorFromRGB(0x1F1F1F)
+#define SCREEN_IPAD_BACKGROUND_COLOR UIColorFromRGB(0x070709)
 
 #define NV_Color 0x27262c
 #define SCREEN_BACKGROUND_COLOR [VEConfigManager sharedManager].viewBackgroundColor
@@ -575,7 +580,9 @@ isPhoneX;\
 
 #define kWatermarkFolder [NSTemporaryDirectory() stringByAppendingString:@"watermark/"]
 
+#define kMergeLayersFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/MergeLayersFloatder"]
 
+#define kCutoutFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/CutoutFloatder"]
 #define kErasePenFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ErasePenFloatder"]
 #define kCoverFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/cover"]
 #define kCanvasFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Canvas"]

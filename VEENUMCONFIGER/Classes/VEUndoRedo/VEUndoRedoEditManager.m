@@ -16,6 +16,16 @@
 
 @implementation VEUndoRedoEditManager
 
+-(NSMutableArray<VEUndoRedoObject *> *)getUndoList
+{
+    return _undoList;
+}
+
+-(NSMutableArray<VEUndoRedoObject *> *)getRedoList
+{
+    return _redoList;
+}
+
 + (instancetype)sharedManager
 {
     static VEUndoRedoEditManager *singleOjbect = nil;

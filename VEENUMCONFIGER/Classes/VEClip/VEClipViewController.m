@@ -1075,6 +1075,14 @@
 }
 
 - (void)exportMovieSuc:(NSString *)exportPath{
+    if ([self.navigationController.visibleViewController isKindOfClass:[UIAlertController class]]) {
+        WeakSelf(self);
+        UIAlertController *alert = (UIAlertController *)self.navigationController.visibleViewController;
+        [alert dismissViewControllerAnimated:YES completion:^{
+            [weakSelf exportMovieSuc:exportPath];
+        }];
+        return;
+    }
     if(self.exportProgressView.superview){
         [self.exportProgressView removeFromSuperview];
         self.exportProgressView = nil;

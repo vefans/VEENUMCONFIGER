@@ -15,7 +15,7 @@
     self = [super initWithFrame:frame];
     if( self )
     {
-        self.backgroundColor = VIEW_COLOR;
+        self.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : VIEW_COLOR;
         // 左上和右上为圆角
         UIBezierPath *cornerRadiusPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds byRoundingCorners:UIRectCornerTopRight | UIRectCornerTopLeft cornerRadii:CGSizeMake(16, 16)];
         CAShapeLayer *cornerRadiusLayer = [ [CAShapeLayer alloc ]  init];

@@ -132,8 +132,6 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     rotateView.image = [VEHelp imageNamed:@"next_jianji/剪辑-字幕旋转_"];
     rotateView.image = [rotateView.image imageWithTintColor];
     rotateView.userInteractionEnabled = YES;
-    
-    rotateView.userInteractionEnabled = YES;
     [self addSubview:rotateView];
     UIPanGestureRecognizer* rotateGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(rotateGesture:)];
     [rotateView addGestureRecognizer:rotateGesture];
@@ -148,9 +146,9 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     selectImageView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
     selectImageView.layer.borderWidth = selectImageViewBorderWidth;
     selectImageView.layer.borderColor = [UIColor whiteColor].CGColor;
-    selectImageView.layer.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.1].CGColor;
+    selectImageView.layer.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.8].CGColor;
     selectImageView.layer.shadowOffset = CGSizeZero;
-    selectImageView.layer.shadowOpacity = 0.2;
+    selectImageView.layer.shadowOpacity = 0.5;
     selectImageView.layer.shadowRadius = selectImageViewShadowRadius;
     selectImageView.layer.masksToBounds = true;
     selectImageView.clipsToBounds = NO;

@@ -12,7 +12,7 @@
 #import <CoreText/CoreText.h>
 #import <VEENUMCONFIGER/VEHelp.h>
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
-#import <Reachability/Reachability.h>
+#import <VEENUMCONFIGER/VEReachability.h>
 #import <SDWebImage/SDWebImage.h>
 #import <SDWebImageWebPCoder/UIImage+WebP.h>
 #import <SDWebImage/UIImage+GIF.h>
@@ -1762,7 +1762,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }
         return;
     }
-    Reachability *lexiu = [Reachability reachabilityForInternetConnection];
+    VEReachability *lexiu = [VEReachability reachabilityForInternetConnection];
     NSString *type;
     NSString *folderPath;
     NSString *plistPath;
@@ -1806,7 +1806,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         default:
             break;
     }
-    if([lexiu currentReachabilityStatus] != NotReachable) {
+    if([lexiu currentReachabilityStatus] != VEReachabilityStatus_NotReachable) {
         if (failedHandler) {
             NSString *message = @"下载失败，请检查网络!";
             NSDictionary *userInfo = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
@@ -4128,8 +4128,29 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     CGRect rect = (CGRect){CGPointZero, size};
     
     UIGraphicsBeginImageContext(rect.size);
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 1.0);
     
     [image drawInRect:rect];
+    
+    UIImage *resImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return resImage;
+}
+
+//压缩图片至指定尺寸
++ (UIImage *)rescaleImageArray:(NSMutableArray *)imageArray size:(CGSize)size
+{
+    CGRect rect = (CGRect){CGPointZero, size};
+    
+    UIGraphicsBeginImageContext(rect.size);
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 1.0);
+    
+    [imageArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        UIImage * image = (UIImage*)obj;
+        [image drawInRect:rect];
+    }];
     
     UIImage *resImage = UIGraphicsGetImageFromCurrentImageContext();
     
@@ -6751,7 +6772,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 captionEx.originalSize = CGSizeMake(w, h);
                 captionEx.imageName = subtitleEffectConfig[@"name"];
                 captionEx.scale = 1;
-                
+                captionItem.fontSize = 0.0;
                 {
                     int fx = 0,fy = 0,fw = 0,fh = 0;
                     NSArray *textPadding = subtitleEffectConfig[@"textPadding"];
@@ -7526,6 +7547,25 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return rect;
 }
 
++(UIImage*) imageWithColor:(UIColor*)color atSize:( CGSize ) size
+{
+
+    CGRect rect = CGRectMake(0.0f, 0.0f, size.width, size.height);
+
+    UIGraphicsBeginImageContext(rect.size);
+
+    CGContextRef context = UIGraphicsGetCurrentContext();
+
+   CGContextSetFillColorWithColor(context, [color CGColor]);
+
+    CGContextFillRect(context, rect);
+
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+
+    UIGraphicsEndImageContext();
+    return image;
+}
+
 +(void )getOriginaImage:( CVPixelBufferRef  ) originaImage atGrayscaleImage:( CVPixelBufferRef ) grayscaleImage atSize:( CGSize ) size
 {
     @autoreleasepool {
@@ -7551,7 +7591,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 int pixelOffset = col * kBGRABytesPerPixel;
                 int alphaOffset = pixelOffset + 3;
                 
-                imageAddress[alphaOffset] = tempAddress[alphaOffset];
+                float tempAddressAlpha = tempAddress[alphaOffset];
+                
+                imageAddress[alphaOffset] = tempAddressAlpha;
             }
             imageAddress += bytesPerRow / sizeof(unsigned char);
             tempAddress += maskBytesPerRow / sizeof(unsigned char);
@@ -7584,7 +7626,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if(appKey == nil){
         return  nil;
     }
-    Reachability *lexiu = [Reachability reachabilityForInternetConnection];
+    VEReachability *lexiu = [VEReachability reachabilityForInternetConnection];
     if (materialType == kVEEFFECTS) {
         plistPath = kNewSpecialEffectPlistPath;
         folderPath = kSpecialEffectFolder;
@@ -7619,7 +7661,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         type = @"animate";
     }
     NSMutableArray *oldMaterialArray = [NSMutableArray arrayWithContentsOfFile:plistPath];
-    if ([lexiu currentReachabilityStatus] == NotReachable) {
+    if ([lexiu currentReachabilityStatus] == VEReachabilityStatus_NotReachable) {
         materialArray = oldMaterialArray;
     }else {
         NSMutableDictionary *params = [NSMutableDictionary dictionary];
@@ -9493,4 +9535,85 @@ static OSType help_inputPixelFormat(){
 }
 
 
++ (UIImage *)screenCapture{
+    UIWindow *mainWindow = [UIApplication sharedApplication].keyWindow;
+    UIGraphicsBeginImageContextWithOptions(mainWindow.frame.size, NO, 0);
+    [mainWindow drawViewHierarchyInRect:mainWindow.frame afterScreenUpdates:YES];
+    UIImage *inputImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return inputImage;
+}
++ (UIImage *)blurScreenCapture{
+    UIWindow *mainWindow = [UIApplication sharedApplication].keyWindow;
+    UIGraphicsBeginImageContextWithOptions(mainWindow.frame.size, NO, 0);
+    [mainWindow drawViewHierarchyInRect:mainWindow.frame afterScreenUpdates:YES];
+    UIImage *inputImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return [VEHelp boxblurImage:inputImage withBlurNumber:8];;
+}
++(UIImage *)boxblurImage:(UIImage *)image withBlurNumber:(CGFloat)blur {
+    if (blur < 0.f || blur > 1.f) {
+        blur = 0.5f;
+    }
+    int boxSize = (int)(blur * 40);
+    boxSize = boxSize - (boxSize % 2) + 1;
+     
+    CGImageRef img = image.CGImage;
+     
+    vImage_Buffer inBuffer, outBuffer;
+    vImage_Error error;
+     
+    void *pixelBuffer;
+    //从CGImage中获取数据
+    CGDataProviderRef inProvider = CGImageGetDataProvider(img);
+    CFDataRef inBitmapData = CGDataProviderCopyData(inProvider);
+    //设置从CGImage获取对象的属性
+    inBuffer.width = CGImageGetWidth(img);
+    inBuffer.height = CGImageGetHeight(img);
+    inBuffer.rowBytes = CGImageGetBytesPerRow(img);
+     
+    inBuffer.data = (void*)CFDataGetBytePtr(inBitmapData);
+     
+    pixelBuffer = malloc(CGImageGetBytesPerRow(img) *
+                         CGImageGetHeight(img));
+     
+    if(pixelBuffer == NULL)
+        NSLog(@"No pixelbuffer");
+     
+    outBuffer.data = pixelBuffer;
+    outBuffer.width = CGImageGetWidth(img);
+    outBuffer.height = CGImageGetHeight(img);
+    outBuffer.rowBytes = CGImageGetBytesPerRow(img);
+     
+    error = vImageBoxConvolve_ARGB8888(&inBuffer, &outBuffer, NULL, 0, 0, boxSize, boxSize, NULL, kvImageEdgeExtend);
+     
+    if (error) {
+        NSLog(@"error from convolution %ld", error);
+    }
+     
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef ctx = CGBitmapContextCreate(
+                                             outBuffer.data,
+                                             outBuffer.width,
+                                             outBuffer.height,
+                                             8,
+                                             outBuffer.rowBytes,
+                                             colorSpace,
+                                             kCGImageAlphaNoneSkipLast);
+    CGImageRef imageRef = CGBitmapContextCreateImage (ctx);
+    UIImage *returnImage = [UIImage imageWithCGImage:imageRef];
+     
+    //clean up
+    CGContextRelease(ctx);
+    CGColorSpaceRelease(colorSpace);
+     
+    free(pixelBuffer);
+    CFRelease(inBitmapData);
+     
+    CGColorSpaceRelease(colorSpace);
+    CGImageRelease(imageRef);
+     
+    return returnImage;
+}
 @end

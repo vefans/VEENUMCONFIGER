@@ -85,6 +85,7 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
             UIPanGestureRecognizer* movGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movGestureUpLeft:)];
             [self.dragUpLeftBtn addGestureRecognizer:movGesture];
             self.dragUpLeftBtn.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1/_scale, 1/_scale);
+            self.dragUpLeftBtn.layer.masksToBounds = TRUE;
         }
         else{
             CGRect rect = self.dragUpLeftBtn.frame;
@@ -110,6 +111,7 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
             UIPanGestureRecognizer* movGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movGestureUpRight:)];
             [self.dragUpRightBtn addGestureRecognizer:movGesture];
             self.dragUpRightBtn.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1/_scale, 1/_scale);
+            self.dragUpRightBtn.layer.masksToBounds = TRUE;
         }
         else{
             CGRect rect = self.dragUpRightBtn.frame;
@@ -135,6 +137,7 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
             UIPanGestureRecognizer* movGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movGestureBottomRight:)];
             [self.dragBottomRightBtn addGestureRecognizer:movGesture];
             self.dragBottomRightBtn.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1/_scale, 1/_scale);
+            self.dragBottomRightBtn.layer.masksToBounds = TRUE;
         }
         else{
             CGRect rect = self.dragBottomRightBtn.frame;
@@ -160,6 +163,7 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
             UIPanGestureRecognizer* movGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movGestureBottomLeft:)];
             [self.dragBottomLeftBtn addGestureRecognizer:movGesture];
             self.dragBottomLeftBtn.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1/_scale, 1/_scale);
+            self.dragBottomLeftBtn.layer.masksToBounds = TRUE;
         }
         else{
             CGRect rect = self.dragBottomLeftBtn.frame;

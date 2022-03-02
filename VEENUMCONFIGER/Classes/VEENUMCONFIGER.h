@@ -19,5 +19,3 @@
 #import <VEENUMCONFIGER/VEColorControlView.h>
 #import <VEENUMCONFIGER/VEDrawView.h>
 
-
-

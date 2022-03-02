@@ -32,7 +32,29 @@
 
 
 @implementation VENetworkMaterialView
-
+- (void) insertColorGradient:(UIView *)view superview:(UIView *)superview{
+    if(![VEConfigManager sharedManager].iPad_HD){
+        return;
+    }
+    UIColor *colorOne = [VIEW_IPAD_COLOR colorWithAlphaComponent:0.0];
+    UIColor *colorTwo = VIEW_IPAD_COLOR;
+    
+    NSArray *colors = [NSArray arrayWithObjects:(id)colorOne.CGColor, colorTwo.CGColor,nil];
+    
+    CAGradientLayer *topLayer = [CAGradientLayer layer];
+    topLayer.colors = colors;
+    topLayer.frame = CGRectMake(0, CGRectGetMinY(view.frame), view.frame.size.width, 20);
+    topLayer.startPoint = CGPointMake(0, 1);
+    topLayer.endPoint = CGPointMake(0,0);
+    [view.superview.layer insertSublayer:topLayer above:0];
+    CAGradientLayer *bottomLayer = [CAGradientLayer layer];
+    bottomLayer.colors = colors;
+    bottomLayer.frame = CGRectMake(0, CGRectGetMaxY(view.frame) - 20, view.frame.size.width, 20);
+    bottomLayer.startPoint = CGPointMake(0, 0);
+    bottomLayer.endPoint = CGPointMake(0, 1);
+    [view.superview.layer insertSublayer:bottomLayer above:0];
+    
+}
 - (instancetype)initWithFrame:(CGRect)frame atCount:(NSInteger) count atIsVertical_Cell:(BOOL) isVertical_Cell atWidth:(float) cellWidth atHeight:(float) cellHeight
 {
     if (self = [super initWithFrame:frame]) {
@@ -70,9 +92,9 @@
     _collectionView.showsHorizontalScrollIndicator = NO;
     _collectionView.showsVerticalScrollIndicator = NO;
     [self addSubview:_collectionView];
-    
     if( _isVertical_Cell  )
     {
+        [self insertColorGradient:_collectionView superview:self];
         UIPanGestureRecognizer* moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
         [_collectionView addGestureRecognizer:moveGesture];
     }
