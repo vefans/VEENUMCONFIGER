@@ -12,19 +12,20 @@
 
 @protocol VELTTextViewDelegate <NSObject>
 @optional
--(BOOL)textView:(UITextView *_Nullable)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *_Nullable)text;
-- (void)textViewDidChange:(UITextView *_Nullable)textView;
+- (void)textViewShouldBeginEditing:(UITextView *)textView;
+-(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
+- (void)textViewDidChange:(UITextView *)textView;
 @end
 
 @interface VELTTextView : UIView
 
-@property (weak, nonatomic) id<VELTTextViewDelegate> _Nullable delegate;
+@property (weak, nonatomic) id<VELTTextViewDelegate>  delegate;
 
 /**  */
-@property (nonatomic, strong, nullable) UITextView  *textView;
+@property (nonatomic, strong) UITextView  *textView;
 
 /** 占位*/
-@property (nonatomic, strong, nullable) UITextView  *placeholderTextView;
+@property (nonatomic, strong) UITextView  *placeholderTextView;
 
-+ (instancetype _Nullable )placeholderTextView;
++ (instancetype)placeholderTextView;
 @end

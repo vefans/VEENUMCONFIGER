@@ -62,6 +62,14 @@
     [textField resignFirstResponder];
     return YES;
 }
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
+    if (_delegate && [_delegate respondsToSelector:@selector(textViewShouldBeginEditing:)]) {
+        [_delegate textViewShouldBeginEditing:textView];
+    }
+    return YES;
+}
+
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
     if (text.length == 0 && range.location == 0) {
         self.placeholderTextView.hidden = NO;

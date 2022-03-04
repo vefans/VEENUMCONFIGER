@@ -318,7 +318,7 @@
 +(CGRect)getCrop:( CGSize ) size atOriginalSize:( CGSize ) originalSize;
 
 +(void )getOriginaImage:( CVPixelBufferRef  ) originaImage atGrayscaleImage:( CVPixelBufferRef ) grayscaleImage atSize:( CGSize ) size;
-
++(void )getOriginaImageCutout:( CVPixelBufferRef  ) originaImage atGrayscaleImage:( unsigned char * ) imgData atSize:( CGSize ) size;
 
 + (NSMutableArray *)getAnimationArrayWithAppkey:(NSString *)appKey
                              typeUrlPath:(NSString *)typeUrlPath
@@ -367,6 +367,7 @@
 + (NSString *)getPathFolderName:(NSString *)path;
 
 + (CVPixelBufferRef)pixelBufferFromCGImage:(UIImage *)img;
++ (CVPixelBufferRef)pixelBufferFromCGImageRGBA:(UIImage *)img;
 + (CVPixelBufferRef)pixelBufferFromCIImage:(CIImage *)image;
 + (void)copyPixelBuffer:(CVPixelBufferRef)copyedPixelBuffer toPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 +(void)saveUserInfo:(id) obj forKey:(NSString*) key;
@@ -384,4 +385,6 @@
 + (UIImage *)screenCapture;
 + (UIImage *)blurScreenCapture;
 +(UIImage *)boxblurImage:(UIImage *)image withBlurNumber:(CGFloat)blur;
+
++ (UIImage *)scaleToSize:(UIImage *)img size:(CGSize)size;
 @end

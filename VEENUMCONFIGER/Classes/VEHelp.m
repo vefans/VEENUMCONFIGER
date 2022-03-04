@@ -4159,6 +4159,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return resImage;
 }
 
++ (UIImage *)scaleToSize:(UIImage *)img size:(CGSize)size{
+    CIImage *originalImage = [[CIImage imageWithCGImage:img.CGImage] imageByApplyingTransform:CGAffineTransformScale(CGAffineTransformIdentity, size.width/img.size.width, size.height/img.size.height)];
+    UIImage * image =  [UIImage imageWithCIImage:originalImage];
+    return image;
+}
 
 + (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize
 {

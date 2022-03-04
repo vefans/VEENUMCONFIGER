@@ -120,7 +120,7 @@
     
     __block FaceAttribute *faceAttribute = nil;
     [_currentMedia.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ( CGRectContainsPoint(_currentFaceRect, CGPointMake(obj.faceRect.origin.x+obj.faceRect.size.width/2.0, obj.faceRect.origin.y+obj.faceRect.size.height/2.0)) ) {
+        if ( CGRectContainsPoint(_currentFaceRect, CGPointMake(obj.faceRect.origin.x+obj.faceRect.size.width/2.0, obj.faceRect.origin.y+obj.faceRect.size.height/2.0)) || CGRectEqualToRect(_currentFaceRect, obj.faceRect)) {
             faceAttribute = obj;
             *stop = YES;
         }
@@ -190,7 +190,7 @@
 - (void)compareBtnUp:(UIButton *)sender {
     __block FaceAttribute *faceAttribute = nil;
     [_editMedia.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ( CGRectContainsPoint(_currentFaceRect, CGPointMake(obj.faceRect.origin.x+obj.faceRect.size.width/2.0, obj.faceRect.origin.y+obj.faceRect.size.height/2.0)) ) {
+        if ( CGRectContainsPoint(_currentFaceRect, CGPointMake(obj.faceRect.origin.x+obj.faceRect.size.width/2.0, obj.faceRect.origin.y+obj.faceRect.size.height/2.0)) || CGRectEqualToRect(_currentFaceRect, obj.faceRect)) {
             faceAttribute = obj;
             *stop = YES;
         }
