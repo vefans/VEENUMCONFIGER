@@ -226,6 +226,7 @@
 /** fileType为kFILEIMAGE，且不是GIF的智能抠图地址
  */
 @property (nonatomic, strong) NSURL *autoSegmentImageUrl;
+@property (nonatomic, assign)kAutoSegmentType   segmentType;
 
 /** 混合模式
 */

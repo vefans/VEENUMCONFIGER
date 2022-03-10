@@ -1997,3 +1997,5 @@
 "编辑内容" = "Edit";
 "拒绝" = "Reject";
 "排列" = "Arrangement";
+"字号" = "Font size";
+"最多输入%d个字" = "Enter at most %d texts";

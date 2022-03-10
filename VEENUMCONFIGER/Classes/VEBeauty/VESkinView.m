@@ -63,10 +63,10 @@
 #pragma mark- 调整界面
 -(void)initAdjustmentView
 {
-    UIView * adjustmentView = [[UIView alloc] initWithFrame:CGRectMake(0, _toolbarView.frame.size.height + _toolbarView.frame.origin.y, self.frame.size.width,  self.frame.size.height - kPlayerViewOriginX - (_toolbarView.frame.size.height + _toolbarView.frame.origin.y)  )];
+    UIView * adjustmentView = [[UIView alloc] initWithFrame:CGRectMake(0, _toolbarView.frame.size.height + _toolbarView.frame.origin.y, self.frame.size.width,  self.frame.size.height - kPlayerViewOriginX - (_toolbarView.frame.size.height + _toolbarView.frame.origin.y + ([VEConfigManager sharedManager].editConfiguration.isSingletrack ? 20 : 0))  )];
     [self addSubview:adjustmentView];
     
-    UIButton * resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(15, adjustmentView.frame.size.height - 28, 50, 28)];
+    UIButton * resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(15, adjustmentView.frame.size.height -  ([VEConfigManager sharedManager].editConfiguration.isSingletrack ? 20 : 0) - 28, 50, 28)];
     [resetBtn setTitle:VELocalizedString(@"还原", nil) forState:UIControlStateNormal];
     [resetBtn setTitleColor:UIColorFromRGB(0xbebebe) forState:UIControlStateNormal];
     [resetBtn setTitleColor:Main_Color forState:UIControlStateHighlighted];
@@ -88,7 +88,7 @@
     [compareBtn addTarget:self action:@selector(compareBtnUp:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
     [adjustmentView addSubview:compareBtn];
 
-    UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake(40, (adjustmentView.frame.size.height-35)/2.0, self.frame.size.width - 40*2, 35)];
+    UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake(40, (adjustmentView.frame.size.height-35)/2.0 -  ([VEConfigManager sharedManager].editConfiguration.isSingletrack ? 20 : 0), self.frame.size.width - 40*2, 35)];
     _adjustmentSlider = slider;
     
     [slider setMinimumValue:0];
@@ -102,6 +102,9 @@
     UIImage * theImage = [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_球1@3x" Type:@"png"]];
     [slider setThumbImage:theImage forState:UIControlStateNormal];
     [slider setMinimumTrackImage: [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_轨道2@1x" Type:@"png"]] forState:UIControlStateNormal];
+    if([VEConfigManager sharedManager].editConfiguration.isSingletrack){
+        [slider setMinimumTrackImage:[VEHelp veImageWithColor:Main_Color size:CGSizeMake(slider.frame.size.width, 2) cornerRadius:1] forState:UIControlStateNormal];
+    }
     [slider setMaximumTrackImage: [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_轨道1@1x" Type:@"png"]] forState:UIControlStateNormal];
     [adjustmentView addSubview:slider];
 

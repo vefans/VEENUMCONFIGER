@@ -28,7 +28,7 @@
 +(id)objectForData:(NSData *)data;
 
 + (BOOL)isSystemPhotoPath:(NSString *)path;
-
++ (NSString *) system;
 + (BOOL)isLowDevice;
 /**进入系统设置
  */
@@ -380,6 +380,7 @@
 +(CGRect)getOverlayBackgroundImageCrop:( CGSize ) imageSize atBackgroundImageSize:( CGSize ) backgroundImageSize;
 
 + (NSString *)getAutoSegmentImagePath:(NSURL *)url;
++ (NSString *)getErasePenImagePath:(NSURL *)url;
 
 + (NSString *)getMaterialCachedFilePath:(VECustomizationFunctionType)materialType netFilePath:(NSString *)netFilePath updatetime:(NSString *)updatetime;
 + (UIImage *)screenCapture;

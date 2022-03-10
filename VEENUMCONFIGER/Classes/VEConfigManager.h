@@ -39,6 +39,9 @@ typedef void(^VECloudBackingUpHandler) (int completionCount, int totalCount);
 //云备份结束回调
 typedef void(^VECloudBackupCompletionHandler) (int completionCount);
 
+typedef void(^VEExporTemplate) (UIViewController * view);
+
+
 UIKIT_EXTERN NSString * const VEStartExportNotification;
 
 @protocol VESDKDelegate <NSObject>
@@ -129,6 +132,7 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property(nonatomic,copy) VECloudBackingUpHandler cloudBackingUpHandler;
 @property(nonatomic,copy) VECloudBackupCompletionHandler cloudBackupCompletionHandler;
 @property(nonatomic,copy) VEPrepareExportHandler prepareExportHandler;
+@property(nonatomic,copy) VEExporTemplate  exporTemplate;   //导出模版
 
 @property (nonatomic, weak) id<VESDKDelegate> veSDKDelegate;
 

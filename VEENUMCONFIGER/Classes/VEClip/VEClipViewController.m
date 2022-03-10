@@ -90,6 +90,27 @@
     {
         self.view.backgroundColor = [UIColor whiteColor];
     }
+    if([VEConfigManager sharedManager].iPad_HD && !CGRectEqualToRect(_frameRect, CGRectZero)){
+        
+    
+        UIImageView *blurview = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        blurview.alpha = 0.95;
+        blurview.image = _blurBgImage;
+        CALayer *layer = [[CALayer alloc] init];
+        layer.bounds = blurview.bounds;
+        layer.position = blurview.center;
+        layer.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.6].CGColor;
+        [blurview.layer addSublayer:layer];
+        [self.view addSubview:blurview];
+        self.view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:1.0];
+        _bgView = [[UIView alloc] initWithFrame:_frameRect];//
+        _bgView.layer.cornerRadius = 10;
+        _bgView.layer.masksToBounds = YES;
+        _bgView.backgroundColor = VIEW_IPAD_COLOR;//[UIColor colorWithWhite:0.7 alpha:1.0];
+    }else{
+        _bgView = [[UIView alloc] initWithFrame:self.view.bounds];
+    }
+    [self.view addSubview:_bgView];
     if (CGRectEqualToRect(_fixedMaxCrop, CGRectZero)) {
         _fixedMaxCrop = CGRectMake(0, 0, 1, 1);
     }    
@@ -169,18 +190,38 @@
         self.toolBar.hidden = NO;
         [self.finishToolBarBtn addTarget:self action:@selector(finishToolBarButtonClicked) forControlEvents:UIControlEventTouchUpInside];
     }
-    self.titlelab.text = VELocalizedString(@"裁切", nil);
+    [self.bgView addSubview:self.toolBar];
+    if([VEConfigManager sharedManager].iPad_HD){
+        self.toolBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.bgView.frame), 44);
+        self.finishToolBarBtn.frame = CGRectMake(CGRectGetWidth(self.toolBar.frame) - 54, 0, 44, 44);
+        self.backBtn.frame = CGRectMake(10, 0, 44, 44);
+        self.titlelab.frame = CGRectMake(50, 0, CGRectGetWidth(self.toolBar.frame)-100, 44);
+        [self.bgView addSubview:self.toolBar];
+        self.toolBar.backgroundColor = [UIColor clearColor];
+        
+        [self.backBtn setImage:nil forState:UIControlStateNormal];
+        [self.backBtn setTitle:VELocalizedString(@"取消", nil) forState:UIControlStateNormal];
+        [self.backBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
+        
+        [self.finishToolBarBtn setImage:nil forState:UIControlStateNormal];
+        [self.finishToolBarBtn setTitle:VELocalizedString(@"完成", nil) forState:UIControlStateNormal];
+        [self.finishToolBarBtn setTitleColor:[UIColor greenColor] forState:UIControlStateNormal];
+        self.toolBar.hidden = NO;
+        self.titlelab.text = @"";
+    }else{
+        self.titlelab.text = VELocalizedString(@"裁切", nil);
+    }
 }
 
 
 - (void)setupViews {
-    [self.view addSubview:self.videoCropView];
+    [self.bgView addSubview:self.videoCropView];
     if( _cutMmodeType == kCropTypeFixed )
     {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, kPlayerViewOriginX, self.view.frame.size.width, 45)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, kPlayerViewOriginX, self.bgView.frame.size.width, 45)];
         if( _isNeedExport )
         {
-            label.frame = CGRectMake(0, kNavgationBar_Height, self.view.frame.size.width, 45);
+            label.frame = CGRectMake(0, kNavgationBar_Height, self.bgView.frame.size.width, 45);
         }
         label.text = VELocalizedString(@"拖动选择视频显示区域", nil);
         if( [VEConfigManager sharedManager].isPictureEditing )
@@ -192,11 +233,11 @@
             label.textColor = [UIColor whiteColor];
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont systemFontOfSize:16];
-        [self.view addSubview:label];
+        [self.bgView addSubview:label];
     }
     if( _cutMmodeType == kCropTypeNone )
     {
-        [self.view addSubview:self.toolView];
+        [self.bgView addSubview:self.toolView];
         [self.toolView addSubview:self.playButton];
         [self.toolView addSubview:self.playTimeLabel];
         [self.toolView addSubview:self.playSlider];
@@ -224,7 +265,7 @@
                 _playTimeRange = _selectFile.videoTrimTimeRange;
             }
             [self initvideoView];
-            [self.view addSubview:self.playButton];
+            [self.bgView addSubview:self.playButton];
             
             UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(playVideoEvent:)];
             [tapGesture setNumberOfTapsRequired:1];
@@ -606,7 +647,7 @@
         resultFail:^(NSError *error) {
             
         }];
-        [self.videoCropView.videoView insertSubview:_videoCoreSDK.view  atIndex:0];
+        [_videoCropView.videoView insertSubview:_videoCoreSDK.view  atIndex:0];
         _videoCoreSDK.delegate = self;
     }
     
@@ -626,6 +667,10 @@
 //        _videoCropView.cropView.backgroundColor = [UIColor whiteColor];
 //        _videoCropView.inputView.backgroundColor = [UIColor whiteColor];
 //        _videoCropView.superview.backgroundColor = [UIColor whiteColor];
+    }
+    if([VEConfigManager sharedManager].iPad_HD){
+        _videoCoreSDK.view.backgroundColor = VIEW_IPAD_COLOR;
+        _videoCropView.backgroundColor = VIEW_IPAD_COLOR;
     }
     [_videoCoreSDK setScenes:self.scenesArray];
     
@@ -694,6 +739,11 @@
     [self deletePlayer];
     if (_cancelBlock) {
         _cancelBlock();
+    }
+    if([VEConfigManager sharedManager].iPad_HD){
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+        return;
     }
     UIViewController *upView = [self.navigationController popViewControllerAnimated:NO];
     if(!upView){
@@ -920,6 +970,11 @@
             _selectFile.crop = r;
             [self exportMovie];
         }else {
+            if([VEConfigManager sharedManager].iPad_HD){
+                [self.view removeFromSuperview];
+                [self removeFromParentViewController];
+//                return;
+            }
             [self dismissViewControllerAnimated:NO completion:nil];
         }
     }
@@ -1089,6 +1144,14 @@
     }
     
     [self deletePlayer];
+    if([VEConfigManager sharedManager].iPad_HD){
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+        if([VEConfigManager sharedManager].callbackBlock){
+            [VEConfigManager sharedManager].callbackBlock(exportPath);
+        }
+        return;
+    }
     [self dismissViewControllerAnimated:YES completion:^{
         if([VEConfigManager sharedManager].callbackBlock){
             [VEConfigManager sharedManager].callbackBlock(exportPath);
@@ -1284,8 +1347,13 @@
             [self performSelector:@selector(loadTrimmerViewThumbImage) withObject:nil afterDelay:0.1];
             [_videoTrimiSlider interceptProgress:CMTimeGetSeconds( timeRange.start )];
         }
-        
+//        if([VEConfigManager sharedManager].iPad_HD){
+//            CGRect r = self.videoCropView.cropView.cropRectView.frame;
+//            r.origin.y = 0;
+//            self.videoCropView.cropView.cropRectView.frame = r;
+//        }
         CGPoint point = self.videoCropView.cropView.cropRectView.frame.origin;
+        
         point = [self.videoCropView.cropView convertPoint:point toView:self.syncContainerView];
         self.pasterTextView.cropRect = CGRectMake(point.x, point.y, self.videoCropView.cropView.cropRectView.frame.size.width, self.videoCropView.cropView.cropRectView.frame.size.height);
         
@@ -1495,46 +1563,55 @@
     if (_videoCropView == nil) {
         CGRect rect = CGRectZero;
         if (_isNeedExport) {
-            rect = CGRectMake(0,kNavgationBar_Height, kWIDTH, kHEIGHT - kNavgationBar_Height - 240 - kBottomSafeHeight);
+            rect = CGRectMake(0,kNavgationBar_Height, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kNavgationBar_Height - 240 - kBottomSafeHeight);
             if( _cutMmodeType == kCropTypeFixed ){
                 if( _selectFile.fileType == kFILEIMAGE )
                 {
                     if( _isCropTypeViewHidden )
                     {
-                        rect = CGRectMake(0,kNavgationBar_Height, kWIDTH, kHEIGHT - kNavgationBar_Height - kBottomSafeHeight);
+                        rect = CGRectMake(0,kNavgationBar_Height, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kNavgationBar_Height - kBottomSafeHeight);
                     }
                     else
-                        rect = CGRectMake(0,kNavgationBar_Height, kWIDTH, kHEIGHT - kNavgationBar_Height - 65 - kBottomSafeHeight);
+                        rect = CGRectMake(0,kNavgationBar_Height, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kNavgationBar_Height - 65 - kBottomSafeHeight);
                 }
                 else{
                     if( _isCropTypeViewHidden )
                     {
-                        rect = CGRectMake(0,kNavgationBar_Height, kWIDTH, kHEIGHT - kNavgationBar_Height - 85 - kBottomSafeHeight);
+                        rect = CGRectMake(0,kNavgationBar_Height, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kNavgationBar_Height - 85 - kBottomSafeHeight);
                     }
                     else
-                        rect = CGRectMake(0,kNavgationBar_Height, kWIDTH, kHEIGHT - kNavgationBar_Height - 180 - kBottomSafeHeight);
+                        rect = CGRectMake(0,kNavgationBar_Height, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kNavgationBar_Height - 180 - kBottomSafeHeight);
                 }
             }
         }else {
-            rect = CGRectMake(0,kPlayerViewOriginX, kWIDTH, kHEIGHT - kPlayerViewOriginX - 240 - kToolbarHeight);
+            rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - 240 - kToolbarHeight);
             if( _cutMmodeType == kCropTypeFixed ){
                 if( _selectFile.fileType == kFILEIMAGE )
                 {
                     if( _isCropTypeViewHidden )
                     {
-                        rect = CGRectMake(0,kPlayerViewOriginX, kWIDTH, kHEIGHT - kPlayerViewOriginX - kToolbarHeight);
+                        rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - kToolbarHeight);
                     }
                     else
-                        rect = CGRectMake(0,kPlayerViewOriginX, kWIDTH, kHEIGHT - kPlayerViewOriginX - 65 - kToolbarHeight);
+                        rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - 65 - kToolbarHeight);
                 }
                 else{
                     if( _isCropTypeViewHidden )
                     {
-                        rect = CGRectMake(0,kPlayerViewOriginX, kWIDTH, kHEIGHT - kPlayerViewOriginX - 85 - kToolbarHeight);
+                        rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - 85 - kToolbarHeight);
                     }
                     else
-                        rect = CGRectMake(0,kPlayerViewOriginX, kWIDTH, kHEIGHT - kPlayerViewOriginX - 180 - kToolbarHeight);
+                        rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - 180 - kToolbarHeight);
                 }
+            }
+        }
+        if([VEConfigManager sharedManager].iPad_HD){
+            if( _isCropTypeViewHidden )
+            {
+//                rect = CGRectMake(0,44, CGRectGetWidth(_bgView.frame), CGRectGetHeight(_bgView.frame) - 44 - 20);
+                rect = CGRectMake(0,44, CGRectGetWidth(_bgView.frame), CGRectGetHeight(_bgView.frame) - 44 - 85);
+            }else{
+                rect = CGRectMake(0,44, CGRectGetWidth(_bgView.frame), CGRectGetHeight(_bgView.frame) - 44 - 180);
             }
         }
         if( _cutMmodeType == kCropTypeFixed )
@@ -1557,11 +1634,12 @@
 -(UIView *)toolView{
     if (_toolView == nil) {
         if (_isNeedExport) {
-            _toolView = [[UIView alloc] initWithFrame:CGRectMake(0,kHEIGHT - kBottomSafeHeight - 240, kWIDTH, 240)];
+            _toolView = [[UIView alloc] initWithFrame:CGRectMake(0,([VEConfigManager sharedManager].iPad_HD ? (CGRectGetHeight(self.bgView.frame) - 85) : (CGRectGetHeight(self.bgView.frame) - kBottomSafeHeight - 240)), CGRectGetWidth(self.bgView.frame), 240)];
         }else {
-            _toolView = [[UIView alloc] initWithFrame:CGRectMake(0,kHEIGHT - kToolbarHeight - 240, kWIDTH, 240)];
+            _toolView = [[UIView alloc] initWithFrame:CGRectMake(0,([VEConfigManager sharedManager].iPad_HD ? (CGRectGetHeight(self.bgView.frame) - 85) : (CGRectGetHeight(self.bgView.frame) - kToolbarHeight - 240)), CGRectGetWidth(self.bgView.frame), 240)];
         }
-        _toolView.backgroundColor = UIColorFromRGB(0x10100F);
+        
+        _toolView.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : UIColorFromRGB(0x10100F);
         if( [VEConfigManager sharedManager].isPictureEditing )
         {
             _toolView.backgroundColor = [UIColor whiteColor];
@@ -1581,7 +1659,7 @@
             [_playButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_video_play"] forState:UIControlStateNormal];
             [_playButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_video_stop"] forState:UIControlStateSelected];
         }else {
-            _playButton.frame = CGRectMake((kWIDTH - 56)/2.0, (iPhone_X ? 44 : 0) + (_videoCropView.frame.size.height - 56)/2.0, 56, 56);
+            _playButton.frame = CGRectMake((CGRectGetWidth(self.bgView.frame) - 56)/2.0, (iPhone_X ? 44 : 0) + (_videoCropView.frame.size.height - 56)/2.0, 56, 56);
             [_playButton setImage:[VEHelp imageWithContentOfFile:@"/剪辑_播放_@3x"] forState:UIControlStateNormal];
             [_playButton setImage:[VEHelp imageWithContentOfFile:@"/剪辑_暂停_@3x"] forState:UIControlStateSelected];
         }
@@ -1608,7 +1686,7 @@
 -(UILabel *)endTimeLabel{
     if (_endTimeLabel == nil) {
         _endTimeLabel = [[UILabel alloc] init];
-        _endTimeLabel.frame = CGRectMake(kWIDTH - 60, 16 + ((28 -17)/2), 60, 17);
+        _endTimeLabel.frame = CGRectMake(CGRectGetWidth(self.bgView.frame) - 60, 16 + ((28 -17)/2), 60, 17);
         _endTimeLabel.font = [UIFont systemFontOfSize:12];
         _endTimeLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.0];
         _endTimeLabel.textColor = Color(255,255,255,0.64);
@@ -1622,7 +1700,7 @@
 
 -(VEPlaySlider *)playSlider{
     if (_playSlider == nil) {
-        _playSlider = [[VEPlaySlider alloc] initWithFrame:CGRectMake(120, 16 + ((28 -16)/2), kWIDTH - 120 -70, 16)];
+        _playSlider = [[VEPlaySlider alloc] initWithFrame:CGRectMake(120, 16 + ((28 -16)/2), CGRectGetWidth(self.bgView.frame) - 120 -70, 16)];
         _playSlider.delegate = self;
     }
     return _playSlider;
@@ -1659,7 +1737,7 @@
 -(UIButton *)vertButton{
     if (_vertButton == nil) {
 
-        float widthButton = (kWIDTH -  99 - (10*3))/3;
+        float widthButton = (CGRectGetWidth(self.bgView.frame) -  99 - (10*3))/3;
         
         _vertButton = [[UIButton alloc] initWithFrame:CGRectMake(99, (self.cropType == VE_VECROPTYPE_FIXEDRATIO ? ((self.toolView.frame.size.height - 70 - 30)/2.0 + 70) : 70), widthButton, 30)];
         [_vertButton setTitle:VELocalizedString(@"垂直翻转", nil) forState:UIControlStateNormal];
@@ -1678,7 +1756,7 @@
 -(UIButton *)horizontalButton{
     if (_horizontalButton == nil) {
         
-        float widthButton = (kWIDTH -  99 - (10*3))/3;
+        float widthButton = (CGRectGetWidth(self.bgView.frame) -  99 - (10*3))/3;
         
         _horizontalButton = [[UIButton alloc]initWithFrame:CGRectMake(99 + widthButton +10, (self.cropType == VE_VECROPTYPE_FIXEDRATIO ? ((self.toolView.frame.size.height - 70 - 30)/2.0 + 70) : 70), widthButton, 30)];
         [_horizontalButton setTitle:VELocalizedString(@"水平翻转", nil) forState:UIControlStateNormal];
@@ -1696,7 +1774,7 @@
 
 -(UIButton *)whirlButton{
     if (_whirlButton == nil) {
-        float widthButton = (kWIDTH -  99 - (10*3))/3;
+        float widthButton = (CGRectGetWidth(self.bgView.frame) -  99 - (10*3))/3;
         _whirlButton = [[UIButton alloc]initWithFrame:CGRectMake(99 + (widthButton +10)*2, (self.cropType == VE_VECROPTYPE_FIXEDRATIO ? ((self.toolView.frame.size.height - 70 - 30)/2.0 + 70) : 70), widthButton, 30)];
         [_whirlButton setTitle:VELocalizedString(@"旋     转", nil) forState:UIControlStateNormal];
         [_whirlButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_whirl_icon"] forState:UIControlStateNormal];
@@ -1717,13 +1795,13 @@
         {
             if( _photoView )
                 if( _cutMmodeType == kCropTypeFixed ) {
-                    _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _photoView.frame.size.height - 65, kWIDTH - 16, 65)];
+                    _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _photoView.frame.size.height - 65, CGRectGetWidth(self.bgView.frame) - 16, 65)];
                 }else {
-                    _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _videoView.frame.size.height - 65, kWIDTH - 16, 65)];
+                    _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _videoView.frame.size.height - 65, CGRectGetWidth(self.bgView.frame) - 16, 65)];
                 }
         }
         else{
-            _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, 130, kWIDTH - 16, 90)];
+            _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, 130, CGRectGetWidth(self.bgView.frame) - 16, 90)];
         }
         if( [VEConfigManager sharedManager].isPictureEditing )
         {
@@ -1745,7 +1823,7 @@
 
 - (VEExportProgressView *)exportProgressView{
     if(!_exportProgressView){
-        _exportProgressView = [[VEExportProgressView alloc] initWithFrame:CGRectMake(0,0, kWIDTH, kHEIGHT)];
+        _exportProgressView = [[VEExportProgressView alloc] initWithFrame:CGRectMake(0,0, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame))];
         _exportProgressView.canTouchUpCancel = YES;
         [_exportProgressView setProgressTitle:VELocalizedString(@"视频导出中，请耐心等待...", nil)];
         [_exportProgressView setProgress:0 animated:NO];
@@ -1778,13 +1856,13 @@
 -(void)initphotoView
 {
     {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0,kHEIGHT - kBottomSafeHeight - 180, kWIDTH, 180)];
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetHeight(self.bgView.frame) - kBottomSafeHeight - 180, CGRectGetWidth(self.bgView.frame), 180)];
         if( !_isNeedExport )
         {
-            view.frame = CGRectMake(0,kHEIGHT - kToolbarHeight - 180, kWIDTH, 180);
+            view.frame = CGRectMake(0,CGRectGetHeight(self.bgView.frame) - kToolbarHeight - 180, CGRectGetWidth(self.bgView.frame), 180);
         }
-        view.backgroundColor = UIColorFromRGB(0x10100F);
-        [self.view addSubview:view];
+        view.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : UIColorFromRGB(0x10100F);
+        [self.bgView addSubview:view];
         if( [VEConfigManager sharedManager].isPictureEditing )
         {
             view.backgroundColor = [UIColor whiteColor];
@@ -1796,11 +1874,11 @@
         }
         if( _isCropTypeViewHidden )
         {
-            view.frame = CGRectMake(0,kHEIGHT - kToolbarHeight, kWIDTH, 0);
+            view.frame = CGRectMake(0,CGRectGetHeight(self.bgView.frame) - kToolbarHeight, CGRectGetWidth(self.bgView.frame), 0);
         }
         else
         {
-            view.frame = CGRectMake(0,kHEIGHT - kToolbarHeight - 65, kWIDTH, 65);
+            view.frame = CGRectMake(0,CGRectGetHeight(self.bgView.frame) - kToolbarHeight - 65, CGRectGetWidth(self.bgView.frame), 65);
         }
     }
     
@@ -1815,17 +1893,17 @@
 -(void)initvideoView
 {
     {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0,kHEIGHT - kBottomSafeHeight - 180, kWIDTH, 180)];
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetHeight(self.bgView.frame) - ([VEConfigManager sharedManager].iPad_HD ? 0 : kBottomSafeHeight) - 180, CGRectGetWidth(self.bgView.frame), 180)];
         if( !_isNeedExport )
         {
-            view.frame = CGRectMake(0,kHEIGHT - kToolbarHeight - 180, kWIDTH, 180);
+            view.frame = CGRectMake(0,CGRectGetHeight(self.bgView.frame) - ([VEConfigManager sharedManager].iPad_HD ? 0 : kToolbarHeight) - 180, CGRectGetWidth(self.bgView.frame), 180);
         }
         if( _isCropTypeViewHidden )
         {
-            view.frame = CGRectMake(0,kHEIGHT - kToolbarHeight - 85, kWIDTH, 85);
+            view.frame = CGRectMake(0,CGRectGetHeight(self.bgView.frame) - ([VEConfigManager sharedManager].iPad_HD ? 0 : kToolbarHeight) - 85, CGRectGetWidth(self.bgView.frame), 85);
         }
-        view.backgroundColor = UIColorFromRGB(0x10100F);
-        [self.view addSubview:view];
+        view.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : UIColorFromRGB(0x10100F);
+        [self.bgView addSubview:view];
         _videoView = view;
     }
     [_videoView addSubview:self.cropTypeView];

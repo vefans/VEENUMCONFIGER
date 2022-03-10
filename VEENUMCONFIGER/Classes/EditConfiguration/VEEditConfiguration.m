@@ -13,7 +13,7 @@
     if(_isSingletrack){
         [VEConfigManager sharedManager].iPad_HD = NO;
     }else{
-        [VEConfigManager sharedManager].iPad_HD = NO;
+        [VEConfigManager sharedManager].iPad_HD = iPad;
     }
 }
 - (instancetype)init{

@@ -50,6 +50,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**音乐音量
  */
 @property(nonatomic,assign)float            musicVolume;
+@property(nonatomic,strong)UIView           *bgView;
+@property(nonatomic,strong)UIImage          *blurBgImage;
+@property(nonatomic,assign)CGRect           frameRect;
 
 @property (nonatomic,copy) void (^editVideoForOnceFinishAction)(BOOL useToAll,CGRect crop,CGRect cropRect,BOOL verticalMirror,BOOL horizontalMirror,float rotation, VECropType cropmodeType);
 

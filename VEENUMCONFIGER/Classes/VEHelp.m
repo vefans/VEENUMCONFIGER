@@ -7444,7 +7444,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     size = CGSizeMake(width * corp.size.width, height * corp.size.height);
     
-    if( syncContainerSize.width < syncContainerSize.height )
+    if( size.width < size.height )
         scale = rect.size.height*syncContainerSize.height/size.height;
     else
         scale = rect.size.width*syncContainerSize.width/size.width;
@@ -9536,6 +9536,27 @@ static OSType help_inputPixelFormat(){
         fileName = [NSString stringWithFormat:@"%ld",[url.path hash]];
     }
     NSString *autoSegmentImagePath = [[kAutoSegmentImageFolder stringByAppendingPathComponent:fileName] stringByAppendingPathExtension:@"png"];
+    return autoSegmentImagePath;
+}
+
++ (NSString *)getErasePenImagePath:(NSURL *)url {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:kErasePenFolder]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:kErasePenFolder withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *fileName = @"";
+    if ([url.scheme.lowercaseString isEqualToString:@"ipod-library"]
+        || [url.scheme.lowercaseString isEqualToString:@"assets-library"])
+    {
+        NSRange range = [url.absoluteString rangeOfString:@"?id="];
+        if (range.location != NSNotFound) {
+            fileName = [url.absoluteString substringFromIndex:range.length + range.location];
+            range = [fileName rangeOfString:@"&ext"];
+            fileName = [fileName substringToIndex:range.location];
+        }
+    }else {
+        fileName = [NSString stringWithFormat:@"%ld",[url.path hash]];
+    }
+    NSString *autoSegmentImagePath = [[kErasePenFolder stringByAppendingPathComponent:fileName] stringByAppendingPathExtension:@"png"];
     return autoSegmentImagePath;
 }
 

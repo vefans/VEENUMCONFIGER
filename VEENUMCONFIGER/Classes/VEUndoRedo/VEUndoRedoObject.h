@@ -165,39 +165,36 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_BackgroundReplace, // 背景替换
 };
 
+
 @interface VEUndoRedoObject : NSObject
-
 @property (nonatomic, assign) VEAdvanceEditType editType;
-
 @property (nonatomic, assign) VEUndoRedoEditType type;
-
-@property (nonatomic, assign) CMTime currentTime;
-
-@property (nonatomic, strong) NSMutableArray *oriFileList;
-@property (nonatomic, strong) NSMutableArray *dstFileList;
-
-//背景
-@property (nonatomic, assign) NSInteger currentIndex;
-@property (nonatomic, strong) VEMediaInfo *oriFile;
-@property (nonatomic, strong) VEMediaInfo *dstFile;
+@property (nonatomic, weak)   UIView   *currentPasterTextView;
+@property (nonatomic, strong) NSMutableArray    *orArray;
+@property (nonatomic, strong) NSMutableArray    *dstArray;
 //字幕
 @property (nonatomic, assign)NSInteger  orSubtitleIndex;
 @property (nonatomic, strong) NSString *dstSubtitleIdentifier;
+//贴纸
+@property (nonatomic, assign)NSInteger  orStickerIndex;
+//滤镜 特效 边框
+@property (nonatomic, assign) float orLookUpFilterIntensity;
+@property (nonatomic, assign) float dstLookUpFilterIntensity;
+//图层 画笔(涂鸦) 字幕
+@property (nonatomic, strong) NSObject *orOverlay;
+@property (nonatomic, strong) NSObject *dstOverlay;
+
 @property (nonatomic, strong) CaptionEx *orSubtitle;
 @property (nonatomic, strong) CaptionEx *dstSubtitle;
 
-//贴纸
-@property (nonatomic, assign)NSInteger  orStickerIndex;
-@property (nonatomic, strong)CaptionEx    *orSticker;
-@property (nonatomic, strong)CaptionEx    *dstSticker;
-//滤镜 特效 边框
 @property (nonatomic, strong) CustomFilter *orFilter;
 @property (nonatomic, strong) CustomFilter *dstFilter;
-@property (nonatomic, assign) float orLookUpFilterIntensity;
-@property (nonatomic, assign) float dstLookUpFilterIntensity;
-//图层 画笔(涂鸦)
-@property (nonatomic, strong) id orOverlay;
-@property (nonatomic, strong) id dstOverlay;
+
+@property (nonatomic, strong)CaptionEx    *orSticker;
+@property (nonatomic, strong)CaptionEx    *dstSticker;
+//调色
+@property (nonatomic, strong) ToningInfo   *orToningInfo;
+@property (nonatomic, strong) ToningInfo   *dstToningInfo;
 
 @property (nonatomic, strong) NSURL  * orUrl;
 @property (nonatomic, strong) NSURL  * dstUrl;
@@ -211,14 +208,5 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
 @property (nonatomic, assign) float         orAssetAngle;
 
 
-
-//调色
-@property (nonatomic, strong) ToningInfo   *orToningInfo;
-@property (nonatomic, strong) ToningInfo   *dstToningInfo;
-
-@property (nonatomic, weak) id   currentPasterTextView;
-
-@property (nonatomic, strong) NSMutableArray    *orArray;
-@property (nonatomic, strong) NSMutableArray    *dstArray;
 
 @end

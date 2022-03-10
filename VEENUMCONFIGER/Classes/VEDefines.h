@@ -616,6 +616,9 @@ isPhoneX;\
 #define KChangeSkyFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeSky"]
 #define kChangeSkyPath [KChangeSkyFolder stringByAppendingPathComponent:@"ChangeSkyPath.plist"]
 
+#define KChangeMaskFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeMask"]
+#define kChangeMaskPath [KChangeMaskFolder stringByAppendingPathComponent:@"ChangeMaskPath.plist"]
+
 #pragma mark- 图片流动换天空背景
 #define KChangeSkyVideoFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeSkyVideo"]
 #define kChangeSkyVideoPath [KChangeSkyFolder stringByAppendingPathComponent:@"ChangeSkyPath.plist"]

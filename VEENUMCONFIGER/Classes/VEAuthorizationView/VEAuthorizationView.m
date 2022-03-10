@@ -32,7 +32,7 @@
         [self addGestureRecognizer:singleTap];
         
         float itemBtnSize = 62.0;
-        float width = kWIDTH * 0.56;
+        float width = 270;
         float height = itemBtnSize * typeArray.count + 25*2 + 26 + 36 + 44;
         _bgView = [[UIView alloc] initWithFrame:CGRectMake((kWIDTH - width)/2.0, (kHEIGHT - height)/2.0, width, height)];
         _bgView.backgroundColor = [UIColor whiteColor];
@@ -140,19 +140,20 @@
     if (CGRectContainsPoint(_bgView.frame, point)) {
         return;
     }
+    [self removeFromSuperview];
     if (_requestHandler) {
         _requestHandler(VEAuthorizationStatus_NotDetermined);
     }
-    [self removeFromSuperview];
 }
 
 - (void)authorizeBtnAction:(UIButton *)sender {
     if (sender.tag == 1) {
+        [self removeFromSuperview];
         if (_requestHandler) {
             _requestHandler(VEAuthorizationStatus_NotDetermined);
         }
-        [self removeFromSuperview];
     }else {
+        self.hidden = YES;
         VEAuthorizationType type = [_typeArray.firstObject integerValue];
         [self authorizationWithType:type];
     }

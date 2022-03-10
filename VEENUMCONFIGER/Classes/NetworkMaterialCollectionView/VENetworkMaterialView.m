@@ -433,5 +433,7 @@
         [_delegate netWrokMaterial_MoveGesture:recognizer];
     }
 }
-
+-(void)setFrame:(CGRect)frame{
+    [super setFrame:frame];
+}
 @end

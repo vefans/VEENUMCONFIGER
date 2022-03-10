@@ -49,7 +49,9 @@
 @end
 
 @implementation VECropView
-
+- (void)setCropWidth:(CGFloat)cropWidth{
+    _cropWidth = cropWidth;
+}
 #pragma mark - 1.Life Cycle
 
 -(instancetype)initWithFrame:(CGRect)frame withVideoCropType:(VEVideoCropType)videoCropType{
