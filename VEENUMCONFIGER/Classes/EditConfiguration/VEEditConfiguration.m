@@ -8,14 +8,7 @@
 #import "VEEditConfiguration.h"
 
 @implementation VEEditConfiguration
-- (void)setIsSingletrack:(bool)isSingletrack{
-    _isSingletrack = isSingletrack;
-    if(_isSingletrack){
-        [VEConfigManager sharedManager].iPad_HD = NO;
-    }else{
-        [VEConfigManager sharedManager].iPad_HD = iPad;
-    }
-}
+
 - (instancetype)init{
     if(self = [super init]){
         _supportFileType                        = SUPPORT_ALL;
