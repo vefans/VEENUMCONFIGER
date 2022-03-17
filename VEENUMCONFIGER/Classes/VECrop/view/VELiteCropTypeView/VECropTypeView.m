@@ -8,7 +8,6 @@
 #import "VECropTypeView.h"
 
 #import "VECropTypeCell.h"
-#import "VECropTypeModel.h"
 #import "VECropIconTypeCell.h"
 
 @interface VECropTypeView()<UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate>

@@ -37,6 +37,45 @@
         _maskThickColorIndex = 11;
         _pitch = 1.0;
         _adjustments = [[ToningInfo alloc] init];
+        _eq = [NSMutableArray new];
+        for (int i = 0; i<10; i++) {
+            EqObject * object = [[EqObject alloc] init];
+            [_eq addObject:object];
+            switch (i) {
+                case 0:
+                    object.frequecy = 31;
+                    break;
+                case 1:
+                    object.frequecy = 63;
+                    break;
+                case 2:
+                    object.frequecy = 125;
+                    break;
+                case 3:
+                    object.frequecy = 250;
+                    break;
+                case 4:
+                    object.frequecy = 500;
+                    break;
+                case 5:
+                    object.frequecy = 1000;
+                    break;
+                case 6:
+                    object.frequecy = 2000;
+                    break;
+                case 7:
+                    object.frequecy = 4000;
+                    break;
+                case 8:
+                    object.frequecy = 8000;
+                    break;
+                case 9:
+                    object.frequecy = 16000;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
     return self;
 }
@@ -88,7 +127,7 @@
     
     //降噪
     copy.denoiseLevel = _denoiseLevel;
-    copy.isIntelligentKey = _isIntelligentKey;
+//    copy.isIntelligentKey = _isIntelligentKey;
     copy.autoSegmentImageUrl = _autoSegmentImageUrl;
     copy.animationType = _animationType;
     copy.animationIndex= _animationIndex;
@@ -228,7 +267,13 @@
             [copy.multipleFaceAttribute addObject:[obj copy]];
         }];
     }
-    
+    copy.eq = [NSMutableArray new];
+    [_eq enumerateObjectsUsingBlock:^(EqObject * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        EqObject * newObject = [EqObject new];
+        newObject.frequecy = obj.frequecy;
+        newObject.gain = obj.gain;
+        [copy.eq addObject:newObject];
+    }];
     return copy;
 }
 
@@ -261,7 +306,7 @@
     copy.animate = _animate;
     //降噪
     copy.denoiseLevel = _denoiseLevel;
-    copy.isIntelligentKey = _isIntelligentKey;
+//    copy.isIntelligentKey = _isIntelligentKey;
     copy.autoSegmentImageUrl = _autoSegmentImageUrl;
     copy.animationType = _animationType;
     copy.animationIndex= _animationIndex;
@@ -398,7 +443,13 @@
             [copy.multipleFaceAttribute addObject:[obj copy]];
         }];
     }
-    
+    copy.eq = [NSMutableArray new];
+    [_eq enumerateObjectsUsingBlock:^(EqObject * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        EqObject * newObject = [EqObject new];
+        newObject.frequecy = obj.frequecy;
+        newObject.gain = obj.gain;
+        [copy.eq addObject:newObject];
+    }];
     return copy;
 }
 
@@ -409,18 +460,30 @@
         self = [VEMediaInfo veCore_yy_modelWithDictionary:dic];
         if (![VEHelp isSystemPhotoUrl:asset.url]) {
             asset.url = [VEHelp getFileURLFromAbsolutePath:asset.url.path];
-        }        
+            if ([asset.url.absoluteString.pathExtension isEqualToString:@"webp"]) {
+                NSURL *url = [NSURL fileURLWithPath:[asset.url.path.stringByDeletingPathExtension stringByAppendingPathExtension:@"png"]];
+                if (![[NSFileManager defaultManager] fileExistsAtPath:url.path]) {
+                    UIImage *image = [VEHelp imageWithWebP:asset.url.path error:nil];
+                    if (image) {
+                        NSData *imageData = UIImagePNGRepresentation(image);
+                        [imageData writeToFile:url.path atomically:YES];
+                        [[NSFileManager defaultManager] removeItemAtURL:asset.url error:nil];
+                    }
+                }
+                asset.url = url;
+            }
+        }
         self.contentURL = asset.url;
         _thumbImage = [VEHelp getThumbImageWithUrl:_contentURL];
-        if ([VEHelp isImageUrl:asset.url]) {
+        if ([VEHelp isImageUrl:_contentURL]) {
             _fileType = kFILEIMAGE;
             _imageDurationTime = asset.timeRange.duration;
             _imageTimeRange = asset.timeRange;
-            if ([VEHelp isSystemPhotoUrl:asset.url]) {
+            if ([VEHelp isSystemPhotoUrl:_contentURL]) {
                 PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
                 option.synchronous = YES;
                 option.resizeMode = PHImageRequestOptionsResizeModeExact;
-                PHFetchResult<PHAsset *> *result = [PHAsset fetchAssetsWithALAssetURLs:@[asset.url] options:nil];
+                PHFetchResult<PHAsset *> *result = [PHAsset fetchAssetsWithALAssetURLs:@[_contentURL] options:nil];
                 if (!result || result.count == 0) {
                     return nil;
                 }
@@ -437,7 +500,7 @@
                                                                 }];
                 }
             }else {
-                NSData *data = [NSData dataWithContentsOfURL:asset.url];
+                NSData *data = [NSData dataWithContentsOfURL:_contentURL];
                 CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
                 size_t count = CGImageSourceGetCount(source);
                 if (count > 1) {
@@ -451,7 +514,7 @@
                     CFRelease(source);
                 }
             }
-            if (_isIntelligentKey) {
+            if (_autoSegmentType) {
                 NSString *autoSegmentImagePath = [VEHelp getAutoSegmentImagePath:_contentURL];
                 if ([[NSFileManager defaultManager] fileExistsAtPath:autoSegmentImagePath]) {
                     _autoSegmentImageUrl = [NSURL fileURLWithPath:autoSegmentImagePath];
@@ -482,7 +545,7 @@
         }
         [asset.customMultipleFilterArray enumerateObjectsUsingBlock:^(CustomMultipleFilter * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             obj.folderPath = [VEHelp getFileURLFromAbsolutePath_str:obj.folderPath];
-            CustomMultipleFilter * customMultipleFilter = [VEHelp getCustomMultipleFilerWithFolderPath:obj.folderPath currentFrameImagePath:asset.url.path];
+            CustomMultipleFilter * customMultipleFilter = [VEHelp getCustomMultipleFilerWithFolderPath:obj.folderPath currentFrameImagePath:_contentURL.path];
             customMultipleFilter.timeRange = obj.timeRange;
             customMultipleFilter.networkCategoryId = obj.networkCategoryId;
             customMultipleFilter.networkResourceId = obj.networkResourceId;
@@ -518,7 +581,7 @@
              @"backgroundAlpha" : @"alpha",
              @"backgroundBlurIntensity" : @"blurIntensity",
              @"rectInScene" : @"rectInVideo",
-             @"isIntelligentKey" : @"autoSegmentType"
+//             @"autoSegmentType" : @"autoSegmentType"
     };
 }
 
@@ -526,7 +589,8 @@
     return @{@"curvedSpeedPointArray" : [CurvedSpeedPoint class],
              @"animate" : [MediaAssetAnimatePosition class],
              @"multipleFaceAttribute" : [FaceAttribute class],
-             @"adjustments" : [ToningInfo class]
+             @"adjustments" : [ToningInfo class],
+             @"eq" : [EqObject class]
     };
 }
 

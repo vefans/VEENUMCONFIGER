@@ -221,12 +221,11 @@
 
 /** 是否智能抠图
  */
-@property (nonatomic, assign) BOOL isIntelligentKey;
+@property (nonatomic, assign) kAutoSegmentType autoSegmentType;
 
 /** fileType为kFILEIMAGE，且不是GIF的智能抠图地址
  */
 @property (nonatomic, strong) NSURL *autoSegmentImageUrl;
-@property (nonatomic, assign)kAutoSegmentType   segmentType;
 
 /** 混合模式
 */
@@ -445,7 +444,11 @@
 
 /**智能抠像
  */
-@property (nonatomic, assign) kAutoSegmentType autoSegmentType;
 @property (nonatomic, strong)UIImage *autoSegmentImage;
+
+/** 均衡器数值数组
+ */
+@property (nonatomic, strong) NSMutableArray <EqObject*>* eq;
+@property (nonatomic, assign) NSInteger     eqType;
 
 @end

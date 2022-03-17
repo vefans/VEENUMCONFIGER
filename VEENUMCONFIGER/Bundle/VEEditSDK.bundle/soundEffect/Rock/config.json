@@ -1,0 +1,45 @@
+﻿{
+	"ver": 1,
+	"eq": [
+		{
+			"frequency": 31,
+			"gain": 4.75
+		},
+		{
+			"frequency": 63,
+			"gain": 4.0
+		},
+		{
+			"frequency": 125,
+			"gain": 3.0
+		},
+		{
+			"frequency": 250,
+			"gain": 1.5
+		},
+		{
+			"frequency": 500,
+			"gain": -0.5
+		},
+		{
+			"frequency": 1000,
+			"gain": -2.0
+		},
+		{
+			"frequency": 2000,
+			"gain": 0.5
+		},
+		{
+			"frequency": 4000,
+			"gain": 2.0
+		},
+		{
+			"frequency": 8000,
+			"gain": 3.5
+		},
+		{
+			"frequency": 16000,
+			"gain": 4.5
+		}
+	]
+}

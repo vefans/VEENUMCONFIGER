@@ -156,6 +156,7 @@
         [slider addTarget:self action:@selector(scrub:) forControlEvents:UIControlEventValueChanged];
         [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpInside];
         [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchCancel];
+        [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpOutside];
 
         UIImage * theImage = [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_球1@3x" Type:@"png"]];
         [slider setThumbImage:theImage forState:UIControlStateNormal];
@@ -425,13 +426,13 @@
     {
         _currentBtn.selected =NO;
     }
-    _currentType = sender.tag;
+    //_currentType = sender.tag;
     
     sender.selected = YES;
     
     _currentBtn = sender;
     
-    switch (_currentType) {
+    switch (sender.tag) {
         case 0://MARK: 脸型
         {
             [_beautyView setContentOffset:CGPointMake(0, 50 * 0)];
@@ -699,6 +700,9 @@
 }
 
 - (void)endScrub:(UISlider *)slider{
+    if([VEConfigManager sharedManager].iPad_HD){
+        _currentType = slider.tag;
+    }
     [self sliderValueChanged:slider];
 }
 
@@ -723,51 +727,61 @@
 
 - (void)compareBtnDown:(UIButton *)sender {
     _editMedia = [_currentMedia copy];
-    float value =  0.5;
-    switch (_currentType) {
-        case 0://MARK: 脸型
-        {
-            [_adjustmentSliders[0] setValue:value];
+    float value =  sender.tag > KBeauty_Smile ? 0 : 0.5;
+    if([VEConfigManager sharedManager].iPad_HD){
+        for (int i = 0;i<_adjustmentSliders.count;i++) {
+            if(_adjustmentSliders[i].tag == _currentType){
+                [_adjustmentSliders[i] setValue:value];
+                break;
+            }
         }
-            break;
-        case 1://MARK: 下巴
-        {
-            [_adjustmentSliders[0] setValue:value];
-            [_adjustmentSliders[3] setValue:value];
+    }else{
+        switch (_currentType) {
+            case 0://MARK: 脸型
+            {
+                [_adjustmentSliders[0] setValue:value];
+            }
+                break;
+            case 1://MARK: 下巴
+            {
+                [_adjustmentSliders[0] setValue:value];
+                [_adjustmentSliders[3] setValue:value];
+            }
+                break;
+            case 2://MARK: 额头
+            {
+                [_adjustmentSliders[0] setValue:value];
+            }
+                break;
+            case 3://MARK: 微笑
+            {
+                [_adjustmentSliders[0] setValue:value];
+            }
+                break;
+            case 4://MARK: 眼睛
+            {
+                [_adjustmentSliders[1] setValue:value];
+                [_adjustmentSliders[2] setValue:value];
+                [_adjustmentSliders[3] setValue:value];
+            }
+                break;
+            case 5://MARK: 嘴唇
+            {
+                [_adjustmentSliders[1] setValue:value];
+                [_adjustmentSliders[2] setValue:value];
+                [_adjustmentSliders[3] setValue:value];
+            }
+                break;
+            case 6://MARK: 鼻子
+            {
+                [_adjustmentSliders[0] setValue:value];
+            }
+                break;
+            default:
+                break;
         }
-            break;
-        case 2://MARK: 额头
-        {
-            [_adjustmentSliders[0] setValue:value];
-        }
-            break;
-        case 3://MARK: 微笑
-        {
-            [_adjustmentSliders[0] setValue:value];
-        }
-            break;
-        case 4://MARK: 眼睛
-        {
-            [_adjustmentSliders[1] setValue:value];
-            [_adjustmentSliders[2] setValue:value];
-            [_adjustmentSliders[3] setValue:value];
-        }
-            break;
-        case 5://MARK: 嘴唇
-        {
-            [_adjustmentSliders[1] setValue:value];
-            [_adjustmentSliders[2] setValue:value];
-            [_adjustmentSliders[3] setValue:value];
-        }
-            break;
-        case 6://MARK: 鼻子
-        {
-            [_adjustmentSliders[0] setValue:value];
-        }
-            break;
-        default:
-            break;
     }
+    
     if( _delegate && [_delegate respondsToSelector:@selector(fiveSensesCompare:atVIew:)] )
     {
         [_delegate fiveSensesCompare:_currentType atVIew:self];
@@ -782,98 +796,253 @@
             *stop = YES;
         }
     }];
-    float value =  0.5;
-    switch (_currentType) {
-        case 0://MARK: 脸型
-        {
-            if( faceAttribute )
+    float value =  _currentType > KBeauty_Smile ? 0.0 : 0.5;
+    if([VEConfigManager sharedManager].iPad_HD){
+        switch (_currentType) {
+            case KBeauty_FaceWidth://MARK:  脸宽
             {
-                value = faceAttribute.faceWidth;
+                if( faceAttribute )
+                {
+                    value = faceAttribute.faceWidth;
+                }
             }
-            [_adjustmentSliders[0] setValue:value];
+                break;
+            case KBeauty_Forehead://MARK: 额高
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.forehead;
+                }
+            }
+                break;
+            case KBeauty_ChinWidth://MARK: 下颚宽
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.chinWidth;
+                }
+            }
+                break;
+            case KBeauty_ChinHeight://MARK: 下巴高
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.chinHeight;
+                }
+            }
+                break;
+            case KBeauty_EyeWidth://MARK: 眼睛宽
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.eyeWidth;
+                }
+            }
+                break;
+            case KBeauty_EyeHeight://MARK: 眼睛高
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.eyeHeight;
+                }
+            }
+                break;
+            case KBeauty_EyeSlant://MARK: 眼睛高
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.eyeSlant;
+                }
+            }
+                break;
+            case KBeauty_EyeDistance://MARK: 眼睛大小
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.eyeDistance;
+                }
+            }
+                break;
+            case KBeauty_NoseWidth://MARK: 鼻子宽
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.noseWidth;
+                }
+            }
+                break;
+            case KBeauty_NoseHeight://MARK: 鼻子高
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.noseHeight;
+                }
+            }
+                break;
+            case KBeauty_MouthWidth://MARK: 嘴宽
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.mouthWidth;
+                }
+            }
+                break;
+            case KBeauty_LipUpper://MARK: 上嘴唇
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.lipUpper;
+                }
+            }
+                break;
+            case KBeauty_LipLower://MARK: 下嘴唇
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.lipLower;
+                }
+            }
+                break;
+            case KBeauty_Smile://MARK: 微笑
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.smile;
+                }
+            }
+                break;
+            case KBeauty_BlurIntensity://MARK: 磨皮
+            {
+                value = _editMedia.beautyBlurIntensity;
+            }
+                break;
+            case KBeauty_BrightIntensity://MARK: 亮肤
+            {
+                value = _editMedia.beautyBrightIntensity;
+            }
+                break;
+            case KBeauty_ToneIntensity://MARK: 红润
+            {
+                value = _editMedia.beautyToneIntensity;
+            }
+                break;//
+            case KBeauty_BigEyes://MARK: 红润
+            {
+                value = _editMedia.beautyBigEyeIntensity;
+            }
+                break;//KBeauty_BigEyes
+            default:
+                break;
+                
+                /*
+                 
+                 @{@"title":@"磨皮",@"id":@(KBeauty_BlurIntensity)},
+                 @{@"title":@"美白",@"id":@(KBeauty_BrightIntensity)},
+                 @{@"title":@"红润",@"id":@(KBeauty_ToneIntensity)},
+                 @{@"title":@"大眼",@"id":@(KBeauty_BigEyes)},
+                 @{@"title":@"瘦脸",@"id":@(KBeauty_FaceLift)}
+                 */
         }
-            break;
-        case 1://MARK: 下巴
-        {
-            if( faceAttribute )
-            {
-                value = faceAttribute.chinWidth;
+        for (int i = 0;i<_adjustmentSliders.count;i++) {
+            if(_adjustmentSliders[i].tag == _currentType){
+                [_adjustmentSliders[i] setValue:value];
+                break;
             }
-            [_adjustmentSliders[0] setValue:value];
-            if( faceAttribute )
-            {
-                value = faceAttribute.chinHeight;
-            }
-            [_adjustmentSliders[3] setValue:value];
         }
-            break;
-        case 2://MARK: 额头
-        {
-            if( faceAttribute )
+        
+    }else{
+        switch (_currentType) {
+            case 0://MARK: 脸型
             {
-                value = faceAttribute.forehead;
+                if( faceAttribute )
+                {
+                    value = faceAttribute.faceWidth;
+                }
+                [_adjustmentSliders[0] setValue:value];
             }
-            [_adjustmentSliders[0] setValue:value];
+                break;
+            case 1://MARK: 下巴
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.chinWidth;
+                }
+                [_adjustmentSliders[0] setValue:value];
+                if( faceAttribute )
+                {
+                    value = faceAttribute.chinHeight;
+                }
+                [_adjustmentSliders[3] setValue:value];
+            }
+                break;
+            case 2://MARK: 额头
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.forehead;
+                }
+                [_adjustmentSliders[0] setValue:value];
+            }
+                break;
+            case 3://MARK: 微笑
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.smile;
+                }
+                [_adjustmentSliders[0] setValue:value];
+            }
+                break;
+            case 4://MARK: 眼睛
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.eyeSlant;
+                }
+                [_adjustmentSliders[1] setValue:value];
+                if( faceAttribute )
+                {
+                    value = faceAttribute.eyeDistance;
+                }
+                [_adjustmentSliders[2] setValue:value];
+                if( faceAttribute )
+                {
+                    value = faceAttribute.eyeWidth;
+                }
+                [_adjustmentSliders[3] setValue:value];
+            }
+                break;
+            case 5://MARK: 嘴唇
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.lipUpper;
+                }
+                [_adjustmentSliders[1] setValue:value];
+                if( faceAttribute )
+                {
+                    value = faceAttribute.lipLower;
+                }
+                [_adjustmentSliders[2] setValue:value];
+                if( faceAttribute )
+                {
+                    value = faceAttribute.mouthWidth;
+                }
+                [_adjustmentSliders[3] setValue:value];
+            }
+                break;
+            case 6://MARK: 鼻子
+            {
+                if( faceAttribute )
+                {
+                    value = faceAttribute.noseWidth;
+                }
+                [_adjustmentSliders[0] setValue:value];
+            }
+                break;
+            default:
+                break;
         }
-            break;
-        case 3://MARK: 微笑
-        {
-            if( faceAttribute )
-            {
-                value = faceAttribute.smile;
-            }
-            [_adjustmentSliders[0] setValue:value];
-        }
-            break;
-        case 4://MARK: 眼睛
-        {
-            if( faceAttribute )
-            {
-                value = faceAttribute.eyeSlant;
-            }
-            [_adjustmentSliders[1] setValue:value];
-            if( faceAttribute )
-            {
-                value = faceAttribute.eyeDistance;
-            }
-            [_adjustmentSliders[2] setValue:value];
-            if( faceAttribute )
-            {
-                value = faceAttribute.eyeWidth;
-            }
-            [_adjustmentSliders[3] setValue:value];
-        }
-            break;
-        case 5://MARK: 嘴唇
-        {
-            if( faceAttribute )
-            {
-                value = faceAttribute.lipUpper;
-            }
-            [_adjustmentSliders[1] setValue:value];
-            if( faceAttribute )
-            {
-                value = faceAttribute.lipLower;
-            }
-            [_adjustmentSliders[2] setValue:value];
-            if( faceAttribute )
-            {
-                value = faceAttribute.mouthWidth;
-            }
-            [_adjustmentSliders[3] setValue:value];
-        }
-            break;
-        case 6://MARK: 鼻子
-        {
-            if( faceAttribute )
-            {
-                value = faceAttribute.noseWidth;
-            }
-            [_adjustmentSliders[0] setValue:value];
-        }
-            break;
-        default:
-            break;
     }
     if( _delegate && [_delegate respondsToSelector:@selector(fiveSensesCompareCompletion:atVIew:)] )
     {

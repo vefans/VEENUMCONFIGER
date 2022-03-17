@@ -205,7 +205,7 @@
         
         [self.finishToolBarBtn setImage:nil forState:UIControlStateNormal];
         [self.finishToolBarBtn setTitle:VELocalizedString(@"完成", nil) forState:UIControlStateNormal];
-        [self.finishToolBarBtn setTitleColor:[UIColor greenColor] forState:UIControlStateNormal];
+        [self.finishToolBarBtn setTitleColor:UIColorFromRGB(0x31d065) forState:UIControlStateNormal];
         self.toolBar.hidden = NO;
         self.titlelab.text = @"";
     }else{

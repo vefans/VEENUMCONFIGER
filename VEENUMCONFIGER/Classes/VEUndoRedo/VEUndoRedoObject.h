@@ -163,6 +163,8 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_MergeLayers,     //图层合并
     
     VEUndoRedoEditType_BackgroundReplace, // 背景替换
+    
+    VEUndoRedoEditType_Mask,//蒙版
 };
 
 

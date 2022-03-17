@@ -154,8 +154,6 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     selectImageView.clipsToBounds = NO;
     selectImageView.layer.allowsEdgeAntialiasing = YES;
     [self addSubview:selectImageView];
-    
-    
 }
 
 

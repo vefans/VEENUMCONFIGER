@@ -2907,7 +2907,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSError *dataError = nil;
     NSData *imgData = [NSData dataWithContentsOfFile:filePath options:NSDataReadingMappedIfSafe error:&dataError];
     if (dataError != nil) {
-        *error = dataError;
+        if (error) {
+            *error = dataError;
+        }        
         return nil;
     }
     return [UIImage sd_imageWithWebPData:imgData];
@@ -4142,21 +4144,22 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 //压缩图片至指定尺寸
 + (UIImage *)rescaleImageArray:(NSMutableArray *)imageArray size:(CGSize)size
 {
-    CGRect rect = (CGRect){CGPointZero, size};
-    
-    UIGraphicsBeginImageContext(rect.size);
-    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 1.0);
-    
-    [imageArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        UIImage * image = (UIImage*)obj;
-        [image drawInRect:rect];
-    }];
-    
-    UIImage *resImage = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
-    
-    return resImage;
+    @autoreleasepool {
+        CGRect rect = (CGRect){CGPointZero, size};
+
+        UIGraphicsBeginImageContextWithOptions(rect.size, NO, 1.0);
+        
+        [imageArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            UIImage * image = (UIImage*)obj;
+            [image drawInRect:rect];
+        }];
+        
+        UIImage *resImage = UIGraphicsGetImageFromCurrentImageContext();
+        
+        UIGraphicsEndImageContext();
+        
+        return resImage;
+    };
 }
 
 + (UIImage *)scaleToSize:(UIImage *)img size:(CGSize)size{
@@ -7444,10 +7447,20 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     size = CGSizeMake(width * corp.size.width, height * corp.size.height);
     
-    if( size.width < size.height )
-        scale = rect.size.height*syncContainerSize.height/size.height;
+    if( syncContainerSize.width < syncContainerSize.height )
+    {
+        if( size.width < size.height )
+            scale = rect.size.height*syncContainerSize.height/size.height;
+        else
+            scale = rect.size.width*syncContainerSize.width/size.width;
+    }
     else
-        scale = rect.size.width*syncContainerSize.width/size.width;
+    {
+        if( size.width > size.height )
+            scale = rect.size.width*syncContainerSize.width/size.width;
+        else
+            scale = rect.size.height*syncContainerSize.height/size.height;
+    }
     
     return scale;
 }

@@ -5,6 +5,8 @@
 #import <LibVECore/Scene.h>
 #import "VEAuthorizationView.h"
 
+#define kAppKeyType      @"AppKeyType"       //appkey类型
+
 typedef NS_ENUM(NSInteger ,KBeautyCategoryType) {
     KBeautyCategory_None = 0,             //无
     KBeautyCategory_FiveSenses,          //五官
@@ -231,6 +233,7 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KMONGOLIANKEYFRAME  = 44,//蒙板关键帧
     kVEUSEDSINGLEFILTER = 45, //所有滤镜
     KDEFORMED       = 46,   //变形
+    KEQUALIZER      = 47, //均衡器
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -303,6 +306,7 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_MUTEVOLUME             = 44,//静音
     
     kPIP_DEFORMED                   =45,    //变形
+    KPIP_EQUALIZER                  = 46,   //均衡器
 };
 
 //去水印类型

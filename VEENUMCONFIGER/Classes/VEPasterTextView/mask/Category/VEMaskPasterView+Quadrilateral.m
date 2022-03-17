@@ -169,9 +169,14 @@
     {
         UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake((antennaImageView.frame.size.width/2.0 - 15/2.0),(antennaImageView.frame.size.height/2.0 - 15/2.0),15,15)];
         imageView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.3];
-        imageView.layer.borderColor = [UIColor colorWithWhite:0.89 alpha:0.9].CGColor;
+        imageView.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:1.0].CGColor;
         imageView.layer.borderWidth = 1.0;
         imageView.layer.cornerRadius = 15/2.0;
+        imageView.layer.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.8].CGColor;
+        imageView.layer.shadowOffset = CGSizeZero;
+        imageView.layer.shadowOpacity = 0.5;
+        imageView.layer.shadowRadius = 2.0;
+        imageView.layer.allowsEdgeAntialiasing = YES;
         [antennaImageView addSubview:imageView];
     }
     

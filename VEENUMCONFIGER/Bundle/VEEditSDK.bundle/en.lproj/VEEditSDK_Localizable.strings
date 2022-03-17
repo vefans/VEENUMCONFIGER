@@ -37,6 +37,8 @@
 "比例" = "Proportion";
 "请稍候,正在应用到所有!" = "Wait a moment, applying to all!";
 
+"素材库" = "OnlineAlbums";
+
 "无法访问相机!" = "Can not access camera!";
 "用户拒绝访问相机,请在<设置-隐私-相机>中开启" = "User reject to access camera, please open in <Setting-Privacy-Camera>";
 "无法访问麦克风!" = "Can not access mic!";
@@ -1999,3 +2001,6 @@
 "排列" = "Arrangement";
 "字号" = "Font size";
 "最多输入%d个字" = "Enter at most %d texts";
+"当前时间点已有字幕，无法添加" = "Subtitles already exist at the current time point and cannot be added";
+"当前时间点无法添加" = "Cannot add the current time point";
+"无效果" = "No effect";
