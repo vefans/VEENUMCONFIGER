@@ -2,7 +2,7 @@
 //  VEFileDownloader.h
 //  VE
 //
-//  Created by emmet on 2017/3/27.
+//  Created by iOS VESDK Team on 2017/3/27.
 //  Copyright © 2017年 VE. All rights reserved.
 //
 

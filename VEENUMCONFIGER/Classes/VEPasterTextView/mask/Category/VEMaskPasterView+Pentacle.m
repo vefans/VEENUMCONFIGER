@@ -2,7 +2,7 @@
 //  VEMaskPasterView+Pentacle.m
 //  libVEDeluxe
 //
-//  Created by apple on 2020/10/29.
+//  Created by iOS VESDK Team on 2020/10/29.
 //  Copyright © 2020 iOS VESDK Team. All rights reserved.
 //
 

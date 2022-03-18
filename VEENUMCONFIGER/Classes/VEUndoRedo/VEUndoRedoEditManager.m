@@ -2,7 +2,7 @@
 //  VEUndoRedoEditManager.m
 //  VEENUMCONFIGER
 //
-//  Created by macos team  on 2021/10/11.
+//  Created by iOS VESDK Team  on 2021/10/11.
 //
 
 #import "VEUndoRedoEditManager.h"

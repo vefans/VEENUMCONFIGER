@@ -2,8 +2,8 @@
 //  VEComminuteRangeView.h
 //  VE
 //
-//  Created by emmet on 15/8/21.
-//  Copyright (c) 2015年 emmet. All rights reserved.
+//  Created by iOS VESDK Team on 15/8/21.
+//  Copyright (c) 2015年 iOS VESDK Team. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

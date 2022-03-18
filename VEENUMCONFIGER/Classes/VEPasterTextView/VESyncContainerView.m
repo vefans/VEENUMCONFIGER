@@ -2,7 +2,7 @@
 //  VESyncContainerView.m
 //  VE
 //
-//  Created by apple on 2020/1/13.
+//  Created by iOS VESDK Team on 2020/1/13.
 //  Copyright © 2020 iOS VESDK Team. All rights reserved.
 //
 

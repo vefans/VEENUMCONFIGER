@@ -2,7 +2,7 @@
 //  VEExportProgressView.m
 //  VE
 //
-//  Created by emmet on 2016/12/1.
+//  Created by iOS VESDK Team on 2016/12/1.
 //  Copyright © 2016年 VE. All rights reserved.
 //
 

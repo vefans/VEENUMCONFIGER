@@ -2,7 +2,7 @@
 //  VEUndoRedoObject.m
 //  VEENUMCONFIGER
 //
-//  Created by macos team  on 2021/9/27.
+//  Created by iOS VESDK Team  on 2021/9/27.
 //
 
 #import "VEUndoRedoObject.h"

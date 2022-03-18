@@ -2,7 +2,7 @@
 //  VEDraftInfo.h
 //  VEENUMCONFIGER
 //
-//  Created by macos team  on 2021/9/28.
+//  Created by iOS VESDK Team  on 2021/9/28.
 //
 
 #import <Foundation/Foundation.h>

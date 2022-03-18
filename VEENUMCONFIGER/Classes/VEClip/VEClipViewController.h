@@ -2,7 +2,7 @@
 //  VEClipViewController.h
 //  VEENUMCONFIGER
 //
-//  Created by mac on 2021/7/16.
+//  Created by iOS VESDK Team on 2021/7/16.
 //
 
 #import <UIKit/UIKit.h>

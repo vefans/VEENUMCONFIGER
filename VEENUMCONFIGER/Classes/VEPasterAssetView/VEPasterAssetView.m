@@ -2,7 +2,7 @@
 //  VEPasterAssetView.m
 //  VEENUMCONFIGER
 //
-//  Created by mac on 2022/1/5.
+//  Created by iOS VESDK Team on 2022/1/5.
 //
 
 #import "VEPasterAssetView.h"

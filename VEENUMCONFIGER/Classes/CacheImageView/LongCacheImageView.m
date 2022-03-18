@@ -2,7 +2,7 @@
 //  UIImageView+LongCachePrivate.m
 //  VEENUMCONFIGER
 //
-//  Created by emmet-mac on 2021/10/22.
+//  Created by iOS VESDK Team on 2021/10/22.
 //
 
 #import "LongCacheImageView.h"

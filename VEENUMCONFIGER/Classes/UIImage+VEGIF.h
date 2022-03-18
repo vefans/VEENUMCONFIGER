@@ -1,9 +1,9 @@
 //
 //  UIImage+GIF.h
-//  LBGIFImage
+//  VEDeluxeDemo
 //
-//  Created by Laurin Brandner on 06.01.12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Created by iOS VESDK Team on 06.01.12.
+//  Copyright (c) 2012 iOS VESDK Team. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

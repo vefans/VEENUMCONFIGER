@@ -2,7 +2,7 @@
 //  VEPasterAssetView.h
 //  VEENUMCONFIGER
 //
-//  Created by mac on 2022/1/5.
+//  Created by iOS VESDK Team on 2022/1/5.
 //
 
 #import <UIKit/UIKit.h>
@@ -20,6 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @interface VEPasterAssetView : UIView
+
+@property (nonatomic, assign)BOOL       isInvisible;
+@property (nonatomic, assign)float         invisibleAlpha;
 
 @property (nonatomic, assign)BOOL isDrag_Upated;
 @property (nonatomic, assign)bool isDrag;

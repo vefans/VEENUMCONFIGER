@@ -2,7 +2,7 @@
 //  VENavBarButton.h
 //  VEENUMCONFIGER
 //
-//  Created by 刘超 on 2021/2/16.
+//  Created by iOS VESDK Team on 2021/2/16.
 //
 
 #import <UIKit/UIKit.h>

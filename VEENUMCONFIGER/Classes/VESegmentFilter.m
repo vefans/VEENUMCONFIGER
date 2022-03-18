@@ -2,7 +2,7 @@
 //  VESegmentFilter.m
 //  VEENUMCONFIGER
 //
-//  Created by macos team on 2021/12/31.
+//  Created by iOS VESDK Team on 2021/12/31.
 //
 
 #import "VESegmentFilter.h"

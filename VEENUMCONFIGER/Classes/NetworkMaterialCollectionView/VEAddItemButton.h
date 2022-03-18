@@ -2,7 +2,7 @@
 //  VEAddItemButton.h
 //  VEENUMCONFIGER
 //
-//  Created by apple on 2019/10/10.
+//  Created by iOS VESDK Team on 2019/10/10.
 //  Copyright © 2019 iOS VESDK Team. All rights reserved.
 //
 

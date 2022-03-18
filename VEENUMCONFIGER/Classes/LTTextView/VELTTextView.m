@@ -1,9 +1,9 @@
 //
 //  VELTTextView.m
-//  LTTextvViewDemo
+//  VEDeluxeDemo
 //
-//  Created by WJX on 16/7/8.
-//  Copyright © 2016年 wjx. All rights reserved.
+//  Created by iOS VESDK Team on 16/7/8.
+//  Copyright © 2016年 iOS VESDK Team. All rights reserved.
 //
 
 #import "VELTTextView.h"

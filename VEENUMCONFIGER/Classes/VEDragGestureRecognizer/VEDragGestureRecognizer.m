@@ -1,6 +1,6 @@
 //
-// Created by Balázs Faludi on 21.10.14.
-// Copyright (c) 2014 Balazs Faludi. All rights reserved.
+// Created by iOS VESDK Team on 21.10.14.
+// Copyright (c) 2014 iOS VESDK Team. All rights reserved.
 //
 
 #import "VEDragGestureRecognizer.h"

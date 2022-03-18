@@ -2,8 +2,8 @@
 //  VECaptionRangeView.m
 //  VE
 //
-//  Created by emmet on 15/9/28.
-//  Copyright © 2015年 emmet. All rights reserved.
+//  Created by iOS VESDK Team on 15/9/28.
+//  Copyright © 2015年 iOS VESDK Team. All rights reserved.
 //
 
 #import "VECaptionRangeView.h"

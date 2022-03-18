@@ -2,7 +2,7 @@
 //  VEAuthorizationView.h
 //  AFNetworking
 //
-//  Created by macos team  on 2022/1/24.
+//  Created by iOS VESDK Team  on 2022/1/24.
 //
 
 #import <UIKit/UIKit.h>

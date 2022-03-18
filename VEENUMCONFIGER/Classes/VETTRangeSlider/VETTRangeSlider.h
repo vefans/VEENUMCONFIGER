@@ -1,7 +1,7 @@
 //
 //  VETTRangeSliderView.h
 //
-//  Created by Tom Thorpe
+//  Created by iOS VESDK Team
 //
 
 #import <UIKit/UIKit.h>

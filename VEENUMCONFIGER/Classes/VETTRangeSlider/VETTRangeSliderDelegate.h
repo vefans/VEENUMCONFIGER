@@ -1,9 +1,9 @@
 //
 //  YLRangeSliderViewDelegate.h
-//  FantasyRealFootball
+//  VEDeluxeDemo
 //
-//  Created by Tom Thorpe on 16/04/2014.
-//  Copyright (c) 2014 Yahoo inc. All rights reserved.
+//  Created by iOS VESDK Team on 16/04/2014.
+//  Copyright (c) 2014 iOS VESDK Team. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

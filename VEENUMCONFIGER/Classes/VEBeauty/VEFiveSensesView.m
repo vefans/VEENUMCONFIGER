@@ -2,7 +2,7 @@
 //  VEFiveSensesView.m
 //  VEENUMCONFIGER
 //
-//  Created by mac on 2021/7/28.
+//  Created by iOS VESDK Team on 2021/7/28.
 //
 
 #import "VEFiveSensesView.h"

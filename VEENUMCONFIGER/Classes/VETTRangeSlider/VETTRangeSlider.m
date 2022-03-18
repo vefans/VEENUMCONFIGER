@@ -1,7 +1,7 @@
 //
 //  VETTRangeSlider.m
 //
-//  Created by Tom Thorpe
+//  Created by iOS VESDK Team
 
 #import "VETTRangeSlider.h"
 #import "VEHelp.h"

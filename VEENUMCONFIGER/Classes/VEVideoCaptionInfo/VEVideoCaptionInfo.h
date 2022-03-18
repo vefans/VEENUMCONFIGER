@@ -2,7 +2,7 @@
 //  VEVideoCaptionInfo.h
 //  Pods
 //
-//  Created by mac on 2021/6/28.
+//  Created by iOS VESDK Team on 2021/6/28.
 //
 
 #import <Foundation/Foundation.h>

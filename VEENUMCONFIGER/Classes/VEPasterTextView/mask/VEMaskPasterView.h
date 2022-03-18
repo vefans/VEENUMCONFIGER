@@ -2,7 +2,7 @@
 //  VEMaskPasterView.h
 //  libVEDeluxe
 //
-//  Created by apple on 2020/10/27.
+//  Created by iOS VESDK Team on 2020/10/27.
 //  Copyright © 2020 iOS VESDK Team. All rights reserved.
 //
 

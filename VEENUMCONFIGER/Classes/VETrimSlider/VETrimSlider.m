@@ -2,7 +2,7 @@
 //  VETrimSlider.m
 //  VE
 //
-//  Created by apple on 2019/9/17.
+//  Created by iOS VESDK Team on 2019/9/17.
 //  Copyright © 2019 iOS VESDK Team. All rights reserved.
 //
 

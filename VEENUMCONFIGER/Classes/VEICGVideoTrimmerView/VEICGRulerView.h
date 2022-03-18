@@ -2,8 +2,8 @@
 //  ICGRulerView.h
 //  ICGVideoTrimmer
 //
-//  Created by Huong Do on 1/25/15.
-//  Copyright (c) 2015 ichigo. All rights reserved.
+//  Created by iOS VESDK Team on 1/25/15.
+//  Copyright (c) 2015 iOS VESDK Team. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
