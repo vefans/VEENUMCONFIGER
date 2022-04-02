@@ -39,12 +39,51 @@
         {
             isLowDevice = YES;
         }
-    }else {//iPad没有适配
-        isLowDevice = YES;
+    }else {//iPad运行内存小于等于3个G的都算低配
+        if([self totalMemory] <= 1024 * 3){
+            isLowDevice = YES;
+        }
     }
     
     return isLowDevice;
 }
++ (double)totalMemory {
+    // Find the total amount of memory
+    @try {
+        // Set up the variables
+        double totalMemory = 0.00;
+        double allMemory = [[NSProcessInfo processInfo] physicalMemory];
+        
+        // Total Memory (formatted)
+        totalMemory = (allMemory / 1024.0) / 1024.0;
+        
+        // Round to the nearest multiple of 256mb - Almost all RAM is a multiple of 256mb (I do believe)
+        int toNearest = 256;
+        int remainder = (int)totalMemory % toNearest;
+        
+        if (remainder >= toNearest / 2) {
+            // Round the final number up
+            totalMemory = ((int)totalMemory - remainder) + 256;
+        } else {
+            // Round the final number down
+            totalMemory = (int)totalMemory - remainder;
+        }
+        
+        // Check to make sure it's valid
+        if (totalMemory <= 0) {
+            // Error, invalid memory value
+            return -1;
+        }
+        
+        // Completed Successfully
+        return totalMemory;
+    }
+    @catch (NSException *exception) {
+        // Error
+        return -1;
+    }
+}
+
 static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return cornerRadius * 2 + 1;
 }
@@ -792,6 +831,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     imagePath = nil;
     bundle = nil;
     return nil;
+}
+
++ (NSString *)getSourcePath:(NSString *)path{
+    
+    NSBundle *bundle = [self getEditBundle];
+    
+    return [bundle pathForResource:path  ofType:@"mp4"];
 }
 
 + (UIImage *)imageWithContentOfFile:(NSString *)path{
@@ -1897,6 +1943,37 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     return filterArray;
 }
++ (NSString *)getScaleDownloadPathWithDic:(NSDictionary *)itemDic{
+    NSString *scaleFolderPath = kScaleFolder;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:scaleFolderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:scaleFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    NSString *itemPath = [[scaleFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[itemDic[@"file"] hash]]] stringByAppendingPathExtension:pathExtension];
+    return itemPath;
+}
+
++ (NSString *)getMaskDownloadPathWithDic:(NSDictionary *)itemDic {
+    NSString *filterFolderPath = KChangeMaskFolder;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:filterFolderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:filterFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    NSString *itemPath = [[filterFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[itemDic[@"file"] hash]]] stringByAppendingPathExtension:pathExtension];
+    
+    return itemPath;
+}
+
++ (NSString *)getchangeHairDownloadPathWithDic:(NSDictionary *)itemDic {
+    NSString *filterFolderPath = kHairFolder;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:filterFolderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:filterFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    NSString *itemPath = [[filterFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[itemDic[@"file"] hash]]] stringByAppendingPathExtension:pathExtension];
+    
+    return itemPath;
+}
 
 + (NSString *)getFilterDownloadPathWithDic:(NSDictionary *)itemDic {
     NSString *filterFolderPath = kFilterFolder;
@@ -1977,6 +2054,90 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     mask.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
     mask.name = configDic[@"name"];
     mask.maskName = maskName;
+    
+    NSArray *uniformParams = configDic[@"uniformParams"];
+    [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *paramName = obj[@"paramName"];
+        NSDictionary *frameDic = [obj[@"frameArray"] firstObject];
+        if ([paramName isEqualToString:@"center"]) {
+            NSArray *value = frameDic[@"value"];
+            mask.center = CGPointMake([value[0] floatValue], [value[1] floatValue]);
+        }
+        else if ([paramName isEqualToString:@"size"]) {
+            NSArray *value = frameDic[@"value"];
+            mask.size = CGSizeMake([value[0] floatValue], [value[1] floatValue]);
+        }
+        else if ([paramName isEqualToString:@"degrees"]) {
+            mask.degrees = [frameDic[@"value"] floatValue];
+        }
+        else if ([paramName isEqualToString:@"featherStep"]) {
+            mask.featherStep = [frameDic[@"value"] floatValue];
+        }
+        else if ([paramName isEqualToString:@"invert"]) {
+            mask.invert = [frameDic[@"value"] boolValue];
+        }
+        else if ([paramName isEqualToString:@"distance"]) {
+            mask.distance = [frameDic[@"value"] floatValue];
+        }
+        else if ([paramName isEqualToString:@"cornerRadius"]) {
+            mask.cornerRadius = [frameDic[@"value"] floatValue];
+        }
+        else if ([paramName isEqualToString:@"edgeSize"]) {
+            mask.edgeSize = [frameDic[@"value"] floatValue];
+        }
+        else if ([paramName isEqualToString:@"edgeColor"]) {
+            NSArray *value = frameDic[@"value"];
+            mask.edgeColor = [[UIColor alloc] initWithRed:[value[0] floatValue] green:[value[1] floatValue] blue:[value[2] floatValue] alpha:[value[3] floatValue]];
+        }
+        else if ([paramName isEqualToString:@"topLeft"])
+        {
+            NSArray *value = frameDic[@"value"];
+            mask.topLeft = CGPointMake([value[0] floatValue], [value[1] floatValue]);
+        }
+        else if ([paramName isEqualToString:@"topRight"])
+        {
+            NSArray *value = frameDic[@"value"];
+            mask.topRight = CGPointMake([value[0] floatValue], [value[1] floatValue]);
+        }
+        else if ([paramName isEqualToString:@"bottomRight"])
+        {
+            NSArray *value = frameDic[@"value"];
+            mask.bottomRight = CGPointMake([value[0] floatValue], [value[1] floatValue]);
+        }
+        else if ([paramName isEqualToString:@"bottomLeft"])
+        {
+            NSArray *value = frameDic[@"value"];
+            mask.bottomLeft = CGPointMake([value[0] floatValue], [value[1] floatValue]);
+        }
+    }];
+    NSArray *textureParams = configDic[@"textureParams"];
+    [textureParams enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        mask.maskImagePath = [path stringByAppendingPathComponent:obj[@"source"]];
+    }];
+    if( !textureParams || (textureParams.count ==0) )
+    {
+        mask.maskImagePath = nil;
+    }
+    return mask;
+}
+
++ (MaskObject *)getMaskWithPath:(NSString *) path
+{
+    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
+    NSMutableDictionary *configDic = [self objectForData:jsonData];
+    jsonData = nil;
+    NSString *fragPath = [path stringByAppendingPathComponent:configDic[@"fragShader"]];
+    NSString *vertPath = [path stringByAppendingPathComponent:configDic[@"vertShader"]];
+    NSError * error = nil;
+    
+    MaskObject *mask = [[MaskObject alloc] init];
+    mask.maskImagePath = path;
+    mask.folderPath = path;
+    mask.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
+    mask.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
+    mask.name = configDic[@"name"];
+//    mask.maskName = maskName;
     
     NSArray *uniformParams = configDic[@"uniformParams"];
     [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -3653,7 +3814,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [params setObject:appkey forKey:@"appkey"];
     }
     [params setObject:@"ios" forKey:@"os"];
-    [params setObject:[NSNumber numberWithInt:[VECore getSDKVersion]] forKey:@"ver"];
+    if(![[params allKeys] containsObject:@"ver"])
+        [params setObject:[NSNumber numberWithInt:[VECore getSDKVersion]] forKey:@"ver"];
     return [self updateInfomation:params andUploadUrl:urlPath];
 }
 
@@ -3668,6 +3830,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     return progressLabel;
 }
+
 #pragma mark- 压缩
 + (void)OpenZip:(NSString*)zipPath  unzipto:(NSString*)_unzipto caption:(BOOL)caption
 {
@@ -3981,7 +4144,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [params setObject:appkey forKey:@"appkey"];
     }
     [params setObject:@"ios" forKey:@"os"];
-    [params setObject:[NSNumber numberWithInt:[VECore getSDKVersion]] forKey:@"ver"];
+    if(![[params allKeys] containsObject:@"ver"])
+        [params setObject:[NSNumber numberWithInt:[VECore getSDKVersion]] forKey:@"ver"];
     return [self updateInfomation:params andUploadUrl:urlPath];
 }
 
@@ -9440,52 +9604,55 @@ static OSType help_inputPixelFormat(){
 /**添加区域权限
  */
 + (CALayer *)arealayerWithView:(UIView *)view size:(CGSize)size{
+    if (size.height < view.frame.size.height || size.width == size.height) {//20220321   只确保字幕不会被下面的视频信息遮挡即可
+        return nil;
+    }
     CALayer *layer = [[CALayer alloc] init];
     float width = size.width;
-    float height = width * 16.0/9.0;
+    float height = size.height;
     CGRect rect = CGRectMake((CGRectGetWidth(view.frame) - width)/2.0, (CGRectGetHeight(view.frame) - height)/2.0, width, height);
-    //layer.frame = self.syncContainer.frame;
     layer.frame = rect;
     layer.position = CGPointMake(view.frame.size.width/2.0, view.frame.size.height/2.0);
+    layer.masksToBounds = YES;
     [view.layer addSublayer:layer];
     {
-        float itemWidth = width - 80;
-        float itemHeight = itemWidth * 300.0/689.0 ;
+        UIImage *image = [VEHelp imageNamed:@"ArealayerImages/区域1_18"];
+        float itemWidth = image.size.width / 331.0 * size.width;
+        float itemHeight = iPhone_X ? 75 : 63;
         CALayer *layer1 = [[CALayer alloc] init];
-        layer1.frame = CGRectMake(10, CGRectGetHeight(layer.frame) - itemHeight - 10 - kBottomSafeHeight - (size.width > size.height ? 50 : 0), itemWidth, itemHeight);
-        UIImage *image = [VEHelp imageNamed:@"ArealayerImages/区域1_18.png" atBundle:[VEHelp getBundleName:@"VEEditSDK"]];
+        layer1.frame = CGRectMake(3, CGRectGetHeight(view.frame) - itemHeight - (iPhone_X ? 6 : 15)/* - layer.frame.origin.y*/, itemWidth, itemHeight);
         layer1.contents = (id)(image.CGImage);
         [layer addSublayer:layer1];
     }
     {
-        float itemWidth = 41;
+        UIImage *image = [VEHelp imageNamed:@"ArealayerImages/区域1_21"];
+        float itemWidth = iPhone_X ? image.size.width : 35;
         CALayer *layer1 = [[CALayer alloc] init];
-        layer1.frame = CGRectMake(CGRectGetWidth(layer.frame) - itemWidth - 10, CGRectGetHeight(layer.frame) - itemWidth - 20 - kBottomSafeHeight - (size.width > size.height ? 50 : 0) , itemWidth, itemWidth);
-        UIImage *image = [VEHelp imageNamed:@"ArealayerImages/区域1_21.png" atBundle:[VEHelp getBundleName:@"VEEditSDK"]];
+        layer1.frame = CGRectMake(CGRectGetWidth(layer.frame) - itemWidth, CGRectGetHeight(view.frame) * (iPhone_X ? 0.51 : 0.35)/* - layer.frame.origin.y*/, itemWidth, itemWidth);
         layer1.contents = (id)(image.CGImage);
         [layer addSublayer:layer1];
         
-        float itemWidth2 = 32;
+        UIImage *image2 = [VEHelp imageNamed:@"ArealayerImages/区域1_07"];
+        float itemWidth2 = iPhone_X ? image2.size.width : 25;
         CALayer *layer2 = [[CALayer alloc] init];
-        layer2.frame = CGRectMake(CGRectGetMidX(layer1.frame) - itemWidth2/2.0, CGRectGetMinY(layer1.frame) - itemWidth2 - 20 , itemWidth2, itemWidth2);
-        UIImage *image2 = [VEHelp imageNamed:@"ArealayerImages/区域1_15.png" atBundle:[VEHelp getBundleName:@"VEEditSDK"]];
+        layer2.frame = CGRectMake(CGRectGetMidX(layer1.frame) - itemWidth2/2.0, CGRectGetMaxY(layer1.frame) + view.frame.size.height * 0.021, itemWidth2, itemWidth2);
         layer2.contents = (id)(image2.CGImage);
         [layer addSublayer:layer2];
         CALayer *layer3 = [[CALayer alloc] init];
-        layer3.frame = CGRectMake(CGRectGetMidX(layer1.frame) - itemWidth2/2.0, CGRectGetMinY(layer2.frame) - itemWidth2 - 20 , itemWidth2, itemWidth2);
-        UIImage *image3 = [VEHelp imageNamed:@"ArealayerImages/区域1_07-11.png" atBundle:[VEHelp getBundleName:@"VEEditSDK"]];
+        layer3.frame = CGRectMake(layer2.frame.origin.x, CGRectGetMaxY(layer2.frame) + view.frame.size.height * 0.027, itemWidth2, itemWidth2);
+        UIImage *image3 = [VEHelp imageNamed:@"ArealayerImages/区域1_07-11"];
         layer3.contents = (id)(image3.CGImage);
         [layer addSublayer:layer3];
         CALayer *layer4 = [[CALayer alloc] init];
-        layer4.frame = CGRectMake(CGRectGetMidX(layer1.frame) - itemWidth2/2.0, CGRectGetMinY(layer3.frame) - itemWidth2 - 20 , itemWidth2, itemWidth2);
-        UIImage *image4 = [VEHelp imageNamed:@"ArealayerImages/区域1_07.png" atBundle:[VEHelp getBundleName:@"VEEditSDK"]];
+        layer4.frame = CGRectMake(layer2.frame.origin.x, CGRectGetMaxY(layer3.frame) + view.frame.size.height * 0.038, itemWidth2, itemWidth2);
+        UIImage *image4 = [VEHelp imageNamed:@"ArealayerImages/区域1_15"];
         layer4.contents = (id)(image4.CGImage);
         [layer addSublayer:layer4];
         
-        float itemWidth3 = 47;
+        UIImage *image5 = [VEHelp imageNamed:@"ArealayerImages/区域1_21"];
+        float itemWidth3 = iPhone_X ? (image5.size.width - 4) : 33;
         CALayer *layer5 = [[CALayer alloc] init];
-        layer5.frame = CGRectMake(CGRectGetMidX(layer1.frame) - itemWidth3/2.0, CGRectGetMinY(layer4.frame) - itemWidth3 - 20 , itemWidth3, itemWidth3);
-        UIImage *image5 = [VEHelp imageNamed:@"ArealayerImages/区域1_21.png" atBundle:[VEHelp getBundleName:@"VEEditSDK"]];
+        layer5.frame = CGRectMake(CGRectGetMidX(layer1.frame) - itemWidth/2.0, CGRectGetMaxY(layer4.frame) + view.frame.size.height * 0.042, itemWidth3, itemWidth3);
         layer5.contents = (id)(image5.CGImage);
         [layer addSublayer:layer5];
     }
@@ -9551,6 +9718,34 @@ static OSType help_inputPixelFormat(){
     NSString *autoSegmentImagePath = [[kAutoSegmentImageFolder stringByAppendingPathComponent:fileName] stringByAppendingPathExtension:@"png"];
     return autoSegmentImagePath;
 }
+ 
++(void)getRemoveTranslucent:( CVPixelBufferRef ) maskPixelBuffer
+{
+    @autoreleasepool {
+        size_t width = CVPixelBufferGetWidth(maskPixelBuffer);
+        size_t height = CVPixelBufferGetHeight(maskPixelBuffer);
+        CVPixelBufferLockBaseAddress(maskPixelBuffer, 0);
+        
+        unsigned char *imageAddress = (unsigned char *)CVPixelBufferGetBaseAddress(maskPixelBuffer);
+        size_t bytesPerRow = CVPixelBufferGetBytesPerRow(maskPixelBuffer);
+        static const int kBGRABytesPerPixel = 4;
+        
+        for (int row = 0; row < height; ++row) {
+            for (int col = 0; col < width; ++col) {
+                int pixelOffset = col * 1;
+                int alphaOffset = pixelOffset;
+                
+                float tempAddressAlpha = imageAddress[alphaOffset];
+                if( (tempAddressAlpha/255.0) > 0.001 )
+                {
+                    imageAddress[alphaOffset] = 1.0;
+                }
+            }
+            imageAddress += bytesPerRow / sizeof(unsigned char);
+        }
+        CVPixelBufferUnlockBaseAddress(maskPixelBuffer, 0);
+    }
+}
 
 + (NSString *)getErasePenImagePath:(NSURL *)url {
     if (![[NSFileManager defaultManager] fileExistsAtPath:kErasePenFolder]) {
@@ -9589,7 +9784,7 @@ static OSType help_inputPixelFormat(){
     [mainWindow drawViewHierarchyInRect:mainWindow.frame afterScreenUpdates:YES];
     UIImage *inputImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    return [VEHelp boxblurImage:inputImage withBlurNumber:8];;
+    return [VEHelp boxblurImage:inputImage withBlurNumber:0.6];
 }
 +(UIImage *)boxblurImage:(UIImage *)image withBlurNumber:(CGFloat)blur {
     if (blur < 0.f || blur > 1.f) {
@@ -9607,6 +9802,7 @@ static OSType help_inputPixelFormat(){
     //从CGImage中获取数据
     CGDataProviderRef inProvider = CGImageGetDataProvider(img);
     CFDataRef inBitmapData = CGDataProviderCopyData(inProvider);
+    CGColorSpaceRef colorSpace = CGImageGetColorSpace(img);
     //设置从CGImage获取对象的属性
     inBuffer.width = CGImageGetWidth(img);
     inBuffer.height = CGImageGetHeight(img);
@@ -9630,16 +9826,10 @@ static OSType help_inputPixelFormat(){
     if (error) {
         NSLog(@"error from convolution %ld", error);
     }
-     
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef ctx = CGBitmapContextCreate(
-                                             outBuffer.data,
-                                             outBuffer.width,
-                                             outBuffer.height,
-                                             8,
-                                             outBuffer.rowBytes,
-                                             colorSpace,
-                                             kCGImageAlphaNoneSkipLast);
+    
+    //CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef ctx = CGBitmapContextCreate(outBuffer.data, outBuffer.width, outBuffer.height, 8, outBuffer.rowBytes, colorSpace, (kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst));
+
     CGImageRef imageRef = CGBitmapContextCreateImage (ctx);
     UIImage *returnImage = [UIImage imageWithCGImage:imageRef];
      
@@ -9655,4 +9845,80 @@ static OSType help_inputPixelFormat(){
      
     return returnImage;
 }
+
++ (UIImage *)blurryImage:(UIImage *)image withBlurLevel:(CGFloat)blur {
+    if (blur < 0.f || blur > 1.f) {
+        blur = 0.5f;
+    }
+    int boxSize = (int)(blur * 100);
+    boxSize = boxSize - (boxSize % 2) + 1;
+    
+    CGImageRef img = image.CGImage;
+    
+    vImage_Buffer inBuffer, outBuffer;
+    vImage_Error error;
+    
+    void *pixelBuffer;
+    
+    CGDataProviderRef inProvider = CGImageGetDataProvider(img);
+    CFDataRef inBitmapData = CGDataProviderCopyData(inProvider);
+    CGColorSpaceRef colorSpace = CGImageGetColorSpace(img);
+    
+    inBuffer.width = CGImageGetWidth(img);
+    inBuffer.height = CGImageGetHeight(img);
+    inBuffer.rowBytes = CGImageGetBytesPerRow(img);
+    
+    inBuffer.data = (void*)CFDataGetBytePtr(inBitmapData);
+    
+    pixelBuffer = malloc(CGImageGetBytesPerRow(img) *
+                         CGImageGetHeight(img));
+    
+    if(pixelBuffer == NULL)
+        NSLog(@"No pixelbuffer");
+    
+    outBuffer.data = pixelBuffer;
+    outBuffer.width = CGImageGetWidth(img);
+    outBuffer.height = CGImageGetHeight(img);
+    outBuffer.rowBytes = CGImageGetBytesPerRow(img);
+    
+    error = vImageBoxConvolve_ARGB8888(&inBuffer,
+                                       &outBuffer,
+                                       NULL,
+                                       0,
+                                       0,
+                                       boxSize,
+                                       boxSize,
+                                       NULL,
+                                       kvImageEdgeExtend);
+    
+    
+    if (error) {
+        NSLog(@"error from convolution %ld", error);
+    }
+    
+    //CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();//CGColorSpaceCreateDeviceRGB
+    CGContextRef ctx = CGBitmapContextCreate(
+                                             outBuffer.data,
+                                             outBuffer.width,
+                                             outBuffer.height,
+                                             8,
+                                             outBuffer.rowBytes,
+                                             colorSpace,
+                                             kCGImageAlphaNoneSkipLast);
+    CGImageRef imageRef = CGBitmapContextCreateImage (ctx);
+    UIImage *returnImage = [UIImage imageWithCGImage:imageRef];
+    
+    //clean up
+    CGContextRelease(ctx);
+    CGColorSpaceRelease(colorSpace);
+    
+    free(pixelBuffer);
+    CFRelease(inBitmapData);
+    
+    CGColorSpaceRelease(colorSpace);
+    CGImageRelease(imageRef);
+    
+    return returnImage;
+}
+
 @end

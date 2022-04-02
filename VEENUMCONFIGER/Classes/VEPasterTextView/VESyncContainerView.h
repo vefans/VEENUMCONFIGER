@@ -10,6 +10,7 @@
 @class VESyncContainerView;
 @protocol VESyncContainerViewDelegate <NSObject>
 -(void)selectePasterTextView:( UITapGestureRecognizer * ) tapGesture atView:( VESyncContainerView * ) view;
+-(void)cancel_selectePasterTextView:( VESyncContainerView * ) view;
 @end
 
 @interface VESyncContainerView : UIView
@@ -34,6 +35,8 @@
 - (void)pinchGestureRecognizer:(UIPinchGestureRecognizer *)recognizer;
 
 - (void)contentTapped:(UITapGestureRecognizer*)tapGesture;
+
+-(void)Cancel_selectePasterTextView;
 
 @property(nonatomic, assign)BOOL isMask;
 @end

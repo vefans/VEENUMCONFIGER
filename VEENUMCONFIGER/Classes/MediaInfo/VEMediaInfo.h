@@ -307,6 +307,10 @@
 /**  场景背景模糊
 */
 @property (nonatomic, assign) float backgroundBlurIntensity;
+/** 设置径向模糊效果
+ *  设置媒体动画后，该属性无效，以动画中的blur为准
+ */
+@property (nonatomic, strong) Blur *blur;
 
 /**  场景背景色
 */

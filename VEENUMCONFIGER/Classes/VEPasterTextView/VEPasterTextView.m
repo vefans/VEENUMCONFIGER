@@ -207,6 +207,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         frame.origin.y = 0;
     }
     if (self = [super initWithFrame:frame]) {
+        _hairScale = 1.0;
         _captionTextIndex = 0;
         _isDrag_Upated = false;
         _isSizePrompt = true;
@@ -331,7 +332,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                    strokeWidth:(float)strokeWidth syncContainerRect:(CGRect)syncContainerRect
                     isRestore:(BOOL)isREstroe
 {
-    
+    _hairScale = 1.0;
     _captionTextIndex = 0;
     _isSizePrompt = false;
     _isDrag_Upated = false;
@@ -1505,6 +1506,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 //    NSLog(@"frame2:%@", NSStringFromCGRect(self.frame));
     _selfScale = value;
     
+    value = value *  _hairScale;
+    
     selectImageView.layer.borderWidth = selectImageViewBorderWidth*1/value;
     selectImageView.layer.shadowRadius = selectImageViewShadowRadius*1/value;
     
@@ -2677,6 +2680,7 @@ static VEPasterTextView *lastTouchedView;
            syncContainerRect:(CGRect)syncContainerRect
                    isRestore:(BOOL)isREstroe
 {
+    _hairScale = 1.0;
     _captionTextIndex = 0;
     globalInset = 8;
     rotateViewWidth = globalInset*3.0 + globalInset/4.0;
@@ -2759,10 +2763,10 @@ static VEPasterTextView *lastTouchedView;
 //        UITapGestureRecognizer *singleTapShowHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(contentTapped:)];
 //        [self addGestureRecognizer:singleTapShowHide];
         
-        UITapGestureRecognizer *singleTapShowHide1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(DoubleClick:)];
-        singleTapShowHide1.delegate = self;
-        singleTapShowHide1.numberOfTapsRequired = 2;
-        [self addGestureRecognizer:singleTapShowHide1];
+//        UITapGestureRecognizer *singleTapShowHide1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(DoubleClick:)];
+//        singleTapShowHide1.delegate = self;
+//        singleTapShowHide1.numberOfTapsRequired = 2;
+//        [self addGestureRecognizer:singleTapShowHide1];
         
         if(_needStretching){
             CGPoint centPoint = self.center;
@@ -2807,6 +2811,7 @@ static VEPasterTextView *lastTouchedView;
 //        return;
 //    }
     
+    
     if( self.syncContainer.currentPasterTextView != self )
     {
         [self showEditingHandles];
@@ -2815,6 +2820,13 @@ static VEPasterTextView *lastTouchedView;
             [_delegate pasterViewShowText:self];
         }
     }
+    
+    if( _captionTextIndex == (btn.tag - 2300) )
+    {
+        [self.syncContainer Cancel_selectePasterTextView];
+        return;
+    }
+    
     _captionTextIndex = btn.tag - 2300;
     
     if( _delegate && [_delegate respondsToSelector:@selector(DoubleClick_pasterViewShowText:)] )

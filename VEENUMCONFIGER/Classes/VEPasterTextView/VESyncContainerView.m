@@ -24,6 +24,20 @@
         _currentPasterTextView = currentPasterTextView;
 }
 
+-(void)Cancel_selectePasterTextView
+{
+    if( _isMask )
+        return;
+    
+    if( _isCalculateSelected )
+    {
+        if( _delegate && [_delegate respondsToSelector:@selector(cancel_selectePasterTextView:)] )
+        {
+            [_delegate cancel_selectePasterTextView:self];
+        }
+    }
+}
+
 - (void)contentTapped:(UITapGestureRecognizer*)tapGesture
 {
     if( _isMask )

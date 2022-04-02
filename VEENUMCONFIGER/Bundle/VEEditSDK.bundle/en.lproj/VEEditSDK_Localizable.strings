@@ -38,6 +38,8 @@
 "请稍候,正在应用到所有!" = "Wait a moment, applying to all!";
 
 "素材库" = "OnlineAlbums";
+"虚拟直播间" = "VirtualLive";
+"请添加音乐" = "Add Music";
 
 "无法访问相机!" = "Can not access camera!";
 "用户拒绝访问相机,请在<设置-隐私-相机>中开启" = "User reject to access camera, please open in <Setting-Privacy-Camera>";
@@ -1967,7 +1969,7 @@
 "当前时间无法添加音效！" = "Cannot add sound effects at the current time!";
 "当前时间无法添加音乐！" = "Cannot add music at the current time!";
 "当前时间无法添加文本朗读！" = "Cannot add text to read aloud at the current time!";
-"音频生成中" = "Audio generation in progress";
+"音频生成中..." = "Audio generation...";
 "音频已生成，请到音频模块查看" = "Audio has been generated, please go to the audio module to check";
 "音频生成失败" = "Audio generation failed";
 "您确定替换原朗读音频吗?" = "Are you sure to replace the original speech audio?";
@@ -2004,3 +2006,16 @@
 "当前时间点已有字幕，无法添加" = "Subtitles already exist at the current time point and cannot be added";
 "当前时间点无法添加" = "Cannot add the current time point";
 "无效果" = "No effect";
+"文字识别中..." = "Text recognition...";
+"字幕识别中" = "Subtitle recognition";
+"① 其它文字样式和我一样" = "① Other text styles are the same as mine";
+"② 其它文字上下位置和我对齐" = "② Other text is aligned horizontally with me";
+"③ 水平对齐画面" = "③ Align screen horizontally";
+"④ 其它文字动画和我一样" = "④ Other text animations are the same as me";
+"⑤ 其它文字大小和我一样" = "⑤ Other text size is the same as mine";
+"⑥ 自动换行" = "⑥ Auto wrap";
+"全局应用" = "Apply globally";
+"统一设置" = "Unified settings";
+"音调" = "Pitch";
+"语速" = "Speed";
+"自动识别字幕" = "Automatically recognize subtitles";

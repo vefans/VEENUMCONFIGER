@@ -6,6 +6,9 @@
 
 @interface VEHelp : NSObject
 
+/// 获取项目语言简写字符串
++ (NSString *)getProjectLanguageShorthand;
+
 +(UIImage*) imageWithColor:(UIColor*)color atSize:( CGSize ) size;
 
 + (void)webpToPng:(NSString *)webpPath;
@@ -30,6 +33,7 @@
 + (BOOL)isSystemPhotoPath:(NSString *)path;
 + (NSString *) system;
 + (BOOL)isLowDevice;
++ (double)totalMemory;
 /**进入系统设置
  */
 + (void)enterSystemSetting;
@@ -88,6 +92,8 @@
 
 /**加载图片
  */
+
++ (NSString *)getSourcePath:(NSString *)path;
 + (UIImage *)imageWithContentOfFile:(NSString *)path;
 + (UIImage *)composeimage:(UIImage *)image size:(CGSize)size;
 + (UIImage *)imageNamed:(NSString *)name;
@@ -163,13 +169,19 @@
 
 + (NSMutableArray *)getFilterArrayWithListArray:(NSMutableArray *)listArray;
 
++ (NSString *)getMaskDownloadPathWithDic:(NSDictionary *)itemDic;
++ (NSString *)getchangeHairDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getFilterDownloadPathWithDic:(NSDictionary *)itemDic;
+
++ (NSString *)getScaleDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getMusicDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getMediaIdentifier;
 + (NSString *)getCollageDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSMutableArray *)getMaskArray;
 
 + (MaskObject *)getMaskWithName:(NSString *)maskName;
+
++ (MaskObject *)getMaskWithPath:(NSString *) path;
 
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath atMedia:( id ) mediaOrFile;
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath caption:(Caption *)caption;
@@ -379,6 +391,8 @@
 
 +(CGRect)getOverlayBackgroundImageCrop:( CGSize ) imageSize atBackgroundImageSize:( CGSize ) backgroundImageSize;
 
++(void)getRemoveTranslucent:( CVPixelBufferRef ) maskPixelBuffer;
+
 + (NSString *)getAutoSegmentImagePath:(NSURL *)url;
 + (NSString *)getErasePenImagePath:(NSURL *)url;
 
@@ -386,6 +400,6 @@
 + (UIImage *)screenCapture;
 + (UIImage *)blurScreenCapture;
 +(UIImage *)boxblurImage:(UIImage *)image withBlurNumber:(CGFloat)blur;
-
++ (UIImage *)blurryImage:(UIImage *)image withBlurLevel:(CGFloat)blur;
 + (UIImage *)scaleToSize:(UIImage *)img size:(CGSize)size;
 @end

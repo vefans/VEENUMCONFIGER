@@ -42,7 +42,7 @@
     LongCacheImageView * imageView = [[LongCacheImageView alloc] initWithFrame:CGRectMake((fxItemBtn.frame.size.width  - fxItemBtn.frame.size.height*propor)/2.0, 0, fxItemBtn.frame.size.height*propor, fxItemBtn.frame.size.height*propor)];
     fxItemBtn.thumbnailIV = imageView;
     [fxItemBtn addSubview:fxItemBtn.thumbnailIV];
-    fxItemBtn.thumbnailIV.layer.cornerRadius = 5;
+    fxItemBtn.thumbnailIV.layer.cornerRadius = 3;
     fxItemBtn.thumbnailIV.layer.masksToBounds = YES;
     fxItemBtn.thumbnailIV.layer.borderWidth = 2.0;
     fxItemBtn.thumbnailIV.layer.borderColor = [UIColor clearColor].CGColor;

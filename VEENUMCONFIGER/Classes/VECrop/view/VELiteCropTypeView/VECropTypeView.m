@@ -75,44 +75,45 @@ static NSString *cellIconID = @"VECropIconTypeCell";
     [self.collectionView reloadData];
     float width =0;
     if([VEConfigManager sharedManager].iPad_HD){
-        for (VECropTypeModel *cropTypeModel in self.dataArray) {
-            if (cropTypeModel.cropType == VE_VECROPTYPE_FREE) {
-                width += 52.0/90.0*self.frame.size.height;
-            }else if(cropTypeModel.cropType == VE_VECROPTYPE_ORIGINAL){
-
-                width += 52.0/90.0*self.frame.size.height;
-
-            }else if(cropTypeModel.cropType == VE_VECROPTYPE_9TO16){
-
-                width += 52.0/90.0*self.frame.size.height;
-
-            }else if(cropTypeModel.cropType == VE_VECROPTYPE_16TO9){
-
-                width += 90.0/90.0*self.frame.size.height;
-
-            }else if(cropTypeModel.cropType == VE_VECROPTYPE_1TO1){
-
-                width += 52.0/90.0*self.frame.size.height;
-
-            }else if(cropTypeModel.cropType == VE_VECROPTYPE_6TO7){
-
-                width += 55.0/90.0*self.frame.size.height;
-
-            }else if(cropTypeModel.cropType == VE_VECROPTYPE_4TO5){
-
-                width += 56.0/90.0*self.frame.size.height;
-
-            }else if(cropTypeModel.cropType == VE_VECROPTYPE_4TO3){
-
-                width += 70.0/90.0*self.frame.size.height;
-
-            }else if(cropTypeModel.cropType == VE_VECROPTYPE_3TO4){
-
-                width += 52.0/90.0*self.frame.size.height;
-
-            }
-            width += 10;
-        }
+        width = self.dataArray.count * 65;
+//        for (VECropTypeModel *cropTypeModel in self.dataArray) {
+//            if (cropTypeModel.cropType == VE_VECROPTYPE_FREE) {
+//                width += 52.0/90.0*self.frame.size.height;
+//            }else if(cropTypeModel.cropType == VE_VECROPTYPE_ORIGINAL){
+//
+//                width += 52.0/90.0*self.frame.size.height;
+//
+//            }else if(cropTypeModel.cropType == VE_VECROPTYPE_9TO16){
+//
+//                width += 52.0/90.0*self.frame.size.height;
+//
+//            }else if(cropTypeModel.cropType == VE_VECROPTYPE_16TO9){
+//
+//                width += 90.0/90.0*self.frame.size.height;
+//
+//            }else if(cropTypeModel.cropType == VE_VECROPTYPE_1TO1){
+//
+//                width += 52.0/90.0*self.frame.size.height;
+//
+//            }else if(cropTypeModel.cropType == VE_VECROPTYPE_6TO7){
+//
+//                width += 55.0/90.0*self.frame.size.height;
+//
+//            }else if(cropTypeModel.cropType == VE_VECROPTYPE_4TO5){
+//
+//                width += 56.0/90.0*self.frame.size.height;
+//
+//            }else if(cropTypeModel.cropType == VE_VECROPTYPE_4TO3){
+//
+//                width += 70.0/90.0*self.frame.size.height;
+//
+//            }else if(cropTypeModel.cropType == VE_VECROPTYPE_3TO4){
+//
+//                width += 52.0/90.0*self.frame.size.height;
+//
+//            }
+//            width += 10;
+//        }
         CGRect r = self.collectionView.frame;
         r.size.width = width;
         r.origin.x = (CGRectGetWidth(self.frame) - r.size.width)/2.0;
@@ -183,7 +184,9 @@ static NSString *cellIconID = @"VECropIconTypeCell";
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
     VECropTypeModel * cropTypeModel = [self.dataArray objectAtIndex:section];
-    
+    if([VEConfigManager sharedManager].iPad_HD){
+        return UIEdgeInsetsMake(0, 0, 0, 0);//（上、左、下、右）
+    }
 
     
     if (cropTypeModel.cropType == VE_VECROPTYPE_FREE) {
@@ -225,8 +228,9 @@ static NSString *cellIconID = @"VECropIconTypeCell";
     
     VECropTypeModel * cropTypeModel = [self.dataArray objectAtIndex:indexPath.section];
     
-    
-
+    if([VEConfigManager sharedManager].iPad_HD){
+        return CGSizeMake(65, 65);//（上、左、下、右）
+    }
     
     if (cropTypeModel.cropType == VE_VECROPTYPE_FREE) {
         return CGSizeMake(52.0/90.0*self.frame.size.height, 52.0/90.0*self.frame.size.height);//返回两个小的cell的尺寸 自由

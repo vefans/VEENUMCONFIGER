@@ -308,6 +308,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 滤镜网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *filterResourceURL;
+/** 头发网络资源地址
+ */
+@property (nonatomic,copy,nullable)NSString    *changeHairResourceURL;
 /** 字幕网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *subtitleResourceURL;

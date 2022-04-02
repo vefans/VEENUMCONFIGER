@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<string>无</string>
+	<string>弹性伸缩</string>
+	<string>生长</string>
+	<string>波浪弹入</string>
+	<string>打字机I</string>
+	<string>打字机II</string>
+	<string>打字机III</string>
+	<string>轻微放大</string>
+	<string>缩小</string>
+	<string>渐显</string>
+	<string>日出</string>
+	<string>放大</string>
+	<string>弹簧</string>
+	<string>向左滑动</string>
+	<string>向左擦除</string>
+	<string>向右滑动</string>
+	<string>向右擦除</string>
+	<string>向下滑动</string>
+	<string>向下擦除</string>
+	<string>向上滑动</string>
+	<string>向上擦除</string>
+	<string>逐字放大</string>
+	<string>摇荡</string>
+	<string>轻微跳动</string>
+	<string>晃动</string>
+	<string>故障闪动</string>
+	<string>超强波浪</string>
+	<string>波浪</string>
+	<string>调皮</string>
+	<string>雨刷</string>
+	<string>闪烁</string>
+	<string>钟摆</string>
+	<string>跳动</string>
+	<string>色差故障</string>
+	<string>翻转</string>
+	<string>摇摆</string>
+	<string>心跳</string>
+</array>
+</plist>

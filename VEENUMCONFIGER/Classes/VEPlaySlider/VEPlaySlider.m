@@ -124,7 +124,10 @@
     [self setNeedsLayout];
 }
 
-
+- (CGRect)thumbRectForBounds:(CGRect)bounds trackRect:(CGRect)rect value:(float)value{
+    _thumbRect = [super thumbRectForBounds:bounds trackRect:rect value:value];
+    return _thumbRect;
+}
 #pragma mark - 5.DataSource and Delegate
 
 

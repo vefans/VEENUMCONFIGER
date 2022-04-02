@@ -28,12 +28,14 @@
     filletWidth = fillet;
     switch (_maskType) {
         case VEMaskType_RECTANGLE:
+        case VEMaskType_InterRECTANGLE:
         {
             filletWidth = filletWidth*(btnWidth/2.0+3);
             self.fillet_ImageView.frame = CGRectMake((self.rectangleViewCenterView.frame.origin.x - filletWidth + 3 - btnWidth),(self.rectangleViewCenterView.frame.origin.y - filletWidth + 3  - btnWidth),btnWidth,btnWidth);
         }
             break;
         case VEMaskType_QUADRILATERAL:
+        case VEMaskType_InterQUADRILATERAL:
         {
             [self setQuadrilateralCenterPoint:false];
             [self setFillet_ImageViewCenter];
@@ -76,30 +78,35 @@
         
         switch (type) {
             case VEMaskType_LINNEAR://MARK: 线性
+            case VEMaskType_InterLINNEAR://MARK: 线性
             {
                 [self initLinnear:height atHeight:CenterHeight atWidth:CenterWidth];
                 [_curretnView addSubview:_centreImageView];
             }
                 break;
             case VEMaskType_MIRRORSURFACE://MARK: 镜面
+            case VEMaskType_InterMIRRORSURFACE://MARK: 镜面
             {
                 [self initMirrorSuface:height atHeight:CenterHeight atWidth:CenterWidth];
                 [_mirrorSurfaceCenterView addSubview:_centreImageView];
             }
                 break;
             case VEMaskType_ROUNDNESS://MARK: 圆形
+            case VEMaskType_InterROUNDNESS://MARK: 圆形
             {
                 [self initRoundness:CenterHeight atWidth:CenterWidth];
                 [_roundnessCenterView addSubview:_centreImageView];
             }
                 break;
             case VEMaskType_RECTANGLE://MARK: 矩形
+            case VEMaskType_InterRECTANGLE://MARK: 矩形
             {
                 [self initRectangle:CenterHeight atWidth:CenterWidth];
                 [_rectangleViewCenterView addSubview:_centreImageView];
             }
                 break;
             case VEMaskType_QUADRILATERAL://MARK: 四边形
+            case VEMaskType_InterQUADRILATERAL://MARK: 四边形
             {
                 RoundnessHeight = 0;
                 [self initQuadrilateral:CenterHeight atWidth:CenterWidth];
@@ -107,12 +114,14 @@
             }
                 break;
             case VEMaskType_PENTACLE://MARK: 五角星
+            case VEMaskType_InterPENTACLE://MARK: 五角星
             {
                 [self initPentacle:CenterHeight atWidth:CenterWidth];
                 [_pentacleCenterView addSubview:_centreImageView];
             }
                 break;
             case VEMaskType_LOVE://MARK: 爱心
+            case VEMaskType_InterLOVE://MARK: 爱心
             {
                 [self initLove:CenterHeight atWidth:CenterWidth];
                 [_loveCenterView addSubview:_centreImageView];

@@ -38,6 +38,7 @@
         _pitch = 1.0;
         _adjustments = [[ToningInfo alloc] init];
         _eq = [NSMutableArray new];
+        _blur = [Blur new];
         for (int i = 0; i<10; i++) {
             EqObject * object = [[EqObject alloc] init];
             [_eq addObject:object];

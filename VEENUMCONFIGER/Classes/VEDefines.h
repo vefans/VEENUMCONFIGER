@@ -14,7 +14,8 @@ typedef NS_ENUM(NSInteger ,KBeautyCategoryType) {
     KBeautyCategory_WHitening,           //美白
     KBeautyCategory_Rosy,                  //红润
     KBeautyCategory_BigEyes,             //大眼
-    KBeautyCategory_FaceLift,            //瘦脸
+    KBeautyCategory_FaceLift,             //瘦脸
+    KBeautyCategory_Hair,                   //头发
 };
 
 typedef NS_ENUM(NSInteger ,KBeautyType) {
@@ -180,6 +181,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_Cato                 = 57,      //加图
     VEAdvanceEditType_Cutout              = 58,     //抠图
     VEAdvanceEditType_MergeLayers     = 59,     //图层合并
+    VEAdvanceEditType_Hair                  = 60,     //头发
 };
 
 /*
@@ -234,6 +236,7 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     kVEUSEDSINGLEFILTER = 45, //所有滤镜
     KDEFORMED       = 46,   //变形
     KEQUALIZER      = 47, //均衡器
+    KBLURRY           = 48, //模糊
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -307,6 +310,7 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     
     kPIP_DEFORMED                   =45,    //变形
     KPIP_EQUALIZER                  = 46,   //均衡器
+    KPIP_BLURRY                  = 47,   //模糊
 };
 
 //去水印类型
@@ -391,6 +395,14 @@ typedef NS_ENUM(NSInteger, VEMaskType)
     VEMaskType_PENTACLE         =5, //五角星
     VEMaskType_LOVE             =6, //爱心
     VEMaskType_QUADRILATERAL    =7, //四边形
+    
+    VEMaskType_InterMIRRORSURFACE = 1017474, //镜面
+    VEMaskType_InterQUADRILATERAL = 1017479, //四边形
+    VEMaskType_InterLOVE = 1017478, //爱心
+    VEMaskType_InterPENTACLE = 1017477, //五角星
+    VEMaskType_InterRECTANGLE = 1017476, //矩形
+    VEMaskType_InterROUNDNESS = 1017475, //圆形
+    VEMaskType_InterLINNEAR = 1017473, //线性
 };
 
 typedef void(^VERecordCompletionHandler) (int result,NSString *path,VEMusicInfo *music);
@@ -467,7 +479,7 @@ isPhoneX;\
 #define PESDKTEXT_COLOR UIColorFromRGB(0x2B2B2B)
 
 #define VIEW_COLOR UIColorFromRGB(0x1a1a1a)
-#define VIEW_IPAD_COLOR UIColorFromRGB(0x1F1F1F)
+#define VIEW_IPAD_COLOR UIColorFromRGB(0x1a1a1a)
 #define SCREEN_IPAD_BACKGROUND_COLOR UIColorFromRGB(0x070709)
 
 #define NV_Color 0x27262c
@@ -586,6 +598,8 @@ isPhoneX;\
 
 #define kMergeLayersFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/MergeLayersFloatder"]
 
+#define kHairFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/HairFloatder"]
+
 #define kCutoutFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/CutoutFloatder"]
 #define kErasePenFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ErasePenFloatder"]
 #define kCoverFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/cover"]
@@ -650,13 +664,19 @@ isPhoneX;\
 
 #define kStickerIconPlistPath [kStickerFolder stringByAppendingPathComponent:@"EffectIconList.plist"]
 
+#define kScaleFolder [kVEDirectory stringByAppendingPathComponent:@"scales"];
+
 #define kStickerTypesPath [kStickerFolder stringByAppendingPathComponent:@"EffectTypesList.plist"]
 #define kNewStickerPlistPath [kStickerFolder stringByAppendingPathComponent:@"EffectPlistList.plist"]
 #define kNewStickerCategoryPlistPath [kStickerFolder stringByAppendingPathComponent:@"EffectCategoryPlistList.plist"]
-
+//滤镜目录
 #define kFilterFolder [kVEDirectory stringByAppendingPathComponent:@"filters"]
 #define kFilterCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"filterCategory.plist"]
 #define kNewFilterPlistPath [kFilterFolder stringByAppendingPathComponent:@"filterTypeList.plist"]
+//换发目录
+#define kHairFolder [kVEDirectory stringByAppendingPathComponent:@"hairs"]
+#define kHairCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"hairCategory.plist"]
+#define kNewHairPlistPath [kFilterFolder stringByAppendingPathComponent:@"hairTypeList.plist"]
 
 #pragma mark-图片流动音乐
 #define kFlowCollageFolder [kVEDirectory stringByAppendingPathComponent:@"FlowCollages"]

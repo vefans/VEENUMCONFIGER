@@ -83,7 +83,7 @@
         
         _finishToolBarBtn = [VENavBarButton buttonWithType:UIButtonTypeCustom];
         _finishToolBarBtn.frame = CGRectMake(kWIDTH - 44, 0, 44, 44);
-        [_finishToolBarBtn setImage:[VEHelp imageWithContentOfFile:@"剪辑_勾_"] forState:UIControlStateNormal];
+        [_finishToolBarBtn setImage:[VEHelp imageWithContentOfFile:([VEConfigManager sharedManager].iPad_HD ? @"ipad/剪辑_勾_" : @"剪辑_勾_")] forState:UIControlStateNormal];
         
         
         

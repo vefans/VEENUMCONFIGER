@@ -165,6 +165,8 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_BackgroundReplace, // 背景替换
     
     VEUndoRedoEditType_Mask,//蒙版
+    
+    VEUndoRedoEditType_Hair,//头发
 };
 
 

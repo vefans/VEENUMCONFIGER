@@ -39,6 +39,7 @@
             [self draw_Love:rect];
             break;
         case VEMaskType_QUADRILATERAL:
+        case VEMaskType_InterQUADRILATERAL:
         {
             [self darwQuadrilateral:rect];
         }
