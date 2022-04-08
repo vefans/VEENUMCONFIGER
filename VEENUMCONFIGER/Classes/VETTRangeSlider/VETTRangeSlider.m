@@ -90,21 +90,21 @@ static const CGFloat kLabelsFontSize = 12.0f;
     [self addSubview:_leftLabel];
     
     _rightLabel = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, VE_HANDLE_DIAMETER, self.frame.size.height)];
-    _rightLabel.image =  [VEHelp imageNamed:@"New_EditVideo/剪辑-剪辑-把手_左默认_"];
-    _rightLabel.highlightedImage =  [VEHelp imageNamed:@"New_EditVideo/剪辑-剪辑-把手_右默认_"];
+    _rightLabel.image =  [VEHelp imageNamed:[VEConfigManager sharedManager].iPad_HD ? @"/ipad/剪辑-剪辑-把手_左默认_" : @"New_EditVideo/剪辑-剪辑-把手_左默认_"];
+    _rightLabel.highlightedImage =  [VEHelp imageNamed:[VEConfigManager sharedManager].iPad_HD ? @"/ipad/剪辑-剪辑-把手_右默认_" : @"New_EditVideo/剪辑-剪辑-把手_右默认_"];
     _rightLabel.hidden = YES;
     [self addSubview:_rightLabel];
     
     _leftLayer = [CALayer layer];
     _leftLayer.backgroundColor = [UIColor clearColor].CGColor;
     _leftLayer.frame = CGRectMake(0, 0, VE_HANDLE_DIAMETER, self.frame.size.height);
-    _leftLayer.contents = (id)[VEHelp imageNamed:@"New_EditVideo/剪辑-剪辑-把手_左默认_"].CGImage;
+    _leftLayer.contents = (id)[VEHelp imageNamed:[VEConfigManager sharedManager].iPad_HD ? @"/ipad/剪辑-剪辑-把手_左默认_" : @"New_EditVideo/剪辑-剪辑-把手_左默认_"].CGImage;
     _leftLayer.hidden = YES;
 
     _leftHightedLayer = [CALayer layer];
     _leftHightedLayer.backgroundColor = [UIColor clearColor].CGColor;
     _leftHightedLayer.frame = CGRectMake(0, 0, VE_HANDLE_DIAMETER, self.frame.size.height);
-    _leftHightedLayer.contents = (id)[VEHelp imageNamed:@"New_EditVideo/剪辑-剪辑-把手_左默认_"].CGImage;
+    _leftHightedLayer.contents = (id)[VEHelp imageNamed:[VEConfigManager sharedManager].iPad_HD ? @"/ipad/剪辑-剪辑-把手_左默认_" : @"New_EditVideo/剪辑-剪辑-把手_左默认_"].CGImage;
     _leftHightedLayer.hidden = YES;
     [_leftHandle addSublayer:_leftLayer];
 
@@ -112,13 +112,13 @@ static const CGFloat kLabelsFontSize = 12.0f;
     _rightLayer.backgroundColor = [UIColor clearColor].CGColor;
     _rightLayer.frame = _rightHandle.bounds;
     _rightLayer.frame = CGRectMake(0, 0, VE_HANDLE_DIAMETER, self.frame.size.height);
-    _rightLayer.contents = (id)[VEHelp imageNamed:@"New_EditVideo/剪辑-剪辑-把手_右默认_"].CGImage;
+    _rightLayer.contents = (id)[VEHelp imageNamed:[VEConfigManager sharedManager].iPad_HD ? @"/ipad/剪辑-剪辑-把手_右默认_" : @"New_EditVideo/剪辑-剪辑-把手_右默认_"].CGImage;
     _rightLayer.hidden = YES;
 
     _rightHightedLayer = [CALayer layer];
     _rightHightedLayer.backgroundColor = [UIColor clearColor].CGColor;
     _rightHightedLayer.frame = CGRectMake(0, 0, VE_HANDLE_DIAMETER, self.frame.size.height);
-    _rightHightedLayer.contents = (id)[VEHelp imageNamed:@"New_EditVideo/剪辑-剪辑-把手_右默认_"].CGImage;
+    _rightHightedLayer.contents = (id)[VEHelp imageNamed:[VEConfigManager sharedManager].iPad_HD ? @"/ipad/剪辑-剪辑-把手_右默认_" : @"New_EditVideo/剪辑-剪辑-把手_右默认_"].CGImage;
     _rightHightedLayer.hidden = YES;
     [_rightHandle addSublayer:_rightLayer];
     

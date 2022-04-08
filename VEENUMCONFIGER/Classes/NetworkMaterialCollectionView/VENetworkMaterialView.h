@@ -26,7 +26,7 @@
 @property(nonatomic, assign) BOOL             isImageShow;
 
 @property(nonatomic, assign) bool               isNotMove;
-
+@property(nonatomic, strong) UICollectionViewFlowLayout * flowLayout;
 @property(nonatomic, weak) UICollectionView     *collectionView;
 @property(nonatomic, assign) float              collectionOffsetX;
 @property(nonatomic, assign) float              collectionOffsetPointX;

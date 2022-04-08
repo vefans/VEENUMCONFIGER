@@ -52,7 +52,7 @@
         _currentHandle.layer.cornerRadius = 2.0;
         _currentHandle.clipsToBounds = YES;
         _currentHandle.layer.cornerRadius = 5.0;
-        _currentHandle.layer.borderColor = [UIColor whiteColor].CGColor;
+        _currentHandle.layer.borderColor = ([VEConfigManager sharedManager].iPad_HD ? [UIColor colorWithRed:193.0/255.0 green:193.0/255.0 blue:193.0/255.0 alpha:1.0] : [UIColor whiteColor]).CGColor;
         _currentHandle.layer.borderWidth = 2.0;
         _currentHandle.clipsToBounds = YES;
         

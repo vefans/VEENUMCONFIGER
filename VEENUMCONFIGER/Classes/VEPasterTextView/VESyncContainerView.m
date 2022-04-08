@@ -271,4 +271,20 @@
         _syncContainer_X_Left = nil;
     }
 }
+
+-(void)setFrame:(CGRect)frame
+{
+    super.frame = frame;
+}
+
+-(CGRect)getPreImageViewFrame
+{
+    return _picturePreImageView.frame;
+}
+
+-(CGRect)getPreImageViewBounds
+{
+    return _picturePreImageView.bounds;
+}
+
 @end

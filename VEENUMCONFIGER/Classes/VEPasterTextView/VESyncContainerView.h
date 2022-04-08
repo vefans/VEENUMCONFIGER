@@ -15,6 +15,10 @@
 
 @interface VESyncContainerView : UIView
 
+@property(nonatomic, weak)UIImageView      *picturePreImageView;
+-(CGRect)getPreImageViewFrame;
+-(CGRect)getPreImageViewBounds;
+
 @property(nonatomic,weak)UIImageView       *syncContainer_X_Left;
 @property(nonatomic,weak)UIImageView       *syncContainer_X_Right;
 

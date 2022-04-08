@@ -2990,7 +2990,7 @@ static VEPasterTextView *lastTouchedView;
 }
 - (void)setHidden:(BOOL)hidden{
     if(hidden){
-        NSLog(@"sss");
+//        NSLog(@"sss");
     }
     [super setHidden:hidden];
 }
@@ -2998,4 +2998,26 @@ static VEPasterTextView *lastTouchedView;
 - (void)removeFromSuperview{
     [super removeFromSuperview];
 }
+
+//- (void)setCenter:(CGPoint)center
+//{
+//    if( _syncContainer && _syncContainer.picturePreImageView )
+//    {
+//        CGPoint point = [_syncContainer.picturePreImageView convertPoint:center toView:_syncContainer];
+//        [self superview].center = point;
+//    }
+//    else{
+//        [self superview].center =  center;
+//    }
+//}
+
+-(CGPoint)getPictureCenter
+{
+    if( _syncContainer && _syncContainer.picturePreImageView )
+        return [_syncContainer  convertPoint:self.center toView:_syncContainer.picturePreImageView];
+    else{
+        return self.center;
+    }
+}
+
 @end

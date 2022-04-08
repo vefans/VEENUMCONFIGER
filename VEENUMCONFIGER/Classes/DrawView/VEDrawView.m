@@ -465,7 +465,7 @@
         
         
         width =  sqrtf((_beganPoint.x - _endPoint.x)*(_beganPoint.x - _endPoint.x) + (_beganPoint.y - _endPoint.y)*(_beganPoint.y - _endPoint.y));
-        height = width*0.4;
+        height = (width*0.4)*((_strokeWidth/22.0)*0.5+0.5);
         
         NSLog(@"ArrowHeight:%.2f  ArrowWidth:%.2f",height,width);
         

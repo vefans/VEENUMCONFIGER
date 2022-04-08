@@ -58,19 +58,13 @@
     videoCollectionView.dataSource = self;
     videoCollectionView.delegate = self;
     
-    ((UIScrollView*)videoCollectionView).delegate = self;
-    
-    if( !isVertical_Cell )
-    {
-        
-    }
     [videoCollectionView registerClass:[VENetworkMaterialBtn_Cell class] forCellWithReuseIdentifier:@"VENetworkMaterialBtn_Cell"];
     _collectionView = videoCollectionView;
     _collectionView.backgroundColor = [UIColor clearColor];
     _collectionView.showsHorizontalScrollIndicator = NO;
     _collectionView.showsVerticalScrollIndicator = NO;
     if(isVertical_Cell && [VEConfigManager sharedManager].iPad_HD)
-    _collectionView.contentInset = UIEdgeInsetsMake(10, 0, 10, 0);
+        _collectionView.contentInset = UIEdgeInsetsMake(20, 0, 20, 0);
 //    UIPanGestureRecognizer* moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
 //    [_collectionView addGestureRecognizer:moveGesture];
     

@@ -15,7 +15,7 @@
     if(self){
         self.file =[[VEVideoCaptionInfo alloc] init];
         self.file.scale = 0.8;
-        self.layer.borderColor = [UIColor whiteColor].CGColor;
+        self.layer.borderColor = ([VEConfigManager sharedManager].iPad_HD ? [UIColor colorWithRed:193.0/255.0 green:193.0/255.0 blue:193.0/255.0 alpha:1.0] : [UIColor whiteColor]).CGColor;
         self.layer.masksToBounds = YES;
         self.titleLabel.font = [UIFont systemFontOfSize:12.0];
         [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -39,7 +39,7 @@
     }
     if (self = [super initWithFrame:newFrame]) {
         self.file =[[VEVideoCaptionInfo alloc] init];
-        self.layer.borderColor = [UIColor whiteColor].CGColor;
+        self.layer.borderColor = ([VEConfigManager sharedManager].iPad_HD ? [UIColor colorWithRed:193.0/255.0 green:193.0/255.0 blue:193.0/255.0 alpha:1.0] : [UIColor whiteColor]).CGColor;
         self.layer.masksToBounds = YES;
         self.titleLabel.font = [UIFont systemFontOfSize:12.0];
         [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];

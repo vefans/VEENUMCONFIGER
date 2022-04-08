@@ -7,6 +7,14 @@
 
 #define kAppKeyType      @"AppKeyType"       //appkey类型
 
+typedef NS_ENUM(NSInteger,KVLBeautyType){
+    KVLBeautyType_Blur = 0, //磨皮
+    KVLBeautyType_Brightness, //美白
+    KVLBeautyType_ToneIntensity, //红润
+    KVLBeautyType_Bigeye, //大眼
+    KVLBeautyType_ThinFace, //瘦脸
+};
+
 typedef NS_ENUM(NSInteger ,KBeautyCategoryType) {
     KBeautyCategory_None = 0,             //无
     KBeautyCategory_FiveSenses,          //五官
@@ -251,6 +259,7 @@ typedef NS_ENUM(NSInteger, VESDKErrorCode) {
     VESDKErrorCode_DownloadMaterial   = 1008, //下载素材失败
     VESDKErrorCode_NoUserID           = 1009, //无用户ID
     VESDKErrorCode_GetResources       = 1010, //获取资源失败
+    VESDKErrorCode_UploadResources    = 1011, //获取资源失败
 };
 
 typedef NS_ENUM(NSInteger, CaptionAnimateType) {

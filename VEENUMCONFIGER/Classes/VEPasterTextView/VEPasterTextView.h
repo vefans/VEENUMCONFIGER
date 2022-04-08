@@ -33,6 +33,8 @@
 
 @interface VEPasterTextView : UIView
 
+-(CGPoint)getPictureCenter;
+
 @property(nonatomic, assign) float    hairScale;
 
 @property( nonatomic, assign ) BOOL isPressTouch;

@@ -7,7 +7,8 @@
 
 #import "VEFiveSensesView.h"
 #import <VEENUMCONFIGER/VEHelp.h>
-
+@interface VEFiveSensesView()<UIScrollViewDelegate>
+@end
 @implementation VEFiveSensesView
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -56,28 +57,30 @@
         if([VEConfigManager sharedManager].iPad_HD){
             _beautyView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 44, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame) - 44 - 44)];
             _beautyView.backgroundColor = [UIColor clearColor];
+            _beautyView.delegate = self;
             [self addSubview:_beautyView];
-            NSArray *list = @[@{@"title":@"脸宽",@"id":@(KBeauty_FaceWidth)},
-                              @{@"title":@"额高",@"id":@(KBeauty_Forehead)},
-                              @{@"title":@"下颚宽",@"id":@(KBeauty_ChinWidth)},
-                              @{@"title":@"下巴高",@"id":@(KBeauty_ChinHeight)},
+            NSArray *list = @[
+                            @{@"title":@"磨皮",@"id":@(KBeauty_BlurIntensity)},
+                            @{@"title":@"美白",@"id":@(KBeauty_BrightIntensity)},
+                            @{@"title":@"红润",@"id":@(KBeauty_ToneIntensity)},
+                            @{@"title":@"大眼",@"id":@(KBeauty_BigEyes)},
+                            @{@"title":@"瘦脸",@"id":@(KBeauty_FaceLift)},
+                            @{@"title":@"脸宽",@"id":@(KBeauty_FaceWidth)},
+                            @{@"title":@"额高",@"id":@(KBeauty_Forehead)},
+                            @{@"title":@"下颚宽",@"id":@(KBeauty_ChinWidth)},
+                            @{@"title":@"下巴高",@"id":@(KBeauty_ChinHeight)},
                               //@{@"title":@"眼睛大小",@"id":@(KBeauty_EyeSize)},
-                              @{@"title":@"眼睛宽",@"id":@(KBeauty_EyeWidth)},
-                              @{@"title":@"眼睛高",@"id":@(KBeauty_EyeHeight)},
-                              @{@"title":@"眼睛倾斜",@"id":@(KBeauty_EyeSlant)},
-                              @{@"title":@"眼睛距离",@"id":@(KBeauty_EyeDistance)},
+                            @{@"title":@"眼睛宽",@"id":@(KBeauty_EyeWidth)},
+                            @{@"title":@"眼睛高",@"id":@(KBeauty_EyeHeight)},
+                            @{@"title":@"眼睛倾斜",@"id":@(KBeauty_EyeSlant)},
+                            @{@"title":@"眼睛距离",@"id":@(KBeauty_EyeDistance)},
 //                              @{@"title":@"鼻子大小",@"id":@(KBeauty_NoseSize)},
-                              @{@"title":@"鼻子宽",@"id":@(KBeauty_NoseWidth)},
-                              @{@"title":@"鼻子高",@"id":@(KBeauty_NoseHeight)},
-                              @{@"title":@"嘴巴宽",@"id":@(KBeauty_MouthWidth)},
-                              @{@"title":@"上嘴唇",@"id":@(KBeauty_LipUpper)},
-                              @{@"title":@"下嘴唇",@"id":@(KBeauty_LipLower)},
-                              @{@"title":@"微笑",@"id":@(KBeauty_Smile)},
-                              @{@"title":@"磨皮",@"id":@(KBeauty_BlurIntensity)},
-                              @{@"title":@"美白",@"id":@(KBeauty_BrightIntensity)},
-                              @{@"title":@"红润",@"id":@(KBeauty_ToneIntensity)},
-                              @{@"title":@"大眼",@"id":@(KBeauty_BigEyes)},
-                              @{@"title":@"瘦脸",@"id":@(KBeauty_FaceLift)}
+                            @{@"title":@"鼻子宽",@"id":@(KBeauty_NoseWidth)},
+                            @{@"title":@"鼻子高",@"id":@(KBeauty_NoseHeight)},
+                            @{@"title":@"嘴巴宽",@"id":@(KBeauty_MouthWidth)},
+                            @{@"title":@"上嘴唇",@"id":@(KBeauty_LipUpper)},
+                            @{@"title":@"下嘴唇",@"id":@(KBeauty_LipLower)},
+                            @{@"title":@"微笑",@"id":@(KBeauty_Smile)}
                               ];
             
             
@@ -259,35 +262,35 @@
 {
     NSMutableArray * toolItems = [NSMutableArray new];
     {
-    NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"脸型",@"title",@(0),@"id", nil];
-    [toolItems addObject:dic1];
+        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"瘦脸",@"title",@(7),@"id", nil];
+        [toolItems addObject:dic1];
+    }
+    {
+        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"脸型",@"title",@(0),@"id", nil];
+        [toolItems addObject:dic1];
     }
     {
         NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"额头",@"title",@(1),@"id", nil];
         [toolItems addObject:dic1];
     }
     {
-    NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"下巴",@"title",@(2),@"id", nil];
-    [toolItems addObject:dic1];
+        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"下巴",@"title",@(2),@"id", nil];
+        [toolItems addObject:dic1];
     }
     {
-    NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"眼睛",@"title",@(3),@"id", nil];
-    [toolItems addObject:dic1];
+        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"眼睛",@"title",@(3),@"id", nil];
+        [toolItems addObject:dic1];
     }
     {
         NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"鼻子",@"title",@(4),@"id", nil];
         [toolItems addObject:dic1];
     }
     {
-    NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"嘴唇",@"title",@(5),@"id", nil];
-    [toolItems addObject:dic1];
+        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"嘴唇",@"title",@(5),@"id", nil];
+        [toolItems addObject:dic1];
     }
     {
     NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"微笑",@"title",@(6),@"id", nil];
-    [toolItems addObject:dic1];
-    }
-    {
-    NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"其他",@"title",@(7),@"id", nil];
     [toolItems addObject:dic1];
     }
     __block float contentsWidth = 10;
@@ -435,47 +438,47 @@
     switch (sender.tag) {
         case 0://MARK: 脸型
         {
-            [_beautyView setContentOffset:CGPointMake(0, 50 * 0)];
+            [_beautyView setContentOffset:CGPointMake(0, 50 * 5)];
         }
             break;
         case 1://MARK: 额头
         {
-            [_beautyView setContentOffset:CGPointMake(0, 50 * 1)];
+            [_beautyView setContentOffset:CGPointMake(0, 50 * 6)];
         }
             break;
         case 2://MARK:下巴
         {
-            [_beautyView setContentOffset:CGPointMake(0, 50 * 2)];
+            [_beautyView setContentOffset:CGPointMake(0, 50 * 7)];
         }
             break;
-        case 3://MARK:眼睛
+        case 3://MARK: 眼睛
         {
             
-            [_beautyView setContentOffset:CGPointMake(0, 50 * 4)];
+            [_beautyView setContentOffset:CGPointMake(0, 50 * 9)];
         }
             break;
-        case 4://MARK:鼻子
-        {
-            
-            [_beautyView setContentOffset:CGPointMake(0, 50 * 8)];
-        }
-            break;
-        case 5://MARK: 嘴唇
-        {
-            
-            [_beautyView setContentOffset:CGPointMake(0, 50 * 10)];
-        }
-            break;
-        case 6://MARK: 微笑
+        case 4://MARK: 鼻子
         {
             
             [_beautyView setContentOffset:CGPointMake(0, 50 * 13)];
         }
             break;
-        case 7://MARK: 其他
+        case 5://MARK: 嘴唇
         {
             
-            [_beautyView setContentOffset:CGPointMake(0, 50 * 14)];
+            [_beautyView setContentOffset:CGPointMake(0, 50 * 15)];
+        }
+            break;
+        case 6://MARK: 微笑
+        {
+            
+            [_beautyView setContentOffset:CGPointMake(0, 50 * 18)];
+        }
+            break;
+        case 7://MARK: 瘦脸
+        {
+            
+            [_beautyView setContentOffset:CGPointMake(0, 0)];
         }
             break;
         default:
@@ -1051,5 +1054,44 @@
 }
 - (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    if(![VEConfigManager sharedManager].iPad_HD){
+        return;
+    }
+    NSInteger tag = 0;
+    if(scrollView.contentOffset.y < 50 * 5){
+        //MARK: 瘦脸
+        tag = 7;
+    }else if(scrollView.contentOffset.y < 50 * 6){
+        //MARK: 脸型
+        tag = 0;
+    }else if(scrollView.contentOffset.y < 50 * 7){
+        //MARK: 额头
+        tag = 1;
+    }else if(scrollView.contentOffset.y < 50 * 9){
+        //MARK:下巴
+        tag = 2;
+    }else if(scrollView.contentOffset.y < 50 * 13){
+        //MARK: 眼睛
+        tag = 3;
+    }else if(scrollView.contentOffset.y < 50 * 15){
+        //MARK: 鼻子
+        tag = 4;
+    }else if(scrollView.contentOffset.y < 50 * 18){
+        //MARK: 嘴唇
+        tag = 5;
+    }else{
+        tag = 6;
+    }
+    
+    [self.ribbonScrollView.subviews enumerateObjectsUsingBlock:^(__kindof UIButton * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if([obj isKindOfClass:[UIButton class]]){
+            obj.selected = (obj.tag == tag);
+        }
+    }];
+    
+    
 }
 @end

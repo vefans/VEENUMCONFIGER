@@ -2688,15 +2688,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 [caption.otherAnimates addObject:[VEHelp getAnmationDic:(NSMutableDictionary*)effectDic[@"other"] atPath:folderPath]];
             }
         }
-        else{
-            if( customFilter.animateType == CustomAnimationTypeIn )
-            {
-                [caption.otherAnimates enumerateObjectsUsingBlock:^(CustomFilter * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    obj = nil;
-                }];
-                caption.otherAnimates = nil;
-            }
-        }
     }
     effectDic = nil;
     return customFilter;
@@ -7586,7 +7577,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     float scale = 1;
     
-    
     float width;
     float height;
     if (syncContainerSize.width == syncContainerSize.height) {
@@ -7611,20 +7601,41 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     size = CGSizeMake(width * corp.size.width, height * corp.size.height);
     
-    if( syncContainerSize.width < syncContainerSize.height )
+    CGSize screenWidthSize = CGSizeMake(syncContainerSize.height*( size.width /size.height ) , syncContainerSize.height);
+    
+    if( size.width < size.height )
     {
-        if( size.width < size.height )
-            scale = rect.size.height*syncContainerSize.height/size.height;
-        else
-            scale = rect.size.width*syncContainerSize.width/size.width;
+        scale = rect.size.height*syncContainerSize.height/size.height;
     }
-    else
-    {
-        if( size.width > size.height )
-            scale = rect.size.width*syncContainerSize.width/size.width;
-        else
-            scale = rect.size.height*syncContainerSize.height/size.height;
+    else{
+//        screenWidthSize = CGSizeMake(syncContainerSize.width, syncContainerSize.width*( size.height /size.width ) );
+//        if( screenWidthSize.height < syncContainerSize.height )
+//        {
+//            scale = rect.size.width*syncContainerSize.width/size.width;
+//        }
+//        else{
+//            if( size.width < size.height )
+//                scale = rect.size.height*syncContainerSize.height/size.height;
+//            else
+        scale = rect.size.width*syncContainerSize.width/size.width;
+//        }
     }
+//    if( syncContainerSize.width < syncContainerSize.height )
+//    {
+//        cgsizs
+//
+//        if( size.width < size.height )
+//            scale = rect.size.height*syncContainerSize.height/size.height;
+//        else
+//            scale = rect.size.width*syncContainerSize.width/size.width;
+//    }
+//    else
+//    {
+//        if( size.width > size.height )
+//            scale = rect.size.width*syncContainerSize.width/size.width;
+//        else
+//            scale = rect.size.height*syncContainerSize.height/size.height;
+//    }
     
     return scale;
 }

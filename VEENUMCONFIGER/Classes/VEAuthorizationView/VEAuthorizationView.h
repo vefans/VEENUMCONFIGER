@@ -7,6 +7,8 @@
 
 #import <UIKit/UIKit.h>
 
+//#define kUseVEAuthorizationView //20220408 客户反馈因这个界面上架被拒
+
 typedef NS_ENUM(NSInteger, VEAuthorizationType) {
     VEAuthorizationType_Album,          //相册
     VEAuthorizationType_Camera,         //相机

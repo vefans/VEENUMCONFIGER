@@ -95,7 +95,7 @@
     [UIView setAnimationsEnabled:NO];
     [_label.layer removeAllAnimations];
     [_moveTitleLabel.layer removeAllAnimations];
-    _label.frame = CGRectMake(0, self.frame.size.height*_propor, self.frame.size.width, self.frame.size.height*(1.0-_propor));
+    _label.frame = CGRectMake(0, _label.frame.origin.y, self.frame.size.width, _label.frame.size.height);
 }
 
 - (void)moveAction
@@ -105,7 +105,7 @@
     _moveTitleLabel.textColor = _label.textColor;
     _moveTitleLabel.font      = _label.font;
     
-    CGRect rect = [_label.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, self.frame.size.height*(1.0-_propor)) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont fontWithName:_label.font.fontName size:_label.font.pointSize]} context:nil];
+    CGRect rect = [_label.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, _label.frame.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont fontWithName:_label.font.fontName size:_label.font.pointSize]} context:nil];
     CGRect fr = _label.frame;
     if(fr.size.width > rect.size.width + 20){
         [self stopScrollTitle];
@@ -118,7 +118,7 @@
     beginItemRect.size.width = rect.size.width+20;
     _label.frame = beginItemRect;
     
-    _moveTitleLabel.frame = CGRectMake(beginItemRect.size.width+10, self.frame.size.height*_propor, beginItemRect.size.width, self.frame.size.height*(1.0-_propor));
+    _moveTitleLabel.frame = CGRectMake(beginItemRect.size.width+10, _label.frame.origin.y, beginItemRect.size.width, _label.frame.size.height);
     
     CGRect beginMoveRect = _moveTitleLabel.frame;
     CGRect itemEndRect = _label.frame;
@@ -146,9 +146,9 @@
                 if(strongSelf.isStartMove){
                     [strongSelf moveAction];
                 }else{
-                    strongSelf.label.frame = CGRectMake(0, self.frame.size.height*strongSelf.propor, strongSelf.frame.size.width, self.frame.size.height*(1.0-strongSelf.propor));
+                    strongSelf.label.frame = CGRectMake(0, _label.frame.origin.y, strongSelf.frame.size.width, _label.frame.size.height);
                     
-                    strongSelf->_moveTitleLabel.frame = CGRectMake(strongSelf.frame.size.width, self.frame.size.height*strongSelf.propor, strongSelf.frame.size.width, self.frame.size.height*(1.0-strongSelf.propor));
+                    strongSelf->_moveTitleLabel.frame = CGRectMake(strongSelf.frame.size.width, _label.frame.origin.y, strongSelf.frame.size.width, _label.frame.size.height);
                     
                 }
             }

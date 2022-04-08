@@ -25,7 +25,8 @@
 @property(nonatomic, assign) BOOL               isVertical_Cell;
 @property(nonatomic, assign) float              cellWidth;
 @property(nonatomic, assign) float              cellHeight;
-
+@property(nonatomic, strong) CAGradientLayer *topLayer;
+@property(nonatomic, strong) CAGradientLayer *bottomLayer;
 @property(nonatomic, assign) VENetworkMaterialCollectionViewCell *currentCell;
 
 @end
@@ -41,18 +42,20 @@
     
     NSArray *colors = [NSArray arrayWithObjects:(id)colorOne.CGColor, colorTwo.CGColor,nil];
     
-    CAGradientLayer *topLayer = [CAGradientLayer layer];
-    topLayer.colors = colors;
-    topLayer.frame = CGRectMake(0, CGRectGetMinY(view.frame), view.frame.size.width, 20);
-    topLayer.startPoint = CGPointMake(0, 1);
-    topLayer.endPoint = CGPointMake(0,0);
-    [view.superview.layer insertSublayer:topLayer above:0];
-    CAGradientLayer *bottomLayer = [CAGradientLayer layer];
-    bottomLayer.colors = colors;
-    bottomLayer.frame = CGRectMake(0, CGRectGetMaxY(view.frame) - 20, view.frame.size.width, 20);
-    bottomLayer.startPoint = CGPointMake(0, 0);
-    bottomLayer.endPoint = CGPointMake(0, 1);
-    [view.superview.layer insertSublayer:bottomLayer above:0];
+    _topLayer = [CAGradientLayer layer];
+    _topLayer.colors = colors;
+    _topLayer.frame = CGRectMake(0, CGRectGetMinY(view.frame), view.frame.size.width, 15);
+    _topLayer.startPoint = CGPointMake(0, 1);
+    _topLayer.endPoint = CGPointMake(0,0);
+    [view.superview.layer insertSublayer:_topLayer above:0];
+    _bottomLayer = [CAGradientLayer layer];
+    _bottomLayer.colors = colors;
+    _bottomLayer.frame = CGRectMake(0, CGRectGetMaxY(view.frame) - 15, view.frame.size.width, 15);
+    _bottomLayer.startPoint = CGPointMake(0, 0);
+    _bottomLayer.endPoint = CGPointMake(0, 1);
+    [view.superview.layer insertSublayer:_bottomLayer above:0];
+    
+    _collectionView.contentInset = UIEdgeInsetsMake(15, 0, 15, 0);
     
 }
 - (instancetype)initWithFrame:(CGRect)frame atCount:(NSInteger) count atIsVertical_Cell:(BOOL) isVertical_Cell atWidth:(float) cellWidth atHeight:(float) cellHeight
@@ -72,15 +75,15 @@
 
 -(void)initCollectView
 {
-    UICollectionViewFlowLayout * flow_Video = [[UICollectionViewFlowLayout alloc] init];
-    flow_Video.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    flow_Video.itemSize = CGSizeMake(self.bounds.size.width,self.bounds.size.height);
-    flow_Video.headerReferenceSize = CGSizeMake(0,0);
-    flow_Video.footerReferenceSize = CGSizeMake(0,0);
-    flow_Video.minimumLineSpacing = 0.0;
-    flow_Video.minimumInteritemSpacing = 0.0;
+    _flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    _flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    _flowLayout.itemSize = CGSizeMake(self.bounds.size.width,self.bounds.size.height);
+    _flowLayout.headerReferenceSize = CGSizeMake(0,0);
+    _flowLayout.footerReferenceSize = CGSizeMake(0,0);
+    _flowLayout.minimumLineSpacing = 0.0;
+    _flowLayout.minimumInteritemSpacing = 0.0;
     
-    UICollectionView * videoCollectionView =  [[UICollectionView alloc] initWithFrame: self.bounds collectionViewLayout:flow_Video];
+    UICollectionView * videoCollectionView =  [[UICollectionView alloc] initWithFrame: self.bounds collectionViewLayout:_flowLayout];
     videoCollectionView.backgroundColor = [UIColor clearColor];
     videoCollectionView.tag = 1000000;
     videoCollectionView.dataSource = self;
@@ -435,5 +438,12 @@
 }
 -(void)setFrame:(CGRect)frame{
     [super setFrame:frame];
+    _collectionView.frame = CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame));
+    if([VEConfigManager sharedManager].iPad_HD){
+        _topLayer.frame = CGRectMake(0, CGRectGetMinY(_collectionView.frame), _collectionView.frame.size.width, 15);
+        _bottomLayer.frame = CGRectMake(0, CGRectGetMaxY(_collectionView.frame) - 20, _collectionView.frame.size.width, 20);
+        _flowLayout.itemSize = CGSizeMake(frame.size.width,frame.size.height);
+//        _collectionView.contentInset = UIEdgeInsetsMake(20, 0, 20, 0);
+    }
 }
 @end
