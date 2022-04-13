@@ -311,6 +311,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 头发网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *changeHairResourceURL;
+/** 换装网络资源地址
+ */
+@property (nonatomic,copy,nullable)NSString    *dressUpResourceURL;
 /** 字幕网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *subtitleResourceURL;

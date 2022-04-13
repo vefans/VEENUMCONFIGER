@@ -24,6 +24,7 @@ typedef NS_ENUM(NSInteger ,KBeautyCategoryType) {
     KBeautyCategory_BigEyes,             //大眼
     KBeautyCategory_FaceLift,             //瘦脸
     KBeautyCategory_Hair,                   //头发
+    KBeautyCategory_DressUp,                   //换装
 };
 
 typedef NS_ENUM(NSInteger ,KBeautyType) {
@@ -686,7 +687,10 @@ isPhoneX;\
 #define kHairFolder [kVEDirectory stringByAppendingPathComponent:@"hairs"]
 #define kHairCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"hairCategory.plist"]
 #define kNewHairPlistPath [kFilterFolder stringByAppendingPathComponent:@"hairTypeList.plist"]
-
+//换装目录
+#define kDressUpFolder [kVEDirectory stringByAppendingPathComponent:@"dressUps"]
+#define kDressUpCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"dressUpCategory.plist"]
+#define kNewDressUpPlistPath [kFilterFolder stringByAppendingPathComponent:@"dressUpTypeList.plist"]
 #pragma mark-图片流动音乐
 #define kFlowCollageFolder [kVEDirectory stringByAppendingPathComponent:@"FlowCollages"]
 #define kCollageCategoryPlist [kFlowCollageFolder stringByAppendingPathComponent:@"CollageCategory.plist"]

@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "VEENUMCONFIGER"
-  spec.version      = "2.1.3"
+  spec.version      = "2.2.0"
   spec.summary      = "VEENUMCONFIGER is a library of common resources."
   spec.homepage     = "https://github.com/vefans/VEENUMCONFIGER"
   spec.platform     = :ios, "9.0"

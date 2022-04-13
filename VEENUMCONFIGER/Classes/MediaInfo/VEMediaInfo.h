@@ -183,6 +183,14 @@
  */
 @property (nonatomic, assign) float filterIntensity;
 
+/** 滤镜类型,默认kFilterType_LookUp
+ */
+@property (nonatomic , assign) FilterType filterType;
+
+/**滤镜条纹启用，kFilterType_Mosaic时有效,默认为YES
+ */
+@property (nonatomic, assign)BOOL isStrip;
+
 /** 自定义滤镜特效
  */
 @property (nonatomic, assign) NSInteger customFilterIndex;

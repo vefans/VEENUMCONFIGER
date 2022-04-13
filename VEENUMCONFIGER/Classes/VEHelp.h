@@ -402,4 +402,5 @@
 +(UIImage *)boxblurImage:(UIImage *)image withBlurNumber:(CGFloat)blur;
 + (UIImage *)blurryImage:(UIImage *)image withBlurLevel:(CGFloat)blur;
 + (UIImage *)scaleToSize:(UIImage *)img size:(CGSize)size;
++ (BOOL)isVideoUrl:(NSURL *)url;
 @end

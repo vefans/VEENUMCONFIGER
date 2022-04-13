@@ -224,6 +224,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
        || [pathExtension isEqualToString:@"gif"]
        || [pathExtension isEqualToString:@"tiff"]
        || [pathExtension isEqualToString:@"heic"]
+       || [pathExtension isEqualToString:@"webp"]
        ){
         return YES;
     }else{
@@ -1980,9 +1981,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if(![[NSFileManager defaultManager] fileExistsAtPath:filterFolderPath]){
         [[NSFileManager defaultManager] createDirectoryAtPath:filterFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
-    NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
-    NSString *itemPath = [[filterFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[itemDic[@"file"] hash]]] stringByAppendingPathExtension:pathExtension];
-    
+    NSString *file = itemDic[@"file"];
+    NSString *pathExtension = [[[file pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    NSString *itemPath = [[filterFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[file hash]]] stringByAppendingPathExtension:pathExtension];
+    if ([file.pathExtension isEqualToString:@"zip"]) {
+        itemPath = [itemPath stringByDeletingPathExtension];
+    }
     return itemPath;
 }
 + (NSString *)getCollageDownloadPathWithDic:(NSDictionary *)itemDic {
@@ -9930,6 +9934,16 @@ static OSType help_inputPixelFormat(){
     CGImageRelease(imageRef);
     
     return returnImage;
+}
+
++ (BOOL)isVideoUrl:(NSURL *)url {
+    AVAsset *asset = [AVAsset assetWithURL:url];
+    NSArray *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+    if (videoTracks.count > 0) {
+        return YES;
+    }else {
+        return NO;;
+    }
 }
 
 @end

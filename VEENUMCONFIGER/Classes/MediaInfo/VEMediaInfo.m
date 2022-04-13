@@ -19,6 +19,8 @@
         _rectInFile = CGRectZero;
         _rectInScale = 1.0;
         _filterIntensity = 1.0;
+        _filterType = kFilterType_LookUp;
+        _isStrip = YES;
         _rectInScene = CGRectMake(0, 0, 1, 1);
         _rectInScale = 1.0;
         _backgroundAlpha = 1.0;
@@ -164,6 +166,8 @@
     copy.filterNetworkResourceId = _filterNetworkResourceId;
     copy.filterIndex             = _filterIndex;
     copy.filterIntensity         = _filterIntensity;
+    copy.isStrip                 = _isStrip;
+    copy.filterType              = _filterType;
     copy.adjustments             = _adjustments;
     copy.speed                   = _speed;
     copy.speedIndex              = _speedIndex;
@@ -341,6 +345,8 @@
     copy.filterNetworkResourceId = _filterNetworkResourceId;
     copy.filterIndex             = _filterIndex;
     copy.filterIntensity         = _filterIntensity;
+    copy.isStrip                 = _isStrip;
+    copy.filterType              = _filterType;
     copy.adjustments             = _adjustments;
     copy.speed                   = _speed;
     copy.speedIndex              = _speedIndex;
