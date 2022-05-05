@@ -86,6 +86,7 @@
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
     copy.isPasterAssetViewDrag = _isPasterAssetViewDrag;
+    copy.audioSeparate = _audioSeparate;
     copy.pointsInVideoArray = [NSMutableArray new];
     [_pointsInVideoArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSMutableArray * array = [NSMutableArray new];
@@ -109,7 +110,7 @@
     copy.filterPath = _filterPath;
     copy.voiceFXIndex = _voiceFXIndex;
     copy.pitch = _pitch;
-    
+    copy.animation3D = _animation3D;
     copy.customAnimate = _customAnimate;
     copy.customOutAnimate = _customOutAnimate;
     copy.customOtherAnimate = _customOtherAnimate;
@@ -220,6 +221,7 @@
 //        MaskObject *mask = [VEHelp getMaskWithName:_maskName];
         copy.maskThickColorIndex =_maskThickColorIndex;
         copy.maskType = _maskType;
+        copy.mask = [_mask copy];
     }
     
     if( _keyFrameTimeArray && (_keyFrameTimeArray.count > 0) )
@@ -285,6 +287,7 @@
 - (id)copyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
     copy.isPasterAssetViewDrag = _isPasterAssetViewDrag;
+    copy.audioSeparate = _audioSeparate;
     copy.pointsInVideoArray = [NSMutableArray new];
     [_pointsInVideoArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSMutableArray * array = [NSMutableArray new];
@@ -304,6 +307,7 @@
     copy.voiceFXIndex = _voiceFXIndex;
     copy.pitch = _pitch;
     copy.rectInFile = _rectInFile;
+    copy.animation3D = _animation3D;
     copy.customAnimate = _customAnimate;
     copy.customOutAnimate = _customOutAnimate;
     copy.customOtherAnimate = _customOtherAnimate;
@@ -398,6 +402,7 @@
 //        MaskObject *mask = [VEHelp getMaskWithName:_maskName];
         copy.maskThickColorIndex =_maskThickColorIndex;
         copy.maskType = _maskType;
+        copy.mask = [_mask copy];
     }
     
     if( _keyFrameTimeArray && (_keyFrameTimeArray.count > 0) )

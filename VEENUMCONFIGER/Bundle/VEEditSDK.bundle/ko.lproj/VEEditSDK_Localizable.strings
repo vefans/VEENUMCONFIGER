@@ -887,7 +887,7 @@
 "添加滤镜" = "필터";
 "添加调色" = "조정";
 "无封面" = "없음";
-"点击输入字幕" = "텍스트를 추가하려면 클릭하십시오";
+"点击输入文字" = "텍스트를 추가하려면 클릭하십시오";
 "气泡" = "스타일";
 "加粗" = "굵게";
 "撤销抠像" = "실행 취소";
@@ -924,15 +924,15 @@
 "点击添加照片" = "이미지를 추가하세요";
 "帧率" = "이미지를 추가하세요";
 "文件大小约为：%.2fMB" = "대략적인 파일 크기：%.2fMB";
-"点击输入字幕" = "텍스트를 추가하려면 클릭하십시오";
+"点击输入文字" = "텍스트를 추가하려면 클릭하십시오";
 "正在获取贴纸网络资源！" = "텍스트를 추가하려면 클릭하십시오！ ";
 "调色%d" = "조정%d";
 "提取音乐%@_%d" = "조정%@_%d";
 
 "撤销：原音音量:%.1f" = "실행 취소：오리지널볼륨:%.1f";
 "撤销：%@" = "실행 취소：%@";
-"撤销：字幕" = "실행 취소：자막";
-"撤销：删除字幕" = "실행 취소：삭제자막";
+"撤销：文字" = "실행 취소：자막";
+"撤销：删除文字" = "실행 취소：삭제자막";
 "撤销：贴纸" = "실행 취소：스티커";
 "撤销：删除贴纸" = "실행 취소：삭제스티커";
 "撤销：滤镜 %@" = "실행 취소：필터 %@";
@@ -951,8 +951,8 @@
 
 "恢复：原音音量:%.1f" = "다시 하다：音量:%.1f";
 "恢复：%@" = "다시 하다：%@";
-"恢复：字幕" = "다시 하다：자막";
-"恢复：删除字幕" = "다시 하다：삭제자막";
+"恢复：文字" = "다시 하다：자막";
+"恢复：删除文字" = "다시 하다：삭제자막";
 "恢复：贴纸" = "다시 하다：스티커";
 "恢复：删除贴纸" = "다시 하다：삭제스티커";
 "恢复：滤镜 %@" = "다시 하다：필터 %@";
@@ -981,15 +981,15 @@
 "点击添加照片" = "Añadir imágenes";
 "帧率" = "Velocidad de cuadro";
 "文件大小约为：%.2fMB" = "El tamaño del archivo es aproximadamente：%.2fMB";
-"点击输入字幕" = "Haga clic para añadir el texto";
+"点击输入文字" = "Haga clic para añadir el texto";
 "正在获取贴纸网络资源！" = "Haga clic para añadir el texto！";
 "调色%d" = "Ajustar%d";
 "提取音乐%@_%d" = "Extraer la música%@_%d";
 
 "撤销：原音音量:%.1f" = "Deshacer：Original Volumen:%.1f";
 "撤销：%@" = "Deshacer：%@";
-"撤销：字幕" = "Deshacer：Subtítulos:";
-"撤销：删除字幕" = "Deshacer：Eliminar Subtítulos:";
+"撤销：文字" = "Deshacer：Subtítulos:";
+"撤销：删除文字" = "Deshacer：Eliminar Subtítulos:";
 "撤销：贴纸" = "Deshacer：Pegatina";
 "撤销：删除贴纸" = "Deshacer：Eliminar Pegatina";
 "撤销：滤镜 %@" = "Deshacer：Filtro %@";
@@ -1008,8 +1008,8 @@
 
 "恢复：原音音量:%.1f" = "Rehacer：Original Volumen:%.1f";
 "恢复：%@" = "Rehacer：%@";
-"恢复：字幕" = "Rehacer：Subtítulos:";
-"恢复：删除字幕" = "Rehacer：Eliminar Subtítulos:";
+"恢复：文字" = "Rehacer：Subtítulos:";
+"恢复：删除文字" = "Rehacer：Eliminar Subtítulos:";
 "恢复：贴纸" = "Rehacer：Pegatina";
 "恢复：删除贴纸" = "Rehacer：Eliminar Pegatina";
 "恢复：滤镜 %@" = "Rehacer：Filtro %@";

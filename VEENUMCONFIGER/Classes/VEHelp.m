@@ -13,11 +13,12 @@
 #import <VEENUMCONFIGER/VEHelp.h>
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
 #import <VEENUMCONFIGER/VEReachability.h>
-#import <SDWebImage/SDWebImage.h>
-#import <SDWebImageWebPCoder/UIImage+WebP.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/UIImage+MultiFormat.h>
 #import <SDWebImage/UIImage+GIF.h>
 #import <ZipArchive/ZipArchive.h>
 #import <VEENUMCONFIGER/VEFileDownloader.h>
+#import <YYWebImage/YYWebImage.h>
 
 @implementation VEHelp
 + (NSString *) system
@@ -1038,6 +1039,57 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return str;
 }
 
++ (CGFloat)getAnglesWithThreePoint:(CGPoint)pointA pointB:(CGPoint)pointB pointC:(CGPoint)pointC {
+//    CGFloat x1 = pointA.x - pointB.x;
+//    CGFloat y1 = pointA.y - pointB.y;
+//    CGFloat x2 = pointC.x - pointB.x;
+//    CGFloat y2 = pointC.y - pointB.y;
+//
+//    CGFloat x = x1 * x2 + y1 * y2;
+//    CGFloat y = x1 * y2 - x2 * y1;
+//
+//    CGFloat angle = acos(x/sqrt(x*x+y*y));
+    double theta = atan2(pointA.x - pointB.x, pointA.y - pointB.y) - atan2(pointC.x - pointB.x, pointC.y - pointB.y);
+    if (theta > M_PI)
+        theta -= 2 * M_PI;
+    if (theta < -M_PI)
+        theta += 2 * M_PI;
+    
+    theta = (theta * 180.0 / M_PI);
+//    if( theta > 90.0 )
+//    {
+//        theta = 180.0 - theta;
+//    }
+//    else if( theta > 180.0 )
+//    {
+//        theta = 270 - theta;
+//    }
+//    else if( theta < -90.0 )
+//    {
+//        theta = 180 + theta;
+//    }
+//    else if( theta < -180.0 )
+//    {
+//        theta = 270 + theta;
+//    }
+//    else if( theta > -90.0 )
+//    {
+//        theta = 90.0 + theta;
+//    }
+//
+    if( pointB.x > pointA.x )
+    {
+        if( theta > 0 )
+            theta = -theta;
+    }
+    else if( pointB.x < pointA.x )
+    {
+        if( theta < 0 )
+            theta = -theta;
+    }
+    
+    return theta;
+}
 
 /**
  *  获取设备可用容量(G)
@@ -2246,7 +2298,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     customFilter.name = effectDic[@"name"];
     if(!customFilter.name) //必须设置名字，多脚本滤镜根据名字确定绘制顺序
         customFilter.name = @"linghunchuqiao";
-    
+    if( effectDic[@"repeatMode"] )
+        customFilter.repeatMode = effectDic[@"repeatMode"];
     NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
     NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
     customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
@@ -2373,6 +2426,43 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
  
 }
 
++(CustomFilter *)copyCustomCaption:( CustomFilter * ) Animate atCpation:( Caption * ) caption
+{
+    NSString *folderPath = Animate.folderPath;
+    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:folderPath currentFrameImagePath:nil caption:caption];
+    animate.timeRange = Animate.timeRange;
+    if (Animate.animateType == CustomAnimationTypeCombined) {
+        animate.cycleDuration = Animate.cycleDuration;
+    }
+    animate.networkCategoryId = Animate.networkCategoryId;
+    animate.networkResourceId = Animate.networkResourceId;
+    animate.animateType = Animate.animateType;
+    return animate;
+}
+
++(CustomFilter *)copyCustomCaptionEx:( CustomFilter * ) Animate atCpationItem:( CaptionItem * ) item
+{
+    NSString *folderPath = Animate.folderPath;
+    CustomFilter *animate = [VEHelp getSubtitleAnimation:nil categoryId:nil atAnimationPath:folderPath  atCaptionItem:item];
+    animate.timeRange = Animate.timeRange;
+    animate.cycleDuration = Animate.cycleDuration;
+    animate.networkCategoryId = Animate.networkCategoryId;
+    animate.networkResourceId = Animate.networkResourceId;
+    animate.animateType = Animate.animateType;
+    
+    return animate;
+}
+
++(CustomFilter *)copyCustomMediaAsset:( CustomFilter * ) Animate atMedia:( MediaAsset * ) asset
+{
+    NSString *folderPath = Animate.folderPath;
+    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:folderPath currentFrameImagePath:nil  atMedia:asset];
+    animate.timeRange = Animate.timeRange;
+    animate.networkCategoryId = Animate.networkCategoryId;
+    animate.networkResourceId = Animate.networkResourceId;
+    animate.animateType = Animate.animateType;
+    return animate;
+}
 
 #pragma mark- 单脚本json加载
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath atMedia:(id) mediaOrFile{
@@ -3068,7 +3158,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }        
         return nil;
     }
-    return [UIImage sd_imageWithWebPData:imgData];
+    return [UIImage sd_imageWithData:imgData];
 }
 
 /// 修正图片转向
@@ -3433,8 +3523,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     reverseVideoView.layer.masksToBounds = YES;
     [view addSubview:reverseVideoView];
     
-    UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake( (reverseVideoView.frame.size.width - 100)/2.0, 10, 100, 100)];
-    [imageView sd_setImageWithURL:[NSURL fileURLWithPath:[[VEHelp getEditBundle] pathForResource:@"/New_EditVideo/animatSchedule_@3x" ofType:@"png"]]];
+    YYAnimatedImageView * imageView = [[YYAnimatedImageView alloc] initWithFrame:CGRectMake( (reverseVideoView.frame.size.width - 100)/2.0, 10, 100, 100)];
+    imageView.image = [YYImage imageWithContentsOfFile:[[VEHelp getEditBundle] pathForResource:@"/New_EditVideo/animatSchedule_@3x" ofType:@"png"]];
     [reverseVideoView addSubview:imageView];
 
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0 , imageView.frame.size.height + imageView.frame.origin.y, reverseVideoView.frame.size.width, 20)];
@@ -3599,6 +3689,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     customFilter.cycleDuration = 0.0;
     customFilter.name = effectDic[@"name"];
     customFilter.folderPath = path;
+    if( effectDic[@"repeatMode"] )
+        customFilter.repeatMode = effectDic[@"repeatMode"];
     NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
     NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
     customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
@@ -4078,7 +4170,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 //                        ppCaption.pText = VELocalizedString(@"", nil);
 ////                        [self.subtitleView setContentTextFieldText:ppCaption.pText];
 //                    }else{
-                        ppCaption.pText = VELocalizedString(@"点击输入字幕", nil);
+                        ppCaption.pText = VELocalizedString(@"点击输入文字", nil);
 //                        [self.subtitleView setContentTextFieldText:ppCaption.pText];
 //                    }
                 }
@@ -6157,8 +6249,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 path = [[configPath stringByAppendingPathComponent:folderName] stringByAppendingPathComponent:@"config.json"];
             }
         }
-        NSData *data = [[NSData alloc] initWithContentsOfFile:path];
-        data = [[NSData alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path]];
+        NSData *data = [[NSData alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path]];
         
         NSError *err;
         if(data){
@@ -6673,6 +6764,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         customFilter.repeatMode = effectDic[@"repeatMode"];
     customFilter.name = effectDic[@"name"];
     customFilter.folderPath = path;
+    if( effectDic[@"repeatMode"] )
+        customFilter.repeatMode = effectDic[@"repeatMode"];
     NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
     NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
     customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
@@ -6970,7 +7063,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     }
                     
                     {
-                        captionItem.text = VELocalizedString(@"点击输入字幕", nil);
+                        captionItem.text = VELocalizedString(@"点击输入文字", nil);
                         if ([[NSFileManager defaultManager] fileExistsAtPath:kDefaultFontPath]) {
                             captionItem.fontPath = kDefaultFontPath;
                             captionItem.fontName = [VEHelp customFontArrayWithPath:kDefaultFontPath].firstObject;
@@ -7223,7 +7316,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSError * error = nil;
     customFilter.folderPath = path;
     customFilter.name = effectDic[@"name"];
-    
+    if( effectDic[@"repeatMode"] )
+        customFilter.repeatMode = effectDic[@"repeatMode"];
     NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
     NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
     customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
@@ -7353,7 +7447,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     customFilter.name = effectDic[@"name"];
     if(!customFilter.name) //必须设置名字，多脚本滤镜根据名字确定绘制顺序
         customFilter.name = @"linghunchuqiao";
-    
+    if( effectDic[@"repeatMode"] )
+        customFilter.repeatMode = effectDic[@"repeatMode"];
     NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
     NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
     customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
@@ -8457,7 +8552,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     jsonData = nil;
     NSError * error = nil;
     customFilter.name = effectDic[@"name"];
-    
+    if( effectDic[@"repeatMode"] )
+        customFilter.repeatMode = effectDic[@"repeatMode"];
     NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
     NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
     customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
@@ -8634,7 +8730,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     jsonData = nil;
     NSError * error = nil;
     customFilter.name = effectDic[@"name"];
-    
+    if( effectDic[@"repeatMode"] )
+        customFilter.repeatMode = effectDic[@"repeatMode"];
     NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
     NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
     customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
@@ -8811,7 +8908,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     jsonData = nil;
     NSError * error = nil;
     customFilter.name = effectDic[@"name"];
-    
+    if( effectDic[@"repeatMode"] )
+        customFilter.repeatMode = effectDic[@"repeatMode"];
     NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
     NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
     customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
@@ -8986,7 +9084,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     jsonData = nil;
     NSError * error = nil;
     customFilter.name = effectDic[@"name"];
-    
+    if( effectDic[@"repeatMode"] )
+        customFilter.repeatMode = effectDic[@"repeatMode"];
     NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
     NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
     customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
@@ -9163,6 +9262,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     customFilter.name = effectDic[@"name"];
     customFilter.folderPath = path;
+    if( effectDic[@"repeatMode"] )
+        customFilter.repeatMode = effectDic[@"repeatMode"];
     NSString *fragPath = [path stringByAppendingPathComponent:effectDic[@"fragShader"]];
     NSString *vertPath = [path stringByAppendingPathComponent:effectDic[@"vertShader"]];
     customFilter.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
@@ -9640,34 +9741,35 @@ static OSType help_inputPixelFormat(){
         [layer addSublayer:layer1];
     }
     {
-        UIImage *image = [VEHelp imageNamed:@"ArealayerImages/区域1_21"];
-        float itemWidth = iPhone_X ? image.size.width : 35;
+        UIImage *image = [VEHelp imageNamed:@"ArealayerImages/区域1_03"];
+        float itemWidth = 40;//iPhone_X ? image.size.width : 35;
+        float itemHeight = 38;
         CALayer *layer1 = [[CALayer alloc] init];
-        layer1.frame = CGRectMake(CGRectGetWidth(layer.frame) - itemWidth, CGRectGetHeight(view.frame) * (iPhone_X ? 0.51 : 0.35)/* - layer.frame.origin.y*/, itemWidth, itemWidth);
+        layer1.frame = CGRectMake(CGRectGetWidth(layer.frame) - itemWidth, CGRectGetHeight(view.frame) * (iPhone_X ? 0.51 : 0.35)/* - layer.frame.origin.y*/, itemWidth, itemHeight);
         layer1.contents = (id)(image.CGImage);
         [layer addSublayer:layer1];
         
         UIImage *image2 = [VEHelp imageNamed:@"ArealayerImages/区域1_07"];
-        float itemWidth2 = iPhone_X ? image2.size.width : 25;
+        float itemWidth2 = 24;//iPhone_X ? image2.size.width : 25;
         CALayer *layer2 = [[CALayer alloc] init];
         layer2.frame = CGRectMake(CGRectGetMidX(layer1.frame) - itemWidth2/2.0, CGRectGetMaxY(layer1.frame) + view.frame.size.height * 0.021, itemWidth2, itemWidth2);
         layer2.contents = (id)(image2.CGImage);
         [layer addSublayer:layer2];
         CALayer *layer3 = [[CALayer alloc] init];
-        layer3.frame = CGRectMake(layer2.frame.origin.x, CGRectGetMaxY(layer2.frame) + view.frame.size.height * 0.027, itemWidth2, itemWidth2);
+        layer3.frame = CGRectMake(layer2.frame.origin.x, CGRectGetMaxY(layer2.frame) + view.frame.size.height * 0.042, itemWidth2, itemWidth2);
         UIImage *image3 = [VEHelp imageNamed:@"ArealayerImages/区域1_07-11"];
         layer3.contents = (id)(image3.CGImage);
         [layer addSublayer:layer3];
         CALayer *layer4 = [[CALayer alloc] init];
-        layer4.frame = CGRectMake(layer2.frame.origin.x, CGRectGetMaxY(layer3.frame) + view.frame.size.height * 0.038, itemWidth2, itemWidth2);
+        layer4.frame = CGRectMake(layer2.frame.origin.x, CGRectGetMaxY(layer3.frame) + view.frame.size.height * 0.056, itemWidth2, itemWidth2);
         UIImage *image4 = [VEHelp imageNamed:@"ArealayerImages/区域1_15"];
         layer4.contents = (id)(image4.CGImage);
         [layer addSublayer:layer4];
         
         UIImage *image5 = [VEHelp imageNamed:@"ArealayerImages/区域1_21"];
-        float itemWidth3 = iPhone_X ? (image5.size.width - 4) : 33;
+        float itemWidth3 = 29;//iPhone_X ? (image5.size.width - 4) : 33;
         CALayer *layer5 = [[CALayer alloc] init];
-        layer5.frame = CGRectMake(CGRectGetMidX(layer1.frame) - itemWidth/2.0, CGRectGetMaxY(layer4.frame) + view.frame.size.height * 0.042, itemWidth3, itemWidth3);
+        layer5.frame = CGRectMake(CGRectGetMidX(layer1.frame) - itemWidth3/2.0, CGRectGetMaxY(layer4.frame) + view.frame.size.height * 0.05, itemWidth3, itemWidth3);
         layer5.contents = (id)(image5.CGImage);
         [layer addSublayer:layer5];
     }

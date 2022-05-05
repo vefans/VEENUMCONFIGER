@@ -88,6 +88,8 @@ typedef NS_ENUM(NSInteger,FileCropModeType)
     kCropType9v16,
     kCropType4v3,
     kCropType3v4,
+    kCropType6v7,
+    kCropType4v5,
     kCropTypeFixed,         /**< 固定裁切范围 */
     kCropTypeFixedRatio,    /**< 固定比例裁切*/
 };
@@ -246,6 +248,8 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KDEFORMED       = 46,   //变形
     KEQUALIZER      = 47, //均衡器
     KBLURRY           = 48, //模糊
+    KOPACITY        = 50,//隐藏
+    KAUDIOSEPAR        = 51,//音频分离
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -321,6 +325,7 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     kPIP_DEFORMED                   =45,    //变形
     KPIP_EQUALIZER                  = 46,   //均衡器
     KPIP_BLURRY                  = 47,   //模糊
+    KPIP_AUDIOSEPAR           = 48, //aduio Sepateted
 };
 
 //去水印类型
@@ -488,7 +493,7 @@ isPhoneX;\
 #define PESDKMain_Color UIColorFromRGB(0x9700ff)
 #define PESDKTEXT_COLOR UIColorFromRGB(0x2B2B2B)
 
-#define VIEW_COLOR UIColorFromRGB(0x1a1a1a)
+#define VIEW_COLOR UIColorFromRGB(0x111111)
 #define VIEW_IPAD_COLOR UIColorFromRGB(0x1a1a1a)
 #define SCREEN_IPAD_BACKGROUND_COLOR UIColorFromRGB(0x070709)
 

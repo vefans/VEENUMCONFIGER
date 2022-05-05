@@ -15,6 +15,8 @@
 
 + (UIImage *)geScreenShotImageFromVideoURL:(NSURL *)fileURL atTime:(CMTime)time  atSearchDirection:(bool) isForward;
 
++ (CGFloat)getAnglesWithThreePoint:(CGPoint)pointA pointB:(CGPoint)pointB pointC:(CGPoint)pointC;
+
 + (NSString *)geCaptionExSubtitleIdentifier;
 
 +(float)getMediaAssetScale_File:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark;
@@ -183,6 +185,9 @@
 
 + (MaskObject *)getMaskWithPath:(NSString *) path;
 
++(CustomFilter *)copyCustomCaption:( CustomFilter * ) Animate atCpation:( Caption * ) caption;
++(CustomFilter *)copyCustomCaptionEx:( CustomFilter * ) Animate atCpationItem:( CaptionItem * ) item;
++(CustomFilter *)copyCustomMediaAsset:( CustomFilter * ) Animate atMedia:( MediaAsset * ) asset;
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath atMedia:( id ) mediaOrFile;
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath caption:(Caption *)caption;
 #pragma mark- 多脚本json加载

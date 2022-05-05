@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 @interface VEDownTool : NSObject
 @property (nonatomic,copy) void(^Progress) (float);
-@property (nonatomic,copy) void(^Finish)(void);
+@property (nonatomic,copy) void(^Finish)(NSString *cachePath);
 
 - (instancetype)initWithURLPath:(NSString*)path savePath:(NSString*)savePath;
 //- (void) downWithPath:(NSString*) path

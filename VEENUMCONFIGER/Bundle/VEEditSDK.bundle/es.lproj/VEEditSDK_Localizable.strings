@@ -887,7 +887,7 @@
 "添加滤镜" = "Filtro";
 "添加调色" = "Ajustar";
 "无封面" = "Ninguno";
-"点击输入字幕" = "Haga clic para añadir el texto";
+"点击输入文字" = "Haga clic para añadir el texto";
 "气泡" = "Estilo";
 "加粗" = "Negrita";
 "撤销抠像" = "Deshacer";
@@ -925,15 +925,15 @@
 "点击添加照片" = "Añadir imágenes";
 "帧率" = "Velocidad de cuadro";
 "文件大小约为：%.2fMB" = "El tamaño del archivo es aproximadamente：%.2fMB";
-"点击输入字幕" = "Haga clic para añadir el texto";
+"点击输入文字" = "Haga clic para añadir el texto";
 "正在获取贴纸网络资源！" = "Haga clic para añadir el texto！";
 "调色%d" = "Ajustar%d";
 "提取音乐%@_%d" = "Extraer la música%@_%d";
 
 "撤销：原音音量:%.1f" = "Deshacer：Original Volumen:%.1f";
 "撤销：%@" = "Deshacer：%@";
-"撤销：字幕" = "Deshacer：Subtítulos:";
-"撤销：删除字幕" = "Deshacer：Eliminar Subtítulos:";
+"撤销：文字" = "Deshacer：Subtítulos:";
+"撤销：删除文字" = "Deshacer：Eliminar Subtítulos:";
 "撤销：贴纸" = "Deshacer：Pegatina";
 "撤销：删除贴纸" = "Deshacer：Eliminar Pegatina";
 "撤销：滤镜 %@" = "Deshacer：Filtro %@";
@@ -952,8 +952,8 @@
 
 "恢复：原音音量:%.1f" = "Rehacer：Original Volumen:%.1f";
 "恢复：%@" = "Rehacer：%@";
-"恢复：字幕" = "Rehacer：Subtítulos:";
-"恢复：删除字幕" = "Rehacer：Eliminar Subtítulos:";
+"恢复：文字" = "Rehacer：Subtítulos:";
+"恢复：删除文字" = "Rehacer：Eliminar Subtítulos:";
 "恢复：贴纸" = "Rehacer：Pegatina";
 "恢复：删除贴纸" = "Rehacer：Eliminar Pegatina";
 "恢复：滤镜 %@" = "Rehacer：Filtro %@";

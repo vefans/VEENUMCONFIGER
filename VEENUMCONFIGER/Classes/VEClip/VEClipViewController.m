@@ -999,8 +999,13 @@
     }
     
     CMTimeRange range = kCMTimeRangeZero;
-    range.duration = CMTimeMakeWithSeconds(_trimDuration_OneSpecifyTime/(float)_selectFile.speed, TIMESCALE);
-    range.start = CMTimeMakeWithSeconds( _videoTrimiSlider.progressValue/(float)_selectFile.speed, TIMESCALE);
+    if (_cutMmodeType == kCropTypeFixed) {
+        range.duration = CMTimeMakeWithSeconds(_trimDuration_OneSpecifyTime, TIMESCALE);
+        range.start = CMTimeMakeWithSeconds( _videoTrimiSlider.progressValue, TIMESCALE);
+    }else {
+        range.duration = CMTimeMakeWithSeconds(_trimDuration_OneSpecifyTime/(float)_selectFile.speed, TIMESCALE);
+        range.start = CMTimeMakeWithSeconds( _videoTrimiSlider.progressValue/(float)_selectFile.speed, TIMESCALE);
+    }
     
     if(_editVideoForOnce_timeFinishAction){
         _selectFile.contentURL = oldselectFile.contentURL;
@@ -2004,7 +2009,10 @@
             
             [self->thumbTimes enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 
-                int number = ceilf( CMTimeGetSeconds([ ((NSValue*)obj) CMTimeValue]) )*self.selectFile.speed;
+                int number = ceilf( CMTimeGetSeconds([ ((NSValue*)obj) CMTimeValue]) );
+                if (_cutMmodeType != kCropTypeFixed) {
+                    number *= self.selectFile.speed;
+                }
                 
                 if( (_videoCoreSDK.duration*1) <  number )
                 {

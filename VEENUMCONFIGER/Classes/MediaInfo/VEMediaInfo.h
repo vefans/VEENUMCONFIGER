@@ -105,6 +105,7 @@
 /**视频音量
  */
 @property (nonatomic, assign) double videoVolume;
+@property(nonatomic, assign)float           yuanValue;          //音量
 
 /**  去噪级别(0~4)  默认为0.0(不去噪)
  */
@@ -157,6 +158,8 @@
 /** 场景透明度(0.0〜1.0),默认为1.0
 */
 @property (nonatomic, assign) float backgroundAlpha;
+
+@property(assign, nonatomic)BOOL    isMediaHide;
 
 /** 调色
  */
@@ -392,6 +395,9 @@
 /**设置媒体自定义动画。
  */
 @property (nonatomic, strong) CustomFilter* customAnimate;
+/**3d动画
+ */
+@property (nonatomic, strong) Animation3D*  animation3D;
 
 /**设置媒体自定义出场动画
  */
@@ -462,5 +468,9 @@
  */
 @property (nonatomic, strong) NSMutableArray <EqObject*>* eq;
 @property (nonatomic, assign) NSInteger     eqType;
+
+/** 音频分离 true为分离
+ */
+@property(nonatomic, assign)BOOL    audioSeparate;
 
 @end

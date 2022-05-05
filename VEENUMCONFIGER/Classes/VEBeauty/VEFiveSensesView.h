@@ -47,5 +47,5 @@
 @property(nonatomic, assign)float  adjHeight;
 @property(nonatomic, strong)MediaAsset * currentMedia;
 @property(nonatomic, assign)CGRect currentFaceRect;
-
+- (void)setDefaultValue;
 @end

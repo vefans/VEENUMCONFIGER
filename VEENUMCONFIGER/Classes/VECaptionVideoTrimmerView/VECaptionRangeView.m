@@ -65,8 +65,8 @@
     if (selected) {
         self.backgroundColor = MATERIALMASKCOLOR;
         self.layer.borderWidth = 2.0;
-        NSString * str = [VEHelp getLocalizedString:@"点击输入字幕"];
-        if (self.file.captionText.length > 0 && ![self.file.captionText isEqualToString:@"点击输入字幕"] && ![self.file.captionText isEqualToString:str]) {
+        NSString * str = [VEHelp getLocalizedString:@"点击输入文字"];
+        if (self.file.captionText.length > 0 && ![self.file.captionText isEqualToString:@"点击输入文字"] && ![self.file.captionText isEqualToString:str]) {
             [self setTitle:self.file.captionText forState:UIControlStateNormal];
         }
         self.titleLabel.hidden = NO;

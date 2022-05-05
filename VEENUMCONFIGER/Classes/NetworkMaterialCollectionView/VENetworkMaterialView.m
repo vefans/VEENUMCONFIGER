@@ -8,7 +8,7 @@
 
 #import "VENetworkMaterialView.h"
 #import "VENetworkMaterialCollectionViewCell.h"
-#import <SDWebImage/SDWebImage.h>
+#import <SDWebImage/SDImageCache.h>
 
 @interface VENetworkMaterialView()<UICollectionViewDataSource,UICollectionViewDelegate,VENetworkMaterialCollectionViewCellDelegate
 //,UIScrollViewDelegate

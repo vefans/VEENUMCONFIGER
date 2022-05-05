@@ -44,10 +44,19 @@
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location{
     NSFileManager* fileManager = [NSFileManager defaultManager];
-    [fileManager moveItemAtPath:location.path toPath:_savePath error:nil];
+    NSError *error = nil;
+    if ([downloadTask.response.suggestedFilename.pathExtension isEqualToString:@"zip"]) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:_savePath]) {
+            unlink(_savePath.UTF8String);
+        }else {
+            [[NSFileManager defaultManager] createDirectoryAtPath:_savePath withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+        _savePath = [_savePath stringByAppendingPathComponent:downloadTask.response.suggestedFilename];
+    }
+    [fileManager moveItemAtPath:location.path toPath:_savePath error:&error];
     
-    if ([self Finish]) {
-        _Finish();
+    if (_Finish) {
+        _Finish(_savePath);
     }
 }
 

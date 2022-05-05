@@ -138,9 +138,11 @@
         _adjustmentSliders[18].value = _currentMedia.beautyThinFaceIntensity;
         [_adjustmentSliders enumerateObjectsUsingBlock:^(UISlider * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             ((UILabel *)[obj.superview viewWithTag:100]).text = [NSString stringWithFormat:@"%.f",(obj.value * 100)];
+            [self sliderValueChanged:obj];
         }];
     }
 }
+
 -(void)initAdjView:(CGRect)  rect atStr:( NSString * ) str
 {
     UIView * view = [[UIView alloc] initWithFrame:rect];
@@ -238,8 +240,8 @@
         {
             UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 44 + (44 - 40)/2.0, (44 - 40)/2.0, 40, 40)];
             [_toolbarView addSubview:btn];
-            [btn setImage:[VEHelp imageNamed:@"/剪辑_勾_@3x"] forState:UIControlStateNormal];
-            [btn setImage:[VEHelp imageNamed:@"/剪辑_勾_@3x"] forState:UIControlStateSelected];
+            [btn setImage:[VEHelp imageNamed:@"/PESDKImage/PESDK_勾@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]]  forState:UIControlStateNormal];
+            [btn setImage:[VEHelp imageNamed:@"/PESDKImage/PESDK_勾@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]]  forState:UIControlStateSelected];
             [btn addTarget:self action:@selector(return_Btn:) forControlEvents:UIControlEventTouchUpInside];
         }
     }
@@ -699,6 +701,7 @@
 }
 
 - (void)scrub:(UISlider *)slider{
+    NSLog(@"%d,%f",slider.tag,slider.value);
     [self sliderValueChanged:slider];
 }
 
@@ -712,6 +715,17 @@
 -(void)sliderValueChanged:(UISlider *) slider
 {
     if([VEConfigManager sharedManager].iPad_HD){
+        if(slider.tag == KBeauty_BlurIntensity){
+            _currentMedia.beautyBlurIntensity = slider.value;
+        }else if(slider.tag == KBeauty_BrightIntensity){
+            _currentMedia.beautyBrightIntensity = slider.value;
+        }else if(slider.tag == KBeauty_ToneIntensity){
+            _currentMedia.beautyToneIntensity = slider.value;
+        }else if(slider.tag == KBeauty_BigEyes){
+            _currentMedia.beautyBigEyeIntensity = slider.value;
+        }else if(slider.tag == KBeauty_FaceLift){
+            _currentMedia.beautyThinFaceIntensity = slider.value;
+        }
         ((UILabel *)[slider.superview viewWithTag:100]).text = [NSString stringWithFormat:@"%.f",(slider.value * 100)];
     }
     if( _delegate && [_delegate respondsToSelector:@selector(fiveSenses_ValueChanged:atVIew:)] )
@@ -733,7 +747,7 @@
     float value =  sender.tag > KBeauty_Smile ? 0 : 0.5;
     if([VEConfigManager sharedManager].iPad_HD){
         for (int i = 0;i<_adjustmentSliders.count;i++) {
-            if(_adjustmentSliders[i].tag == _currentType){
+            if(_adjustmentSliders[i].tag == _currentType){// && (_currentType != KBeauty_BlurIntensity  && _currentType != KBeauty_BrightIntensity  && _currentType != KBeauty_ToneIntensity  && _currentType != KBeauty_BigEyes && _currentType != KBeauty_FaceLift)
                 [_adjustmentSliders[i] setValue:value];
                 break;
             }

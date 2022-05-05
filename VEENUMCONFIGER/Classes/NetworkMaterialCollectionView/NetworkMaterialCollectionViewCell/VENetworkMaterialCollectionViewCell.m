@@ -9,7 +9,7 @@
 #import "VENetworkMaterialCollectionViewCell.h"
 #import "VENetworkMaterialBtn_Cell.h"
 #import "VENetworkMaterialView.h"
-#import <SDWebImage/SDWebImage.h>
+#import <SDWebImage/SDImageCache.h>
 #import <VEENUMCONFIGER/LongCacheImageView.h>
 
 @interface VENetworkMaterialCollectionViewCell()<UICollectionViewDataSource,UICollectionViewDelegate,UIScrollViewDelegate>
@@ -49,7 +49,7 @@
     if( isVertical_Cell )
         flow_Video.minimumLineSpacing = 0.0;
     else
-        flow_Video.minimumLineSpacing = _cellWidth/2.0/5.0;
+        flow_Video.minimumLineSpacing = 0;//_cellWidth/2.0/5.0;
         
     UICollectionView * videoCollectionView =  [[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:flow_Video];
     videoCollectionView.backgroundColor = [UIColor clearColor];

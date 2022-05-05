@@ -47,8 +47,8 @@
     {
         UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 44 + (44 - 40)/2.0, (44 - 40)/2.0, 40, 40)];
         [_toolbarView addSubview:btn];
-        [btn setImage:[VEHelp imageNamed:@"/剪辑_勾_@3x"] forState:UIControlStateNormal];
-        [btn setImage:[VEHelp imageNamed:@"/剪辑_勾_@3x"] forState:UIControlStateSelected];
+        [btn setImage:[VEHelp imageNamed:@"/PESDKImage/PESDK_勾@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]]  forState:UIControlStateNormal];
+        [btn setImage:[VEHelp imageNamed:@"/PESDKImage/PESDK_勾@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]]  forState:UIControlStateSelected];
         [btn addTarget:self action:@selector(return_Btn:) forControlEvents:UIControlEventTouchUpInside];
     }
     {
