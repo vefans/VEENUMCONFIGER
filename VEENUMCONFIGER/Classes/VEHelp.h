@@ -408,4 +408,6 @@
 + (UIImage *)blurryImage:(UIImage *)image withBlurLevel:(CGFloat)blur;
 + (UIImage *)scaleToSize:(UIImage *)img size:(CGSize)size;
 + (BOOL)isVideoUrl:(NSURL *)url;
+
++ (Particle *)getParticle:( NSString * ) path atFramePath:( NSString * ) framePath;
 @end

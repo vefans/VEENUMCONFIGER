@@ -1714,9 +1714,10 @@
 -(UIButton *)backButton{
     if (_backButton == nil) {
         
-        _backButton = [[UIButton alloc] initWithFrame:CGRectMake(16, (self.cropType == VE_VECROPTYPE_FIXEDRATIO ? ((self.toolView.frame.size.height - 70 - 30)/2.0 + 70) : 70), 57, 30)];
+        _backButton = [[UIButton alloc] initWithFrame:CGRectMake(16, (self.cropType == VE_VECROPTYPE_FIXEDRATIO ? ((self.toolView.frame.size.height - 70 - 30)/2.0 + 70) : 70), 80, 30)];
         [_backButton setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
-        [_backButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_back_normal"] forState:UIControlStateNormal];
+        [_backButton setImage:[VEHelp imageNamed:@"剪辑_重置默认_"] forState:UIControlStateNormal];
+        [_backButton setImage:[VEHelp imageNamed:@"剪辑_重置选中_"] forState:UIControlStateHighlighted];
         _backButton.titleLabel.font = [UIFont systemFontOfSize:12];
         _backButton.layer.cornerRadius = 30/2;
         _backButton.layer.masksToBounds = YES;

@@ -99,7 +99,7 @@
     [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpInside];
     [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchCancel];
     
-    UIImage * theImage = [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_球1@3x" Type:@"png"]];
+    UIImage * theImage = [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_球2@3x" Type:@"png"]];
     [slider setThumbImage:theImage forState:UIControlStateNormal];
     [slider setMinimumTrackImage: [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_轨道2@1x" Type:@"png"]] forState:UIControlStateNormal];
     if([VEConfigManager sharedManager].editConfiguration.isSingletrack){

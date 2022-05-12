@@ -168,7 +168,6 @@
 "选择音效" = "Seleccionar el efecto";
 "选择媒体资源" = "Seleccione los medios de comunicación";
 "无法下载" = "No se puede descargar";
-" 默认字体" = "Fuente por defecto";
 "加载中...." = "Cargando...";
 "正在存入草稿箱...." = "Depositando en una caja de seguridad...";
 "长按并拖动可调整顺序哟" = "Mantenga presionado y arrastre para ajustar la clasificación";
@@ -879,12 +878,12 @@
 "+ 添加音频" = "+ Añadir el audio";
 "添加片尾" = "Añadir créditos";
 "排序" = "Orden";
-"音乐库" = "En línea";
+"音乐" = "En línea";
 "提取" = "Extraer la música";
 "添加贴纸" = "Pegatina";
 "添加画中画" = "Superposición";
 "添加涂鸦" = "Garabato";
-"添加滤镜" = "Filtro";
+"新增滤镜" = "Filtro";
 "添加调色" = "Ajustar";
 "无封面" = "Ninguno";
 "点击输入文字" = "Haga clic para añadir el texto";
@@ -921,7 +920,7 @@
 
 
 //2020.11.23 add
-"+ 音乐集合" = "+ Colección de música";
+"+ 音频合集" = "+ Colección de música";
 "点击添加照片" = "Añadir imágenes";
 "帧率" = "Velocidad de cuadro";
 "文件大小约为：%.2fMB" = "El tamaño del archivo es aproximadamente：%.2fMB";
@@ -1104,7 +1103,7 @@
 "添加转场" = "Add transition";
 "无可用的网络" = "No available network";
 "允许访问" = "Accessable";
-"禁止访问音乐库" = "Music lib access denied";
+"禁止访问音乐" = "Music lib access denied";
 "无法访问媒体资料库" = "Media lib can not access";
 "请更改设置，启用媒体资料库权限" = "Please change setting, to enable media lib authority";
 "Amatorka" = "Amatorka";

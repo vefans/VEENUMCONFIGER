@@ -10,7 +10,8 @@
 #import "VENetworkMaterialBtn_Cell.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
+@interface VECell_CollectionView : UICollectionView
+@end
 @protocol VENetworkMaterialCollectionViewCellDelegate;
 
 @interface VENetworkMaterialCollectionViewCell : UICollectionViewCell
@@ -19,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, assign)BOOL                 isDragToChange;
 
-@property(nonatomic, weak) UICollectionView *collectionView;
+@property(nonatomic, weak) VECell_CollectionView *collectionView;
 @property(nonatomic, assign) NSInteger       index;
 @property(nonatomic, assign) NSInteger       indexCount;
 
@@ -27,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, assign) bool               isNotMove;
 
--(void)initCollectView:(BOOL) isVertical_Cell atWidth:(float) cellWidth atHeight:(float) cellHeight;
+-(void)initCollectView:(BOOL) isVertical_Cell atWidth:(float) cellWidth atHeight:(float) cellHeight minimumInteritemSpacing:(float)minimumInteritemSpacing minimumLineSpacing:(float)minimumLineSpacing;
 
 @end
 

@@ -7,12 +7,11 @@
  */
 
 "描边透明度" = "Stroke alpha";
-"透明度" = "Alpha";
+"透明度" = "Opacity";
 "粗" = "Thick";
 "描边:细" = "Stroke: Thin";
 "粗体" = "Bold";
 "斜体" = "Italic";
-"阴影" = "Shadow";
 "默认" = "Default";
 "animation_无" = "None";
 "animation_左推" = "Left";
@@ -27,17 +26,16 @@
 "字幕_动画" = "Anim";
 "边框" = "Edge";
 "颜色" = "Color";
-"色温" = "CT";
 "描边" = "Stroke";
 "字体" = "Font";
 "大小" = "Size";//调节字幕大小(标题)
 "小" = "Smaller";//调节字幕变小
 "大" = "Bigger";//调节字幕变大
 "位置" = "Align";
-"比例" = "Proportion";
+"比例" = "Format";
 "请稍候,正在应用到所有!" = "Wait a moment, applying to all!";
 
-"素材库" = "OnlineAlbums";
+"素材库" = "Stock videos";
 "虚拟直播间" = "VirtualLive";
 "请添加音乐" = "Add Music";
 
@@ -69,10 +67,10 @@
 
 "五官" = "FiveSenses";
 "美颜" = "Beauty";
-"磨皮" = "Smooth";
-"美白" = "Beauty";
+"磨皮" = "Retouch";
+"美白" = "Whitening";
 "瘦脸" = "Shape";
-"大眼" = "Eye";
+"大眼" = "Big Eyes";
 "亮肤" = "Bright";
 "红润" = "Tone";
 "细节" = "Detail";
@@ -86,7 +84,7 @@
 
 "请稍等..." = "Wait a moment...";
 "倒放处理中，请稍等..." = "Reversing the video now, wait a moment...";
-"还原" = "Reset";
+"还原" = "Revert";
 "原始比例" = "Original";
 "1 : 1" = "1 : 1";
 "自由裁剪" = "Free cropping";
@@ -97,7 +95,7 @@
 "左右翻转" = "Horizontal";
 "旋转" = "Rotate";
 "旋     转" = "Rotate";
-"视频抠像" = "VideoMatting";
+"视频抠像" = "Remove background";
 "剪辑-编辑裁切" = "Editing-editing and cutting";
 "剪辑-编辑旋转" = "Editing edit rotation";
 
@@ -134,7 +132,6 @@
 "取消编辑" = "Cancel edit";
 "原音" = "Original";
 "配乐" = "Music";
-"配音" = "Record";
 "重配" = "Retry";
 "试听" = "Audit";
 "按住配音" = "Press dub";
@@ -182,7 +179,7 @@
 "复制" = "Duplicate";
 "title-reverse" = "倒放";
 "时长" = "Duration";
-"title-sort" = "Clips order";
+"title-sort" = "Sort";
 
 "title-image" = "Add picture";
 "title-video" = "Add video";
@@ -192,9 +189,8 @@
 "亮度" = "Brightness";
 "对比度" = "Contrast";
 "饱和度" = "Saturation";
-"锐度" = "Sharpness";
+"锐度" = "Sharpen";
 "白平衡" = "White balance";
-"暗角" = "Vignette";
 "应用到所有" = "Apply to all";
 "toning_reset" = "Reset";
 "toning_compare" = "Diff";
@@ -202,7 +198,6 @@
 "原始效果" = "Original effect";
 //录制输出
 "码率(kbps)" = "Bitrate(kbps)";
-"分辨率" = "Size";
 
 "是否删除当前选中视频?" = "Delete selected video?";
 "是否删除当前选中图片?" = "Delete selected picture?";
@@ -215,7 +210,7 @@
 "是" = "Yes";
 "否" = "No";
 "视频" = "Videos";
-"图片" = "Photo";
+"图片" = "Photos";
 "%.f秒" = "%.fs";
 "%.2f秒" = "%.2fs";
 "%.1f秒" = "%.1fs";
@@ -225,7 +220,6 @@
 "title-template" = "Template";
 "M V" = "M V";
 "配乐" = "Music";
-"配音" = "Record";
 "title-enableFragmentedit" = "Clip edit";
 "您确定要放弃编辑吗?" = "Do you want to quit editting?";
 "确定放弃所有操作?" = "Discard all operations?";
@@ -233,21 +227,20 @@
 "您可以关闭本提示去调整，或继续导出。" = "You can close notice to adjust setting, or continue export.";
 "关闭" = "Close";
 "继续" = "Continue";
-"原音关" = "Original off";
-"原音开" = "Original on";
-"无配乐" = "No music";
+"原音关" = "Voice off";
+"原音开" = "Voice on";
+"无配乐" = "None";
 "本地" = "Local";
 "云音乐" = "Cloud";
 
-"画布颜色" = "Canvas color";
-"画布样式" = "Canvas style";
-"画布模糊" = "Canvas blur";
+"画布颜色" = "Color";
+"画布样式" = "Background";
+"画布模糊" = "Blur";
 "全部"    = "All";
 "相机胶卷" = "Camera roll";
 "选择视频/图片" = "Select video / picture";
 "所有视频" = "All videos";
 "全部内容" = "Full content";
-"所有图片" = "All pictures";
 
 "请稍等,正在导出视频音频..." = "Wait a moment,exporting the video audio...";
 "提取成功" = "Extraction success";
@@ -264,7 +257,6 @@
 "点击输入文字..." = "Tap to add text...";
 "停止输入" = "Stop input";
 "文字板" = "Textboard";
-"背景" = "Background";
 
 "确定" = "OK";
 "取消" = "Cancel";
@@ -273,7 +265,7 @@
 
 "无可用的网络" = "No available network";
 "允许访问" = "Accessable";
-"禁止访问音乐库" = "Music lib access denied";
+"禁止访问音乐" = "Music lib access denied";
 "无法访问媒体资料库" = "Media lib can not access";
 "请更改设置，启用媒体资料库权限" = "Please change setting, to enable media lib authority";
 "设置" = "Setting";
@@ -555,7 +547,6 @@
 "图片保存失败！请重试"    = "Image failed to save! Please try again";
 
 "调速" = "Speed";
-"时长" = "Duration";
 "应用到所有图片" = "Apply to all pictures";
 "%d秒" = "%ds";
 "1/4" = "1/4";
@@ -577,10 +568,10 @@
 "视频(至少%d个):%d" = "Video(At least %d):%d";
 "图片(至少%d张):%d" = "Picture(At least %d):%d";
 "素材(至少%d个):%d" = "Material(At least %d):%d";
-"一键制作" = "One button production";
+"一键制作" = "Create";
 "免费试用" = "Use for Free";
 "成为VIP" = "付费：Free for VIP";
-"可修改文案" = "Editable copy";
+"可修改文案" = "Editable text";
 "开启循环功能" = "Enable repeat";
 "素材输入(点击下面的素材按钮输入)" = "Media (Click to edit)";
 "视频制作需提供如下资源:\n%d个视频和%d张图片" = "The video template needs to add %d video(s) and %d picture(s).";
@@ -633,7 +624,7 @@
 "无效果" = "No effect";
 "男声" = "Male";
 "女声" = "Female";
-"怪兽" = "Monster";
+"怪兽" = "Distorted";
 "卡通" = "Cartoon";
 "卡通快" = "Cartoon fast";
 "回声" = "Echo";
@@ -643,7 +634,7 @@
 "KTV" = "KTV";
 "厂房" = "Factory";
 "竞技场" = "Arena";
-"电音" = "Electri";
+"电音" = "Electronic";
 
 "授权未通过,请重新授权" = "Authorization do not pass, please authorize again";
 "已取消" = "Had been cancelled";
@@ -655,7 +646,7 @@
 
 "动感" = "Dynamic";
 "颤抖" = "Tremble";
-"撤销" = "Revoke";
+"撤销" = "Undo";
 "橡皮擦" = "Eraser";
 "出窍" = "Awakened";
 "心动" = "Heartbeat";
@@ -677,9 +668,9 @@
 "点击添加动感特效" = "Click to add filter effect";
 "点击添加%@特效" = "Click to add %@ effect";
 "码率:%.2fMbps" = "Bitrate:%.2fMbps";
-"码率:" = "Bitrate:";
+"码率" = "Bitrate";
 "分辨率:%dx%d" = "Resolution:%dx%d";
-"分辨率:" = "Resolution:";
+"分辨率" = "Resolution";
 "大小:%.2fMB" = "Size:%.2fMB";
 "压缩后大小:%.2fMB" = "Compressed size:%.2fMB";
 "Photos are syncing from iCloud, please retry later" = "Photos are syncing from iCloud, please retry later";
@@ -689,7 +680,8 @@
 "画中画" = "Overlay";
 "已添加" = "Added";
 "添加画中画" = "Add overlay";
-"变声" = "VoiceFX";
+"变声" = "Voice effects";
+"变声_iPad" = "Voice\neffects";
 "变声_原音" = "None";
 "去水印" = "Inpaint";
 "添加去水印" = "Add inpaint";
@@ -720,32 +712,28 @@
 "启用动画（仅限图片）" = "Enable animation (picture only)";
 "自绘" = "CustomDraw";
 "封面" = "Cover";
-"描边粗细" = "Stroke thickness";
+"描边粗细" = "Thickness";
 "粗细" = "Thickness";
 "自定义" = "Custom";
 "聚焦" = "Focus";
 "普通" = "Normal";
 "长按拍视频，短按拍照片" = "Long press video, short press photo";
 "时间太短啦，多拍一会儿吧" = "Too short.Shoot another clip.";
-"翻转" = "Flip";
 "快慢速" = "Speed";
-"美化" = "Beautify";
+"美化" = "Beauty";
 "倒计时" = "Timer";
 "剪音乐" = "Trim";
 "60秒" = "60s";
 "15秒" = "15s";
-"闪光灯" = "Flash";
-"选择音效" = "selected sound";
 "松开马上加载更多" = "Release and load more now";
 "正在加载中" = "Loading...";
 "上拉加载更多" = "Pull up load more";
 "已经全部加载完毕" = "Already loaded";
-"选择配乐" = "Choose soundtrack";
+"选择配乐" = "Select music";
 "多段配乐" = "Multi music";
 "网络音乐" = "Multi music";
 "本地音乐" = "Local music";
-"音效"    = "Sound effect";
-"音量"    = "Volume";
+"音效"    = "Effects";
 "替换"    = "Replace";
 "时长截取" = "Length";
 "预览"    = "Preview";
@@ -753,7 +741,6 @@
 "音乐"    = "music";
 
 "板式" = "Layout";
-"粗细" = "Border Size";
 "播放顺序" = "Order";
 "同时播放" = "Simultaneously";
 "顺序播放" = "In Order";
@@ -762,9 +749,9 @@
 "背景颜色" = "BgColor";
 "转码" = "Transcoding";
 "倒放" = "Reverse";
+"倒放中%0.1f%%" = "Reversing %0.1f%%";
 "恢复原视频" = "Revert to original";
-"片头" = "Head";
-"片尾" = "End";
+"片头" = "Heading";
 "添加图片" = "Add picture";
 "添加文字" = "Add text";
 "相册视频" = "Album video";
@@ -777,7 +764,6 @@
 "横排文字"  = "Horizontal text";
 "竖排文字"  = "Vertical text";
 "文本"     = "Text";
-"题词库"   = "Inscription lib";
 "文字转语音" = "Text-to-speech";
 "试听效果"  = "Audition effect";
 "取消选择"  = "Cancel Selection";
@@ -786,7 +772,6 @@
 "请先添加片头图片" = "Please add a head image first";
 "请先添加片尾图片" = "Please add a ending image first";
 "Speech recognition failed (exceeded the number of trials in the current month)！"  = "Service is excessive, please contact the SDK provider!";
-"高斯模糊" = "Blur";
 "程度" = "Degree";
 "原始属性:" = "Original parameter:";
 "压缩设置:" = "Compression settings:";
@@ -813,9 +798,8 @@
 "画布对齐" = "Aligned";
 "轻移" = "Nudge";
 "加粗" = "Bold";
-"标签" = "BG";
 
-"无动画" = "NO animation";
+"无动画" = "None";
 "上下抖动" = "Jitter up and down";
 "左下甩入" = "Lower left";
 "上甩入缩小" = "Throw in Zoom out";
@@ -844,11 +828,11 @@
 "线性加深" = "Linear deepen";
 "颜色加深" = "Color deepen";
 "颜色减淡" = "Color dodge";
-"混合模式" = "Mixed mode";
+"混合模式" = "Splice";
 "抠像"    = "Chroma";
 "撤销抠像" = "Undo matt";
-"色度抠图" = "Chrominance Cutout";
-"撤销抠图" = "Undo Cutout";
+"色度抠图" = "Chroma key";
+"撤销抠图" = "Recover";
 "抠图" = "Cutout";
 "抠图进度" = "Matt accuracy";
 "不透明度" = "Opacity";
@@ -879,14 +863,15 @@
 "时间至少大于0.2秒" = "Time is at least greater than 0.2 seconds";
 "添加特效" = "Add Effects";
 
-"添加滤镜" = "Add Filters";
+"新增滤镜" = "Add Filters";
+"新增调节" = "Add adjust";
 "AI识别"  = "AI recognition";
 "+ 添加音频" = "+ Add audio";
 "关闭原音" = "Off Sound";
 "开启原音" = "No Sound";
 "修改封面" = "cover";
 
-"+添加片尾" = "+Add ending";
+"+添加片尾" = "+Ending";
 
 "没有音乐" = "No music";
 "通过iTunes将电脑上的歌曲同步到您的设备上" = "Syncing songs from your computer to your device via iTunes";
@@ -894,17 +879,23 @@
 "羽化" = "Feather";
 "蒙版" = "Mask";
 "反转" = "Invert";
+"线性" = "Split";
+"镜面" = "Filmstrip";
+"圆形" = "Circle";
+"矩形" = "Rectangle";
+"五角星" = "Star";
+"爱心" = "Heart";
+"四边形" = "quadrilateral";
 "入场动画" = "In";
 "出场动画" = "Out";
 "组合动画" = "Combo";
 
 "动画网络素材更新完成！" = "The animation network material update is complete!";
 "视频大小与画布大小一致，会遮盖背景！" = "The video size is the same as the canvas size and will cover the background!";
-"撤销"    = "Undo";
 "恢复"    = "Redo";
 "%@：剪辑 %@" = "%@: Edit %@";
 "媒体 调整显示位置" = "媒体 调整显示位置";
-"花字"   = "Effects";
+"花字" = "Effects";
 "%@：画中画 %@" = "%@：Overlay %@";
 "音频" = "Audio";
 
@@ -914,19 +905,7 @@
 
 "快速扫描" = "Quick scan";
 "自定义扫描" = "Custom scan";
-"自定义" = "Customize";
 "正常" = "None";
-"男声" = "Male";
-"女声" = "Female";
-"怪兽" = "Monster";
-"卡通" = "Cartoon";
-"混响" = "Reverberation";
-"回声" = "Echo";
-"房间" = "Indoor";
-"舞台" = "Stage";
-"厂房" = "Factory";
-"竞技场" = "Arena";
-"电音" = "Electric";
 "完成" = "Finish";
 "存草稿" = "Draft";
 "下一步" = "Next";
@@ -943,8 +922,6 @@
 "录像" = "Record";
 "点击虚线框编辑" = "Click the dashed box to edit";
 "当前功能暂不可用" = "This feature is not yet available ";
-"视频" = "Video";
-"照片" = "Photo";
 "全部" = "All";
 "相机胶卷" = "Camera Roll";
 "视频:%d, 图片:%d" = "Video:%d, Picture:%d";
@@ -954,10 +931,7 @@
 "裁切" = "Crop";
 "截取" = "Trim";
 "文字" = "Text";
-"音量" = "Volume";
-"贴纸" = "Sticker";
-"特效" = "Effect";
-"滤镜" = "Filter";
+"滤镜" = "Filters";
 "抠图" = "Cutout";
 "抠像1" = "Chromakey1";
 "抠像2" = "Chromakey2";
@@ -967,7 +941,6 @@
 "添加字幕" = "Add subtitle";
 "背景色" = "BG";
 "对齐" = "Align";
-"无" = "None";
 "本地视频" = "Local video";
 "云音乐" = "Online";
 "细" = "Thin";
@@ -1049,7 +1022,6 @@
 "选择音效" = "Select effect";
 "选择媒体资源" = "Select media";
 "无法下载" = "Unable to download";
-" 默认字体" = "Default font";
 "加载中...." = "Loading....";
 "正在存入草稿箱...." = "Depositing in a draft box....";
 "长按并拖动可调整顺序哟" = "Long press and drag to adjust the sorting";
@@ -1071,7 +1043,6 @@
 "导出失败,导出时授权未通过" = "Failed to export, authorization failed";
 "导出失败,存储空间不足！" = "Failed to export, insufficient storage space!";
 "已取消导出！" = "Canceled!";
-"点击输入文字" = "Click to add text";
 "随机" = "Random";
 "原图" = "Original";
 "确定要放弃编辑吗？" = "Do you want to exit without saving?";
@@ -1124,7 +1095,6 @@
 "滚动" = "Scroll";
 "淡入" = "Fade in";
 "淡出" = "Fade out";
-"图片" = "Picture";
 "视频: %1$d/%2$d " = "Video: %1$d/%2$d";
 "图片:  %1$d/%2$d " = "Picture: %1$d/%2$d";
 "视频: %1$d/%2$d 图片:  %3$d/%4$d " = "Video: %1$d/%2$d Picture: %3$d/%4$d";
@@ -1140,19 +1110,11 @@
 "单次选择媒体不能超过%d个" = "Number of media cannot exceed %d at one time";
 "至少选择%d个媒体" = "Number of media is at least %d ";
 "码率(kbps)" = "Bitrate (kbps)";
-"分辨率" = "Size";
-"色调" = "Tone";
-"高光" = "Highlighting";
-"褪色" = "Fade";
 "应用于全部片段" = "Apply to All Clips";
-"还原" = "Reset";
 "对比" = "Compare";
 "原始效果" = "Original effect";
 "默认动画" = "Default animation";
 "已设置到全部" = "Set to All";
-"撤销" = "Undo";
-"强度" = "Strength";
-"强度:" = "Strength:";
 "其他\n视频" = "Other\nVideo";
 "其他\n图片" = "Other\nPhoto";
 "选择视频" = "Video";
@@ -1173,52 +1135,48 @@
 "语音识别失败（超出当月试用次数）" = "Failed to recognize the audio(have no free trials left in this month)";
 "擦除" = "Erase";
 "运镜" = "Mirror";
-"高斯模糊" = "Gaussian blur";
+"高斯模糊" = "Gauss";
 "数量" = "Quantity";
 "角度" = "Angle";
 "翻转" = "Switch";
-"闪光灯" = "Flash";
-"倒计时" = "Countdown";
 "全屏" = "Full screen";
 "是否要删除水印" = "Delete watermark?";
 "剪辑" = "Clip";
 "音频" = "Audio";
 "水印" = "Watermark";
-"背景" = "Background";
 "调节" = "Adjust";
 "片尾" = "Ending";
 "分割" = "Split";
 "提取音乐" = "Extract music";
-"切画中画" = "Switch overlay";
+"提取音乐_iPad" = "Extract\nmusic";
+"切画中画" = "Overlay";
 "复制" = "Copy";
 "关键帧" = "Keyframe";
-"倒放" = "Reverse";
 "定格" = "Freeze";
-"音效" = "Sound effects";
 "卡点" = "Card point";
-"录音" = "Recording";
+"录音" = "Record";
 "新建文本" = "New text";
-"识别字幕" = "Identify Subtitles";
+"识别字幕" = "Auto captions";
+"识别字幕_iPad" = "Auto\ncaptions";
 "识别歌词" = "Identify Lyrics";
 "新增画中画" = "Add overlay";
-"画面特效" = "Picture special effects";
-"新增滤镜" = "New filter";
+"画面特效" = "Video effects";
 "调色" = "Adjust";
-"画布颜色" = "Canvas color";
-"画布样式" = "Canvas style";
-"画布模糊" = "Canvas blur";
-"常规变速" = "Conventional speed change";
-"曲线变速" = "Curve speed change";
-"入场动画" = "Entrance animation";
-"出场动画" = "Appearance animation";
-"组合动画" = "Combination animation";
+"常规变速" = "Normal";
+"曲线变速" = "Curve";
+"+增加点" = "+ Add beat";
+"-删除点" = "- Delete beat";
+"蒙太奇" = "Montage";
+"英雄时刻" = "Hero";
+"子弹时刻" = "Bullet";
+"跳接" = "Jump Cut";
+"闪进" = "Flash in";
+"闪出" = "Flash out";
 "镜像左右" = "Mirror left and right";
 "镜像上下" = "Mirror up and down";
 "裁剪" = "Crop";
 "淡化" = "Fade";
-"混合模式" = "Mixed mode";
-"层级" = "Level";
-"切换主轴" = "Switch spindle";
+"切换主轴" = "Maintrack";
 "添加媒体" = "Add media";
 "文字/贴纸" = "Text/Sticker";
 "点击/长按 开始录音" = "Click / long press to start recording";
@@ -1256,12 +1214,12 @@
 "AI识别仅限于有声视频" = "AI recognition is limited to audio video";
 "提示" = "Tips";
 "是否保存该视频再退出？" = "Save the video and exit?";
-"分辨率：" = "Resolution:";
-"帧率：" = "Frame rate:";
-"编码格式：" = "Encoding format:";
-"编码等级：" = "Coding level:";
+"帧率" = "Frame rate";
+"文件格式" = "Format";
+"编码格式" = "Encode";
+"编码等级" = "Level";
 "确认导出" = "Confirm export";
-"文件大小约为：%1$dM" = "File size is approximately：%1$dMB";
+"文件大小约为：%.2fMB" = "Estimated file size:%.2fMB";
 "历史记录" = "History";
 "锁定" = "Lock";
 "锁定大小" = "Lock size";
@@ -1280,7 +1238,6 @@
 "场景为空" = "The scene is empty";
 "音乐为空" = "Music is empty";
 "时间太短无法添加转场" = "Time is too short to add transition";
-"滑动选择封面图" = "Swipe to select cover image";
 "视频无原音" = "The video has no sound";
 "原始" = "Original";
 "分享" = "Share";
@@ -1394,7 +1351,6 @@
 "至少选择1个镜头" = "Select at least 1 video/photo";
 "片段总时长 %s" = "Total video duration";
 "最近项目" = "Recent projects";
-"素材库" = "Material library";
 "长按拖动排序" = "Long press and drag to sort";
 "黑白场" = "Black and white";
 "搞笑片段" = "Funny clips";
@@ -1418,7 +1374,7 @@
 "继续" = "Continue";
 "声音" = "Audio";
 "调序" = "Order";
-"图片时长" = "Image Duration";
+"图片时长" = "Duration";
 "多段配乐" = "Multi Music";
 "图片运动" = "Image Animation";
 "启用动画(仅图片)" = "Enable Animations (images only)";
@@ -1427,12 +1383,11 @@
 "主题" = "Theme";
 "添加动画" = "Add Animation";
 "模糊" = "Blur";
-"片头" = "The opening";
 "请添加图片" = "Please add images";
 "旋转文字" = "Rotate text";
 "横排文字" = "Horizontal text";
 "竖排文字" = "Vertical text";
-"题词库" = "Inscription Library";
+"题词库" = "Thesaurus";
 "自定义题词" = "Custom Inscription";
 "详情" = "Detail";
 "相册视频" = "Album Video";
@@ -1451,7 +1406,6 @@
 "按住持续配音，松开后配音结束" = "Press and hold the button for dubbing，release to end";
 "点击按钮可删除当前选中的配音片段" = "Click the button to remove the currently selected voice fragments";
 "试听" = "Audit";
-"时长" = "Duration";
 "选择字体" = "Select the font";
 "分割视频的时间不能低于%.1f秒" = "The splitting video duration cannot be less than %.1f seconds";
 "至少保留一段视频" = "Keep one video segment at least";
@@ -1531,7 +1485,6 @@
 "播放模式" = "Play Mode";
 "同时播放" = "Simultaneously";
 "顺序播放" = "Play in Order";
-"粗细" = "Thickness";
 "添加图片" = "Add Images";
 "选择封面" = "Select Cover";
 "本地图片"="Photo";
@@ -1559,15 +1512,14 @@
 "音乐相册" = "Music Album";
 "缩略图" = "Thumbnail";
 "图片编辑" = "Picture editing";
-"左右" = "Left and right";
-"上下" = "Up and Down";
+"左右" = "Left right";
+"上下" = "Up Down";
 "倾斜" = "Tilt";
 "高亮" = "Highlight";
 "色域" = "Color Gamut";
 "重置" = "Reset";
 "光线增强" = "Light enhancement";
 "晕映" = "Halo";
-"颗粒" = "Granules";
 "尖锐" = "Sharp";
 "大光圈" = "Large aperture";
 "线型" = "Linear";
@@ -1591,7 +1543,6 @@
 "不能添加视频" = "Cannot add video";
 "蒙版" = "Mask";
 "羽化度" = "Feathering Degree";
-"反转" = "Reverse";
 "没有卡点信息" = "No rhythm point information ";
 "服务器开小差" = "Server Error";
 
@@ -1624,7 +1575,6 @@
 "复 制" = "Copy";
 "调 序" = "Order";
 "文字板" = "Textboard";
-"倒放" = "Reverse";
 "配音一" = "Recording 1";
 "配音二(配音放到配乐里)" = "Recording 2";
 "剪辑" = "Edit";
@@ -1639,8 +1589,6 @@
 "保存" = "Save";
 "返回" = "Back";
 "原始" = "Original";
-"照片" = "Photo";
-"视频" = "Video";
 "左上" = "Top Left";
 "左下" = "Bottom Left";
 "右上" = "Top Right";
@@ -1650,7 +1598,7 @@
 "横 屏" = "Landscape";
 "转码" = "Transcoding";
 "裁剪" = "Crop";
-"配音" = "Recording";
+"配音" = "Voiceover";
 "涂鸦" = "Doodle";
 "完成" = "Finish";
 "动 画" = "Animations";
@@ -1671,22 +1619,19 @@
 "全部内容" = "All";
 "请选择视频/图片" = "Please select media!";
 "所有视频" = "Videos";
-"所有图片" = "All pictures";
+"所有图片" = "All photos";
 "您确定要放弃编辑吗？" = "Do you want to exit without saving?";
 "修改封面" = "Cover";
 "+ 添加音频" = "+ Add audio";
 "添加片尾" = "Add credits";
 "排序" = "Order";
-"音乐库" = "Online";
-"提取" = "Extract music";
+"音乐" = "Online";
+"提取" = "Extracted";
 "添加贴纸" = "Sticker";
 "添加涂鸦" = "Doodle";
-"添加滤镜" = "Filter";
 "添加调色" = "Adjust";
 "无封面" = "None";
-"点击输入文字" = "Click to add text";
-"气泡" = "Style";
-"调速" = "Speed change";
+"气泡" = "Bubble";
 "音量" = "Volume";
 "淡入时长" = "Fade in";
 "淡出时长" = "Fade out";
@@ -1695,7 +1640,7 @@
 "当前时间不能定格" = "The current time cannot be frozen";
 "文字板" = "Textboard";
 "原始" = "Original";
-"滑动选择封面" = "Swipe to select cover image";
+"滑动选择封面" = "Swipe to select";
 "视频封面" = "Cover";
 "网络" = "Online";
 "上拉加载更多" = "Pull up to load more";
@@ -1705,19 +1650,13 @@
 "没有音乐" = "No music yet";
 "提取音乐" = "Extract music";
 "录音中" = "Recording";
-"室内" = "Indoor";
 "垂直翻转" = "Vertical";
 "水平翻转" = "Horizontal";
 "旋转" = "Rotate";
-"撤销" = "Undo";
-"时长" = "Duration";
 
 //2020.11.23 add
-"+ 音乐集合" = "+ Music collection";
-"点击添加照片" = "Please add images";
-"帧率" = "Frame rate";
-"文件大小约为：%.2fMB" = "File size is approximately：%.2fMB";
-"点击输入文字" = "Click to add text";
+"+ 音频合集" = "+ Sound collection";
+"点击添加照片" = "Please add image";
 "正在获取贴纸网络资源！" = "Getting online stickers! ";
 "调色%d" = "Adjust%d";
 "提取音乐%@_%d" = "Extract music%@_%d";
@@ -1773,22 +1712,15 @@
 "替换文本朗读" = "Replace the speech audio";
 "动画网络素材更新完成！" = "The animation network material update is complete!";
 "视频大小与画布大小一致，会遮盖背景！" = "The video size is the same as the canvas size and will cover the background!";
-"撤销"    = "Undo";
-"恢复"    = "Redo";
 "%@：剪辑 %@" = "%@: Edit %@";
 "媒体 调整显示位置" = "媒体 调整显示位置";
-"花字"   = "Effects";
 "%@：画中画 %@" = "%@：Overlay %@";
 "音频" = "Audio";
-"层级" = "Level";
-"层级排序" = "Level";
-"编码格式:" = "编码格式:";
-"编码等级:" = "编码等级:";
-"文件大小约为：%.2fMB" = "File size is approximately：%.2fMB";
+"层级" = "Layer";
+"层级排序" = "Order layers";
 "关键帧" = "Keyframe";
 
-"拍同款" = "Template record";
-"一键制作" = "AE Template";
+"拍同款" = "Create";
 "视频无音频" = "The video has no audio";
 "当前位置不可定格" = "Current position cannot be frozen";
 "使用双指缩放/单指拖动" = "Use two fingers to zoom/single finger drag";
@@ -1814,8 +1746,10 @@
 "最多添加4个水印遮罩" = "Add up to 4 watermark masks";
 "画面裁切" = "Screen Crop";
 "截取视频" = "Trim";
-"保留" = "Trmmed";
-"保留%@" = "Keep%@";
+"保留:" = "Selected:";
+"保留:00:00.0" = "Selected:00:00.0";
+"保留%@" = "Selected %@";
+"保留" = "Selected";
 "留中间" = "Trim";
 "去中间" = "Cut off";
 "进0.1秒" = "Rewind 0.1s";
@@ -1835,7 +1769,7 @@
 "可爱"="Llovely";
 "马赛克" = "Inpaint";
 "遮罩效果" = "matteeffect";
-"双指缩放或拖动图片调整显示区域" = "Two fingers to zoom or drag the picture to adjust the display area";
+"双指缩放或拖动图片调整显示区域" = "Use both fingers to zoom or drag";
 
 "发音人" = "Speaker";
 "该文本已经生成了对应的配音，是否同意删除该配音?" = "The text has already generated the corresponding dubbing. Do you agree to delete the dubbing?";
@@ -1862,10 +1796,10 @@
 "主" = "Main video";
 "画" = "Overlay";
 
-"边框粗细" = "Side frame";
-"边框颜色" = "Border color";
+"边框粗细" = "Thickness";
+"边框颜色" = "Color";
 
-"导出模板" = "Export Template";
+"导出模板" = "Template";
 "片段" = "Fragment";
 "片段%d" = "Fragment%d";
 "编组" = "Group";
@@ -1877,8 +1811,8 @@
 "取消编组" = "Cancel Group";
 "编组%d" = "Group%d";
 "已选(%d)" = "Selected(%d)";
-"将所选应用到本轨所有片段" = "Apply selected to all clips in this track";
-"将所选应用到画中画所有片段" = "Apply selection to all PiP clips";
+"将所选应用到本轨所有片段" = "Apply to all main videos";
+"将所选应用到画中画所有片段" = "Apply to all overlays";
 "仅图片" = "Picture only";
 "仅视频" = "Video only";
 "锁定素材不可编组" = "Locked material cannot be grouped";
@@ -1900,13 +1834,13 @@
 "请选择编组的默认片段" = "Please select the default segment of the group";
 "仅支持视频导入" = "Only supports video import";
 "仅支持图片导入" = "Only supports picture import";
-"已有分类" = "Existed category";
-"新建分类" = "Create category";
+"已有分类" = "Existed";
+"新建分类" = "Create";
 "新建分类中,请稍候..." = "New category, please wait...";
-"素材编辑" = "Material Edit";
-"音乐编辑" = "Music Edit";
-"文字编辑" = "Text Edit";
-"点击编辑" = "Click to edit";
+"素材编辑" = "Material";
+"音乐编辑" = "Music";
+"文字编辑" = "Text";
+"点击编辑" = "Edit";
 "片段原声音量" = "Volume";
 "角色" = "Role";
 "旁白" = "Narrator";
@@ -1920,23 +1854,22 @@
 "微笑" = "Smile";
 "眼睛" = "Eye";
 "嘴唇"= "Lips";
-"脸宽" = "Face width";
+"脸宽" = "Width";
 "下颚宽" = "Jaw width";
-"下巴高" = "Chin Height";
+"下巴高" = "Chin High";
 "额头高" = "Forehead Height";
-"距离" = "Distance";
-"上嘴唇" = "Upper lip";
-"下嘴唇" = "Lower lip";
-"嘴巴宽" = "Mouth width";
+"上嘴唇" = "Upper";
+"下嘴唇" = "Lower";
+"嘴巴宽" = "Mouth";
 "备份" = "Backup";
 "管理" = "Manage";
 "正在等待" = "Waiting";
 "全部取消" = "Cancel all";
 "%@个草稿备份中" = "%@ drafts are being backed up";
 "备份列表" = "Backup List";
-"更新于 %@" = "Updated on %@";
+"更新于 %@" = "Last update: %@";
 "重命名" = "Rename";
-"复制草稿" = "Copy Draft";
+"复制草稿" = "Duplicate";
 "输入草稿名称" = "Enter draft name";
 "无用户ID" = "No user ID";
 "备份于%@" = "Backed up at %@";
@@ -1967,21 +1900,21 @@
 "跟踪处理中" = "Tracking in progress";
 "AI识别到%d人，请选择一位进行跟踪！" = "AI recognized %d people, please choose one to track!";
 "AI识别到多人，请选择一位进行美颜！" = "AI recognizes multiple people, please choose one to beautify!";
-"光感" = "Light Sensation";
-"文本朗读" = "Text Reading";
+"文本朗读" = "Text to\nspeech";
+"文本朗读_sub" = "Text to speech";
 "当前时间无法添加配音！" = "Cannot add dubbing at the current time!";
 "当前时间无法添加音效！" = "Cannot add sound effects at the current time!";
 "当前时间无法添加音乐！" = "Cannot add music at the current time!";
 "当前时间无法添加文本朗读！" = "Cannot add text to read aloud at the current time!";
-"音频生成中..." = "Audio generation...";
-"音频已生成，请到音频模块查看" = "Audio has been generated, please go to the audio module to check";
+"音频生成中..." = "Generating\ntext-to-speech...";
+"音频已生成，请到音频模块查看" = "Text-to-speech now available in your audio track";
 "音频生成失败" = "Audio generation failed";
 "您确定替换原朗读音频吗?" = "Are you sure to replace the original speech audio?";
 "音频重新生成中" = "Audio regenerating";
 "生成为新朗读音频" = "Generate as new spoken audio";
 "确认替换" = "Confirm to replace";
 "已存在文本朗读，是否替换原朗读音频？" = "A text spoken audio already exists, do you want to replace the original spoken audio?";
-"草稿箱" = "Draft Box";
+"草稿箱" = "Drafts";
 "文字模板" = "Text Template";
 "无资源" = "No resources";
 "只支持iOS 10.0以上系统" = "Only supports iOS 10.0 and above";
@@ -1994,7 +1927,7 @@
 "英文字幕" = "English subtitles";
 "单子突出" = "Monad Prominence";
 "搜歌词" = "Search lyrics";
-"清空字幕" = "Clear subtitles";
+"清空字幕" = "Clear";
 "已达文字上限，请新增一行" = "Text limit reached, please add a new line";
 "确认要清空所有字幕吗？" = "Are you sure you want to clear all subtitles?";
 "确认将字幕还原到自动识别状态吗？" = "Are you sure you want to restore subtitles to automatic recognition?";
@@ -2011,25 +1944,19 @@
 "当前时间点无法添加" = "Cannot add the current time point";
 "无效果" = "No effect";
 "文字识别中..." = "Text recognition...";
-"字幕识别中" = "Subtitle recognition";
-"① 其它文字样式和我一样" = "① Other text styles are the same as mine";
-"② 其它文字上下位置和我对齐" = "② Other text is aligned horizontally with me";
+"字幕识别中..." = "Creating auto captions...";
+"① 其它文字样式和我一样" = "① All texts set same style";
+"② 其它文字上下位置和我对齐" = "② All texts set same position";
 "③ 水平对齐画面" = "③ Align screen horizontally";
-"④ 其它文字动画和我一样" = "④ Other text animations are the same as me";
-"⑤ 其它文字大小和我一样" = "⑤ Other text size is the same as mine";
+"④ 其它文字动画和我一样" = "④ All texts set same animation";
+"⑤ 其它文字大小和我一样" = "⑤ All texts set same size";
 "⑥ 自动换行" = "⑥ Auto wrap";
-"全局应用" = "Apply globally";
+"全局应用" = "Apply to all";
 "统一设置" = "Unified settings";
 "音调" = "Pitch";
 "语速" = "Speed";
 
 "相机胶卷" =  "Camera film";
-"所有视频" =  "All video";
-"所有图片" =  "All image";
-"素材库" =  "Material libary";
-"视频" =  "Video";
-"照片" =  "Photo";
-"全部" =  "All";
 "文字" =  "Text";
 "总共" =  "Total";
 "下一步" =  "Next";
@@ -2040,19 +1967,15 @@
 "键盘" = "Keyboard";
 "字体" = "Font";
 "颜色" = "Color";
-"背景" = "Background";
 "对齐" = "Align";
 "媒体选择数量错误" = "Wrong media number selected";
 "退出" = "Exit";
 "确定放弃已经选中的媒体?" = "Confirm to cancel selected media?";
-"图片" = "Image";
 "底图" = "Basemap";
-"背景" = "Background";
 "图层" = "Layer";
 "水印" = "Watermark";
 "快慢速" = "Fast slow speed";
 "美颜" = "Beauty";
-"滤镜" = "Filter";
 "拍照" = "Shoot";
 "录像" =  "Record";
 "温馨提示" = "Soft reminder";
@@ -2068,19 +1991,13 @@
 "未允许使用录音" = "Not allowed to record voice";
 "错误代码" = "Error code";
 "路径错误" = "Path error";
-"磨皮" = "Smooth skin";
 "亮肤" = "Brighten skin";
 "红润" = "Ruddy";
-"大眼" = "Big eye";
-"瘦脸" = "Thin face";
 "五官" = "Facial features";
 "设置" = "Setting";
 "音乐" = "Music";
-"倒计时" = "Count down";
 "闪光灯" = "Flash";
-"翻转" =  "Reverse";
 "码率(kbps)" = "Code rate(kbps)";
-"分辨率" =  "Resolution";
 "麦克风" = "Microphone";
 "导出" = "Export";
 "确定" = "Confirm";
@@ -2134,22 +2051,16 @@
 "作者" = "Author";
 "大小" = "Size";
 "更新" = "Update";
-"撤销" = "Cancel";
-"还原" = "Restore";
 "更新"  =  "Update";
 "增加" = "Increase";
 "替换" =  "Replace";
 "调整" = "Adjust";
 "媒体" = "Media";
 "流动" = "Flow";
-"重置" = "Reset";
 "历史记录" = "History record";
 "动画" = "Animation";
-"入场" = "Admission";
-"特效" = "Special effect";
 "字幕模板" = "Subtitle template";
-"画中画" = "Picture in picture";
-"贴纸" = "Sticker";
+"贴纸" = "Stickers";
 "马赛克" = "Mosaic";
 "调色" = "Tone";
 "天空" = "Sky";
@@ -2170,49 +2081,37 @@
 "移动" = "Move";
 "添加锚点" = "Start anchor";
 "结束锚点" = "End anchor";
-"反转" = "Reverse";
 "颜色" = "Color";
-"粗细" = "Thickness";
-"羽化" = "Feathering";
 "请输入文字"  = "Please input text";
 "文本" = "Text";
 "描边" = "Stroke";
-"标签" = "Label";
+"标签" = "Canvas";
 "粗斜体"  = "Bold italic";
 "排列" = "Array";
-"透明度" = "Transparency";
 "半径" = "Radius";
-"距离" = "Distance";
-"角度" = "Angle";
 "粗体" = "Bold";
 "斜体" = "Italic";
 "下划线" = "Underline";
 "行距" = "Line space";
 "字距" = "Word space";
-"默认字体" =  "Default font";
+"默认字体" = "SYSTEM";
 "画布对齐" = "Canvas align";
 "轻移" = "Nudge";
 
-"入场" = "Admission";
-"出场" = "Appearance";
 "循环" = "Cycle";
-"色温" = "Temperature";
-"暗角" = "Dim corner";
-"高光" = "High light";
+"色温" = "Temp";
+"暗角" = "Vignette";
+"高光" = "Highlight";
 "阴影" = "Shadow";
 "颗粒" = "Grain";
-"光感" = "Light sense";
+"光感" = "Exposure";
+"色调" = "Hue";
 "褪色" = "Fade";
 "光效" = "Light effect";
 "色彩" = "Color";
 "细节" = "Detail";
 "像素化" = "Pixelated";
-"高斯模糊" = "Gaussian blur";
-"去水印" = "Remove watermark";
 "裁剪" = "Crop";
-"视频" = "Video";
-"分辨率" = "Resolution";
-"时长" =  "Time length";
 "取消导出" = "Cancel export";
 "视频尚未导出完成，是否取消？"  = "Video not exported, cancel or not?";
 "导出失败&#8230" = "Export fail&#8230";
@@ -2227,7 +2126,7 @@
 "未下载" = "Not download";
 "未识别到天空" = "Not recognize sky";
 
-"音乐库" = "Music libary";
+"音乐" = "Music libary";
 
 "推荐音乐" = "Recommended music";
 "我的收藏" = "My collection";
@@ -2235,11 +2134,10 @@
 "本地" = "Local";
 
 "音乐" = "Music";
-"视频" = "Video";
 "导入" = "Import";
 
 "无历史" = "No history";
-"无音乐" = "无音乐";
+"无音乐" = "None";
 "无视频" = "No video";
 "使用" = "Use";
 
@@ -2251,21 +2149,17 @@
 "人像" = "Portrait";
 "抠图" = "Cutout";
 "消除笔" = "Erase pen";
-"滤镜" = "Filter";
-"比例" = "Proportion";
 "图层合并" = "Layer merging";
 "合并" = "merging";
 "图层调整" = "Layer adjust";
 "裁剪" = "Crop";
 "文字" = "Text";
 "图层" = "Layer";
-"背景" = "Background";
 "天空" = "Sky";
 "加图" = "Add image";
 "调色" = "Tone";
 "保存" = "Save";
 "素材" = "Material";
-"图片" = "Picture";
 "边框" = "Border";
 "景深" = "Scene depth";
 
@@ -2275,7 +2169,7 @@
 "圣光" = "Holy light";
 "水印" = "Watermark";
 
-"强度" = "Strength";
+"强度" = "Blur";
 
 "颜色值不正确" = "Wrong color value";
 "选择" = "Select";
@@ -2289,55 +2183,34 @@
 
 "涂抹" = "Paint";
 "画笔" = "Brush";
-"智能抠图" = "Intelligent cutout";
 "识别中" =  "Recognizing";
 "手动抠图" = "Mannual cutout";
 "橡皮擦" = "Rubber";
-"重置" = "Reset";
 
 "尚未指定抠图区域,无法抠图" = "Area not selected, can not cutout";
 "网络资源加载中..." = "Network resource loading...";
-"智能抠像中..." = "Smart Keying...";
-
-"无" = "Null";
 
 "一键美颜" = "One key beauty";
 "五官" = "Facial features";
-"磨皮" = "Smooth skin";
-"美白" = "Whitening";
 "红润" = "Ruddy";
 "祛斑" = "Freckle";
-"大眼" = "Big eye";
-"瘦脸" = "Thin face";
 
 "未检测到人脸" = "Face not detected";
 "图层" = "Layer";
 
-"还原" = "Restore";
 "对比" = "Compare";
 "确认要重置吗?" = "Sure to reset?";
 "原始效果" = "Original effect";
 
 "亮度" = "Brightness";
 "对比度" = "Contrast";
-"高光" = "High light";
-"光感" = "Light sense";
-"阴影" = "Shadow";
-"褐色" = "Brown";
 "未知" = "Unkown";
 
 "饱和度" = "Saturation";
-"色温" = "Temperature";
-"色调" = "Tone";
-
-"颗粒" = "Grain";
-"锐度" = "Sharpness";
-"暗角" = "Dim corner";
 
 "温馨提示" = "Soft reminder";
 "确定放弃所有操作？" = "Sure to cancel all？";
 
-"镜像" = "Mirror image";
 "没有可用的网络" = "No available network";
 "下载中..." = "Downloading...";
 "模型加载中..." = "Loading model...";
@@ -2351,20 +2224,15 @@
 "键盘" = "Keyboard";
 "样式" = "Style";
 "素材" = "Material";
-"花字" = "Flower word";
 "字体" = "Font";
 
 "粗体" = "Bold";
 "斜体" = "Italic";
-"下划线" = "Underline";
-"透明度" = "Transparency";
 
-"半径" = "Radius";
 "距离" = "Distance";
 
 "画笔" = "Brush";
 "文本" = "Text";
-"背景" = "Background";
 "对齐" = "Align";
 "间距" = "Spacing";
 
@@ -2372,7 +2240,6 @@
 "字距" = "Word space";
 
 "描边" = "Stroke";
-"默认字体" = "Default font";
 
 
 "脸型" = "Face shape";
@@ -2386,7 +2253,6 @@
 "微笑" = "Smile";
 "眼睛" = "Eye";
 "倾斜" = "Tilt";
-"距离" = "Distance";
 "宽度" = "Width";
 "高度" = "Height";
 "嘴巴" = "Mouth";
@@ -2394,24 +2260,11 @@
 "下嘴唇" = "Lower lip";
 "嘴巴宽" = "Mouth width";
 
-"角度" = "Angle";
-
-"混合模式" = "Mixed model";
 "抠像" = "Cutout";
 
 "形状/填充" = ">Shape/Fill";
-"羽化" = "Feathering";
-"粗细" = "Thickness";
-"线性" = "Linear";
-"镜面" = "Mirror";
-"圆形" = "Round";
-"矩形" = "Rectangle";
-"五角星" = "Star";
-"爱心" = "Love heart";
-"四边形" = "quadrilateral";
-"反转" = "Reverse";
 "叠加" = "Overlay";
-"特效" = "Special effect";
+"特效" = "Effects";
 
 
 "压缩中 %.1f" = "Compressing %.1f";
@@ -2432,14 +2285,8 @@
 "抠像1" = "Cutout1";
 "抠像2" = "Cutout2";
 
-
-"高斯模糊" = "Gaussian blur";
 "像素化" = "Pixelated";
-"去水印" = "Remove watermark";
-
-"去水印" = "Remove watermark";
 "已经缩放到阀值" = "Scaled to threshold";
-"不透明度" = "Opacity";
 
 
 "矩形" = "Rectangle";
@@ -2449,8 +2296,6 @@
 "景深" = "Scene deepth";
 
 
-"撤销" = "Cancel";
-"还原" = "Restore";
 "删除" = "Delete";
 "增加" = "Add";
 "调整" = "Adjust";
@@ -2466,9 +2311,7 @@
 
 "光效" = "Light effect";
 "色彩" = "Color";
-"调节" = "Adjust";
 
-"导出模板" = "Export template";
 "模板名称" = "Template name";
 "%1$d/%2$d" = "%1$d/%2$d";
 "模板描述" = "Template description";
@@ -2490,8 +2333,6 @@
 "文件" = "File";
 "封面" = "Cover";
 
-"导出模板" = "Export template";
-
 "图片: %d   文字: %d " = "Image: %d   Text: %d ";
 "取消" = "Cancel";
 
@@ -2501,7 +2342,7 @@
 "取消编组" = "Cancel group";
 "片段" = "Segment";
 
-"背景" = "Background";
+"背景" = "Canvas";
 "底图" = "Base map";
 "图层" = "Layer";
 "文字" = "Text";
@@ -2515,10 +2356,10 @@
 "一个编组不能只选择图层" = "Can not only select layers in a group";
 "图层必须编组" = "Layers must be grouped";
 
-
+"视频帧" = "From video";
 "旁白" = "Narration";
 "角色" = "Character";
-
+"纯绿背景" = "Green";
 
 "解析错误" = "Error analysis";
 "正在生成模板" = "Creating template";
@@ -2529,8 +2370,7 @@
 "恢复模板中..." = "Template recovering...";
 "替换资源中..." = "Resource replacing...";
 "图片编辑" = "Image edit";
-"文字编辑" = "Text edit";
-"剪辑草稿" = "Clip draft";
+"剪辑草稿" = "Edit draft";
 
 
 "拍摄" = "Shoot";
@@ -2541,13 +2381,14 @@
 
 "水印" = "Watermark";
 
-"自动识别字幕" = "Automatically recognize subtitles";
-"同时清空已有字幕" = "Also clear existing subtitles";
+"自动识别字幕" = "Create auto captions";
+"同时清空已有字幕" = "Remove selected captions";
 "请先开启音量或添加音频，再进行识别" = "Please turn on the volume or add a audio before recognizing";
 "条纹" = "Strip";
 "视频轨道" = "Video track";
 "音频轨道" = "Audio track";
-"录音轨道" = "Recording track";
+"录音轨道" = "Record track";
+"开始识别" = "Continue";
 "资源未初始化。" = "Assets are not installed.";
 "Siri 或听写功能已禁用。" = "Siri or Dictation is disabled.";
 "初始化识别器失败。" = "Failed to initialize recognizer.";
@@ -2558,7 +2399,72 @@
 "与语音过程的连接被中断。" = "Connection to speech process was interrupted.";
 "未能识别到任何语音。" = "Failed to recognize any speech.";
 "请求未获授权。" = "Request is not authorized.";
-"智能抠像" = "Smart portrait";
-"音频分离" = "Audio Split";
-"滤镜调节" = "Filter/Tone";
+"智能抠像" = "Remove\nbackground";
+"智能抠像中..." = "Remove background...";
+"音频分离" = "Extract audio";
+"音频分离_iPad" = "Extract\naudio";
+"滤镜调节" = "Filters/Adjust";
+"滤镜调节_iPad" = "Filters\nAdjust";
 "均衡器" = "Equalizer";
+"均衡器预设" = "Preset";
+"频段" = "Band";
+"低音降低" = "Bass drop";
+"低音提高" = "Bass Raise";
+"电子" = "Electronic";
+"非电声音乐" = "Non-Electronic";
+"钢琴曲" = "Piano";
+"高音降低" = "Treble Down";
+"高音提高" = "Treble Raise";
+"古典乐" = "Classical";
+"节奏布鲁斯" = "Bruce";
+"爵士乐" = "Jazz";
+"拉丁" = "Latin";
+"流行" = "Pop";
+"弱人声" = "Weak Voice";
+"沙发音乐" = "Sofa Music";
+"舞曲" = "Dance";
+"嘻哈" = "HipHop";
+"摇滚" = "Rock";
+"音乐增强" = "Music Boost";
+"音量提高" = "Volume Up";
+"语音增强" = "Speech Boost";
+"杂音降低" = "Noise reduction";
+"重低音" = "Subwoofer";
+"关闭原声" = "Mute clip\naudio";
+"开启原声" = "Unmute clip\naudio";
+"设置\n封面" = "Cover";
+"强度" = "Blur";
+"行间距" = "Line";
+"字间距" = "Character";
+"还原音频" = "Recover audio";
+"还原音频_iPad" = "Recover\naudio";
+"边缘模糊" = "Edge";
+"径向模糊" = "Radial";
+"中心点" = "Center";
+"降噪" = "Noise Reduction";
+"降噪_iPad" = "Noise\nReduction";
+"循环动画" = "Loop";
+"贴纸动画" = "Sticker animation";
+"添加高斯模糊" = "Add gauss";
+"作用对象" = "Object";
+"原始比例" = "Fit";
+"抠人像" = "Remove\nbackground";
+"取消抠人像" = "Recover\nbackground";
+"反向抠图" = "Remove\nportrait";
+"取消反向抠图" = "Recover\nportrait";
+"反向抠图中,请稍候..." = "Removing portrait...";
+"反向抠图失败！" = "Remove portrait failed!";
+"API模板" = "Template";
+"扫描" = "Scan";
+"语音" = "Voice";
+"切主轴" = "Main video";
+"保存并退出" = "Save and Exit";
+"替换图片" = "Replace";
+"提示:滑动滑杆确定您需要合并到背景音乐的音量大小" = "Tip: Slide the slider to set the volume";
+"粒子" = "Effects";
+"替换素材" = "Replace";
+"双指缩放或拖拽素材调整位置" = "Use both fingers to zoom or drag";
+"宽" = "Width";
+"鼻子大小" = "Size";
+"只有一个人，无需选择！" = "Only one person, no choice!";
+"内存可用%0.2fGB / 共%0.2fGB" = "Memory available %0.2fGB / total %0.2fGB";

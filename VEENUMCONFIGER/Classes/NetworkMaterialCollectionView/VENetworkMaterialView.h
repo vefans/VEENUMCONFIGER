@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "VENetworkMaterialBtn_Cell.h"
-
+@interface VENet_CollectionView : UICollectionView
+@end
 @protocol VENetworkMaterialViewDelegate;
 
 @interface VENetworkMaterialView : UIView
@@ -27,13 +28,17 @@
 
 @property(nonatomic, assign) bool               isNotMove;
 @property(nonatomic, strong) UICollectionViewFlowLayout * flowLayout;
-@property(nonatomic, weak) UICollectionView     *collectionView;
+@property(nonatomic, weak) VENet_CollectionView     *collectionView;
 @property(nonatomic, assign) float              collectionOffsetX;
 @property(nonatomic, assign) float              collectionOffsetPointX;
 
 @property(nonatomic, assign) NSInteger          CollectionViewCount;
 
 @property(nonatomic, assign) NSInteger         currentCellIndex;
+
+@property(nonatomic, assign) float cellMinimumInteritemSpacing;
+
+@property(nonatomic, assign) float cellMinimumLineSpacing;
 
 /** 设置当前选中项相关参数
  *  offsetX ：CollectView的偏移值

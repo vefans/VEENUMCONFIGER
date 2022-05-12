@@ -41,7 +41,7 @@
             isLowDevice = YES;
         }
     }else {//iPad运行内存小于等于3个G的都算低配
-        if([self totalMemory] <= 1024 * 3){
+        if([self totalMemory] < 1024 * 2){
             isLowDevice = YES;
         }
     }
@@ -1139,7 +1139,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (NSString *)getDivceSize{
     float freeDiskSize = [self getFreeDiskSize];
     float totalFreeSpace = [self getTotalDiskSize];
-    NSString * sizeStr = [NSString stringWithFormat:@"内部可用%0.2fGB / 共%0.2fGB",freeDiskSize,totalFreeSpace];
+    NSString * sizeStr = [NSString stringWithFormat:VELocalizedString(@"内存可用%0.2fGB / 共%0.2fGB", nil),freeDiskSize,totalFreeSpace];
     return sizeStr;
 }
 
@@ -1784,6 +1784,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     if(![[params allKeys] containsObject:@"os"]){
         [params setObject:@"ios" forKey:@"os"];
+    }
+    if (isEnglish) {
+        [params setObject:@"en" forKey:@"lang"];
     }
     
     urlPath = [NSString stringWithString:[urlPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
@@ -3839,6 +3842,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         if(![[params allKeys] containsObject:@"ver"]){
             [params setObject:[NSNumber numberWithInt:[VECore getSDKVersion]] forKey:@"ver"];
         }
+        if (isEnglish) {
+            [params setObject:@"en" forKey:@"lang"];
+        }
 //        uploadUrl=[NSString stringWithString:[uploadUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         uploadUrl=[NSString stringWithString:[uploadUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
         NSURL *url=[NSURL URLWithString:uploadUrl];
@@ -4861,8 +4867,19 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSMutableArray *transitionList = [VEHelp getTransitionArray];
     if( transitionList && (transitionList.count > 0) )
     {
-        if( ( transitionList.count < file.transitionTypeIndex ) )
+        if( ( transitionList.count <= file.transitionTypeIndex ))
         {
+            return;
+        }
+        if(file.transitionTypeIndex <=0)
+        {
+            transition.type = TransitionTypeNone;
+            file.transitionMask = nil;
+            file.transition.type = TransitionTypeNone;
+            [VEHelp setTransition:transition file:file atConfigPath:nil];
+            
+            file.transitionNetworkCategoryId = transition.networkCategoryId = @"";
+            file.transitionNetworkResourceId = transition.networkResourceId = @"";
             return;
         }
         if( ((NSMutableArray*)[transitionList[file.transitionTypeIndex - 1] objectForKey:@"data"]).count <= file.transitionIndex )
@@ -10048,4 +10065,186 @@ static OSType help_inputPixelFormat(){
     }
 }
 
++ (Particle *)getParticle:( NSString * ) path atFramePath:( NSString * ) framePath
+{
+    Particle * particle = [Particle new];
+    
+    
+    NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
+    
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
+    NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
+    jsonData = nil;
+    
+    if( effectDic[@"sourceRendingMode"]  )
+        particle.sourceRendingMode = [effectDic[@"sourceRendingMode"]  intValue];
+    
+    if( effectDic[@"atlas"]  )
+        particle.maskAtlas = [effectDic[@"atlas"]  boolValue];
+    
+    if( effectDic[@"mask"]  )
+        particle.mask = [effectDic[@"mask"]  boolValue];
+    
+    if( effectDic[@"blendFuncSource"]  )
+        particle.blendFuncSource = [effectDic[@"blendFuncSource"]  intValue];
+    
+    if( effectDic[@"emitterType"]  )
+        particle.emitterType = [effectDic[@"emitterType"]  intValue];
+    
+        if( effectDic[@"particleLifespan"]  )
+            particle.particleLifespan = [effectDic[@"particleLifespan"]  floatValue];
+
+    if( effectDic[@"duration"]  )
+        particle.duration = [effectDic[@"duration"]  floatValue];
+    
+    if( effectDic[@"angle"]  )
+        particle.angle = [effectDic[@"angle"]  floatValue];
+    
+    if( effectDic[@"particleLifespanVariance"]  )
+        particle.particleLifespanVariance = [effectDic[@"particleLifespanVariance"]  floatValue];
+    
+    if( effectDic[@"angleVariance"]  )
+        particle.angleVariance = [effectDic[@"angleVariance"]  floatValue];
+    
+    if( effectDic[@"rotationStart"]  )
+        particle.rotationStart = [effectDic[@"rotationStart"]  floatValue];
+    
+    if( effectDic[@"rotationStartVariance"]  )
+        particle.rotationStartVariance = [effectDic[@"rotationStartVariance"]  floatValue];
+    
+    if( effectDic[@"rotationEnd"]  )
+        particle.rotationEnd = [effectDic[@"rotationEnd"]  floatValue];
+    
+    if( effectDic[@"rotationEndVariance"]  )
+        particle.rotationEndVariance = [effectDic[@"rotationEndVariance"]  floatValue];
+    
+    if( effectDic[@"startColorAlpha"]  )
+        particle.startColorAlpha = [effectDic[@"startColorAlpha"]  floatValue];
+    
+    if( effectDic[@"startColorRed"]  )
+        particle.startColorRed = [effectDic[@"startColorRed"]  floatValue];
+    
+    if( effectDic[@"startColorGreen"]  )
+        particle.startColorGreen = [effectDic[@"startColorGreen"]  floatValue];
+    
+    if( effectDic[@"startColorBlue"]  )
+        particle.startColorBlue = [effectDic[@"startColorBlue"]  floatValue];
+    
+    if( effectDic[@"startColorVarianceAlpha"]  )
+        particle.startColorVarianceAlpha = [effectDic[@"startColorVarianceAlpha"]  floatValue];
+    
+    if( effectDic[@"startColorVarianceRed"]  )
+        particle.startColorVarianceRed = [effectDic[@"startColorVarianceRed"]  floatValue];
+    
+    if( effectDic[@"startColorVarianceGreen"]  )
+        particle.startColorVarianceGreen = [effectDic[@"startColorVarianceGreen"]  floatValue];
+    
+    if( effectDic[@"startColorVarianceBlue"]  )
+        particle.startColorVarianceBlue = [effectDic[@"startColorVarianceBlue"]  floatValue];
+    
+    if( effectDic[@"finishColorAlpha"]  )
+        particle.finishColorAlpha = [effectDic[@"finishColorAlpha"]  floatValue];
+    
+    if( effectDic[@"finishColorRed"]  )
+        particle.finishColorRed = [effectDic[@"finishColorRed"]  floatValue];
+    
+    if( effectDic[@"finishColorGreen"]  )
+        particle.finishColorGreen = [effectDic[@"finishColorGreen"]  floatValue];
+    
+    if( effectDic[@"finishColorBlue"]  )
+        particle.startColorVarianceAlpha = [effectDic[@"finishColorBlue"]  floatValue];
+    
+    if( effectDic[@"finishColorVarianceAlpha"]  )
+        particle.finishColorVarianceAlpha = [effectDic[@"finishColorVarianceAlpha"]  floatValue];
+    
+    if( effectDic[@"finishColorVarianceRed"]  )
+        particle.finishColorVarianceRed = [effectDic[@"finishColorVarianceRed"]  floatValue];
+    
+    if( effectDic[@"finishColorVarianceGreen"]  )
+        particle.finishColorVarianceGreen = [effectDic[@"finishColorVarianceGreen"]  floatValue];
+    
+    if( effectDic[@"startParticleSize"]  )
+        particle.startParticleSize = [effectDic[@"startParticleSize"]  floatValue];
+    
+    if( effectDic[@"startParticleSizeVariance"]  )
+        particle.startParticleSizeVariance = [effectDic[@"startParticleSizeVariance"]  floatValue];
+    
+    if( effectDic[@"finishParticleSize"]  )
+        particle.finishParticleSize = [effectDic[@"finishParticleSize"]  floatValue];
+    
+    if( effectDic[@"finishParticleSizeVariance"]  )
+        particle.finishParticleSizeVariance = [effectDic[@"finishParticleSizeVariance"]  floatValue];
+    
+    if( effectDic[@"gravityx"]  )
+        particle.gravityx = [effectDic[@"gravityx"]  floatValue];
+    
+    if( effectDic[@"gravityy"]  )
+        particle.gravityy = [effectDic[@"gravityy"]  floatValue];
+    
+    if( effectDic[@"sourcePositionVariancex"]  )
+        particle.sourcePositionVariancex = [effectDic[@"sourcePositionVariancex"]  floatValue];
+    
+    if( effectDic[@"sourcePositionVariancey"]  )
+        particle.sourcePositionVariancey = [effectDic[@"sourcePositionVariancey"]  floatValue];
+    
+    if( effectDic[@"maxParticles"]  )
+        particle.maxParticles = [effectDic[@"maxParticles"]  intValue];
+    
+    if( effectDic[@"speed"]  )
+           particle.speed = [effectDic[@"speed"]  floatValue];
+    
+    if( effectDic[@"speedVariance"]  )
+           particle.speedVariance = [effectDic[@"speedVariance"]  floatValue];
+    
+    if( effectDic[@"radialAcceleration"]  )
+           particle.radialAcceleration = [effectDic[@"radialAcceleration"]  floatValue];
+    
+    if( effectDic[@"radialAccelVariance"]  )
+           particle.radialAccelVariance = [effectDic[@"radialAccelVariance"]  floatValue];
+    
+    if( effectDic[@"tangentialAcceleration"]  )
+           particle.tangentialAcceleration = [effectDic[@"tangentialAcceleration"]  floatValue];
+    
+    if( effectDic[@"tangentialAccelVariance"]  )
+           particle.tangentialAccelVariance = [effectDic[@"tangentialAccelVariance"]  floatValue];
+    
+    if( effectDic[@"minRadius"]  )
+           particle.minRadius = [effectDic[@"minRadius"]  floatValue];
+    
+    if( effectDic[@"minRadiusVariance"]  )
+           particle.minRadiusVariance = [effectDic[@"minRadiusVariance"]  floatValue];
+    
+    if( effectDic[@"maxRadius"]  )
+           particle.maxRadius = [effectDic[@"maxRadius"]  floatValue];
+    
+    if( effectDic[@"maxRadiusVariance"]  )
+           particle.maxRadiusVariance = [effectDic[@"maxRadiusVariance"]  floatValue];
+    
+    if( effectDic[@"rotatePerSecond"]  )
+           particle.rotatePerSecond = [effectDic[@"rotatePerSecond"]  floatValue];
+    
+    if( effectDic[@"rotatePerSecondVariance"]  )
+           particle.rotatePerSecondVariance = [effectDic[@"rotatePerSecondVariance"]  floatValue];
+    
+    if( effectDic[@"rotationIsDir"]  )
+           particle.rotationIsDir = [effectDic[@"rotationIsDir"]  boolValue];
+    
+    if( effectDic[@"yCoordFlipped"]  )
+           particle.yCoordFlipped = [effectDic[@"yCoordFlipped"]  floatValue];
+    
+    if( effectDic[@"maskPath"] )
+    {
+        NSString * maskName = effectDic[@"maskPath"];
+        NSString *maskPath = [NSString stringWithFormat:@"%@/%@", path,maskName];
+        particle.maskPath = maskPath;
+        particle.textureFileName = framePath;
+    }
+    else{
+        NSString * textureFileName = effectDic[@"textureFileName"];
+        NSString *maskPath = [NSString stringWithFormat:@"%@/%@", path,textureFileName];
+        particle.textureFileName = maskPath;
+    }
+    
+    return particle;
+}
 @end

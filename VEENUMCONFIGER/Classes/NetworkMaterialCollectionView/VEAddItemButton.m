@@ -24,10 +24,10 @@
     VEAddItemButton * fxItemBtn = [[VEAddItemButton alloc] initWithFrame:rect];
 //    @property(nonatomic,strong)UIImageView *thumbnailIV;
     fxItemBtn.propor = propor;
-    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, fxItemBtn.frame.size.height*propor, fxItemBtn.frame.size.width, fxItemBtn.frame.size.height*(1.0-propor))];
+    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, fxItemBtn.frame.size.width, fxItemBtn.frame.size.width, fxItemBtn.frame.size.height - fxItemBtn.frame.size.width)];
     fxItemBtn.label = label;
     fxItemBtn.label.textAlignment = NSTextAlignmentCenter;
-    fxItemBtn.label.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
+    fxItemBtn.label.textColor = TEXT_COLOR;
     fxItemBtn.label.font = [UIFont systemFontOfSize:10];
     [fxItemBtn addSubview:fxItemBtn.label];
     
@@ -39,7 +39,7 @@
     fxItemBtn.moveTitleLabel.hidden = YES;
     [fxItemBtn addSubview:fxItemBtn.moveTitleLabel];
     
-    LongCacheImageView * imageView = [[LongCacheImageView alloc] initWithFrame:CGRectMake((fxItemBtn.frame.size.width  - fxItemBtn.frame.size.height*propor)/2.0, 0, fxItemBtn.frame.size.height*propor, fxItemBtn.frame.size.height*propor)];
+    LongCacheImageView * imageView = [[LongCacheImageView alloc] initWithFrame:CGRectMake(0, 0, fxItemBtn.frame.size.width, fxItemBtn.frame.size.width)];
     fxItemBtn.thumbnailIV = imageView;
     [fxItemBtn addSubview:fxItemBtn.thumbnailIV];
     fxItemBtn.thumbnailIV.layer.cornerRadius = 3;

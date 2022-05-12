@@ -9,7 +9,32 @@
 #import "VENetworkMaterialView.h"
 #import "VENetworkMaterialCollectionViewCell.h"
 #import <SDWebImage/SDImageCache.h>
+@implementation VENet_CollectionView
 
+- (void)setContentOffset:(CGPoint)contentOffset{
+    NSLog(@"%s : %@",__func__,NSStringFromCGPoint(contentOffset));
+    [super setContentOffset:contentOffset];
+}
+
+- (void)setContentOffset:(CGPoint)contentOffset animated:(BOOL)animated{
+    NSLog(@"%s : %@",__func__,NSStringFromCGPoint(contentOffset));
+    [super setContentOffset:contentOffset animated:animated];
+}
+- (void)setContentInset:(UIEdgeInsets)contentInset{
+    NSLog(@"%s ,top:%f,left:%f,bottom:%f,right:%f",__func__,contentInset.top,contentInset.left,contentInset.bottom,contentInset.right);
+    [super setContentInset:contentInset];
+}
+- (void)setContentSize:(CGSize)contentSize{
+    NSLog(@"%s : %@",__func__,NSStringFromCGSize(contentSize));
+    if(![VEConfigManager sharedManager].iPad_HD){
+        return;
+    }
+    [super setContentSize:contentSize];
+    if(contentSize.height <= self.frame.size.height){
+        self.scrollEnabled = NO;
+    }
+}
+@end
 @interface VENetworkMaterialView()<UICollectionViewDataSource,UICollectionViewDelegate,VENetworkMaterialCollectionViewCellDelegate
 //,UIScrollViewDelegate
 >
@@ -44,7 +69,7 @@
     
     _topLayer = [CAGradientLayer layer];
     _topLayer.colors = colors;
-    _topLayer.frame = CGRectMake(0, CGRectGetMinY(view.frame), view.frame.size.width, 15);
+    _topLayer.frame = CGRectMake(0, CGRectGetMinY(view.frame), view.frame.size.width, 10);
     _topLayer.startPoint = CGPointMake(0, 1);
     _topLayer.endPoint = CGPointMake(0,0);
     [view.superview.layer insertSublayer:_topLayer above:0];
@@ -83,7 +108,7 @@
     _flowLayout.minimumLineSpacing = 0.0;
     _flowLayout.minimumInteritemSpacing = 0.0;
     
-    UICollectionView * videoCollectionView =  [[UICollectionView alloc] initWithFrame: self.bounds collectionViewLayout:_flowLayout];
+    VENet_CollectionView * videoCollectionView =  [[VENet_CollectionView alloc] initWithFrame: self.bounds collectionViewLayout:_flowLayout];
     videoCollectionView.backgroundColor = [UIColor clearColor];
     videoCollectionView.tag = 1000000;
     videoCollectionView.dataSource = self;
@@ -108,7 +133,7 @@
 
 -(void)setContentSizeZero
 {
-    _collectionView.contentSize = CGSizeMake(0, 0);
+    _collectionView.contentSize = CGSizeMake(0, [VEConfigManager sharedManager].iPad_HD ? -5 : 0);
 }
 
 - (void)setCurrentOffsetX:(float)offsetX
@@ -125,7 +150,7 @@
     
     if( _CollectionViewCount == 1 )
     {
-        [_collectionView setContentOffset:CGPointMake(0, 0) animated:false];
+        [_collectionView setContentOffset:CGPointMake(0,  [VEConfigManager sharedManager].iPad_HD ? -5 : 0) animated:false];
         return;
     }
     
@@ -147,13 +172,13 @@
             x = (_CollectionViewCount-1)*self.frame.size.width;
         }
         
-        [_collectionView setContentOffset:CGPointMake(x, 0) animated:false];
+        [_collectionView setContentOffset:CGPointMake(x,  [VEConfigManager sharedManager].iPad_HD ? -5 : 0) animated:false];
         
     }else if (recognizer.state == UIGestureRecognizerStateEnded)
     {
         float x = _collectionOffsetPointX + (_collectionOffsetX - [recognizer locationInView:self.superview].x );
         
-        [_collectionView setContentOffset:CGPointMake(x, 0) animated:false];
+        [_collectionView setContentOffset:CGPointMake(x,  [VEConfigManager sharedManager].iPad_HD ? -5 : 0) animated:false];
         
         float leftX = x - _collectionOffsetPointX;
         
@@ -161,7 +186,7 @@
         
         if( leftX == 0 )
         {
-            [_collectionView setContentOffset:CGPointMake(_collectionOffsetPointX, 0) animated:true];
+            [_collectionView setContentOffset:CGPointMake(_collectionOffsetPointX,  [VEConfigManager sharedManager].iPad_HD ? -5 : 0) animated:true];
             return;
         }
         else if( leftX > 0 )
@@ -174,7 +199,7 @@
             x = (_CollectionViewCount-1)*self.frame.size.width;
         }
         
-        _collectionView.contentOffset = CGPointMake(x, 0);
+        _collectionView.contentOffset = CGPointMake(x, [VEConfigManager sharedManager].iPad_HD ? -5 : 0);
         
         if( _isVertical_Cell )
         {
@@ -205,7 +230,7 @@
                     [self.delegate CellIndex:index atNetwork:self];
                 }
                 
-                [self.collectionView setContentOffset:CGPointMake(self.collectionView.frame.size.width*(index), 0) animated:true];
+                [self.collectionView setContentOffset:CGPointMake(self.collectionView.frame.size.width*(index), [VEConfigManager sharedManager].iPad_HD ? -5 : 0) animated:true];
             });
         }
         else{
@@ -294,7 +319,8 @@
         
         cell.isDragToChange = _isDragToChange;
         
-        [cell initCollectView:_isVertical_Cell atWidth:_cellWidth atHeight:_cellHeight];
+        [cell initCollectView:_isVertical_Cell atWidth:_cellWidth atHeight:_cellHeight minimumInteritemSpacing:_cellMinimumInteritemSpacing minimumLineSpacing:_cellMinimumLineSpacing];
+        cell.collectionView.contentInset = UIEdgeInsetsMake(0, _cellMinimumInteritemSpacing + (_isVertical_Cell ? 2 : 0), 0, _cellMinimumInteritemSpacing + (_isVertical_Cell ? 2 : 0));
        
         if( (!_isImageShow) && ( !_isVertical_Cell ) && (!_isNotMove)  )
         {

@@ -1871,7 +1871,7 @@
     }
     if(flag){
         captionRangeView.file.captionText = captionText;
-        if(![captionText isEqualToString:@"点击输入文字"])
+        if(![captionText isEqualToString:VELocalizedString(@"点击输入文字", nil)])
             captionRangeView.file.title = captionText;
 #if 0
         if( _captionType == 2 )

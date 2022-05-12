@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger, VEColorControlViewType) {
+    VEColorControlViewType_Square,  //方形
+    VEColorControlViewType_Circle,  //圆形
+};
+
 @protocol VEColorControlViewDelegate <NSObject>
 @optional
 
@@ -16,6 +21,8 @@
 @end
 
 @interface VEColorControlView : UIView
+
+- (instancetype)initWithFrame:(CGRect)frame style:(VEColorControlViewType)style;
 
 @property (nonatomic, strong)NSArray *colorArray;
 

@@ -8,7 +8,7 @@
 
 #import "VEImageManager.h"
 #import "VEAssetModel.h"
-
+#import "UIImage+YYWebImage.h"
 @interface VEImageManager ()
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -336,9 +336,11 @@ static dispatch_once_t onceToken;
 
 - (int32_t)getPhotoWithAsset:(PHAsset *)asset photoWidth:(CGFloat)photoWidth completion:(void (^)(UIImage *photo,NSDictionary *info,BOOL isDegraded))completion progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler networkAccessAllowed:(BOOL)networkAccessAllowed {
     CGSize imageSize;
-    if (photoWidth < VETZScreenWidth && photoWidth < _photoPreviewMaxWidth) {
-        imageSize = VEAssetGridThumbnailSize;
-    } else {
+    NSLog(@"photo.size ========%s,%d, %f,%f",__func__,__LINE__,photoWidth,photoWidth);
+//    if (photoWidth < VETZScreenWidth && photoWidth < _photoPreviewMaxWidth) {
+//        imageSize = VEAssetGridThumbnailSize;
+//    } else
+    {
         PHAsset *phAsset = (PHAsset *)asset;
         CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
         CGFloat pixelWidth = photoWidth * VETZScreenScale * 1.5;
@@ -354,6 +356,7 @@ static dispatch_once_t onceToken;
         imageSize = CGSizeMake(pixelWidth, pixelHeight);
     }
     
+    NSLog(@"photo.size+++++++++++++++++%s,%d, %f,%f",__func__,__LINE__,imageSize.width,imageSize.height);
     __block UIImage *image;
     // 修复获取图片时出现的瞬间内存过高问题
     // 下面两行代码，来自hsjcom，他的github是：https://github.com/hsjcom 表示感谢
@@ -385,6 +388,7 @@ static dispatch_once_t onceToken;
                 if (!resultImage) {
                     resultImage = image;
                 }
+                resultImage = [resultImage yy_imageByResizeToSize:imageSize];
                 resultImage = [self fixOrientation:resultImage];
                 if (completion) completion(resultImage,info,NO);
             }];

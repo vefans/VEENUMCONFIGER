@@ -12,6 +12,7 @@
     UIScrollView *colorScrollView;
     UIButton    *currentColorButton;
     float       currentColorButtonWidth;
+    VEColorControlViewType _style;
 }
 
 @end
@@ -25,34 +26,54 @@
     return self;
 }
 
+- (instancetype)initWithFrame:(CGRect)frame style:(VEColorControlViewType)style {
+    if (self = [super initWithFrame:frame]) {
+        _style = style;
+    }
+    return self;
+}
+
 - (void)setColorArray:(NSArray *)colorArray {
     _colorArray = colorArray;
     if (!colorScrollView) {
-        float width = self.frame.size.height / 2.0;
         colorScrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
         colorScrollView.showsVerticalScrollIndicator = NO;
         colorScrollView.showsHorizontalScrollIndicator = NO;
-        colorScrollView.contentSize = CGSizeMake(_colorArray.count * width + 20 + 4                           , 0);
         [self addSubview:colorScrollView];
-        
-        @autoreleasepool {
-            [_colorArray enumerateObjectsUsingBlock:^(UIColor * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                UIButton *colorBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-                colorBtn.frame = CGRectMake(width * idx + 2, 2, width, self.frame.size.height - 4);
-                colorBtn.backgroundColor = obj;
-                if (idx == 0 || idx == _colorArray.count - 1) {
-                    UIRectCorner corners;
-                    if (idx == 0) {
-                        corners = UIRectCornerTopLeft|UIRectCornerBottomLeft;
-                    }else {
-                        corners = UIRectCornerTopRight|UIRectCornerBottomRight;
+        if (_style == VEColorControlViewType_Square) {
+            float width = self.frame.size.height / 2.0;
+            colorScrollView.contentSize = CGSizeMake(_colorArray.count * width + 20 + 4, 0);
+            @autoreleasepool {
+                [_colorArray enumerateObjectsUsingBlock:^(UIColor * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    UIButton *colorBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+                    colorBtn.frame = CGRectMake(width * idx + 2, 2, width, self.frame.size.height - 4);
+                    colorBtn.backgroundColor = obj;
+                    if (idx == 0 || idx == _colorArray.count - 1) {
+                        UIRectCorner corners;
+                        if (idx == 0) {
+                            corners = UIRectCornerTopLeft|UIRectCornerBottomLeft;
+                        }else {
+                            corners = UIRectCornerTopRight|UIRectCornerBottomRight;
+                        }
+                        UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:colorBtn.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(4.0, 4.0)];
+                        CAShapeLayer *maskLayer = [CAShapeLayer layer];
+                        maskLayer.frame = colorBtn.bounds;
+                        maskLayer.path = maskPath.CGPath;
+                        colorBtn.layer.mask = maskLayer;
                     }
-                    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:colorBtn.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(4.0, 4.0)];
-                    CAShapeLayer *maskLayer = [CAShapeLayer layer];
-                    maskLayer.frame = colorBtn.bounds;
-                    maskLayer.path = maskPath.CGPath;
-                    colorBtn.layer.mask = maskLayer;
-                }
+                    colorBtn.tag = idx + 1;
+                    [colorBtn addTarget:self action:@selector(colorBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+                    [colorScrollView addSubview:colorBtn];
+                }];
+            }
+        }else if (_style == VEColorControlViewType_Circle) {
+            colorScrollView.contentSize = CGSizeMake(10 + (self.frame.size.height + 10) * _colorArray.count, 0);
+            [_colorArray enumerateObjectsUsingBlock:^(UIColor * _Nonnull color, NSUInteger idx, BOOL * _Nonnull stop) {
+                UIButton *colorBtn = [[UIButton alloc] initWithFrame:CGRectMake(10 + (self.frame.size.height + 10) * idx, 0, self.frame.size.height, self.frame.size.height)];
+                colorBtn.backgroundColor = color;
+                colorBtn.layer.cornerRadius = colorBtn.frame.size.height / 2.0;
+                colorBtn.layer.masksToBounds = YES;
+                colorBtn.layer.borderColor = Main_Color.CGColor;
                 colorBtn.tag = idx + 1;
                 [colorBtn addTarget:self action:@selector(colorBtnAction:) forControlEvents:UIControlEventTouchUpInside];
                 [colorScrollView addSubview:colorBtn];
@@ -175,7 +196,31 @@
 {
     if( currentColorButton != nil )
      {
-         currentColorButton.frame = CGRectMake(currentColorButton.frame.origin.x + 2, currentColorButton.frame.origin.y + 2, currentColorButton.frame.size.width - 4, currentColorButton.frame.size.height - 4);
+         if (_style == VEColorControlViewType_Square) {
+             currentColorButton.frame = CGRectMake(currentColorButton.frame.origin.x + 2, currentColorButton.frame.origin.y + 2, currentColorButton.frame.size.width - 4, currentColorButton.frame.size.height - 4);
+             
+             if ( (currentColorButton.tag-1) == 0 || (currentColorButton.tag-1) == _colorArray.count - 1) {
+                 UIRectCorner corners;
+                 if ((currentColorButton.tag-1) == 0) {
+                     corners = UIRectCornerTopLeft|UIRectCornerBottomLeft;
+                 }else {
+                     corners = UIRectCornerTopRight|UIRectCornerBottomRight;
+                 }
+                 UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:currentColorButton.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(4.0, 4.0)];
+                 CAShapeLayer *maskLayer = [CAShapeLayer layer];
+                 maskLayer.frame = currentColorButton.bounds;
+                 maskLayer.path = maskPath.CGPath;
+                 currentColorButton.layer.mask = maskLayer;
+                 
+             }
+         }else if (_style == VEColorControlViewType_Circle) {
+             currentColorButton.layer.borderWidth = 0;
+         }
+     }
+    
+     currentColorButton = sender;
+    if (_style == VEColorControlViewType_Square) {
+         currentColorButton.frame = CGRectMake(currentColorButton.frame.origin.x - 2, currentColorButton.frame.origin.y - 2, currentColorButton.frame.size.width + 4, currentColorButton.frame.size.height + 4);
          
          if ( (currentColorButton.tag-1) == 0 || (currentColorButton.tag-1) == _colorArray.count - 1) {
              UIRectCorner corners;
@@ -189,28 +234,11 @@
              maskLayer.frame = currentColorButton.bounds;
              maskLayer.path = maskPath.CGPath;
              currentColorButton.layer.mask = maskLayer;
-             
          }
-     }
-    
-     currentColorButton = sender;
-     currentColorButton.frame = CGRectMake(currentColorButton.frame.origin.x - 2, currentColorButton.frame.origin.y - 2, currentColorButton.frame.size.width + 4, currentColorButton.frame.size.height + 4);
-     
-     if ( (currentColorButton.tag-1) == 0 || (currentColorButton.tag-1) == _colorArray.count - 1) {
-         UIRectCorner corners;
-         if ((currentColorButton.tag-1) == 0) {
-             corners = UIRectCornerTopLeft|UIRectCornerBottomLeft;
-         }else {
-             corners = UIRectCornerTopRight|UIRectCornerBottomRight;
-         }
-         UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:currentColorButton.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(4.0, 4.0)];
-         CAShapeLayer *maskLayer = [CAShapeLayer layer];
-         maskLayer.frame = currentColorButton.bounds;
-         maskLayer.path = maskPath.CGPath;
-         currentColorButton.layer.mask = maskLayer;
-     }
-     
-    [colorScrollView addSubview:currentColorButton];
+        [colorScrollView addSubview:currentColorButton];
+    }else if (_style == VEColorControlViewType_Circle) {
+        currentColorButton.layer.borderWidth = 2;
+    }
     float maxX = colorScrollView.contentSize.width - colorScrollView.frame.size.width;
     float x = MIN(maxX, sender.frame.origin.x);
     if (sender.frame.origin.x >= maxX) {

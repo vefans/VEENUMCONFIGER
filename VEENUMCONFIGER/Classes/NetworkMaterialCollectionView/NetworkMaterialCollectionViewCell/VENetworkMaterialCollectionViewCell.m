@@ -11,7 +11,33 @@
 #import "VENetworkMaterialView.h"
 #import <SDWebImage/SDImageCache.h>
 #import <VEENUMCONFIGER/LongCacheImageView.h>
+@implementation VECell_CollectionView
 
+- (void)setContentOffset:(CGPoint)contentOffset{
+    NSLog(@"%s : %@",__func__,NSStringFromCGPoint(contentOffset));
+    [super setContentOffset:contentOffset];
+}
+
+- (void)setContentOffset:(CGPoint)contentOffset animated:(BOOL)animated{
+    NSLog(@"%s : %@",__func__,NSStringFromCGPoint(contentOffset));
+    [super setContentOffset:contentOffset animated:animated];
+}
+
+- (void)setContentInset:(UIEdgeInsets)contentInset{
+    NSLog(@"%s ,top:%f,left:%f,bottom:%f,right:%f",__func__,contentInset.top,contentInset.left,contentInset.bottom,contentInset.right);
+    [super setContentInset:contentInset];
+}
+- (void)setContentSize:(CGSize)contentSize{
+    NSLog(@"%s : %@",__func__,NSStringFromCGSize(contentSize));
+    [super setContentSize:contentSize];
+    if(![VEConfigManager sharedManager].iPad_HD){
+        return;
+    }
+    if(contentSize.height <= self.frame.size.height){
+        self.scrollEnabled = NO;
+    }
+}
+@end
 @interface VENetworkMaterialCollectionViewCell()<UICollectionViewDataSource,UICollectionViewDelegate,UIScrollViewDelegate>
 
 @property(nonatomic, assign) float cellWidth;
@@ -24,7 +50,7 @@
 
 @implementation VENetworkMaterialCollectionViewCell
 
--(void)initCollectView:(BOOL) isVertical_Cell atWidth:(float) cellWidth atHeight:(float) cellHeight
+-(void)initCollectView:(BOOL) isVertical_Cell atWidth:(float) cellWidth atHeight:(float) cellHeight minimumInteritemSpacing:(float)minimumInteritemSpacing minimumLineSpacing:(float)minimumLineSpacing
 {
     UICollectionViewFlowLayout * flow_Video = [[UICollectionViewFlowLayout alloc] init];
     _cellWidth = cellWidth;
@@ -45,13 +71,10 @@
     flow_Video.headerReferenceSize = CGSizeMake(0,0);
     flow_Video.footerReferenceSize = CGSizeMake(0,0);
     
-    flow_Video.minimumInteritemSpacing = 0.0;
-    if( isVertical_Cell )
-        flow_Video.minimumLineSpacing = 0.0;
-    else
-        flow_Video.minimumLineSpacing = 0;//_cellWidth/2.0/5.0;
+    flow_Video.minimumInteritemSpacing = minimumInteritemSpacing;
+    flow_Video.minimumLineSpacing = minimumLineSpacing;
         
-    UICollectionView * videoCollectionView =  [[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:flow_Video];
+    VECell_CollectionView * videoCollectionView =  [[VECell_CollectionView alloc] initWithFrame:self.bounds collectionViewLayout:flow_Video];
     videoCollectionView.backgroundColor = [UIColor clearColor];
     ((UIScrollView*)videoCollectionView).delegate = self;
     videoCollectionView.tag = 1000000;
@@ -63,10 +86,6 @@
     _collectionView.backgroundColor = [UIColor clearColor];
     _collectionView.showsHorizontalScrollIndicator = NO;
     _collectionView.showsVerticalScrollIndicator = NO;
-    if(isVertical_Cell && [VEConfigManager sharedManager].iPad_HD)
-        _collectionView.contentInset = UIEdgeInsetsMake(20, 0, 20, 0);
-//    UIPanGestureRecognizer* moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
-//    [_collectionView addGestureRecognizer:moveGesture];
     
     [self addSubview:_collectionView];
 }
@@ -201,7 +220,15 @@
     }
     if( _delegate && [_delegate respondsToSelector:@selector(btnCollectCell:atIndexCount:collectionView:cell:)] )
     {
+//        [[cell viewWithTag:2500] removeFromSuperview];
+        if( cell.btnCollectBtn )
+        {
+            [cell.btnCollectBtn removeFromSuperview];
+            cell.btnCollectBtn = nil;
+        }
+        
         UIView * view = [_delegate btnCollectCell:indexPath.row atIndexCount:_index collectionView:collectionView cell:cell];
+//        view.tag = 2500;
         cell.btnCollectBtn = view;
         [cell addSubview:view];
     }

@@ -71,7 +71,7 @@ typedef NS_ENUM(NSInteger,ContentAlignment) {
     kContentAlignmentRight
 };
 
-//选择本地还是音乐库类型
+//选择本地还是音乐类型
 typedef NS_ENUM(NSInteger, VESELECTMUSICTYPE){
     kVEMUSICLIBRARY,
     kVEMUSICOLLECTION,
@@ -488,10 +488,11 @@ isPhoneX;\
 #define VE_NAV_TITLE_COLOR [VEConfigManager sharedManager].navigationBarTitleColor
 #define NAVIBGCOLOR [VEConfigManager sharedManager].navigationBackgroundColor
 #define NAVIBARTITLEFONT [VEConfigManager sharedManager].navigationBarTitleFont
+#define SliderMaximumTrackTintColor UIColorFromRGB(0x3c3d3d)
 
 #pragma mark-PESDK颜色配比
 #define PESDKMain_Color UIColorFromRGB(0x9700ff)
-#define PESDKTEXT_COLOR UIColorFromRGB(0x2B2B2B)
+#define PESDKTEXT_COLOR UIColorFromRGB(0x3a3a3a)
 
 #define VIEW_COLOR UIColorFromRGB(0x111111)
 #define VIEW_IPAD_COLOR UIColorFromRGB(0x1a1a1a)
@@ -502,7 +503,8 @@ isPhoneX;\
 #define BACKGROUND_WHITE_COLOR UIColorFromRGB(0xefefef)
 #define TOOLBAR_COLOR UIColorFromRGB(0x101010)
 #define CUSTOM_GRAYCOLOR UIColorFromRGB(0xb2b2b2)
-#define TEXT_COLOR UIColorFromRGB(0xb3b3b3)
+#define TEXT_COLOR UIColorFromRGB(0xcccccc)
+#define SUBTITLETEXT_COLOR UIColorFromRGB(0xcccccc)
 #define BOTTOM_COLOR [UIColor blackColor]//UIColorFromRGB(0x33333b)
 #define ADDEDMATERIALCOLOR UIColorFromRGB(0x8cb27b) //字幕等遮罩的颜色//58bb9d
 #define MATERIALMASKCOLOR ADDEDMATERIALCOLOR//[ADDEDMATERIALCOLOR colorWithAlphaComponent:0.9]

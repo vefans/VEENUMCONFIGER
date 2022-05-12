@@ -25,12 +25,13 @@
         self.layer.mask = cornerRadiusLayer;
         [self initToolbarView];
         {
-            UIButton * resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(15, [VEConfigManager sharedManager].iPad_HD ? (self.frame.size.height - 40) : (self.frame.size.height - kPlayerViewOriginX - 40), 50, 28)];
-            [resetBtn setTitle:VELocalizedString(@"还原", nil) forState:UIControlStateNormal];
-            [resetBtn setTitleColor:UIColorFromRGB(0xbebebe) forState:UIControlStateNormal];
-            [resetBtn setTitleColor:Main_Color forState:UIControlStateHighlighted];
+            UIButton * resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(5, [VEConfigManager sharedManager].iPad_HD ? (self.frame.size.height - 40) : (self.frame.size.height - kPlayerViewOriginX - 40), 80, 35)];
+            [resetBtn setImage:[VEHelp imageNamed:@"剪辑_重置默认_"] forState:UIControlStateNormal];
+            [resetBtn setImage:[VEHelp imageNamed:@"剪辑_重置选中_"] forState:UIControlStateHighlighted];
+            [resetBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
+            [resetBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
+            [resetBtn setTitleColor:UIColorFromRGB(0x3c3d3d) forState:UIControlStateHighlighted];
             resetBtn.titleLabel.font = [UIFont systemFontOfSize:12];
-            resetBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
             [resetBtn addTarget:self action:@selector(resetAdjustment_Btn:) forControlEvents:UIControlEventTouchUpInside];
             [self addSubview:resetBtn];
             
@@ -85,7 +86,7 @@
             
             
             for (int i = 0; i<list.count; i++) {
-                [self initAdjView:CGRectMake(20, 50 * i, self.frame.size.width - 40, 50) atStr:list[i][@"title"]];
+                [self initAdjView:CGRectMake(0, 50 * i, self.frame.size.width, 50) atStr:list[i][@"title"]];
                 _adjustmentSliders[i].tag = [list[i][@"id"] integerValue];
                 [_beautyView addSubview:_adjustmentViews[i]];
             }
@@ -93,15 +94,18 @@
             [self setDefaultValue];
             _beautyView.contentSize = CGSizeMake(0, list.count * 50);
         }else{
-            [self initAdjView:CGRectMake(20, (_adjHeight*2.0 - 35)/2.0 + 44, self.frame.size.width - 40, 35) atStr:@"脸宽"];
-            [self initAdjView:CGRectMake(20, (_adjHeight - 35)/2.0 + 44 + 5, (self.frame.size.width - 40)/2.0 - 10, 35) atStr:@"眼睛倾斜"];
-            [self initAdjView:CGRectMake(30 + (self.frame.size.width - 40)/2.0, (_adjHeight - 35)/2.0 + 44 + 5, (self.frame.size.width - 40)/2.0 - 10, 35) atStr:@"眼睛距离"];
-            [self initAdjView:CGRectMake(20, (_adjHeight - 35)/2.0 + _adjHeight + 44 - 5, self.frame.size.width - 40, 35) atStr:@"下巴高"];
+            [self initAdjView:CGRectMake(0, (_adjHeight*2.0 - 35)/2.0 + 44, self.frame.size.width, 35) atStr:@"脸宽"];
+            [self initAdjView:CGRectMake(0, (_adjHeight - 35)/2.0 + 44 + 5, self.frame.size.width/2.0 - 10, 35) atStr:@"眼睛倾斜"];
+            [self initAdjView:CGRectMake(10 + self.frame.size.width/2.0, (_adjHeight - 35)/2.0 + 44 + 5, self.frame.size.width/2.0 - 10, 35) atStr:@"眼睛距离"];
+            [self initAdjView:CGRectMake(0, (_adjHeight - 35)/2.0 + _adjHeight + 44 - 5, self.frame.size.width, 35) atStr:@"下巴高"];
         }
     }
     return self;
 }
 - (void)setDefaultValue{
+    if(![VEConfigManager sharedManager].iPad_HD){
+        return;
+    }
     __block FaceAttribute *faceAttribute = nil;
     [_currentMedia.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (CGRectContainsPoint(_currentFaceRect, CGPointMake(obj.faceRect.origin.x + obj.faceRect.size.width / 2.0, obj.faceRect.origin.y + obj.faceRect.size.height / 2.0)) || CGRectEqualToRect(_currentFaceRect, obj.faceRect)) {
@@ -111,31 +115,32 @@
     }];
     {
         
-        _adjustmentSliders[0].value = faceAttribute == nil ? 0.5 : faceAttribute.faceWidth;
-        _adjustmentSliders[1].value = faceAttribute == nil ? 0.5 : faceAttribute.forehead;
+        _adjustmentSliders[0].value = _orginMedia.beautyBlurIntensity;
+        _adjustmentSliders[1].value = _orginMedia.beautyBrightIntensity;
+        _adjustmentSliders[2].value = _orginMedia.beautyToneIntensity;
+        _adjustmentSliders[3].value = _orginMedia.beautyBigEyeIntensity;
+        _adjustmentSliders[4].value = _orginMedia.beautyThinFaceIntensity;
         
-        _adjustmentSliders[2].value = faceAttribute == nil ? 0.5 : faceAttribute.chinWidth;
-        _adjustmentSliders[3].value = faceAttribute == nil ? 0.5 : faceAttribute.chinHeight;
+        _adjustmentSliders[5].value = faceAttribute == nil ? 0.5 : faceAttribute.faceWidth;
+        _adjustmentSliders[6].value = faceAttribute == nil ? 0.5 : faceAttribute.forehead;
         
-        _adjustmentSliders[4].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeWidth;
-        _adjustmentSliders[5].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeHeight;
-        _adjustmentSliders[6].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeSlant;
-        _adjustmentSliders[7].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeDistance;
+        _adjustmentSliders[7].value = faceAttribute == nil ? 0.5 : faceAttribute.chinWidth;
+        _adjustmentSliders[8].value = faceAttribute == nil ? 0.5 : faceAttribute.chinHeight;
         
-        _adjustmentSliders[8].value = faceAttribute == nil ? 0.5 : faceAttribute.noseWidth;
-        _adjustmentSliders[9].value = faceAttribute == nil ? 0.5 : faceAttribute.noseHeight;
+        _adjustmentSliders[9].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeWidth;
+        _adjustmentSliders[10].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeHeight;
+        _adjustmentSliders[11].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeSlant;
+        _adjustmentSliders[12].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeDistance;
         
-        _adjustmentSliders[10].value = faceAttribute == nil ? 0.5 : faceAttribute.mouthWidth;
-        _adjustmentSliders[11].value = faceAttribute == nil ? 0.5 : faceAttribute.lipUpper;
-        _adjustmentSliders[12].value = faceAttribute == nil ? 0.5 : faceAttribute.lipLower;
+        _adjustmentSliders[13].value = faceAttribute == nil ? 0.5 : faceAttribute.noseWidth;
+        _adjustmentSliders[14].value = faceAttribute == nil ? 0.5 : faceAttribute.noseHeight;
         
-        _adjustmentSliders[13].value = faceAttribute == nil ? 0.5 : faceAttribute.smile;
+        _adjustmentSliders[15].value = faceAttribute == nil ? 0.5 : faceAttribute.mouthWidth;
+        _adjustmentSliders[16].value = faceAttribute == nil ? 0.5 : faceAttribute.lipUpper;
+        _adjustmentSliders[17].value = faceAttribute == nil ? 0.5 : faceAttribute.lipLower;
         
-        _adjustmentSliders[14].value = _currentMedia.beautyBlurIntensity;
-        _adjustmentSliders[15].value = _currentMedia.beautyBrightIntensity;
-        _adjustmentSliders[16].value = _currentMedia.beautyToneIntensity;
-        _adjustmentSliders[17].value = _currentMedia.beautyBigEyeIntensity;
-        _adjustmentSliders[18].value = _currentMedia.beautyThinFaceIntensity;
+        _adjustmentSliders[18].value = faceAttribute == nil ? 0.5 : faceAttribute.smile;
+        
         [_adjustmentSliders enumerateObjectsUsingBlock:^(UISlider * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             ((UILabel *)[obj.superview viewWithTag:100]).text = [NSString stringWithFormat:@"%.f",(obj.value * 100)];
             [self sliderValueChanged:obj];
@@ -152,7 +157,13 @@
     [_adjustmentViews addObject:view];
     
     {
-        UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake(50, (CGRectGetHeight(rect) - 35)/2.0,view.frame.size.width - ([VEConfigManager sharedManager].iPad_HD ? 90 : 50) , 35)];
+        float width = view.frame.size.width - (63 + 70);
+        if ([VEConfigManager sharedManager].iPad_HD) {
+            width = view.frame.size.width - 90;
+        }else if (rect.size.width < self.frame.size.width) {
+            width = view.frame.size.width - 70 - 10;
+        }
+        UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake(70, (CGRectGetHeight(rect) - 35)/2.0, width, 35)];
         [slider setMinimumValue:0];
         [slider setMaximumValue:1.0];
         [slider setValue:0.5];
@@ -163,26 +174,27 @@
         [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchCancel];
         [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpOutside];
 
-        UIImage * theImage = [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_球1@3x" Type:@"png"]];
+        UIImage * theImage = [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_球2@3x" Type:@"png"]];
         [slider setThumbImage:theImage forState:UIControlStateNormal];
 
         if([VEConfigManager sharedManager].iPad_HD){
             [slider setMaximumTrackImage:[VEHelp imageWithColor:UIColorFromRGB(0x2F302F) size:CGSizeMake(slider.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
             [slider setMinimumTrackImage: [VEHelp imageWithColor:UIColorFromRGB(0x2F302F) size:CGSizeMake(slider.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
         }else{
-            UIImage *trackImage = [VEHelp imageWithColor:Main_Color size:slider.frame.size cornerRadius:1];
+            UIImage *trackImage = [VEHelp imageWithColor:Main_Color size:CGSizeMake(10, 2.0) cornerRadius:1];
             [slider setMinimumTrackImage:trackImage forState:UIControlStateNormal];
-            [slider setMaximumTrackImage: [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_轨道1@1x" Type:@"png"]] forState:UIControlStateNormal];
+            trackImage = [VEHelp imageWithColor:SliderMaximumTrackTintColor size:CGSizeMake(10, 2.0) cornerRadius:1];
+            [slider setMaximumTrackImage:trackImage forState:UIControlStateNormal];
         }
        [_adjustmentSliders addObject:slider];
            [view addSubview:slider];
        }
    
        {
-           UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, CGRectGetHeight(rect))];
+           UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, 65, CGRectGetHeight(rect))];
            label.text  = VELocalizedString(str, nil);
            label.font = [UIFont systemFontOfSize:12];
-           label.textAlignment = NSTextAlignmentCenter;
+           label.textAlignment = NSTextAlignmentLeft;
            label.textColor = TEXT_COLOR;
            [_adjustmentNumberLabels addObject:label];
            [view addSubview:label];
@@ -420,6 +432,7 @@
 -(void)setCurrentMedia:(MediaAsset *)currentMedia
 {
     _currentMedia = currentMedia;
+    _orginMedia = [_currentMedia mutableCopy];
     if([VEConfigManager sharedManager].iPad_HD){
         [self ipad_toolBar_Btn:_currentBtn];
     }else{
@@ -517,7 +530,6 @@
         {
                 self.adjustmentViews[0].hidden = NO;
                 CGRect rect = self.adjustmentViews[0].frame;
-                rect.origin.x = 20;
                 rect.origin.y = (_adjHeight*2.0 - 35)/2.0 + 44;
                 self.adjustmentViews[0].frame = rect;
                 if( faceAttribute )
@@ -533,7 +545,6 @@
         {
                 self.adjustmentViews[0].hidden = NO;
                 CGRect rect = self.adjustmentViews[0].frame;
-                rect.origin.x = 20;
                 rect.origin.y = (_adjHeight - 35)/2.0 + 44;
                 self.adjustmentViews[0].frame = rect;
                 if( faceAttribute )
@@ -558,7 +569,6 @@
         {
                 self.adjustmentViews[0].hidden = NO;
                 CGRect rect = self.adjustmentViews[0].frame;
-                rect.origin.x = 20;
                 rect.origin.y = (_adjHeight*2.0 - 35)/2.0 + 44;
                 self.adjustmentViews[0].frame = rect;
                 if( faceAttribute )
@@ -574,7 +584,7 @@
         {
                 self.adjustmentViews[0].hidden = NO;
                 CGRect rect = self.adjustmentViews[0].frame;
-                rect.origin.x = 20;
+                rect.origin.x = 0;
                 rect.origin.y = (_adjHeight*2.0 - 35)/2.0 + 44;
                 self.adjustmentViews[0].frame = rect;
                 if( faceAttribute )
@@ -662,7 +672,6 @@
         {
                 self.adjustmentViews[0].hidden = NO;
                 CGRect rect = self.adjustmentViews[0].frame;
-                rect.origin.x = 20;
                 rect.origin.y = (_adjHeight*2.0 - 35)/2.0 + 44;
                 self.adjustmentViews[0].frame = rect;
                 if( faceAttribute )
@@ -736,6 +745,7 @@
 
 -(void)resetAdjustment_Btn:( UIButton * ) sender
 {
+    [self setDefaultValue];
     if( _delegate && [_delegate respondsToSelector:@selector(fiveSenses_Reset:atVIew:)] )
     {
         [_delegate fiveSenses_Reset:_currentType atVIew:self];
@@ -748,6 +758,7 @@
     if([VEConfigManager sharedManager].iPad_HD){
         for (int i = 0;i<_adjustmentSliders.count;i++) {
             if(_adjustmentSliders[i].tag == _currentType){// && (_currentType != KBeauty_BlurIntensity  && _currentType != KBeauty_BrightIntensity  && _currentType != KBeauty_ToneIntensity  && _currentType != KBeauty_BigEyes && _currentType != KBeauty_FaceLift)
+                value = 0.0;
                 [_adjustmentSliders[i] setValue:value];
                 break;
             }
@@ -948,6 +959,11 @@
                 value = _editMedia.beautyBigEyeIntensity;
             }
                 break;//KBeauty_BigEyes
+            case KBeauty_FaceLift://MARK: 瘦脸
+            {
+                value = _editMedia.beautyThinFaceIntensity;
+            }
+                break;//
             default:
                 break;
                 

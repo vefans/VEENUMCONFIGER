@@ -46,7 +46,7 @@
         _exportNavBarBtn = [VENavBarButton buttonWithType:UIButtonTypeCustom];
         _exportNavBarBtn.frame = CGRectMake(kWIDTH - (56+10), kStatusBarHeight + ((kNavgationBar_Height-kStatusBarHeight -25)/2), 56, 25);
         [_exportNavBarBtn setTitle:VELocalizedString(@"导出", nil) forState:UIControlStateNormal];
-        [_exportNavBarBtn.titleLabel setFont:[UIFont systemFontOfSize:16]];
+        [_exportNavBarBtn.titleLabel setFont:[UIFont systemFontOfSize:13]];
         CGSize maximumLabelSize = CGSizeMake(100, 25);
         [_exportNavBarBtn sizeThatFits:maximumLabelSize];
         [_exportNavBarBtn setTitleColor:VE_EXPORTBTN_TITLE_COLOR forState:UIControlStateNormal];

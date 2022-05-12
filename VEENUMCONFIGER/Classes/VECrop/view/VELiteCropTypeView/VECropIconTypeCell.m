@@ -63,7 +63,6 @@
             self.titleLabel.attributedText = cropTypeModel.selecctTitle;
         }
         self.iconImageView.image = cropTypeModel.iconSelecct;
-        self.iconImageView.contentMode = UIViewContentModeScaleAspectFit;
         self.iconImageView.tintColor = Main_Color;
     }else{
         self.layer.borderColor = UIColorFromRGB(0x808080).CGColor;
@@ -76,7 +75,6 @@
         }
         else if( [cropTypeModel.title isKindOfClass:[NSMutableAttributedString class]] )
             self.titleLabel.attributedText = cropTypeModel.title;
-        self.iconImageView.contentMode = UIViewContentModeScaleAspectFit;
         self.iconImageView.image = cropTypeModel.iconNormal;
     }
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -121,6 +119,7 @@
 -(UIImageView *)iconImageView{
     if (_iconImageView == nil) {
         _iconImageView = [[UIImageView alloc] init];
+        _iconImageView.contentMode = UIViewContentModeScaleAspectFit;
     }
     return _iconImageView;
 }
