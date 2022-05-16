@@ -504,6 +504,7 @@ isPhoneX;\
 #define TOOLBAR_COLOR UIColorFromRGB(0x101010)
 #define CUSTOM_GRAYCOLOR UIColorFromRGB(0xb2b2b2)
 #define TEXT_COLOR UIColorFromRGB(0xcccccc)
+#define DISABLED_COLOR UIColorFromRGB(0x3c3d3d)
 #define SUBTITLETEXT_COLOR UIColorFromRGB(0xcccccc)
 #define BOTTOM_COLOR [UIColor blackColor]//UIColorFromRGB(0x33333b)
 #define ADDEDMATERIALCOLOR UIColorFromRGB(0x8cb27b) //字幕等遮罩的颜色//58bb9d

@@ -202,10 +202,12 @@
         [self.backBtn setImage:nil forState:UIControlStateNormal];
         [self.backBtn setTitle:VELocalizedString(@"取消", nil) forState:UIControlStateNormal];
         [self.backBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
+        self.backBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         
         [self.finishToolBarBtn setImage:nil forState:UIControlStateNormal];
         [self.finishToolBarBtn setTitle:VELocalizedString(@"完成", nil) forState:UIControlStateNormal];
         [self.finishToolBarBtn setTitleColor:UIColorFromRGB(0x31d065) forState:UIControlStateNormal];
+        self.finishToolBarBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         self.toolBar.hidden = NO;
         self.titlelab.text = @"";
     }else{
