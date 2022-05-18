@@ -6,16 +6,11 @@
 //  Copyright © 2017年 iOS VESDK Team. All rights reserved.
 //
 
-//画笔
-typedef NS_ENUM(NSInteger, VEDoodleType){
-    VEDoodleType_rectangle,   //矩形
-    VEDoodleType_arrow,       //箭头
-    VEDoodleType_pencil,      //画笔
-};
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import <Foundation/Foundation.h>
+#import "VEDefines.h"
 @class VEDrawTouchPointView;
 @class VEDrawView;
 @protocol VEDrawViewDelegate <NSObject>

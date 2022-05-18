@@ -249,6 +249,12 @@
 + (BOOL)OpenZip:(NSString*)zipPath  unzipto:(NSString*)_unzipto;
 +(NSString *)objectToJson:(id)obj;
 
+#pragma mark - 多脚本json加载 特效
++ (CustomMultipleFilter *)getCustomMultipleFilerWithFxId:(int)fxId
+                             filterFxArray:(NSArray *)filterFxArray
+                                 timeRange:(CMTimeRange)timeRange
+                                 currentFrameTexturePath:(NSString *)currentFrameTexturePath
+                                                  atPath:( NSString * ) path;
 
 +(NSDictionary *)getCaptionConfig_Dic:( NSString * ) configPath;
 +(Caption *)getCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atType:(NSInteger) captionType;
@@ -389,6 +395,10 @@
 + (void)copyPixelBuffer:(CVPixelBufferRef)copyedPixelBuffer toPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 +(void)saveUserInfo:(id) obj forKey:(NSString*) key;
 +(BOOL)readUserInfoBoolForKey:(NSString*) key;
+
+
++ (NSString *)cachedFileNameForKey:(NSString *)key;
+
 //MARK: 添加区域权限
 /**添加区域权限
  */

@@ -1096,8 +1096,8 @@
                          fps:kEXPORTFPS
                     metadata:@[titleMetadata, locationMetadata, creationDateMetadata, descriptionMetadata]
                 audioBitRate:0
-         audioChannelNumbers:[VEConfigManager sharedManager].exportConfiguration.audioChannelNumbers
-      maxExportVideoDuration:[VEConfigManager sharedManager].exportConfiguration.outputVideoMaxDuration
+         audioChannelNumbers:[VEConfigManager sharedManager].peExportConfiguration.audioChannelNumbers
+      maxExportVideoDuration:[VEConfigManager sharedManager].peExportConfiguration.outputVideoMaxDuration
                     progress:^(float progress) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             StrongSelf(self);

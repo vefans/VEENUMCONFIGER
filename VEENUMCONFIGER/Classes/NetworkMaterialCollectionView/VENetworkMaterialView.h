@@ -19,7 +19,7 @@
 @property (weak, nonatomic) id<VENetworkMaterialViewDelegate> delegate;
 
 -(void)initCollectView;
-
+-(void)initCollectView:(UIEdgeInsets)contentInset;
 @property(nonatomic, assign)BOOL                 isDragToChange;
 
 @property(nonatomic, assign) NSInteger           isAddCount;

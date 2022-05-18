@@ -4244,7 +4244,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 +(void)downloadFonts:(void(^)(NSError *error))callBack
 {
-    VEEditConfiguration *editConfig =  [VEConfigManager sharedManager].editConfiguration;
+    VEEditConfiguration *editConfig =  [VEConfigManager sharedManager].peEditConfiguration;
     BOOL hasNewFont =  editConfig.fontResourceURL.length>0;
     NSString *uploadUrl = (hasNewFont ? editConfig.fontResourceURL : getFontTypeUrl);
     NSMutableDictionary *fontListDic;

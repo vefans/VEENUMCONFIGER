@@ -12,11 +12,19 @@
 @implementation VENet_CollectionView
 
 - (void)setContentOffset:(CGPoint)contentOffset{
+    //if(contentOffset.y > 25 && contentOffset.y < 25 && [VEConfigManager sharedManager].iPad_HD)
+//    {
+//        contentOffset.y = -25;
+//    }
     NSLog(@"%s : %@",__func__,NSStringFromCGPoint(contentOffset));
     [super setContentOffset:contentOffset];
 }
 
 - (void)setContentOffset:(CGPoint)contentOffset animated:(BOOL)animated{
+    //if(contentOffset.y > 25 && contentOffset.y < 25 && [VEConfigManager sharedManager].iPad_HD)
+//    {
+//        contentOffset.y = -25;
+//    }
     NSLog(@"%s : %@",__func__,NSStringFromCGPoint(contentOffset));
     [super setContentOffset:contentOffset animated:animated];
 }
@@ -69,7 +77,7 @@
     
     _topLayer = [CAGradientLayer layer];
     _topLayer.colors = colors;
-    _topLayer.frame = CGRectMake(0, CGRectGetMinY(view.frame), view.frame.size.width, 10);
+    _topLayer.frame = CGRectMake(0, CGRectGetMinY(view.frame), view.frame.size.width, 15);
     _topLayer.startPoint = CGPointMake(0, 1);
     _topLayer.endPoint = CGPointMake(0,0);
     [view.superview.layer insertSublayer:_topLayer above:0];
@@ -79,7 +87,7 @@
     _bottomLayer.startPoint = CGPointMake(0, 0);
     _bottomLayer.endPoint = CGPointMake(0, 1);
     [view.superview.layer insertSublayer:_bottomLayer above:0];
-    
+    if([VEConfigManager sharedManager].iPad_HD)
     _collectionView.contentInset = UIEdgeInsetsMake(15, 0, 15, 0);
     
 }
@@ -98,7 +106,11 @@
     
 }
 
--(void)initCollectView
+-(void)initCollectView{
+    [self initCollectView:UIEdgeInsetsMake(0, 0, 0, 0)];
+}
+
+-(void)initCollectView:(UIEdgeInsets)contentInset
 {
     _flowLayout = [[UICollectionViewFlowLayout alloc] init];
     _flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -107,9 +119,9 @@
     _flowLayout.footerReferenceSize = CGSizeMake(0,0);
     _flowLayout.minimumLineSpacing = 0.0;
     _flowLayout.minimumInteritemSpacing = 0.0;
+    _flowLayout.sectionInset = contentInset;
     
     VENet_CollectionView * videoCollectionView =  [[VENet_CollectionView alloc] initWithFrame: self.bounds collectionViewLayout:_flowLayout];
-    videoCollectionView.backgroundColor = [UIColor clearColor];
     videoCollectionView.tag = 1000000;
     videoCollectionView.dataSource = self;
     videoCollectionView.delegate = self;
@@ -119,6 +131,7 @@
     _collectionView.backgroundColor = [UIColor clearColor];
     _collectionView.showsHorizontalScrollIndicator = NO;
     _collectionView.showsVerticalScrollIndicator = NO;
+//    _collectionView.contentInset = UIEdgeInsetsMake(50, 0, 50, 0);
     [self addSubview:_collectionView];
     if( _isVertical_Cell  )
     {
@@ -334,7 +347,6 @@
         
         cell.isNotMove = _isNotMove;
     }
-    
     return cell;
 }
 
@@ -469,7 +481,6 @@
         _topLayer.frame = CGRectMake(0, CGRectGetMinY(_collectionView.frame), _collectionView.frame.size.width, 15);
         _bottomLayer.frame = CGRectMake(0, CGRectGetMaxY(_collectionView.frame) - 20, _collectionView.frame.size.width, 20);
         _flowLayout.itemSize = CGSizeMake(frame.size.width,frame.size.height);
-//        _collectionView.contentInset = UIEdgeInsetsMake(20, 0, 20, 0);
     }
 }
 @end

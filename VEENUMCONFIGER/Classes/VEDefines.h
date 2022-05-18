@@ -6,7 +6,18 @@
 #import "VEAuthorizationView.h"
 
 #define kAppKeyType      @"AppKeyType"       //appkey类型
+//画笔
+typedef NS_ENUM(NSInteger, VEDoodleType){
+    VEDoodleType_rectangle,   //矩形
+    VEDoodleType_arrow,       //箭头
+    VEDoodleType_pencil,      //画笔
+};
 
+typedef NS_ENUM(NSInteger,VLSegmentType){
+    KVLSegment_None = 0, //无
+    KVLSegment_Green, //绿幕
+    KVLSegment_AI, //智能
+};
 typedef NS_ENUM(NSInteger,KVLBeautyType){
     KVLBeautyType_Blur = 0, //磨皮
     KVLBeautyType_Brightness, //美白
@@ -454,21 +465,16 @@ typedef void(^EditVideoForOnceFinishAction)(CGRect crop,CGRect cropRect,BOOL ver
 //#define iPad_HD ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
 #define iPadToolWidth 130
 #define DEGREES_TO_RADIANS(d) (d * M_PI / 180)
-#define kThumbnailFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/thumbnailFolder"]
 
 #define WeakSelf(obj) __weak typeof(obj) weakSelf = obj;
 #define StrongSelf(obj) __strong typeof(obj) strongSelf = weakSelf;
-
 #define iPhone4s ([[UIScreen mainScreen] bounds].size.height == 480 || [[UIScreen mainScreen] bounds].size.width == 480)
 #define LASTIPHONE_5 [UIScreen mainScreen].bounds.size.height > 480
 #define LastIphone5 [UIScreen mainScreen].bounds.size.width > 320
 #define VE_isIPhone_iPhone12 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1170, 2532), [[UIScreen mainScreen] currentMode].size) : NO)
-
 //判断iPhone12 Pro Max
 #define VE_isIPhone_iPhone12_ProMax ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1284, 2778), [[UIScreen mainScreen] currentMode].size) : NO)
-
 //#define iPhone_X (  (([[UIScreen mainScreen] bounds].size.height == 812.0 && [[UIScreen mainScreen] bounds].size.width == 375.0) || ([[UIScreen mainScreen] bounds].size.height == 375.0 && [[UIScreen mainScreen] bounds].size.width == 812.0))   ||   (([[UIScreen mainScreen] bounds].size.height == 896.0 && [[UIScreen mainScreen] bounds].size.width == 414.0) || ([[UIScreen mainScreen] bounds].size.height == 414.0 && [[UIScreen mainScreen] bounds].size.width == 896.0)) ||VE_isIPhone_iPhone12|| VE_isIPhone_iPhone12_ProMax)
-
 #define iPhone_X ({\
 BOOL isPhoneX = NO;\
 if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {\
@@ -489,29 +495,25 @@ isPhoneX;\
 #define NAVIBGCOLOR [VEConfigManager sharedManager].navigationBackgroundColor
 #define NAVIBARTITLEFONT [VEConfigManager sharedManager].navigationBarTitleFont
 #define SliderMaximumTrackTintColor UIColorFromRGB(0x3c3d3d)
-
 #pragma mark-PESDK颜色配比
-#define PESDKMain_Color UIColorFromRGB(0x9700ff)
+#define PESDKMain_Color UIColorFromRGB(0x9600ff)
 #define PESDKTEXT_COLOR UIColorFromRGB(0x3a3a3a)
-
 #define VIEW_COLOR UIColorFromRGB(0x111111)
 #define VIEW_IPAD_COLOR UIColorFromRGB(0x1a1a1a)
 #define SCREEN_IPAD_BACKGROUND_COLOR UIColorFromRGB(0x070709)
-
 #define NV_Color 0x27262c
 #define SCREEN_BACKGROUND_COLOR [VEConfigManager sharedManager].viewBackgroundColor
 #define BACKGROUND_WHITE_COLOR UIColorFromRGB(0xefefef)
 #define TOOLBAR_COLOR UIColorFromRGB(0x101010)
 #define CUSTOM_GRAYCOLOR UIColorFromRGB(0xb2b2b2)
 #define TEXT_COLOR UIColorFromRGB(0xcccccc)
+#define HIGHLIGHTED_COLOR UIColorFromRGB(0x3c3d3d)
 #define DISABLED_COLOR UIColorFromRGB(0x3c3d3d)
 #define SUBTITLETEXT_COLOR UIColorFromRGB(0xcccccc)
 #define BOTTOM_COLOR [UIColor blackColor]//UIColorFromRGB(0x33333b)
 #define ADDEDMATERIALCOLOR UIColorFromRGB(0x8cb27b) //字幕等遮罩的颜色//58bb9d
 #define MATERIALMASKCOLOR ADDEDMATERIALCOLOR//[ADDEDMATERIALCOLOR colorWithAlphaComponent:0.9]
-
 #define ipadToolBarHeight (iPad?20:0)
-
 //视频导出帧率
 #define kEXPORTFPS 24
 //视频导出分辨率
@@ -532,17 +534,29 @@ isPhoneX;\
 #define kPlayerViewOriginX (iPhone_X ? 44 : 0)
 #define kIs_iPhoneX iPhone_X
 #define kIs_iphone (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
-
 /*状态栏高度+ NavgationBar高度*/
 #define kNavgationBar_Height   (kIs_iPhoneX ? 88:64)
-
 /*状态栏高度*/
 #define kStatusBarHeight (CGFloat)(kIs_iPhoneX?(44.0):(20.0))
-
 /*底部安全区域远离高度*/
 #define kBottomSafeHeight (CGFloat)(kIs_iPhoneX?(34.0):(0))
+#define kStickerMinScale   0.1
+#define kStickerMaxScale   4.0
+#define kTransitionMinValue   0.1
+//#define USEDYNAMICCOVER
+#define kLRFlipTransform CGAffineTransformMakeScale(-1.0, 1.0)  //左右
+#define kUDFlipTransform CGAffineTransformMakeScale(1.0,-1.0)   //上下
+#define kLRUPFlipTransform CGAffineTransformScale(CGAffineTransformMakeScale(1.0,-1.0), -1.0, 1.0)  //上下左右
 
+#define isUseCustomLayer 1
+#define BuildAutoSeek 1
 
+#define  KScrollHeight   60
+#define kDefaultFontSize 22.0
+
+#define kHandleHeight 50.0    //把手高度
+
+#define MAX_DETECT_NUM 21 //最大检测次数
 
 
 #define getEffectTypeUrl @"http://kx.56show.com/kuaixiu/openapi/video/getcaption3"
@@ -725,9 +739,6 @@ isPhoneX;\
 
 #define kAutoSegmentImageFolder [kVEDirectory stringByAppendingPathComponent:@"AutoSegmentImage"]
 
-#define kStickerMinScale   0.1
-#define kStickerMaxScale   4.0
-#define kTransitionMinValue   0.1
 
 #define kVERecordSet @"VERecordSet"
 #define kVEProportionIndex  @"VEProportionIndex"    //视频比例
@@ -737,18 +748,4 @@ isPhoneX;\
 #define kVEAVCaptureDevicePosition @"VEAVCaptureDevicePosition"
 #define VECustomErrorDomain @"com.VESDK.ErrorDomain"
 
-//#define USEDYNAMICCOVER
-
-#define kLRFlipTransform CGAffineTransformMakeScale(-1.0, 1.0)  //左右
-#define kUDFlipTransform CGAffineTransformMakeScale(1.0,-1.0)   //上下
-#define kLRUPFlipTransform CGAffineTransformScale(CGAffineTransformMakeScale(1.0,-1.0), -1.0, 1.0)  //上下左右
-
-#define isUseCustomLayer 1
-#define BuildAutoSeek 1
-
-#define  KScrollHeight   60
-#define kDefaultFontSize 22.0
-
-#define kHandleHeight 50.0    //把手高度
-
-#define MAX_DETECT_NUM 21 //最大检测次数
+#define kThumbnailFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/thumbnailFolder"]

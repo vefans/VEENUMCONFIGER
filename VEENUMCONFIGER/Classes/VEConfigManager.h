@@ -98,6 +98,11 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property (nonatomic,strong) VEExportConfiguration   *exportConfiguration;
 @property (nonatomic,strong) VEEditConfiguration     *editConfiguration;
 @property (nonatomic,strong) VECameraConfiguration   *cameraConfiguration;
+
+@property (nonatomic,strong) VEExportConfiguration   *peExportConfiguration;
+@property (nonatomic,strong) VEEditConfiguration     *peEditConfiguration;
+@property (nonatomic,strong) VECameraConfiguration   *peCameraConfiguration;
+
 /**视频输出路径
  */
 @property (copy,nonatomic)NSString  * outPath;
