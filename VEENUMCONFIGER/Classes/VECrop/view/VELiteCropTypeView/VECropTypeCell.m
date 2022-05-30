@@ -35,7 +35,7 @@
 
 
 -(void)setupView{
-    [self setBackgroundColor:[VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : UIColorFromRGB(0x27262C)];
+    [self setBackgroundColor:[VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : UIColorFromRGB(0x272727)];
 }
 
 

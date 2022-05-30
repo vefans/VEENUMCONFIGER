@@ -29,7 +29,7 @@
 {
     MediaAsset *_editMedia;//用于对比
 }
-@property(nonatomic, assign)NSInteger       currentType;
+@property(nonatomic, assign)KBeautyType       currentType;
 @property(nonatomic, assign)UIButton        *currentBtn;
 
 @property(nonatomic, weak)UIView            *toolbarView;
@@ -41,11 +41,13 @@
 
 @property(nonatomic, strong)NSMutableArray<UIView *> * adjustmentViews;
 @property(nonatomic, strong)NSMutableArray<UISlider *> * adjustmentSliders;
-@property(nonatomic, strong)NSMutableArray<UILabel *> * adjustmentNumberLabels;
+@property(nonatomic, strong)NSMutableArray<UIButton *> * adjustmentNumberBtns;
 
 @property(nonatomic, assign)float  adjHeight;
 @property(nonatomic, strong)MediaAsset * currentMedia;
 @property(nonatomic, strong)MediaAsset * orginMedia;
 @property(nonatomic, assign)CGRect currentFaceRect;
 - (void)setDefaultValue;
+
+-(void)resetAdjustment_Btn:( UIButton * ) sender;
 @end

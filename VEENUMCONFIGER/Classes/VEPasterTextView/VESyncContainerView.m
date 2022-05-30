@@ -21,7 +21,16 @@
 -(void)setCurrentPasterTextView:(UIView *)currentPasterTextView
 {
     if( !_isMask )
+    {
         _currentPasterTextView = currentPasterTextView;
+        if( currentPasterTextView )
+        {
+            if( _delegate && [_delegate respondsToSelector:@selector(oldSelectePasterTextView:)] )
+            {
+                [_delegate oldSelectePasterTextView:currentPasterTextView];
+            }
+        }
+    }
 }
 
 -(void)Cancel_selectePasterTextView

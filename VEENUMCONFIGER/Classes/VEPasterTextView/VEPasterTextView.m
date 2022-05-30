@@ -1439,7 +1439,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             [_delegate pasterViewDidClose:self];
         }
     }
-    [self removeFromSuperview];
+//    [self removeFromSuperview];
 }
 
 - (NSInteger)getTextAlign{

@@ -38,6 +38,10 @@
 "素材库" = "Stock videos";
 "虚拟直播间" = "VirtualLive";
 "请添加音乐" = "Add Music";
+"从文件导入" = "File.."
+"已下载音乐" = "Downloaded";
+"精选音乐" = "Cloud";
+"本地音乐" = "Local";
 
 "无法访问相机!" = "Can not access camera!";
 "用户拒绝访问相机,请在<设置-隐私-相机中开启" = "User reject to access camera, please open in <Setting-Privacy-Camera";
@@ -264,6 +268,7 @@
 "添加转场" = "Add transition";
 
 "无可用的网络" = "No available network";
+"请检查网络，网络连接失败" = "No available network";
 "允许访问" = "Accessable";
 "禁止访问音乐" = "Music lib access denied";
 "无法访问媒体资料库" = "Media lib can not access";
@@ -862,7 +867,7 @@
 "时间至少大于0.2秒" = "Time is at least greater than 0.2 seconds";
 "添加特效" = "Add Effects";
 
-"新增滤镜" = "Add Filters";
+"新增滤镜" = "Add Filter";
 "新增调节" = "Add adjust";
 "AI识别"  = "AI recognition";
 "+ 添加音频" = "+ Add audio";
@@ -931,6 +936,7 @@
 "截取" = "Trim";
 "文字" = "Text";
 "滤镜" = "Filters";
+"新增滤镜" = "Filter";
 "抠图" = "Cutout";
 "抠像1" = "Chromakey1";
 "抠像2" = "Chromakey2";
@@ -1092,8 +1098,8 @@
 "淡入淡出" = "Fade";
 "放大" = "Zoom in";
 "滚动" = "Scroll";
-"淡入" = "Fade in";
-"淡出" = "Fade out";
+"淡入" = "In";
+"淡出" = "Out";
 "视频: %1$d/%2$d " = "Video: %1$d/%2$d";
 "图片:  %1$d/%2$d " = "Picture: %1$d/%2$d";
 "视频: %1$d/%2$d 图片:  %3$d/%4$d " = "Video: %1$d/%2$d Picture: %3$d/%4$d";
@@ -1851,12 +1857,12 @@
 "眼睛" = "Eye";
 "嘴唇"= "Lips";
 "脸宽" = "Width";
-"下颚宽" = "Jaw width";
-"下巴高" = "Chin High";
+"下颌" = "Jaw width";
+"下巴" = "Chin High";
 "额头高" = "Forehead Height";
 "上嘴唇" = "Upper";
 "下嘴唇" = "Lower";
-"嘴巴宽" = "Mouth";
+"嘴宽" = "Mouth";
 "备份" = "Backup";
 "管理" = "Manage";
 "正在等待" = "Waiting";
@@ -2122,6 +2128,11 @@
 "未下载" = "Not download";
 "未识别到天空" = "Not recognize sky";
 
+"音乐库" = "Music libary";
+"拖动改变播放起点" = "Drag to change the playback starting point";
+"已下载音乐" = "Downloaded";
+"全选" = "Select All";
+"搜索" = "Search";
 "音乐" = "Music libary";
 
 "推荐音乐" = "Recommended music";
@@ -2492,3 +2503,21 @@
 "tr-" = "Turkish";
 "搜你感兴趣的模板" = "Search for templates you are interested in";
 "历史搜索" = "History Search";
+"时长：%.1fs" = "Duration：%.1fs";
+
+"鼻宽" = "Nose width";
+"鼻高" = "Nose height";
+"眼宽" = "Eye width";
+"眼高" = "Eye height";
+"眼距" = "Eye space";
+"倾斜" = "Tilt";
+
+"绿幕" = "Green";
+"智能" = "A I";
+"关闭" = "Close";
+
+"选择抠图模式" = "Select cutout model";
+"摄像头" = "Camera";
+"隐藏" = "Hide";
+"全局" = "All";
+"模糊度" = "Blur";

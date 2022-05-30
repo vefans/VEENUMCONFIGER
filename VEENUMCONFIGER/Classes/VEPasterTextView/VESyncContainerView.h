@@ -11,6 +11,7 @@
 @protocol VESyncContainerViewDelegate <NSObject>
 -(void)selectePasterTextView:( UITapGestureRecognizer * ) tapGesture atView:( VESyncContainerView * ) view;
 -(void)cancel_selectePasterTextView:( VESyncContainerView * ) view;
+-(void)oldSelectePasterTextView:( UIView * ) oldPasterTextView;
 @end
 
 @interface VESyncContainerView : UIView

@@ -24,6 +24,9 @@
 }
 
 - (void)setContentInset:(UIEdgeInsets)contentInset{
+    if([VEConfigManager sharedManager].iPad_HD){
+        contentInset.top = 15;
+    }
     NSLog(@"%s ,top:%f,left:%f,bottom:%f,right:%f",__func__,contentInset.top,contentInset.left,contentInset.bottom,contentInset.right);
     [super setContentInset:contentInset];
 }

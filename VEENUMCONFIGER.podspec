@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "VEENUMCONFIGER"
-  spec.version      = "2.3.0"
+  spec.version      = "2.3.1"
   spec.summary      = "VEENUMCONFIGER is a library of common resources."
   spec.homepage     = "https://github.com/vefans/VEENUMCONFIGER"
   spec.platform     = :ios, "9.0"
@@ -11,7 +11,7 @@ Pod::Spec.new do |spec|
   
   spec.requires_arc = true  
   spec.dependency 'SDWebImage'
-  spec.dependency 'SDWebImage/WebP'
+  spec.dependency 'SDWebImageWebPCoder', '0.2.3'
   spec.dependency 'YYWebImage'
   spec.dependency "LibVECore"
   spec.dependency "ZipArchive"

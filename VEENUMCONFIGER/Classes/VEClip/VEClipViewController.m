@@ -353,22 +353,37 @@
             _cropTypeScrollView.tag = 222221;
         }
         
-        float cropTypeWidth = _cropTypeScrollView.frame.size.width/6.0;
+        float cropTypeWidth = _cropTypeScrollView.frame.size.height;
         float cropTypeHeight =  _cropTypeScrollView.frame.size.height;
+        NSMutableArray * array = [NSMutableArray new];
+        [array addObject:[NSNumber numberWithInteger:0]];
+        [array addObject:[NSNumber numberWithInteger:3]];
+        [array addObject:[NSNumber numberWithInteger:4]];
+        [array addObject:[NSNumber numberWithInteger:1]];
+        [array addObject:[NSNumber numberWithInteger:5]];
+        [array addObject:[NSNumber numberWithInteger:2]];
+        [array addObject:[NSNumber numberWithInteger:10]];
+        [array addObject:[NSNumber numberWithInteger:11]];
+        [array addObject:[NSNumber numberWithInteger:8]];
+        [array addObject:[NSNumber numberWithInteger:9]];
+        [array addObject:[NSNumber numberWithInteger:6]];
+        [array addObject:[NSNumber numberWithInteger:7]];
+        float contWidth = 15;
         for( int i = 0; i < 12; i++ )
         {
+            NSInteger index = [array[i] integerValue];
             VECropType type = VE_VECROPTYPE_FREE;
             NSString * str = nil;
             UIImage * namedImage = nil;
             UIImage *selectImage = nil;
             
-            UIButton   *sender = [[UIButton alloc] initWithFrame:CGRectMake(cropTypeWidth * i, 0, cropTypeWidth, cropTypeHeight)];
+            UIButton   *sender = [[UIButton alloc] initWithFrame:CGRectMake(contWidth, 0, cropTypeWidth, cropTypeHeight)];
             
-            switch (i) {
+            switch (index) {
                 case 0://原比例
                 {
                     type = VE_VECROPTYPE_ORIGINAL;
-                    str = VELocalizedString(@"原比例", nil);
+                    str = VELocalizedString(@"原始", nil);
                     namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_自由默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
                     selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_自由选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
                 }
@@ -454,13 +469,16 @@
                     break;
             }
             
+            sender.frame = CGRectMake(contWidth, 0, (namedImage.size.width/namedImage.size.height)*cropTypeHeight, cropTypeHeight);
+            contWidth += (namedImage.size.width/namedImage.size.height)*cropTypeHeight + 10;
+            
             if( str )
             {
-                UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, sender.frame.size.height - 15 - 8, sender.frame.size.width, 15)];
+                UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, sender.frame.size.height - ( 20/2.0 + sender.frame.size.width/2.0 ), sender.frame.size.width, 20)];
                 label.tag = 22222;
                 label.textColor = PESDKTEXT_COLOR;
                 label.textAlignment = NSTextAlignmentCenter;
-                label.font = [UIFont systemFontOfSize:8];
+                label.font = [UIFont systemFontOfSize:12];
                 label.text = str;
                 [sender addSubview:label];
             }
@@ -488,7 +506,8 @@
             }
             [sender addTarget:self action:@selector(cropType_Btn:) forControlEvents:UIControlEventTouchUpInside];
         }
-        [self.cropTypeScrollView setContentSize:CGSizeMake(cropTypeWidth * 12, self.cropTypeScrollView.frame.size.height)];
+        [self.cropTypeScrollView setContentSize:CGSizeMake(contWidth, self.cropTypeScrollView.frame.size.height)];
+        [self.cropTypeScrollView setContentOffset:CGPointMake(0, 0)];
         self.cropTypeScrollView.showsVerticalScrollIndicator = NO;
         self.cropTypeScrollView.showsHorizontalScrollIndicator = NO;
     }
@@ -1627,6 +1646,10 @@
 //            rect.origin.y =  rect.origin.y+45;
 //            rect.size.width =  rect.size.width-10;
 //            rect.size.height =  rect.size.height-90;
+            if( [VEConfigManager sharedManager].isPictureEditing )
+            {
+                rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - 100 - kToolbarHeight);
+            }
             _videoCropView = [[VEVideoCropView alloc] initWithFrame:rect withVideoCropType:VEVideoCropType_FixedCrop];
             UIImage * image = [self canvasImage];
             _videoCropView.cropView.cropRatio = image.size.width/image.size.height;
@@ -1814,6 +1837,7 @@
         if( [VEConfigManager sharedManager].isPictureEditing )
         {
             _cropTypeView.backgroundColor = [UIColor whiteColor];
+            _cropTypeView.frame = CGRectMake(0, _photoView.frame.size.height - 100, CGRectGetWidth(self.bgView.frame), 100);
         }
         _cropTypeView.delegate = self;
     }

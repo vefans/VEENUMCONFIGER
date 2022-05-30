@@ -41,7 +41,7 @@
 #pragma mark - 1.Setting View and Style
 
 -(void)setupView{
-    [self setBackgroundColor:[VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : UIColorFromRGB(0x27262C)];
+    [self setBackgroundColor:[VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : UIColorFromRGB(0x272727)];
 }
 
 
@@ -62,7 +62,7 @@
         {
             self.titleLabel.attributedText = cropTypeModel.selecctTitle;
         }
-        self.iconImageView.image = cropTypeModel.iconSelecct;
+        self.iconImageView.image = [cropTypeModel.iconSelecct imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         self.iconImageView.tintColor = Main_Color;
     }else{
         self.layer.borderColor = UIColorFromRGB(0x808080).CGColor;

@@ -18,7 +18,6 @@
 #import <SDWebImage/UIImage+GIF.h>
 #import <ZipArchive/ZipArchive.h>
 #import <VEENUMCONFIGER/VEFileDownloader.h>
-#import <YYWebImage/YYWebImage.h>
 
 @implementation VEHelp
 + (NSString *) system
@@ -1999,6 +1998,18 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     return filterArray;
 }
+
++ (NSString *)getlocalFileMusicPathWithDic:(NSString *)filename{
+    NSString *scaleFolderPath = kLocalMusicFolder;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:scaleFolderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:scaleFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+//    NSString *pathExtension = [[[filename pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+//    NSString *itemPath = [[scaleFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[filename hash]]] stringByAppendingPathExtension:pathExtension];
+    NSString *itemPath = [[scaleFolderPath stringByAppendingString:@"/"] stringByAppendingString:filename];
+    return itemPath;
+}
+
 + (NSString *)getScaleDownloadPathWithDic:(NSDictionary *)itemDic{
     NSString *scaleFolderPath = kScaleFolder;
     if(![[NSFileManager defaultManager] fileExistsAtPath:scaleFolderPath]){
@@ -2066,6 +2077,18 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     return itemPath;
 }
+
++ (NSString *)getMusicDownloadFolderWithDic:(NSDictionary *)itemDic{
+    NSString *folderPath = kFlowMusicFolder;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    NSString *itemPath = [[[folderPath stringByAppendingString:@"/"] stringByAppendingString:itemDic[@"name"]] stringByAppendingPathExtension:pathExtension];
+    
+    return itemPath;
+}
+
 + (NSString *)getMediaIdentifier {
     NSDate *date_ = [NSDate date];
     NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
@@ -3526,8 +3549,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     reverseVideoView.layer.masksToBounds = YES;
     [view addSubview:reverseVideoView];
     
-    YYAnimatedImageView * imageView = [[YYAnimatedImageView alloc] initWithFrame:CGRectMake( (reverseVideoView.frame.size.width - 100)/2.0, 10, 100, 100)];
-    imageView.image = [YYImage imageWithContentsOfFile:[[VEHelp getEditBundle] pathForResource:@"/New_EditVideo/animatSchedule_@3x" ofType:@"png"]];
+    UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake( (reverseVideoView.frame.size.width - 100)/2.0, 10, 100, 100)];
+    [imageView sd_setImageWithURL:[NSURL fileURLWithPath:[[VEHelp getEditBundle] pathForResource:@"/New_EditVideo/animatSchedule_@3x" ofType:@"png"]]];
     [reverseVideoView addSubview:imageView];
 
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0 , imageView.frame.size.height + imageView.frame.origin.y, reverseVideoView.frame.size.width, 20)];
@@ -4333,6 +4356,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (oldList.count > 0) {
         [newList enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
             NSString *updateTime = obj1[@"updatetime"];
+            if ([updateTime isKindOfClass:[NSNumber class]]) {
+                updateTime = [obj1[@"updatetime"] stringValue];
+            }
             [oldList enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
                 if ([obj2[@"id"] intValue] == [obj1[@"id"] intValue]) {
                     if( [obj2[@"updatetime"] isKindOfClass:[NSString class]] )
@@ -7992,8 +8018,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     [typeArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                         
                         NSString *updateTime = obj[@"updatetime"];
+                        if ([updateTime isKindOfClass:[NSNumber class]]) {
+                            updateTime = [obj[@"updatetime"] stringValue];
+                        }
                         int ID = [obj[@"id"] intValue];
                         NSString *oldUpdateTime = oldMaterialArray[idx][@"updatetime"];
+                        if ([oldUpdateTime isKindOfClass:[NSNumber class]]) {
+                            oldUpdateTime = [oldMaterialArray[idx][@"updatetime"] stringValue];
+                        }
                         int oldID = [oldMaterialArray[idx][@"id"] intValue];
                         if( (oldUpdateTime && ![oldUpdateTime isEqualToString:updateTime]) || (ID != oldID) )
                         {
@@ -8022,8 +8054,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     [typeArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                         
                         NSString *updateTime = obj[@"updatetime"];
+                        if ([updateTime isKindOfClass:[NSNumber class]]) {
+                            updateTime = [obj[@"updatetime"] stringValue];
+                        }
                         int ID = [obj[@"id"] intValue];
                         NSString *oldUpdateTime = oldMaterialArray[idx][@"updatetime"];
+                        if ([oldUpdateTime isKindOfClass:[NSNumber class]]) {
+                            oldUpdateTime = [oldMaterialArray[idx][@"updatetime"] stringValue];
+                        }
                         int oldID = [oldMaterialArray[idx][@"id"] intValue];
                         if( (oldUpdateTime && ![oldUpdateTime isEqualToString:updateTime]) || (ID != oldID) )
                         {
@@ -8408,11 +8446,17 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [obj enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
             NSString *oldId = obj1[@"id"];
             NSString *oldUpdateTime = obj1[@"updatetime"];
+            if ([oldUpdateTime isKindOfClass:[NSNumber class]]) {
+                oldUpdateTime = [obj1[@"updatetime"] stringValue];
+            }
             __block NSString *newUpdateTime;
             [newList enumerateObjectsUsingBlock:^(NSArray * _Nonnull newObj, NSUInteger newIdx, BOOL * _Nonnull newStop) {
                 [newObj enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull newObj1, NSUInteger newIdx1, BOOL * _Nonnull newStop1) {
                     if ([newObj1[@"id"] isEqual:oldId]) {
                         newUpdateTime = newObj1[@"updatetime"];
+                        if ([newUpdateTime isKindOfClass:[NSNumber class]]) {
+                            newUpdateTime = [newObj1[@"updatetime"] stringValue];
+                        }
                         *newStop1 = YES;
                         *newStop = YES;
                     }
@@ -10082,8 +10126,8 @@ static OSType help_inputPixelFormat(){
     if( effectDic[@"atlas"]  )
         particle.maskAtlas = [effectDic[@"atlas"]  boolValue];
     
-    if( effectDic[@"mask"]  )
-        particle.mask = [effectDic[@"mask"]  boolValue];
+//    if( effectDic[@"mask"]  )
+//        particle.mask = [effectDic[@"mask"]  boolValue];
     
     if( effectDic[@"blendFuncSource"]  )
         particle.blendFuncSource = [effectDic[@"blendFuncSource"]  intValue];

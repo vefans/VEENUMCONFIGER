@@ -204,6 +204,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_Cutout              = 58,     //抠图
     VEAdvanceEditType_MergeLayers     = 59,     //图层合并
     VEAdvanceEditType_Hair                  = 60,     //头发
+    VEAdvanceEditType_FineTun             = 61,   //微调
 };
 
 /*
@@ -571,7 +572,8 @@ isPhoneX;\
 #define VEEditBundlePath VEEditResourceBundle.bundlePath
 #define VERecordResourceBundle [VEHelp getRecordBundle]
 #define VEDemoUseBundle [VEHelp getDemoUseBundle]
-#define isEnglish [[[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"][0] hasPrefix:@"en"] || [[[NSUserDefaults standardUserDefaults] objectForKey:kVELanguage] isEqualToString:@"en"]
+//#define isEnglish [[[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"][0] hasPrefix:@"en"] || [[[NSUserDefaults standardUserDefaults] objectForKey:kVELanguage] isEqualToString:@"en"]
+#define isEnglish ([[[NSUserDefaults standardUserDefaults] objectForKey:kVELanguage] length] > 0 ? [[[NSUserDefaults standardUserDefaults] objectForKey:kVELanguage] isEqualToString:@"en"] : [[[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"][0] hasPrefix:@"en"])
 #define LanguageBundle [NSBundle bundleWithPath:[ClassBundle pathForResource:[NSString stringWithFormat:@"VEEditSDK.bundle/%@", isEnglish ? @"en" : @"zh-Hans"] ofType:@"lproj"]]
 //#define VELocalizedString(key,des) [LanguageBundle localizedStringForKey:(key) value:des table:@"VEEditSDK_Localizable"]
 #define VELocalizedString(key,des) [VEHelp getLocalizedString:key]
@@ -697,6 +699,11 @@ isPhoneX;\
 #define kStickerIconPlistPath [kStickerFolder stringByAppendingPathComponent:@"EffectIconList.plist"]
 
 #define kScaleFolder [kVEDirectory stringByAppendingPathComponent:@"scales"];
+
+#define kLocalMusicFolder [kVEDirectory stringByAppendingPathComponent:@"localFileMusics"];
+
+#define kMusicSearchFolder [kVEDirectory stringByAppendingPathComponent:@"MusicSearch"]
+#define kMusicSearchHistoryPath [kMusicSearchFolder stringByAppendingPathComponent:@"MusicSearchList.plist"]
 
 #define kStickerTypesPath [kStickerFolder stringByAppendingPathComponent:@"EffectTypesList.plist"]
 #define kNewStickerPlistPath [kStickerFolder stringByAppendingPathComponent:@"EffectPlistList.plist"]

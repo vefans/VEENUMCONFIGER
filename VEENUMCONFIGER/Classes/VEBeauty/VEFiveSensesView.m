@@ -52,7 +52,7 @@
 //        }
         
         _adjustmentSliders = [NSMutableArray new];
-        _adjustmentNumberLabels = [NSMutableArray new];
+        _adjustmentNumberBtns = [NSMutableArray new];
         _adjustmentViews = [NSMutableArray new];
         
         _adjHeight = (self.frame.size.height - kPlayerViewOriginX - 40 - 44)/2.0;
@@ -69,18 +69,15 @@
                             @{@"title":@"大眼",@"id":@(KBeauty_BigEyes)},
                             @{@"title":@"瘦脸",@"id":@(KBeauty_FaceLift)},
                             @{@"title":@"脸宽",@"id":@(KBeauty_FaceWidth)},
-                            @{@"title":@"额高",@"id":@(KBeauty_Forehead)},
-                            @{@"title":@"下颚宽",@"id":@(KBeauty_ChinWidth)},
-                            @{@"title":@"下巴高",@"id":@(KBeauty_ChinHeight)},
-                              //@{@"title":@"眼睛大小",@"id":@(KBeauty_EyeSize)},
-                            @{@"title":@"眼睛宽",@"id":@(KBeauty_EyeWidth)},
-                            @{@"title":@"眼睛高",@"id":@(KBeauty_EyeHeight)},
-                            @{@"title":@"眼睛倾斜",@"id":@(KBeauty_EyeSlant)},
-                            @{@"title":@"眼睛距离",@"id":@(KBeauty_EyeDistance)},
-//                              @{@"title":@"鼻子大小",@"id":@(KBeauty_NoseSize)},
-                            @{@"title":@"鼻子宽",@"id":@(KBeauty_NoseWidth)},
-                            @{@"title":@"鼻子高",@"id":@(KBeauty_NoseHeight)},
-                            @{@"title":@"嘴巴宽",@"id":@(KBeauty_MouthWidth)},
+                            @{@"title":@"下颌",@"id":@(KBeauty_ChinWidth)},
+                            @{@"title":@"下巴",@"id":@(KBeauty_ChinHeight)},
+                            @{@"title":@"眼宽",@"id":@(KBeauty_EyeWidth)},
+                            @{@"title":@"眼高",@"id":@(KBeauty_EyeHeight)},
+                            @{@"title":@"倾斜",@"id":@(KBeauty_EyeSlant)},
+                            @{@"title":@"眼距",@"id":@(KBeauty_EyeDistance)},
+                            @{@"title":@"鼻宽",@"id":@(KBeauty_NoseWidth)},
+                            @{@"title":@"鼻高",@"id":@(KBeauty_NoseHeight)},
+                            @{@"title":@"嘴宽",@"id":@(KBeauty_MouthWidth)},
                             @{@"title":@"上嘴唇",@"id":@(KBeauty_LipUpper)},
                             @{@"title":@"下嘴唇",@"id":@(KBeauty_LipLower)},
                             @{@"title":@"微笑",@"id":@(KBeauty_Smile)}
@@ -151,7 +148,7 @@
                 contentsWidth += ItemBtnWidth+25;
                                 
                 
-                VEPlaySlider * slider = [[VEPlaySlider alloc] initWithFrame:CGRectMake(70, (CGRectGetHeight(sliderSupView.frame) - 35)/2.0,sliderSupView.frame.size.width - 140 , 35)];
+                VEPlaySlider * slider = [[VEPlaySlider alloc] initWithFrame:CGRectMake(63, (CGRectGetHeight(sliderSupView.frame) - 35)/2.0,sliderSupView.frame.size.width - 63*2 , 35)];
                 slider.tag = [list[i][@"id"] integerValue];
                 [slider setMinimumValue:0];
                 [slider setMaximumValue:1.0];
@@ -176,6 +173,7 @@
                     label.textColor = [UIColor whiteColor];
                     label.font = [UIFont systemFontOfSize:12];
                     label.textAlignment = NSTextAlignmentCenter;
+                    label.hidden = YES;
                     _sliderValueLabel = label;
                     [sliderSupView addSubview:_sliderValueLabel];
                     
@@ -194,21 +192,23 @@
         }
         
         UIButton *compareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        compareBtn.frame = CGRectMake(self.frame.size.width - (64 + 15), (CGRectGetHeight(self.frame) - 44) - 10 , 64, 44);
+        compareBtn.frame = CGRectMake(self.frame.size.width - 63 + (63 - 40)/2.0, (CGRectGetHeight(self.frame) - 44) - 10 , 40, 44);
         [compareBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@默认",@"对比"]] forState:UIControlStateNormal];
         [compareBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@选中",@"对比"]] forState:UIControlStateSelected];
         [compareBtn addTarget:self action:@selector(compareBtnDown:) forControlEvents:UIControlEventTouchDown];
-        [compareBtn addTarget:self action:@selector(compareBtnUp:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
+        [compareBtn addTarget:self action:@selector(compareBtnUp:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside | UIControlEventTouchCancel];
         [self addSubview:compareBtn];
         
-        UIButton * resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(15,(CGRectGetHeight(self.frame) - 44) - 10, 50, 44)];
-        [resetBtn setTitle:VELocalizedString(@"还原", nil) forState:UIControlStateNormal];
-        [resetBtn setTitleColor:UIColorFromRGB(0xbebebe) forState:UIControlStateNormal];
-        [resetBtn setTitleColor:Main_Color forState:UIControlStateHighlighted];
-        resetBtn.titleLabel.font = [UIFont systemFontOfSize:12];
-        resetBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-        [resetBtn addTarget:self action:@selector(resetAdjustment_Btn:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:resetBtn];
+//        UIButton * resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(15,(CGRectGetHeight(self.frame) - 44) - 10, 70, 44)];
+//        [resetBtn setImage:[VEHelp imageNamed:@"剪辑_重置默认_"] forState:UIControlStateNormal];
+//        [resetBtn setImage:[VEHelp imageNamed:@"剪辑_重置选中_"] forState:UIControlStateHighlighted];
+//        [resetBtn setTitle:VELocalizedString(@"还原", nil) forState:UIControlStateNormal];
+//        [resetBtn setTitleColor:UIColorFromRGB(0xbebebe) forState:UIControlStateNormal];
+//        [resetBtn setTitleColor:Main_Color forState:UIControlStateHighlighted];
+//        resetBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+//        resetBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+//        [resetBtn addTarget:self action:@selector(resetAdjustment_Btn:) forControlEvents:UIControlEventTouchUpInside];
+//        [self addSubview:resetBtn];
 //        else{
 ////            [self initAdjView:CGRectMake(0, (_adjHeight*2.0 - 35)/2.0 + 44, self.frame.size.width, 35) atStr:@"脸宽"];
 ////            [self initAdjView:CGRectMake(0, (_adjHeight - 35)/2.0 + 44 + 5, self.frame.size.width/2.0 - 10, 35) atStr:@"眼睛倾斜"];
@@ -238,24 +238,23 @@
         }
         
         _adjustmentSliders[5 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.faceWidth;
-        _adjustmentSliders[6 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.forehead;
         
-        _adjustmentSliders[7 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.chinWidth;
-        _adjustmentSliders[8 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.chinHeight;
+        _adjustmentSliders[6 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.chinWidth;
+        _adjustmentSliders[7 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.chinHeight;
         
-        _adjustmentSliders[9 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeWidth;
-        _adjustmentSliders[10 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeHeight;
-        _adjustmentSliders[11 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeSlant;
-        _adjustmentSliders[12 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeDistance;
+        _adjustmentSliders[8 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeWidth;
+        _adjustmentSliders[9 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeHeight;
+        _adjustmentSliders[10 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeSlant;
+        _adjustmentSliders[11 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeDistance;
         
-        _adjustmentSliders[13 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.noseWidth;
-        _adjustmentSliders[14 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.noseHeight;
+        _adjustmentSliders[12 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.noseWidth;
+        _adjustmentSliders[13 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.noseHeight;
         
-        _adjustmentSliders[15 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.mouthWidth;
-        _adjustmentSliders[16 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.lipUpper;
-        _adjustmentSliders[17 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.lipLower;
+        _adjustmentSliders[14 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.mouthWidth;
+        _adjustmentSliders[15 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.lipUpper;
+        _adjustmentSliders[16 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.lipLower;
         
-        _adjustmentSliders[18].value = faceAttribute == nil ? 0.5 : faceAttribute.smile;
+        _adjustmentSliders[17 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.smile;
         
         [_adjustmentSliders enumerateObjectsUsingBlock:^(UISlider * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             ((UILabel *)[obj.superview viewWithTag:100]).text = [NSString stringWithFormat:@"%.f",(obj.value * 100)];
@@ -273,24 +272,22 @@
     [_adjustmentViews addObject:view];
     
     {
-        float width = view.frame.size.width - (63 + 70);
+        float width = view.frame.size.width - 63*2;
         if ([VEConfigManager sharedManager].iPad_HD) {
-            width = view.frame.size.width - 90;
+            width = view.frame.size.width - 140;
         }else if (rect.size.width < self.frame.size.width) {
             width = view.frame.size.width - 70 - 10;
         }
-        UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake(70, (CGRectGetHeight(rect) - 35)/2.0, width, 35)];
+        UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake([VEConfigManager sharedManager].iPad_HD ? 90 : 63, (CGRectGetHeight(rect) - 35)/2.0, width, 35)];
         [slider setMinimumValue:0];
         [slider setMaximumValue:1.0];
         [slider setValue:0.5];
 
         [slider addTarget:self action:@selector(beginScrub:) forControlEvents:UIControlEventTouchDown];
         [slider addTarget:self action:@selector(scrub:) forControlEvents:UIControlEventValueChanged];
-        [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpInside];
-        [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchCancel];
-        [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpOutside];
+        [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchCancel | UIControlEventTouchUpOutside];
 
-        UIImage * theImage = [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_球1@3x" Type:@"png"]];
+        UIImage * theImage = [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"New_EditVideo/LiteBeauty/拖动球@3x" Type:@"png"]];
         [slider setThumbImage:theImage forState:UIControlStateNormal];
 
         if([VEConfigManager sharedManager].iPad_HD){
@@ -307,13 +304,37 @@
        }
    
        {
-           UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, 65, CGRectGetHeight(rect))];
-           label.text  = VELocalizedString(str, nil);
-           label.font = [UIFont systemFontOfSize:12];
-           label.textAlignment = NSTextAlignmentLeft;
-           label.textColor = TEXT_COLOR;
-           [_adjustmentNumberLabels addObject:label];
-           [view addSubview:label];
+           float ItemBtnWidth = [VEHelp widthForString:VELocalizedString(str, nil) andHeight:14 fontSize:12] + 40 ;
+           ItemBtnWidth = MAX(ItemBtnWidth, 64);
+           UIButton *toolItemBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+           [view addSubview:toolItemBtn];
+           toolItemBtn.frame = CGRectMake(0, (view.frame.size.height - 40)/2.0, ItemBtnWidth, 40);
+           toolItemBtn.tag = 1000;
+           if([str isEqualToString:@"脸宽"]){
+               [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@默认",@"脸型"]] forState:UIControlStateNormal];
+               [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@选中",@"脸型"]] forState:UIControlStateSelected];
+           }else{
+               if(_adjustmentNumberBtns.count <6){
+                   [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@默认",str]] forState:UIControlStateNormal];
+                   [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@选中",str]] forState:UIControlStateSelected];
+               }else{
+                   [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@默认",str]] forState:UIControlStateNormal];
+                   [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@选中",str]] forState:UIControlStateSelected];
+               }
+           }
+           [toolItemBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
+           [toolItemBtn setTitleColor:TEXT_COLOR forState:UIControlStateSelected];
+           [toolItemBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, (ItemBtnWidth - 40))];
+           toolItemBtn.adjustsImageWhenHighlighted = NO;
+           toolItemBtn.userInteractionEnabled = NO;
+           [toolItemBtn setTitle:VELocalizedString(str, nil) forState:UIControlStateNormal];
+           toolItemBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+           toolItemBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+           
+           [_adjustmentNumberBtns addObject:toolItemBtn];
+           
+           
+           
        }
         if([VEConfigManager sharedManager].iPad_HD){
             UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(view.frame.size.width - 40, 0, 40, CGRectGetHeight(rect))];
@@ -392,7 +413,7 @@
 {
     NSMutableArray * toolItems = [NSMutableArray new];
     {
-        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"瘦脸",@"title",@(7),@"id", nil];
+        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"瘦脸",@"title",@(6),@"id", nil];
         [toolItems addObject:dic1];
     }
     {
@@ -400,27 +421,23 @@
         [toolItems addObject:dic1];
     }
     {
-        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"额头",@"title",@(1),@"id", nil];
+        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"下巴",@"title",@(1),@"id", nil];
         [toolItems addObject:dic1];
     }
     {
-        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"下巴",@"title",@(2),@"id", nil];
+        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"眼睛",@"title",@(2),@"id", nil];
         [toolItems addObject:dic1];
     }
     {
-        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"眼睛",@"title",@(3),@"id", nil];
+        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"鼻子",@"title",@(3),@"id", nil];
         [toolItems addObject:dic1];
     }
     {
-        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"鼻子",@"title",@(4),@"id", nil];
+        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"嘴唇",@"title",@(4),@"id", nil];
         [toolItems addObject:dic1];
     }
     {
-        NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"嘴唇",@"title",@(5),@"id", nil];
-        [toolItems addObject:dic1];
-    }
-    {
-    NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"微笑",@"title",@(6),@"id", nil];
+    NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:@"微笑",@"title",@(5),@"id", nil];
     [toolItems addObject:dic1];
     }
     __block float contentsWidth = 10;
@@ -498,47 +515,43 @@
             [_beautyView setContentOffset:CGPointMake(0, 50 * 5)];
         }
             break;
-        case 1://MARK: 额头
+        case 1://MARK:下巴
         {
             [_beautyView setContentOffset:CGPointMake(0, 50 * 6)];
         }
             break;
-        case 2://MARK:下巴
-        {
-            [_beautyView setContentOffset:CGPointMake(0, 50 * 7)];
-        }
-            break;
-        case 3://MARK: 眼睛
+        case 2://MARK: 眼睛
         {
             
-            [_beautyView setContentOffset:CGPointMake(0, 50 * 9)];
+            [_beautyView setContentOffset:CGPointMake(0, 50 * 8)];
         }
             break;
-        case 4://MARK: 鼻子
+        case 3://MARK: 鼻子
         {
             
-            [_beautyView setContentOffset:CGPointMake(0, 50 * 13)];
+            [_beautyView setContentOffset:CGPointMake(0, 50 * 12)];
         }
             break;
-        case 5://MARK: 嘴唇
+        case 4://MARK: 嘴唇
         {
             
-            [_beautyView setContentOffset:CGPointMake(0, 50 * 15)];
+            [_beautyView setContentOffset:CGPointMake(0, 50 * 14)];
         }
             break;
-        case 6://MARK: 微笑
+        case 5://MARK: 微笑
         {
             
-            [_beautyView setContentOffset:CGPointMake(0, 50 * 18)];
+            [_beautyView setContentOffset:CGPointMake(0, 50 * 17)];
         }
             break;
-        case 7://MARK: 瘦脸
+        case 6://MARK: 瘦脸
         {
             
             [_beautyView setContentOffset:CGPointMake(0, 0)];
         }
             break;
         default:
+            [_beautyView setContentOffset:CGPointMake(0, 0)];
             break;
     }
 }
@@ -924,6 +937,7 @@
 #pragma mark-滑动进度条
 - (void)beginScrub:(VEPlaySlider *)slider{
     [self sliderValueChanged:slider];
+    _sliderValueLabel.hidden = NO;
 }
 
 - (void)scrub:(VEPlaySlider *)slider{
@@ -936,6 +950,7 @@
         _currentType = slider.tag;
     }
     [self sliderValueChanged:slider];
+    _sliderValueLabel.hidden = YES;
 }
 
 -(void)sliderValueChanged:(VEPlaySlider *) slider
@@ -975,64 +990,17 @@
 }
 
 - (void)compareBtnDown:(UIButton *)sender {
+    _sliderValueLabel.hidden = YES;
     _editMedia = [_currentMedia copy];
     float value =  sender.tag > KBeauty_Smile ? 0 : 0.5;
-    //if([VEConfigManager sharedManager].iPad_HD)
     {
         for (int i = 0;i<_adjustmentSliders.count;i++) {
             if(_adjustmentSliders[i].tag == _currentType){
-                value = 0.0;
                 [_adjustmentSliders[i] setValue:value];
                 break;
             }
         }
     }
-//    else{
-//        switch (_currentType) {
-//            case 0://MARK: 脸型
-//            {
-//                [_adjustmentSliders[0] setValue:value];
-//            }
-//                break;
-//            case 1://MARK: 下巴
-//            {
-//                [_adjustmentSliders[0] setValue:value];
-//                [_adjustmentSliders[3] setValue:value];
-//            }
-//                break;
-//            case 2://MARK: 额头
-//            {
-//                [_adjustmentSliders[0] setValue:value];
-//            }
-//                break;
-//            case 3://MARK: 微笑
-//            {
-//                [_adjustmentSliders[0] setValue:value];
-//            }
-//                break;
-//            case 4://MARK: 眼睛
-//            {
-//                [_adjustmentSliders[1] setValue:value];
-//                [_adjustmentSliders[2] setValue:value];
-//                [_adjustmentSliders[3] setValue:value];
-//            }
-//                break;
-//            case 5://MARK: 嘴唇
-//            {
-//                [_adjustmentSliders[1] setValue:value];
-//                [_adjustmentSliders[2] setValue:value];
-//                [_adjustmentSliders[3] setValue:value];
-//            }
-//                break;
-//            case 6://MARK: 鼻子
-//            {
-//                [_adjustmentSliders[0] setValue:value];
-//            }
-//                break;
-//            default:
-//                break;
-//        }
-//    }
     
     if( _delegate && [_delegate respondsToSelector:@selector(fiveSensesCompare:atVIew:)] )
     {
@@ -1041,6 +1009,7 @@
 }
 
 - (void)compareBtnUp:(UIButton *)sender {
+    _sliderValueLabel.hidden = NO;
     __block FaceAttribute *faceAttribute = nil;
     [_editMedia.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (CGRectContainsPoint(_currentFaceRect, CGPointMake(obj.faceRect.origin.x + obj.faceRect.size.width / 2.0, obj.faceRect.origin.y + obj.faceRect.size.height / 2.0)) || CGRectEqualToRect(_currentFaceRect, obj.faceRect)) {
@@ -1200,100 +1169,6 @@
         }
         
     }
-//    else{
-//        switch (_currentType) {
-//            case 0://MARK: 脸型
-//            {
-//                if( faceAttribute )
-//                {
-//                    value = faceAttribute.faceWidth;
-//                }
-//                [_adjustmentSliders[0] setValue:value];
-//            }
-//                break;
-//            case 1://MARK: 下巴
-//            {
-//                if( faceAttribute )
-//                {
-//                    value = faceAttribute.chinWidth;
-//                }
-//                [_adjustmentSliders[0] setValue:value];
-//                if( faceAttribute )
-//                {
-//                    value = faceAttribute.chinHeight;
-//                }
-//                [_adjustmentSliders[3] setValue:value];
-//            }
-//                break;
-//            case 2://MARK: 额头
-//            {
-//                if( faceAttribute )
-//                {
-//                    value = faceAttribute.forehead;
-//                }
-//                [_adjustmentSliders[0] setValue:value];
-//            }
-//                break;
-//            case 3://MARK: 微笑
-//            {
-//                if( faceAttribute )
-//                {
-//                    value = faceAttribute.smile;
-//                }
-//                [_adjustmentSliders[0] setValue:value];
-//            }
-//                break;
-//            case 4://MARK: 眼睛
-//            {
-//                if( faceAttribute )
-//                {
-//                    value = faceAttribute.eyeSlant;
-//                }
-//                [_adjustmentSliders[1] setValue:value];
-//                if( faceAttribute )
-//                {
-//                    value = faceAttribute.eyeDistance;
-//                }
-//                [_adjustmentSliders[2] setValue:value];
-//                if( faceAttribute )
-//                {
-//                    value = faceAttribute.eyeWidth;
-//                }
-//                [_adjustmentSliders[3] setValue:value];
-//            }
-//                break;
-//            case 5://MARK: 嘴唇
-//            {
-//                if( faceAttribute )
-//                {
-//                    value = faceAttribute.lipUpper;
-//                }
-//                [_adjustmentSliders[1] setValue:value];
-//                if( faceAttribute )
-//                {
-//                    value = faceAttribute.lipLower;
-//                }
-//                [_adjustmentSliders[2] setValue:value];
-//                if( faceAttribute )
-//                {
-//                    value = faceAttribute.mouthWidth;
-//                }
-//                [_adjustmentSliders[3] setValue:value];
-//            }
-//                break;
-//            case 6://MARK: 鼻子
-//            {
-//                if( faceAttribute )
-//                {
-//                    value = faceAttribute.noseWidth;
-//                }
-//                [_adjustmentSliders[0] setValue:value];
-//            }
-//                break;
-//            default:
-//                break;
-//        }
-//    }
     if( _delegate && [_delegate respondsToSelector:@selector(fiveSensesCompareCompletion:atVIew:)] )
     {
         [_delegate fiveSensesCompareCompletion:_currentType atVIew:self];

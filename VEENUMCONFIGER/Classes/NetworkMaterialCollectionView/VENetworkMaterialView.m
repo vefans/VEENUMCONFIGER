@@ -77,7 +77,7 @@
     
     _topLayer = [CAGradientLayer layer];
     _topLayer.colors = colors;
-    _topLayer.frame = CGRectMake(0, CGRectGetMinY(view.frame), view.frame.size.width, 15);
+    _topLayer.frame = CGRectMake(0, CGRectGetMinY(view.frame), view.frame.size.width, 10);
     _topLayer.startPoint = CGPointMake(0, 1);
     _topLayer.endPoint = CGPointMake(0,0);
     [view.superview.layer insertSublayer:_topLayer above:0];
@@ -87,8 +87,8 @@
     _bottomLayer.startPoint = CGPointMake(0, 0);
     _bottomLayer.endPoint = CGPointMake(0, 1);
     [view.superview.layer insertSublayer:_bottomLayer above:0];
-    if([VEConfigManager sharedManager].iPad_HD)
-    _collectionView.contentInset = UIEdgeInsetsMake(15, 0, 15, 0);
+//    if([VEConfigManager sharedManager].iPad_HD)
+//    _collectionView.contentInset = UIEdgeInsetsMake(15, 0, 15, 0);
     
 }
 - (instancetype)initWithFrame:(CGRect)frame atCount:(NSInteger) count atIsVertical_Cell:(BOOL) isVertical_Cell atWidth:(float) cellWidth atHeight:(float) cellHeight

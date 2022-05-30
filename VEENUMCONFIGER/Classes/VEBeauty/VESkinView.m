@@ -234,5 +234,7 @@
         [_delegate skinEditCompletion:self];
     }
 }
-
+- (void)setHidden:(BOOL)hidden{
+    [super setHidden:hidden];
+}
 @end

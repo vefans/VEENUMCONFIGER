@@ -174,11 +174,13 @@
 + (NSString *)getMaskDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getchangeHairDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getFilterDownloadPathWithDic:(NSDictionary *)itemDic;
-
++ (NSString *)getlocalFileMusicPathWithDic:(NSString *)filename;
 + (NSString *)getScaleDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getMusicDownloadPathWithDic:(NSDictionary *)itemDic;
++ (NSString *)getMusicDownloadFolderWithDic:(NSDictionary *)itemDic;
 + (NSString *)getMediaIdentifier;
 + (NSString *)getCollageDownloadPathWithDic:(NSDictionary *)itemDic;
+
 + (NSMutableArray *)getMaskArray;
 
 + (MaskObject *)getMaskWithName:(NSString *)maskName;
