@@ -132,6 +132,7 @@
     //降噪
     copy.denoiseLevel = _denoiseLevel;
 //    copy.isIntelligentKey = _isIntelligentKey;
+    copy.autoSegmentType = _autoSegmentType;
     copy.autoSegmentImageUrl = _autoSegmentImageUrl;
     copy.animationType = _animationType;
     copy.animationIndex= _animationIndex;
@@ -316,6 +317,7 @@
     //降噪
     copy.denoiseLevel = _denoiseLevel;
 //    copy.isIntelligentKey = _isIntelligentKey;
+    copy.autoSegmentType = _autoSegmentType;
     copy.autoSegmentImageUrl = _autoSegmentImageUrl;
     copy.animationType = _animationType;
     copy.animationIndex= _animationIndex;
