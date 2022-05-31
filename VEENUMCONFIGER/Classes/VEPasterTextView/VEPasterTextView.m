@@ -7,7 +7,7 @@
 //
 
 #import "VEPasterTextView.h"
-#import "UIImage+Tint.h"
+//#import "UIImage+Tint.h"
 #import <VEENUMCONFIGER/VEENUMCONFIGER.h>
 
 
@@ -130,7 +130,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     rotateView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin ;
     rotateView.backgroundColor = [UIColor clearColor];
     rotateView.image = [VEHelp imageNamed:@"next_jianji/剪辑-字幕旋转_"];
-    rotateView.image = [rotateView.image imageWithTintColor];
+//    rotateView.image = [rotateView.image imageWithTintColor];
     rotateView.userInteractionEnabled = YES;
     [self addSubview:rotateView];
     UIPanGestureRecognizer* rotateGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(rotateGesture:)];
