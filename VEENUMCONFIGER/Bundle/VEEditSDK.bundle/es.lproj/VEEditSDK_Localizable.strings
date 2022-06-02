@@ -344,7 +344,7 @@
 "片尾" = "Finalización";
 "分割" = "Dividir";
 "变速" = "Cambio de velocidad";
-"提取音乐" = "Extraer la música";
+"音乐提取" = "Extraer la música";
 "编辑" = "Editar";
 "切换画中画" = "Cambiar imagen en imagen";
 "不透明度" = "Opacidad";
@@ -910,7 +910,7 @@
 "已经全部加载完毕" = "Se acabó";
 "授权证书" = "Certificado de autorización";
 "没有音乐" = "Todavía no hay música";
-"提取音乐" = "Extraer la música";
+"音乐提取" = "Extraer la música";
 "录音中" = "Grabación";
 "室内" = "Interior";
 "垂直翻转" = "Vertical";

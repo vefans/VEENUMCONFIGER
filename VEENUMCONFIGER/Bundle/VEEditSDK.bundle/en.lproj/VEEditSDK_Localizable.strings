@@ -38,7 +38,7 @@
 "素材库" = "Stock videos";
 "虚拟直播间" = "VirtualLive";
 "请添加音乐" = "Add Music";
-"从文件导入" = "File.."
+"从文件导入" = "File..";
 "已下载音乐" = "Downloaded";
 "精选音乐" = "Cloud";
 "本地音乐" = "Local";
@@ -1152,7 +1152,7 @@
 "调节" = "Adjust";
 "片尾" = "Ending";
 "分割" = "Split";
-"提取音乐" = "Extract music";
+"音乐提取" = "Extract music";
 "切画中画" = "Overlay";
 "复制" = "Copy";
 "关键帧" = "Keyframe";
@@ -1650,7 +1650,7 @@
 "已经全部加载完毕" = "It's over";
 "授权证书" = "Authorization certificate";
 "没有音乐" = "No music yet";
-"提取音乐" = "Extract music";
+"音乐提取" = "Extract music";
 "录音中" = "Recording";
 "垂直翻转" = "Vertical";
 "水平翻转" = "Horizontal";
@@ -1662,6 +1662,8 @@
 "正在获取贴纸网络资源！" = "Getting online stickers! ";
 "调色%d" = "Adjust%d";
 "提取音乐%@_%d" = "Extract music%@_%d";
+"音乐提取%@_%ld" = "Extract music%@_%ld";
+"音乐提取%@_1" = "Extract music%@_1";
 
 "撤销：原音音量:%.1f" = "Undo：original volume:%.1f";
 "撤销：%@" = "Undo：%@";
@@ -2522,3 +2524,5 @@
 "全局" = "All";
 "模糊度" = "Blur";
 "没有找到相关搜索内容！" = "No related searches found!";
+"+ 添加点" = "+ Add";
+"- 删除点" = "- Delete";

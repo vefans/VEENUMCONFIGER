@@ -53,7 +53,8 @@
         self.maximumTrackTintColor = Color(255,255,255,0.32);
     }
     // thumbTintColor : 当前滑块的颜色，默认为白色
-    [self setThumbImage:[VEHelp imageWithContentOfFile:@"play_slider_thumb"] forState:UIControlStateNormal];
+//    [self setThumbImage:[VEHelp imageWithContentOfFile:@"play_slider_thumb"] forState:UIControlStateNormal];
+    [self setThumbImage:[VEHelp imageWithContentOfFile:@"/jianji/Adjust/剪辑-调色_球1"] forState:UIControlStateNormal];
 
     [self addTarget:self action:@selector(playSliderValue:) forControlEvents:UIControlEventValueChanged];
     

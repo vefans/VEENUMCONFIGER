@@ -2092,7 +2092,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (NSString *)getMediaIdentifier {
     NSDate *date_ = [NSDate date];
     NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
-    [dateformater setDateFormat:@"yyyy-MM-dd_HH-mm-ss"];
+    [dateformater setDateFormat:@"yyyy-MM-dd_HH-mm-ss-sss"];
     NSString *identifier = [dateformater stringFromDate:date_];
     return identifier;
 }
@@ -2100,7 +2100,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (NSString *)geCaptionExSubtitleIdentifier{
     NSDate *date_ = [NSDate date];
     NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
-    [dateformater setDateFormat:@"yyyy-MM-dd_HH-mm-ss"];
+    [dateformater setDateFormat:@"yyyy-MM-dd_HH-mm-ss-sss"];
     NSString *identifier = [dateformater stringFromDate:date_];
     return [NSString stringWithFormat:@"subtitle_%@",identifier];
 }

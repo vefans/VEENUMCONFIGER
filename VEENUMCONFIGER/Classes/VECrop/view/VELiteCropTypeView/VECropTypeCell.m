@@ -19,8 +19,8 @@
         [self addSubview:self.titleLabel];
         [self.titleLabel setFrame:CGRectMake(0, (frame.size.height-40)/2, frame.size.width, 40)];
         
-        self.layer.borderColor = Main_Color.CGColor;
-        self.layer.borderWidth = 1;
+//        self.layer.borderColor = Main_Color.CGColor;
+//        self.layer.borderWidth = 1;
         self.layer.cornerRadius = 4;
         self.layer.masksToBounds = YES;
         
@@ -44,8 +44,8 @@
 -(void)setCellForoCropTypeModel:(VECropTypeModel*)cropTypeModel{
     float shaow = -5.0/90.0*cropTypeModel.height;
     if (cropTypeModel.isSelect) {
-        self.layer.borderColor = Main_Color.CGColor;
-        self.layer.borderWidth = 2;
+//        self.layer.borderColor = Main_Color.CGColor;
+//        self.layer.borderWidth = 2;
         if( [cropTypeModel.title isKindOfClass:[NSString class]] )
         {
             NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12/90.0*cropTypeModel.height], NSForegroundColorAttributeName: Main_Color, NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:Main_Color
@@ -59,8 +59,8 @@
         self.iconImageView.contentMode = UIViewContentModeScaleAspectFit;
         self.iconImageView.tintColor = Main_Color;
     }else{
-        self.layer.borderColor = UIColorFromRGB(0x808080).CGColor;
-        self.layer.borderWidth = 0;
+//        self.layer.borderColor = UIColorFromRGB(0x808080).CGColor;
+//        self.layer.borderWidth = 0;
         if( [cropTypeModel.title isKindOfClass:[NSString class]] )
         {
             NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12/90.0*cropTypeModel.height], NSForegroundColorAttributeName: UIColorFromRGB(0x808080), NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:UIColorFromRGB(0x808080)

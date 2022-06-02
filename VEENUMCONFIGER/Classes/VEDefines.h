@@ -338,6 +338,7 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_EQUALIZER                  = 46,   //均衡器
     KPIP_BLURRY                  = 47,   //模糊
     KPIP_AUDIOSEPAR           = 48, //aduio Sepateted
+    kPIP_REVERSEVIDEO       = 49,//倒放
 };
 
 //去水印类型
