@@ -198,6 +198,7 @@
     }else if (cropType == VE_VECROPTYPE_1TO1){
         
         [self RatioEquals1];
+        
         [self setTrackButtonState:YES];
         
         self.cropSizeMin = CGSizeMake(VE_CROPWIDTH_MIN, VE_CROPHEIGHT_MIN);

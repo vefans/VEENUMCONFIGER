@@ -8,7 +8,8 @@
 
 #import "VEImageManager.h"
 #import "VEAssetModel.h"
-#import "UIImage+YYWebImage.h"
+#import "VEHelp.h"
+
 @interface VEImageManager ()
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -388,7 +389,7 @@ static dispatch_once_t onceToken;
                 if (!resultImage) {
                     resultImage = image;
                 }
-                resultImage = [resultImage yy_imageByResizeToSize:imageSize];
+                resultImage = [VEHelp rescaleImage:resultImage size:imageSize];
                 resultImage = [self fixOrientation:resultImage];
                 if (completion) completion(resultImage,info,NO);
             }];

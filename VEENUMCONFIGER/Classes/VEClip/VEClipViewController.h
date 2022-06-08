@@ -13,7 +13,6 @@
 #import <VEENUMCONFIGER/VECropTypeView.h>
 #import <VEENUMCONFIGER/VECropTypeModel.h>
 #import <VEENUMCONFIGER/VEVideoCropView.h>
-#import <ATMHud/ATMHud.h>
 #import "VEExportProgressView.h"
 NS_ASSUME_NONNULL_BEGIN
 

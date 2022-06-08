@@ -927,7 +927,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 angleDiff = 0;
                 if( isShock )
                 {
-                    AudioServicesPlaySystemSound(1519);
+//                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                     isShock = false;
                 }
             }
@@ -956,7 +957,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 angleDiff = 0;
                 if( isShock )
                 {
-                    AudioServicesPlaySystemSound(1519);
+//                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                     isShock = false;
                 }
             }
@@ -1107,7 +1109,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                     [self setFramescale:newScale];
                     if( isShock )
                     {
-                        AudioServicesPlaySystemSound(1519);
+                        //                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                         isShock = false;
                     }
                 }
@@ -1126,7 +1129,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                         [self setFramescale:newScale];
                         if( isShock )
                         {
-                            AudioServicesPlaySystemSound(1519);
+                            //                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                             isShock = false;
                         }
                     }
@@ -1261,7 +1265,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 center.x = x;
                 if( isShock )
                 {
-                    AudioServicesPlaySystemSound(1519);
+                    //                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                     isShock = false;
                 }
             }
@@ -1275,7 +1280,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 center.y = y;
                 if( isShockY )
                 {
-                    AudioServicesPlaySystemSound(1519);
+                    //                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                     isShockY = false;
                 }
             }
@@ -1345,7 +1351,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 center.x = x;
                 if( isShock )
                 {
-                    AudioServicesPlaySystemSound(1519);
+                    //                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                     isShock = false;
                 }
             }
@@ -1359,7 +1366,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 center.y = y;
                 if( isShockY )
                 {
-                    AudioServicesPlaySystemSound(1519);
+                    //                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                     isShockY = false;
                 }
             }
@@ -1723,7 +1731,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 angleDiff = 0;
                 if( isShock )
                 {
-                    AudioServicesPlaySystemSound(1519);
+                    //                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                     isShock = false;
                 }
             }
@@ -1748,7 +1757,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 angleDiff = 0;
                 if( isShock )
                 {
-                    AudioServicesPlaySystemSound(1519);
+                    //                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                     isShock = false;
                 }
             }
@@ -1780,7 +1790,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                     [self setFramescale:scale];
                     if( isShock )
                     {
-                        AudioServicesPlaySystemSound(1519);
+                        //                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                         isShock = false;
                     }
                 }
@@ -1799,7 +1810,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                         [self setFramescale:scale];
                         if( isShock )
                         {
-                            AudioServicesPlaySystemSound(1519);
+                            //                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                             isShock = false;
                         }
                     }
@@ -2933,23 +2945,34 @@ static VEPasterTextView *lastTouchedView;
     float  hScale = scale;
     if( _cropRect.size.width < _cropRect.size.height )
     {
-        if( width < _cropRect.size.width )
+        if( (width+0.005) < _cropRect.size.width )
         {
             wScale = _cropRect.size.width/_contentImage.frame.size.width;
         }
-        if( height <  _cropRect.size.height  )
+        if( (height+0.005) <  _cropRect.size.height  )
         {
             hScale = _cropRect.size.height/_contentImage.frame.size.height;
         }
     }
     else{
-        if( width > _cropRect.size.width )
+        if( (width + 0.005) >= _cropRect.size.width )
         {
             wScale = _cropRect.size.height/_contentImage.frame.size.height;
         }
-        if( height >  _cropRect.size.height  )
+        if( (height+0.005) >=  _cropRect.size.height  )
         {
             hScale = _cropRect.size.width/_contentImage.frame.size.width;
+        }
+        if( ( width < _cropRect.size.width ) && ( height <  _cropRect.size.height  ) )
+        {
+            if( width < height )
+            {
+                hScale = _cropRect.size.width/_contentImage.frame.size.width;
+            }
+            else
+            {
+                wScale = _cropRect.size.height/_contentImage.frame.size.height;
+            }
         }
     }
 

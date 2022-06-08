@@ -422,4 +422,6 @@
 + (BOOL)isVideoUrl:(NSURL *)url;
 
 + (Particle *)getParticle:( NSString * ) path atFramePath:( NSString * ) framePath;
+
++(void)impactOccurred:( float ) intensity;
 @end

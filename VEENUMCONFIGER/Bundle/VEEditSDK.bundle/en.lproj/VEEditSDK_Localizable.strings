@@ -42,6 +42,10 @@
 "已下载音乐" = "Downloaded";
 "精选音乐" = "Cloud";
 "本地音乐" = "Local";
+"搜索历史" = "Search History";
+" 取消" = "Cancel";
+" 暂时没有本地音乐" = "Nothing";
+"您可以选择不同的方式添加一些本地素材" = "Try adding music in different ways";
 
 "无法访问相机!" = "Can not access camera!";
 "用户拒绝访问相机,请在<设置-隐私-相机中开启" = "User reject to access camera, please open in <Setting-Privacy-Camera";
@@ -736,7 +740,7 @@
 "选择配乐" = "Select music";
 "多段配乐" = "Multi music";
 "网络音乐" = "Multi music";
-"本地音乐" = "Local music";
+//"本地音乐" = "Local music";
 "音效"    = "Effects";
 "替换"    = "Replace";
 "时长截取" = "Length";
@@ -2526,3 +2530,5 @@
 "没有找到相关搜索内容！" = "No related searches found!";
 "+ 添加点" = "+ Add";
 "- 删除点" = "- Delete";
+"时长不足，填充为图片" = "Insufficient time, fill with picture";
+"最近项目" = "Recents";

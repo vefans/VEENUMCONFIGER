@@ -56,7 +56,6 @@
 
 @property(nonatomic,assign) CMTime                  seekTime;
 
-@property (nonatomic, strong) ATMHud *hud;
 @property (nonatomic, strong) VEExportProgressView *exportProgressView;
 
 @property(nonatomic,assign)CGRect crop;
@@ -1843,15 +1842,6 @@
     }
     return _cropTypeView;
 }
-
-- (ATMHud *)hud{
-    if(!_hud){
-        _hud = [[ATMHud alloc] init];
-        [self.navigationController.view addSubview:_hud.view];
-    }
-    return _hud;
-}
-
 
 - (VEExportProgressView *)exportProgressView{
     if(!_exportProgressView){

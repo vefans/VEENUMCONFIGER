@@ -13,6 +13,9 @@
 
 @interface VEMediaInfo : NSObject<NSCopying, NSMutableCopying>
 
+@property (nonatomic, assign)BOOL       isFixedSize;
+@property (nonatomic, assign)BOOL       isFixedAngle;
+
 @property (nonatomic, strong) NSString *sceneIdentifier;
 
 @property (nonatomic, assign) int groupId;

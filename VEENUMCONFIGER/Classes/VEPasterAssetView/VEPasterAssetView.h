@@ -21,6 +21,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VEPasterAssetView : UIView
 
+
+@property (nonatomic, assign)BOOL       isFixedSize;
+@property (nonatomic, assign)BOOL       isFixedAngle;
+
 @property (nonatomic, assign)BOOL       isInvisible;
 @property (nonatomic, assign)float         invisibleAlpha;
 

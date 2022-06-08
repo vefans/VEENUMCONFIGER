@@ -4410,10 +4410,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 //压缩图片至指定尺寸
 + (UIImage *)rescaleImage:(UIImage *)image size:(CGSize)size
 {
+    if (size.width <= 0 || size.height <= 0) {
+        return nil;
+    }
     CGRect rect = (CGRect){CGPointZero, size};
     
-    UIGraphicsBeginImageContext(rect.size);
-    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 1.0);
+    UIGraphicsBeginImageContextWithOptions(size, NO, 1.0);
     
     [image drawInRect:rect];
     
@@ -10290,5 +10292,19 @@ static OSType help_inputPixelFormat(){
     }
     
     return particle;
+}
+
++(void)impactOccurred:( float ) intensity
+{
+    if (@available(iOS 10.0, *)) {
+        if (@available(iOS 13.0, *)) {
+            UIImpactFeedbackGenerator *generator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleLight];
+            [generator impactOccurredWithIntensity:intensity];
+        } else {
+            // Fallback on earlier versions
+        }
+    } else {
+        // Fallback on earlier versions
+    }
 }
 @end

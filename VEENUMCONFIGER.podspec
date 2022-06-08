@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "VEENUMCONFIGER"
-  spec.version      = "2.3.3"
+  spec.version      = "2.4.0"
   spec.summary      = "VEENUMCONFIGER is a library of common resources."
   spec.homepage     = "https://github.com/vefans/VEENUMCONFIGER"
   spec.platform     = :ios, "9.0"
@@ -11,11 +11,9 @@ Pod::Spec.new do |spec|
   
   spec.requires_arc = true  
   spec.dependency 'SDWebImage'
-  spec.dependency 'SDWebImageWebPCoder', '0.2.3'
-  spec.dependency 'YYWebImage'
+  spec.dependency 'SDWebImageWebPCoder'
   spec.dependency "LibVECore"
   spec.dependency "ZipArchive"
-  spec.dependency "ATMHud"
 
   spec.xcconfig = {'CONFIGURATION_BUILD_DIR' => '${PODS_CONFIGURATION_BUILD_DIR}'}
   spec.pod_target_xcconfig ={ 'ALWAYS_SEARCH_USER_PATHS'=>'YES', 'ENABLE_BITCODE' => 'NO' }

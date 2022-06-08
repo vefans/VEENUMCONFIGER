@@ -645,6 +645,11 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
 }
 #pragma mark- 缩放
 -(void)pasterAssetViewPinch_Gesture:(UIPinchGestureRecognizer *) recognizer{
+    if( _isFixedSize )
+    {
+        return;
+    }
+    
     if( recognizer.numberOfTouches == 1 )
     {
         if(recognizer.state == UIGestureRecognizerStateEnded)
@@ -718,6 +723,11 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
 #pragma mark- 旋转
 -(void)pasterAssetViewRotation_Gesture:(UIRotationGestureRecognizer *)rotation
 {
+    if( _isFixedAngle )
+    {
+        return;
+    }
+    
     if( rotation.numberOfTouches == 1 )
     {
         if(rotation.state == UIGestureRecognizerStateEnded)
@@ -766,7 +776,8 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
                 angleDiff = 0;
                 if( isShock )
                 {
-                    AudioServicesPlaySystemSound(1519);
+//                    AudioServicesPlaySystemSound(1519);
+                    [VEHelp impactOccurred:0.7];
                     isShock = false;
                 }
             }
