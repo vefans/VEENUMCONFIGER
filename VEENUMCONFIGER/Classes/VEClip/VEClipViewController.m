@@ -847,15 +847,7 @@
 }
 
 -(void)whirlButtonClicked{
-    if(_selectFile.rotate == 0){
-        _selectFile.rotate = -270;
-    }else if(_selectFile.rotate == -270 || _selectFile.rotate == 90){
-        _selectFile.rotate = -180;
-    }else if(_selectFile.rotate == -180 || _selectFile.rotate == 180){
-        _selectFile.rotate = -90;
-    }else if(_selectFile.rotate == -90 || _selectFile.rotate == 270){
-        _selectFile.rotate = 0;
-    }
+    _selectFile.rotate -= 90;
     
     self.videoCropView.hidden = YES;
     [self playVideo:NO];

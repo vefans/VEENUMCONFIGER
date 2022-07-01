@@ -93,7 +93,9 @@ typedef NS_ENUM(NSInteger, BackGroundColorType) {
 NS_ASSUME_NONNULL_BEGIN
 
 @interface VEEditConfiguration : NSObject<NSMutableCopying,NSCopying>
-//不截取缩略图
+
+/** 相册选中媒体后，是否禁止生成缩略图(default false)
+ */
 @property (assign, nonatomic)bool thumbDisable;
 /** 向导模式 如果需要自己删除一些功能 则需启用此参数  default false
  */
@@ -323,6 +325,12 @@ NS_ASSUME_NONNULL_BEGIN
 /** 贴纸网络资源显示的最小版本号，默认为0
  */
 @property (nonatomic,assign)int stickerResourceMinVersion;
+/** 粒子网络资源地址
+ */
+@property (nonatomic,copy,nullable)NSString    *particleResourceURL;
+/** 拍摄粒子网络资源地址
+ */
+@property (nonatomic,copy,nullable)NSString    *shootParticlesResourceURL;
 /** 特效网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *specialEffectResourceURL;
@@ -419,6 +427,10 @@ NS_ASSUME_NONNULL_BEGIN
 /** 涂鸦 (default true)
  */
 @property (nonatomic,assign) bool enableDoodle;
+
+/** 粒子 (default true)
+ */
+@property (nonatomic,assign) bool enableParticle;
 
 /** 进入SDK界面是否需要动画 (default true)
  */

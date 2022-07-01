@@ -20,7 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VEPlaySlider : UISlider
 
+
 @property(nonatomic,weak)id<VEPlaySliderDelegate> delegate;
+@property (nonatomic,assign)UIView *thumbView;
 @property (nonatomic,assign,readonly)CGRect thumbRect;
 @end
 

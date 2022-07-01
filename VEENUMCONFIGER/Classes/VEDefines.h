@@ -4,6 +4,7 @@
 #import "VEConfigManager.h"
 #import <LibVECore/Scene.h>
 #import "VEAuthorizationView.h"
+#import "UIButton+VECustomLayout.h"
 
 #define kAppKeyType      @"AppKeyType"       //appkey类型
 //画笔
@@ -92,17 +93,17 @@ typedef NS_ENUM(NSInteger, VESELECTMUSICTYPE){
 typedef NS_ENUM(NSInteger,FileCropModeType)
 {
     kCropTypeNone       = 0,
-    kCropTypeOriginal,      /**< 原始 */
-    kCropTypeFreedom,       /**< 自由 */
-    kCropType1v1,           /**< 1v1 */
-    kCropType16v9,
-    kCropType9v16,
-    kCropType4v3,
-    kCropType3v4,
-    kCropType6v7,
-    kCropType4v5,
-    kCropTypeFixed,         /**< 固定裁切范围 */
-    kCropTypeFixedRatio,    /**< 固定比例裁切*/
+    kCropTypeOriginal   = 1,      /**< 原始 */
+    kCropTypeFreedom    = 2,      /**< 自由 */
+    kCropType1v1        = 3,      /**< 1v1 */
+    kCropType16v9       = 4,
+    kCropType9v16       = 5,
+    kCropType4v3        = 6,
+    kCropType3v4        = 7,
+    kCropType6v7        = 8,
+    kCropType4v5        = 9,
+    kCropTypeFixed      = 10,    /**< 固定裁切范围 */
+    kCropTypeFixedRatio = 11,    /**< 固定比例裁切*/
 };
 
 typedef NS_ENUM(NSInteger, VECropType){
@@ -205,6 +206,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_MergeLayers     = 59,     //图层合并
     VEAdvanceEditType_Hair                  = 60,     //头发
     VEAdvanceEditType_FineTun             = 61,   //微调
+    VEAdvanceEditType_Particle             = 62,   //粒子
 };
 
 /*
@@ -262,6 +264,7 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KBLURRY           = 48, //模糊
     KOPACITY        = 50,//隐藏
     KAUDIOSEPAR        = 51,//音频分离
+    KAUDIOPLANTED        = 52,//
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -530,7 +533,7 @@ isPhoneX;\
 #define kHEIGHT [UIScreen mainScreen].bounds.size.height
 #define kNavigationBarHeight (iPhone_X ? 88 : 44)
 #define kToolbarHeight (iPhone_X ? 78 : 44 + ipadToolBarHeight )
-#define kPlayerViewHeight (iPad ? (kHEIGHT - 223) : (kHEIGHT - (iPhone_X ? (44 + 34) : (0  + ipadToolBarHeight)) - ( 0.523 * kWIDTH ) - (iPad?0:20)))
+#define kPlayerViewHeight (iPad ? (kHEIGHT - 223) : (kHEIGHT - (iPhone_X ? (44 + 34) : (0  + ipadToolBarHeight)) - ( 0.523 * kWIDTH ) - (iPad?0:20) - 30 ))
 //#define kToolbarHeight (iPhone_X ? 78 : 44)
 //#define kPlayerViewHeight (kHEIGHT - (iPhone_X ? 44 + 34 : 0) - ( 0.523 * kWIDTH ) - 20)
 #define kPlayerViewOriginX (iPhone_X ? 44 : 0)
@@ -713,6 +716,17 @@ isPhoneX;\
 #define kFilterFolder [kVEDirectory stringByAppendingPathComponent:@"filters"]
 #define kFilterCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"filterCategory.plist"]
 #define kNewFilterPlistPath [kFilterFolder stringByAppendingPathComponent:@"filterTypeList.plist"]
+
+//粒子目录
+#define kParticlesFolder [kVEDirectory stringByAppendingPathComponent:@"particles"]
+#define kParticlesCategoryPlist [kParticlesFolder stringByAppendingPathComponent:@"particlesCategory.plist"]
+#define kNewParticlesPlistPath [kParticlesFolder stringByAppendingPathComponent:@"particlesTypeList.plist"]
+
+//拍摄粒子目录
+#define kShootParticlesFolder [kVEDirectory stringByAppendingPathComponent:@"shootParticles"]
+#define kShootParticlesCategoryPlist [kShootParticlesFolder stringByAppendingPathComponent:@"shootParticlesCategory.plist"]
+#define kNewShootParticlesPlistPath [kShootParticlesFolder stringByAppendingPathComponent:@"shootParticlesTypeList.plist"]
+
 //换发目录
 #define kHairFolder [kVEDirectory stringByAppendingPathComponent:@"hairs"]
 #define kHairCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"hairCategory.plist"]
@@ -757,3 +771,5 @@ isPhoneX;\
 #define VECustomErrorDomain @"com.VESDK.ErrorDomain"
 
 #define kThumbnailFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/thumbnailFolder"]
+
+#define kCoverModelFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/cover_model/"]

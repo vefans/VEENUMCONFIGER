@@ -5,7 +5,7 @@
 //  Created by iOS VESDK Team on 2020/11/3.
 //
 
-#import "VEMediaInfo.h"
+#import <VEENUMCONFIGER/VEMediaInfo.h>
 #import "VEHelp.h"
 #import <LibVECore/VECoreYYModel.h>
 
@@ -837,6 +837,13 @@
         _reverseVideoTrimTimeRange = _reverseVideoTimeRange;
     }else{
         _reverseVideoTrimTimeRange = reverseVideoTrimTimeRange;
+    }
+}
+
+- (void)setRotate:(double)rotate {
+    _rotate = rotate;
+    if (_rotate < 0) {
+        _rotate += 360;
     }
 }
 

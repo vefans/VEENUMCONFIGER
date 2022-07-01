@@ -150,6 +150,9 @@
 "可通过iTunes在电脑导入音乐并同步至手机" = "Import music from computer through iTunes and sync to iPhone";
 "或是通过iTunes将电脑上的歌曲同步到j您的设备上" = "or sync songs from your computer to your device via iTunes";
 
+"左右滑动选择封面" = "Slide left and right to select cover";
+"点击替换" = "Click to replace";
+
 "存储空间不足!" = "No enough disk space!";
 "设备存储空间不足，请到设置中释放空间" = "No enough storage space in device, please set to release more";
 "横屏视频不适合竖屏输出,系统将选择最佳画面比例" = "Cross screen video can out output in vertical, system will select the best proportion";
@@ -680,8 +683,12 @@
 "码率" = "Bitrate";
 "分辨率:%dx%d" = "Resolution:%dx%d";
 "分辨率" = "Resolution";
+"普通清晰度，内存占用小，适合分享" = "Normal resolution, small memory usage, suitable for sharing";
+"带给你更流畅的播放体验" = "Brings you a smoother playback experience";
 "大小:%.2fMB" = "Size:%.2fMB";
 "压缩后大小:%.2fMB" = "Compressed size:%.2fMB";
+"如何还原最优的视频清晰度？" = "How to restore the optimal video resolution?";
+"一般来说，建议您将导出和导入视频的分辨率维持一致，会带来更好的播放体验，但如果您的原视频分辨率低，设置较高的分辨率导出清晰度的提升可能不是很明显。" = "Generally speaking, it is recommended that you keep the same resolution of the exported and imported videos, which will bring a better playback experience, but if your original video resolution is low, setting a higher resolution may not improve the export resolution.";
 "Photos are syncing from iCloud, please retry later" = "Photos are syncing from iCloud, please retry later";
 "Videos are syncing from iCloud, please retry later" = "Videos are syncing from iCloud, please retry later";
 "[分:秒.毫秒(开始时间),分:秒.毫秒(结束时间)]文字内容" = "[m:s.ms(startTime),m:s.ms(endTime)]Text content";
@@ -1056,7 +1063,6 @@
 "原图" = "Original";
 "确定要放弃编辑吗？" = "Do you want to exit without saving?";
 "您还未选择图片或视频哟!" = "No media!";
-"我知道了" = "Got it";
 "视频小于%.1f秒，无法添加转场" = "Cannot add transitions to videos under %.1f sec";
 "视频尚未导出完成，是否取消？" = "Do you want to cancel video conversion?";
 "文字板" = "Textboard";
@@ -1591,7 +1597,6 @@
 "上下翻转" = "Vertical";
 "音 量" = "Volume";
 "替 换" = "Replace";
-"我知道了" = "Got it";
 "保存" = "Save";
 "返回" = "Back";
 "原始" = "Original";
@@ -2532,3 +2537,17 @@
 "- 删除点" = "- Delete";
 "时长不足，填充为图片" = "Insufficient time, fill with picture";
 "最近项目" = "Recents";
+"添加点" = "Add";
+"删除点" = "Delete";
+"批量编辑" = "Batch edit";
+"总共%d条字幕" = "Total %d subtitles";
+"点击/长按开始录音" = "Tap/long press to start recording";
+"点击右边素材库\"\"添加素材，或拖拽素材到下方主轴区域，开始创作" = "Click the material library on the right\"\"to add material, or drag the material to the main axis area below to start creating";
+"点击右边素材库\"\"添加素材" = "Click on the material library on the right\"\"Add material";
+"拖动素材到这里，开始你的创作吧～" = "Drag the material here and start your creation~";
+"加入画中画区域" = "Add overlay area";
+"加入主轨区域" = "Add main video area";
+"视频显示区" = "Video Display Area";
+"字幕轨道暂未发现内容，快去添加字幕吧" = "The subtitle track has not found content yet, go and add subtitles";
+"数目" = "Count";
+"在画面上涂画，添加粒子效果" = "Paint on the screen, add particle effects";

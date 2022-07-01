@@ -1206,7 +1206,7 @@
         startPoint = [gestureRecognizer locationInView:[gestureRecognizer view]];
         
 //        AudioServicesPlaySystemSound(1519);
-        [VEHelp impactOccurred:0.7];
+        [VEHelp impactOccurred:0.5];
 //        SystemSoundID soundID=1007;
 //        //3.通过音效文件创建声音的唯一ID
 //        //AudioServicesCreateSystemSoundID((__bridge CFURLRef)url, &soundID);
@@ -2424,7 +2424,7 @@
 - (void)startMove:(UITouch *) touch{
     
 //    AudioServicesPlaySystemSound(1519);
-    [VEHelp impactOccurred:0.7];
+    [VEHelp impactOccurred:0.5];
     
     self.isRangeSlider_Drag = true;
     

@@ -10,6 +10,7 @@
 typedef void(^CancelExportBlock) (void);
 
 @interface VEExportProgressView : UIView
+@property (nonatomic, strong) UILabel *progressTitleLabel;
 @property (nonatomic, strong) UIColor* trackprogressTintColor;
 @property (nonatomic, strong) UIColor* trackbackTintColor;
 @property (nonatomic, strong) UIImage* trackbackImage;

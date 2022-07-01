@@ -11,6 +11,8 @@
 
 @protocol VETTRangeSliderDelegate <NSObject>
 
+- (void)tapHandler:(BOOL)isLeft;
+
 - (void)startMove:(UITouch *) touch;
 
 - (void)stopMove;

@@ -6,6 +6,17 @@
 
 @interface VEHelp : NSObject
 
++(NSString *)pathFontForURL:(NSURL *)aURL;
+
+//获取最长的一段
++ (NSMutableArray *)getMaxLengthStringArr:(NSString *)string fontSize:(float)fontSize;
+
++ (NSString *)pathForURL_font_WEBP_down:(NSString *)name extStr:(NSString *)extStr;
+
++(BOOL) hasCachedFont:(NSString *)code url:(NSString *)fontUrl;
+
++ (UIImage *) imageWithColor:(UIColor *)color cornerRadius:(CGFloat)cornerRadius;
+
 /// 获取项目语言简写字符串
 + (NSString *)getProjectLanguageShorthand;
 
@@ -18,6 +29,11 @@
 + (CGFloat)getAnglesWithThreePoint:(CGPoint)pointA pointB:(CGPoint)pointB pointC:(CGPoint)pointC;
 
 + (NSString *)geCaptionExSubtitleIdentifier;
+
++ (NSMutableArray *)getCategoryMaterialWithAppkey:(NSString *)appKey
+                                      typeUrlPath:(NSString *)typeUrlPath
+                                  materialUrlPath:(NSString *)materialUrlPath
+                                     materialType:(VECustomizationFunctionType)materialType;
 
 +(float)getMediaAssetScale_File:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark;
 
@@ -410,6 +426,21 @@
 
 +(void)getRemoveTranslucent:( CVPixelBufferRef ) maskPixelBuffer;
 
++ (BOOL) isVideoPortrait:(AVURLAsset *)asset;
+
++ (NSString *)getTransitionCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
+
++ (UIImage *)imageRotatedByDegrees:(UIImage *)cImage rotation:(float)rotation;
+
++ (UIImage *)imageNamed:(NSString *)name;
+
++(NSString *)pathAssetVideoForURL:(NSURL *)aURL;
+
++ (CGSize )getVideoSizeForTrack:(AVURLAsset *)asset;
+
++ (CGSize)trackSize:(NSURL *)contentURL rotate:(float)rotate;
++ (CGSize)trackSize:(NSURL *)contentURL rotate:(float)rotate crop:(CGRect)crop;
+
 + (NSString *)getAutoSegmentImagePath:(NSURL *)url;
 + (NSString *)getErasePenImagePath:(NSURL *)url;
 
@@ -422,6 +453,12 @@
 + (BOOL)isVideoUrl:(NSURL *)url;
 
 + (Particle *)getParticle:( NSString * ) path atFramePath:( NSString * ) framePath;
++ (NSMutableArray *)getCameraParticle:( NSString * ) path atFramePath:( NSString * ) framePath atSize:( CGSize ) size;
++ (Particle *)getVEParticle:( NSString * ) path atFramePath:( NSString * ) framePath  atObj:( NSMutableDictionary * ) obj;
 
 +(void)impactOccurred:( float ) intensity;
+
++ (long long) freeDiskSpaceInBytes;
++ (UIColor *)getCategoryFilterBgColorWithDic:(NSDictionary *)dic categoryIndex:(NSInteger)categoryIndex;
+
 @end

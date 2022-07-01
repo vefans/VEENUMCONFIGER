@@ -40,6 +40,13 @@ typedef NS_ENUM(NSUInteger, CameraCollocationPositionType) {
     CameraCollocationPositionBottom = 1 << 1,//底部
 };
 
+typedef NS_ENUM(NSUInteger, CameraType) {
+    CameraType_CutSameStyle  =  0,//全部
+    CameraType_RecordPhoto  = 1,//录制 拍照
+    CameraType_Video             = 2,//录制
+    CameraType_Photo            = 3,//拍照
+};
+
 typedef NS_ENUM(NSUInteger, CameraModelType) {
     CameraModel_Onlyone    = 1 << 0,//录制完成立即返回
     CameraModel_Manytimes = 1 << 1,//录制完成保存到相册并不立即返回，可多次录制或拍照
@@ -48,6 +55,8 @@ typedef NS_ENUM(NSUInteger, CameraModelType) {
 NS_ASSUME_NONNULL_BEGIN
 
 @interface VECameraConfiguration : NSObject<NSMutableCopying,NSCopying>
+
+@property(nonatomic, assign)CameraType           cameraType;
 
 /** 设置输出图像格式，默认为YES
  *  YES:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange

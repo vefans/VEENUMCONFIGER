@@ -12,6 +12,7 @@ IB_DESIGNABLE
 @interface VETTRangeSlider : UIControl <UIGestureRecognizerDelegate>
 
 @property ( nonatomic, assign ) BOOL isSetSelected;
+@property (nonatomic, assign) BOOL      isStartMove;
 
 @property (nonatomic, strong) CALayer *leftLayer;
 @property (nonatomic, strong) CALayer *leftHightedLayer;
@@ -98,5 +99,6 @@ IB_DESIGNABLE
     不能拖动把手，默认为NO
  */
 @property (nonatomic, assign) BOOL isDragDisable;
+@property (nonatomic, assign) BOOL      isDelegate;
 
 @end

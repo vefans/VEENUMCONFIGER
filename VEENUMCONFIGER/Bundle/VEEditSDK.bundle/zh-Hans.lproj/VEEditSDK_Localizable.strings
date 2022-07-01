@@ -292,7 +292,7 @@
 "AE模板" = "AE模板";
 "Photos are syncing from iCloud, please retry later" = "正在从iCloud同步图片，请稍后再试";
 "Videos are syncing from iCloud, please retry later" = "正在从iCloud同步视频，请稍后再试";
-
+"LivePhoto is syncing from iCloud, please retry later" = "正在从iCloud同步实况照片，请稍后再试";
 
 "滤镜强度" = "滤镜强度";
 "声音" = "声音";

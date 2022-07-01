@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "VEMediaInfo.h"
+#import <VEENUMCONFIGER/VEMediaInfo.h>
 
 typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_Default = 0,

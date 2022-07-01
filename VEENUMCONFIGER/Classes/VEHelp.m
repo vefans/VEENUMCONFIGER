@@ -558,6 +558,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         range = [path rangeOfString:@"Data/Application/"];
         if (range.location != NSNotFound) {
             isSystemUrl = NO;
+        }else {
+            range = [path rangeOfString:@"/var/mobile"];//LivePhotos
+            if (range.location != NSNotFound) {
+                isSystemUrl = NO;
+            }
         }
     }
     return isSystemUrl;
@@ -971,6 +976,52 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return  resourceBundle;
 }
 
+//判断是否已经缓存过这个URL
++(BOOL) hasCachedFont:(NSString *)code url:(NSString *)fontUrl{
+    
+    if(fontUrl.length==0 || !fontUrl){
+        return NO;
+    }
+//    fontUrl = [NSString stringWithString:[fontUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    fontUrl = [NSString stringWithString:[fontUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+    NSFileManager *fileManager=[NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:[self pathForURL_font:code url:fontUrl]]) {
+        return YES;
+    }
+    else return NO;
+}
+
++ (NSString *)pathForURL_font_WEBP_down:(NSString *)name extStr:(NSString *)extStr{
+    return [NSString stringWithFormat:@"%@/%@.%@",kFontFolder,name,extStr];
+}
+
++(NSString *)pathForURL_font:(NSString *)code url:(NSString *)fontUrl{
+//    fontUrl = [NSString stringWithString:[fontUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    fontUrl = [NSString stringWithString:[fontUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+    if(fontUrl.length>0){
+        NSString *exString = [fontUrl substringFromIndex:fontUrl.length-3];
+        return [NSString stringWithFormat:@"%@/%@.%@",kFontFolder,code,exString];//cachedFont-%d
+    }else{
+        return nil;
+    }
+    
+}
+
++ (UIImage *) imageWithColor:(UIColor *)color cornerRadius:(CGFloat)cornerRadius {
+    CGFloat minEdgeSize = cornerRadius * 2 + 1;
+    CGRect rect = CGRectMake(0, 0, minEdgeSize, minEdgeSize);
+    UIBezierPath *roundedRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:cornerRadius];
+    roundedRect.lineWidth = 0;
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0.0f);
+    [color setFill];
+    [roundedRect fill];
+    [roundedRect stroke];
+    [roundedRect addClip];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return [image resizableImageWithCapInsets:UIEdgeInsetsMake(cornerRadius, cornerRadius, cornerRadius, cornerRadius)];
+}
+
 + (NSBundle *)getDemoUseBundle {
     NSString * bundlePath = [[NSBundle bundleForClass:self.class] pathForResource: @"VEDemoUse" ofType :@"bundle"];
     NSBundle *resourceBundle = [NSBundle bundleWithPath:bundlePath];
@@ -1367,8 +1418,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         return nil;
     }
     NSURL *fileURL = [NSURL URLWithString:absolutePath];
-    if ([self isSystemPhotoUrl:fileURL])
+    if ([self isSystemPhotoUrl:fileURL] || [absolutePath containsString:@"mobile/Media"])
     {
+        if ([absolutePath containsString:@"mobile/Media"]) {
+            fileURL = [NSURL fileURLWithPath:absolutePath];
+        }
         return fileURL;
     }else {
         fileURL = nil;
@@ -1581,6 +1635,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     [colorArray addObject:UIColorFromRGB(0x164c6e)];
     
     return colorArray;
+}
+
++(NSString *)pathAssetVideoForURL:(NSURL *)aURL{
+    return [NSString stringWithFormat:@"%@/cachedAsset_video-%lu.mp4",[self returnEditorVideoPath],(unsigned long)[[aURL description] hash]];
+}
+
+- (NSString *)returnEditorVideoPath{
+    NSString *docmentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *editorvideoPath = [NSString stringWithFormat:@"%@/EDITORVIDEO",docmentsPath];
+    return editorvideoPath;
 }
 
 + (CGSize )getVideoSizeForTrack:(AVURLAsset *)asset{
@@ -1965,10 +2029,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     filter.type = kFilterTypeNone;
                 }else{
                     NSString *itemPath = [self getFilterDownloadPathWithDic:obj1];
-                    if (![[itemPath.pathExtension lowercaseString] isEqualToString:@"acv"]){
-                        filter.type = kFilterType_LookUp;
-                    }else{
+                    if ([[[obj1[@"file"] pathExtension] lowercaseString] isEqualToString:@"acv"]){
                         filter.type = kFilterType_ACV;
+                    }else if ([[[obj1[@"file"] pathExtension] lowercaseString] isEqualToString:@"zip"]) {
+                        filter.type = kFilterType_Mosaic;
+                    }else {
+                        filter.type = kFilterType_LookUp;
                     }
                     filter.filterPath = itemPath;
                 }
@@ -1983,10 +2049,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 filter.type = kFilterTypeNone;
             }else{
                 NSString *itemPath = [self getFilterDownloadPathWithDic:obj1];
-                if (![[itemPath.pathExtension lowercaseString] isEqualToString:@"acv"]){
-                    filter.type = kFilterType_LookUp;
-                }else{
+                if ([[[obj1[@"file"] pathExtension] lowercaseString] isEqualToString:@"acv"]){
                     filter.type = kFilterType_ACV;
+                }else if ([[[obj1[@"file"] pathExtension] lowercaseString] isEqualToString:@"zip"]) {
+                    filter.type = kFilterType_Mosaic;
+                }else {
+                    filter.type = kFilterType_LookUp;
                 }
                 filter.filterPath = itemPath;
             }
@@ -3484,6 +3552,65 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return newImage;
     
 }
+
++ (CGSize)trackSize:(NSURL *)contentURL rotate:(float)rotate{
+    CGSize size = CGSizeZero;
+    AVURLAsset *asset = [AVURLAsset assetWithURL:contentURL];
+    
+    NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+    if([tracks count] > 0) {
+        AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
+        size = CGSizeApplyAffineTransform(videoTrack.naturalSize, videoTrack.preferredTransform);
+        if (CGSizeEqualToSize(size, CGSizeZero) || size.width == 0.0 || size.height == 0.0) {
+            NSArray * formatDescriptions = [videoTrack formatDescriptions];
+            CMFormatDescriptionRef formatDescription = NULL;
+            if ([formatDescriptions count] > 0) {
+                formatDescription = (__bridge CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
+                if (formatDescription) {
+                    size = CMVideoFormatDescriptionGetPresentationDimensions(formatDescription, false, false);
+                }
+            }
+        }
+    }
+    size = CGSizeMake(fabs(size.width), fabs(size.height));
+    
+    CGSize newSize = size;
+    
+    BOOL isportrait = [self isVideoPortrait:asset];
+    
+    if(size.height == size.width){
+        
+        newSize        = size;
+        
+    }else if(isportrait){
+        newSize = size;
+        
+        if(size.height < size.width){
+            newSize  = CGSizeMake(size.height, size.width);
+        }
+        if(rotate == -90 || rotate == -270){
+            newSize  = CGSizeMake(size.width, size.height);
+        }
+    }else{
+        if(rotate == -90 || rotate == -270){
+            newSize  = CGSizeMake(size.height, size.width);
+        }
+    }
+    if (newSize.width > kVIDEOWIDTH || newSize.height > kVIDEOWIDTH) {
+        if(newSize.width>newSize.height){
+            CGSize tmpsize = newSize;
+            newSize.width  = kVIDEOWIDTH;
+            newSize.height = kVIDEOWIDTH * tmpsize.height/tmpsize.width;
+        }else{
+            CGSize tmpsize = newSize;
+            newSize.height  = kVIDEOWIDTH;
+            newSize.width = kVIDEOWIDTH * tmpsize.width/tmpsize.height;
+        }
+    }
+    
+    return newSize;
+}
+
 
 /**判断视频是横屏还是竖屏
  */
@@ -5825,6 +5952,21 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             veCoreSDK.toningArray = tonings;
         }
     }
+    
+    //MARK: 粒子
+    if (templateInfo.particles.count > 0) {
+        NSMutableArray *particles = [NSMutableArray array];
+        [templateInfo.particles enumerateObjectsUsingBlock:^(VECoreTemplateParticle * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            Particle *particle = [obj getCustomParticleWithFolderPath:folderPath];
+            if (particles) {
+                [particles addObject:particle];
+            }
+        }];
+        if (particles.count > 0) {
+            veCoreSDK.particleArray = particles;
+        }
+    }
+    
     [veCoreSDK build];
 }
 
@@ -7170,6 +7312,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }else{
         cachedFilePath = [cachedFilePath stringByAppendingString:[NSString stringWithFormat:@"%lld",[updatetime longLongValue]]];
     }
+    return cachedFilePath;
+}
+
++ (NSString *)getTransitionCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
+    NSString *cachedFilePath = [kTransitionFolder stringByAppendingPathComponent:[VEHelp cachedFileNameForKey:urlPath]];
+    cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
     return cachedFilePath;
 }
 
@@ -10294,6 +10442,130 @@ static OSType help_inputPixelFormat(){
     return particle;
 }
 
++ (NSMutableArray *)getCameraParticle:( NSString * ) path atFramePath:( NSString * ) framePath atSize:( CGSize ) size
+{
+    NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
+    
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
+    NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
+    jsonData = nil;
+    
+    NSArray* effects = effectDic[@"effects"];
+    
+    NSMutableArray * array = [NSMutableArray new];
+    
+    [effects enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [array addObject:[self getVEParticleS:path atFramePath:framePath  atObj:obj]];
+    }];
+    
+    return array;
+}
++ (Particle *)getVEParticle:( NSString * ) path atFramePath:( NSString * ) framePath  atObj:( NSMutableDictionary * ) obj
+{
+    NSMutableDictionary *effectDic = nil;
+    if( obj )
+    {
+        effectDic = obj;
+    }
+    else{
+        NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
+        NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
+        effectDic = [VEHelp objectForData:jsonData];
+        jsonData = nil;
+    }
+    Particle* p = nil;
+    if( effectDic )
+    {
+        NSMutableDictionary * effect = effectDic;
+        p = [[Particle alloc] init];
+        p.sourceRendingMode = [effect[@"sourceRendingMode"] floatValue];
+        p.startColorAlpha = [effect[@"startColorAlpha"] floatValue];
+        p.startParticleSizeVariance = [effect[@"startParticleSizeVariance"] floatValue]/720.0;
+        p.startColorGreen = [effect[@"startColorGreen"] floatValue];
+        p.startColorBlue = [effect[@"startColorBlue"] floatValue];
+        p.rotatePerSecond = [effect[@"rotatePerSecond"] floatValue];
+        p.radialAcceleration = [effect[@"radialAcceleration"] floatValue];
+        p.yCoordFlipped = [effect[@"yCoordFlipped"] floatValue];
+        p.emitterType = [effect[@"emitterType"] floatValue];
+        p.blendFuncSource = [effect[@"blendFuncSource"] floatValue];
+        p.finishColorVarianceAlpha = [effect[@"finishColorVarianceAlpha"] floatValue];
+        p.rotationEnd = [effect[@"rotationEnd"] floatValue];
+        p.startColorVarianceBlue = [effect[@"startColorVarianceBlue"] floatValue];
+        p.rotatePerSecondVariance = [effect[@"rotatePerSecondVariance"] floatValue];
+        p.particleLifespan = [effect[@"particleLifespan"] floatValue];
+        p.minRadius = [effect[@"minRadius"] floatValue];
+        p.tangentialAcceleration = [effect[@"tangentialAcceleration"] floatValue]/720.0;
+        p.rotationStart = [effect[@"rotationStart"] floatValue];
+        p.startColorVarianceGreen = [effect[@"startColorVarianceGreen"] floatValue];
+        p.speed = [effect[@"speed"] floatValue]/720.0;
+        
+        p.minRadiusVariance = [effect[@"minRadiusVariance"] floatValue];
+        p.finishColorVarianceBlue = [effect[@"finishColorVarianceBlue"] floatValue];
+        p.finishColorBlue = [effect[@"finishColorBlue"] floatValue];
+        p.finishColorGreen = [effect[@"finishColorGreen"] floatValue];
+    //            p.blendFuncDestination = [effect[@"blendFuncDestination"] floatValue]/size.width;
+        p.finishColorAlpha = [effect[@"finishColorAlpha"] floatValue];
+
+        p.startParticleSize = [effect[@"startParticleSize"] floatValue]/720.0;
+        p.sourcePositionVariancex = [effect[@"sourcePositionVariancex"] floatValue]/720.0;
+        p.sourcePositionVariancey = [effect[@"sourcePositionVariancey"] floatValue]/720.0;
+        p.sourcePositionx = [effect[@"sourcePositionx"] floatValue]/720.0;
+        p.sourcePositiony = [effect[@"sourcePositiony"] floatValue]/720.0;
+        p.startColorRed = [effect[@"startColorRed"] floatValue];
+        p.finishColorVarianceRed = [effect[@"finishColorVarianceRed"] floatValue];
+        {
+            NSString * textureFileName = effect[@"textureFileName"];
+            NSString *maskPath = [NSString stringWithFormat:@"%@/%@", path,textureFileName];
+            p.textureFileName = maskPath;
+        }
+        
+        p.startColorVarianceAlpha = [effect[@"startColorVarianceAlpha"] floatValue];
+        p.maxParticles = [effect[@"maxParticles"] floatValue];
+        p.finishColorVarianceGreen = [effect[@"finishColorVarianceGreen"] floatValue];
+        p.finishParticleSize = [effect[@"finishParticleSize"] floatValue]/720.0;
+        p.duration = [effect[@"duration"] floatValue];
+        p.startColorVarianceRed = [effect[@"startColorVarianceRed"] floatValue];
+        p.finishColorRed = [effect[@"finishColorRed"] floatValue];
+        p.gravityx = [effect[@"gravityx"] floatValue]/720.0;
+        p.maxRadiusVariance = [effect[@"maxRadiusVariance"] floatValue];
+        p.gravityy = [effect[@"gravityy"] floatValue]/720.0;
+        p.finishParticleSizeVariance = [effect[@"finishParticleSizeVariance"] floatValue]/720.0;
+        p.rotationEndVariance = [effect[@"rotationEndVariance"] floatValue];
+        p.rotationStartVariance = [effect[@"rotationStartVariance"] floatValue];
+        p.speedVariance = [effect[@"speedVariance"] floatValue]/720.0;
+        p.radialAccelVariance = [effect[@"radialAccelVariance"] floatValue];
+        p.tangentialAccelVariance = [effect[@"tangentialAccelVariance"] floatValue]/720.0;
+        p.particleLifespanVariance = [effect[@"particleLifespanVariance"] floatValue];
+        p.angleVariance = [effect[@"angleVariance"] floatValue];
+        p.angle = [effect[@"angle"] floatValue];
+        p.maxRadius = [effect[@"maxRadius"] floatValue];
+    }
+    return p;
+}
+
++ (Particle *)getVEParticleS:( NSString * ) path atFramePath:( NSString * ) framePath  atObj:( NSMutableDictionary * ) obj
+{
+    Particle * particle = nil;
+    if( obj == nil )
+    {
+        NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
+        NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
+        NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
+        jsonData = nil;
+        obj = effectDic;
+    }
+    
+    NSMutableDictionary* effect = obj[@"effect"];
+    NSMutableDictionary* location = obj[@"location"];
+    if(effect)
+    {
+        particle = [self getVEParticle:path atFramePath:framePath  atObj:effect];
+        particle.sourceRendingMode = [obj[@"sourceRendingMode"] floatValue];
+    }
+    return particle;
+}
+
+
 +(void)impactOccurred:( float ) intensity
 {
     if (@available(iOS 10.0, *)) {
@@ -10307,4 +10579,97 @@ static OSType help_inputPixelFormat(){
         // Fallback on earlier versions
     }
 }
+
++ (long long) freeDiskSpaceInBytes{
+    struct statfs buf;
+    long long freespace = -1;
+    if(statfs("/var", &buf) >= 0){
+        freespace = (long long)(buf.f_bsize * buf.f_bfree);
+    }
+    NSLog(@"%@",[NSString stringWithFormat:@"手机剩余存储空间为：%qi MB" ,freespace/1024/1024]);
+    return freespace/1024/1024;
+}
+
++ (UIColor *)getCategoryFilterBgColorWithDic:(NSDictionary *)dic categoryIndex:(NSInteger)categoryIndex {
+    UIColor *backgroundColor;
+    if (dic && dic[@"extra"] && [dic[@"extra"] count] > 0 && [dic[@"extra"][@"bg"] length] > 0) {
+        backgroundColor = [self colorWithHexString:[NSString stringWithFormat:@"0x%@", dic[@"extra"][@"bg"]]];
+    }
+    if (!backgroundColor) {
+        switch (categoryIndex) {
+            case 1:
+                backgroundColor = UIColorFromRGB(0xb96e77);
+                break;
+            case 2:
+                backgroundColor = UIColorFromRGB(0x284742);
+                break;
+            case 3:
+                backgroundColor = UIColorFromRGB(0x6c8464);
+                break;
+            case 4:
+                backgroundColor = UIColorFromRGB(0x333333);
+                break;
+            case 5:
+                backgroundColor = UIColorFromRGB(0xb4984f);
+                break;
+            case 6:
+                backgroundColor = UIColorFromRGB(0x614285);
+                break;
+            case 7:
+                backgroundColor = UIColorFromRGB(0x2b2e78);
+                break;
+            case 8:
+                backgroundColor = UIColorFromRGB(0x965141);
+                break;
+                
+            default:
+                backgroundColor = UIColorFromRGB(0x5f4b44);
+                break;
+        }
+    }
+    return backgroundColor;
+}
+
++ (UIColor *) colorWithHexString: (NSString *)color
+{
+    NSString *cString = [[color stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
+    
+    // String should be 6 or 8 characters
+    if ([cString length] < 6) {
+        return [UIColor clearColor];
+    }
+    
+    // strip 0X if it appears
+    if ([cString hasPrefix:@"0X"])
+        cString = [cString substringFromIndex:2];
+    if ([cString hasPrefix:@"#"])
+        cString = [cString substringFromIndex:1];
+    if ([cString length] != 6)
+        return [UIColor clearColor];
+    
+    // Separate into r, g, b substrings
+    NSRange range;
+    range.location = 0;
+    range.length = 2;
+    
+    //r
+    NSString *rString = [cString substringWithRange:range];
+    
+    //g
+    range.location = 2;
+    NSString *gString = [cString substringWithRange:range];
+    
+    //b
+    range.location = 4;
+    NSString *bString = [cString substringWithRange:range];
+    
+    // Scan values
+    unsigned int r, g, b;
+    [[NSScanner scannerWithString:rString] scanHexInt:&r];
+    [[NSScanner scannerWithString:gString] scanHexInt:&g];
+    [[NSScanner scannerWithString:bString] scanHexInt:&b];
+    
+    return [UIColor colorWithRed:((float) r / 255.0f) green:((float) g / 255.0f) blue:((float) b / 255.0f) alpha:1.0f];
+}
+
 @end

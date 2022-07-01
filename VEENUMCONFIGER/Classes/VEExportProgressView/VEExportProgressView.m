@@ -13,7 +13,7 @@
 @interface VEExportProgressView()
 {
    UIView *_childrensView;
-   UILabel *_progressTitleLabel;
+   
    UILabel *_trackprogressLabel;
    UIImageView *_trackbackGround;
    UIImageView *_trackprogress;
@@ -113,6 +113,7 @@
     float flag = animated ? 0.15:0.;
     dispatch_async(dispatch_get_main_queue(), ^{
         if(animated){
+            [UIView setAnimationsEnabled:YES];
             [UIView animateWithDuration:flag animations:^{
                 if(self->_trackprogressLabel){
                     self->_trackprogress.frame = CGRectMake(0, 0, progress/100.0 * self->_trackbackGround.frame.size.width , self->_trackbackGround.frame.size.height);
@@ -149,6 +150,7 @@
     
     float flag = animated ? 0.15:0.;
     if(animated){
+        [UIView setAnimationsEnabled:YES];
         [UIView animateWithDuration:flag animations:^{
             if(self->_trackprogressLabel){
                 self->_trackprogress.frame = CGRectMake(0, 0, progress/100.0 * self->_trackbackGround.frame.size.width , self->_trackbackGround.frame.size.height);

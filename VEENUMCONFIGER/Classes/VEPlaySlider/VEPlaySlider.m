@@ -68,6 +68,14 @@
    
     
 }
+
+-(UIView *)thumbView{
+    if(!_thumbView && self.subviews.count >2){
+        _thumbView = self.subviews[2];
+    }
+    return _thumbView;
+}
+
 #pragma mark - 3 Request Data
 
 
@@ -128,6 +136,10 @@
 - (CGRect)thumbRectForBounds:(CGRect)bounds trackRect:(CGRect)rect value:(float)value{
     _thumbRect = [super thumbRectForBounds:bounds trackRect:rect value:value];
     return _thumbRect;
+}
+
+- (CGRect)trackRectForBounds:(CGRect)bounds{
+    return CGRectMake(0, (self.frame.size.height - 4) / 2, CGRectGetWidth(self.frame), 3);
 }
 #pragma mark - 5.DataSource and Delegate
 

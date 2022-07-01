@@ -13,15 +13,13 @@
 
 -(void)fiveSensesEditCompletion:( VEFiveCameraView *) view;
 
--(void)fiveSensesCancelEdit:( VEFiveCameraView *) view;
-
 -(void)fiveSenses_ValueChanged:(UISlider *) slider atVIew:(VEFiveCameraView *) view;
 
--(void)fiveSenses_Reset:(NSInteger) type atVIew:(VEFiveCameraView *) view;
+-(void)fiveSenses_Reset:(NSInteger) type value:(float)value;
 
--(void)fiveSensesCompare:(NSInteger) type atVIew:(VEFiveCameraView *)view;
+-(void)fiveSensesCompare:(NSInteger) type value:(float)value;
 
--(void)fiveSensesCompareCompletion:(NSInteger) type atVIew:(VEFiveCameraView *)view;
+-(void)fiveSensesCompareCompletion:(NSInteger) type value:(float)value;
 
 @end
 
@@ -45,12 +43,6 @@
 @property(nonatomic, strong)NSMutableArray<UILabel *> * adjustmentNumberLabels;
 @property(nonatomic, strong)UILabel *sliderValueLabel;
 @property(nonatomic, assign)float  adjHeight;
-@property (nonatomic, strong)  FaceAttribute* faceAttribute;
-@property (nonatomic, strong)  FaceAttribute* oldFaceAttribute;
-@property (nonatomic, strong)  CameraManager* camera;
-//@property(nonatomic, strong)MediaAsset * currentMedia;
-//@property(nonatomic, strong)MediaAsset * orginMedia;
-@property(nonatomic, assign)CGRect currentFaceRect;
 - (void)setDefaultValue;
 - (void)resetAdjustment_Btn:(UIButton *)sender;
 @end

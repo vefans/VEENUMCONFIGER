@@ -433,6 +433,13 @@
 */
 @property (nonatomic, assign) CMTimeRange animationOutTimeRange;
 
+/** 动画名称
+*/
+@property(nonatomic,strong)NSString *animationName;
+/** 动画时长
+*/
+@property(nonatomic,assign)float animationDuration;
+
 /** 人像分割
 */
 @property (nonatomic, assign) BOOL isSelfieSegmentation;

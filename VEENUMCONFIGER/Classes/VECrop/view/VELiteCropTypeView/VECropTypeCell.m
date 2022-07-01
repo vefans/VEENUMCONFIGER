@@ -63,7 +63,7 @@
 //        self.layer.borderWidth = 0;
         if( [cropTypeModel.title isKindOfClass:[NSString class]] )
         {
-            NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12/90.0*cropTypeModel.height], NSForegroundColorAttributeName: UIColorFromRGB(0x808080), NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:UIColorFromRGB(0x808080)
+            NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:cropTypeModel.title attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12/90.0*cropTypeModel.height], NSForegroundColorAttributeName: UIColorFromRGB(0xB2B2B2), NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:UIColorFromRGB(0xB2B2B2)
             }];
             self.titleLabel.attributedText = string;
         }
@@ -74,6 +74,7 @@
     }
     _height = cropTypeModel.height;
     [self.titleLabel setFrame:CGRectMake(0, (self.frame.size.height-40.0/90.0*_height)/2, self.frame.size.width, 40.0/90.0*_height)];
+    
 }
 
 

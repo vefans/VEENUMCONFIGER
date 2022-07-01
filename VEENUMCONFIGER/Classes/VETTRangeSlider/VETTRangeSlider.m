@@ -33,7 +33,6 @@ const float VE_TEXT_HEIGHT = 14;
 @property (nonatomic, strong) CATextLayer *maxLabel;
 
 @property (nonatomic, strong) NSNumberFormatter *decimalNumberFormatter; // Used to format values if formatType is YLRangeSliderFormatTypeDecimal
-@property (nonatomic, assign) BOOL      isStartMove;
 @end
 
 static const CGFloat kLabelsFontSize = 12.0f;
@@ -88,6 +87,8 @@ static const CGFloat kLabelsFontSize = 12.0f;
     _leftLabel.highlightedImage =  [VEHelp imageNamed:@"New_EditVideo/剪辑-截取_把手选中_"];
     _leftLabel.hidden = YES;
     [self addSubview:_leftLabel];
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleClick:)];
+    [self addGestureRecognizer:tapGesture];
     
     _rightLabel = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, VE_HANDLE_DIAMETER, self.frame.size.height)];
     _rightLabel.image =  [VEHelp imageNamed:[VEConfigManager sharedManager].iPad_HD ? @"/ipad/剪辑-剪辑-把手_左默认_" : @"New_EditVideo/剪辑-剪辑-把手_左默认_"];
@@ -149,6 +150,19 @@ static const CGFloat kLabelsFontSize = 12.0f;
 //    [self.layer addSublayer:_maxLabel];
 
     [self refresh];
+}
+
+- (void)handleClick:(UITapGestureRecognizer *)gesture {
+    CGPoint touchPoint = [gesture locationInView:self];
+    //遍历当前视图上的子视图的presentationLayer 与点击的点是否有交集
+    for (CALayer *subLayer in self.layer.sublayers) {
+        if ([subLayer.presentationLayer hitTest:touchPoint] && (subLayer == _leftHandle || subLayer == _rightHandle)) {
+            if (_delegate && [_delegate respondsToSelector:@selector(tapHandler:)]) {
+                [_delegate tapHandler:(subLayer == _leftHandle)];
+            }
+            break;
+        }
+    }
 }
 
 - (void)dragRecognized:(VEDragGestureRecognizer *)recognizer {

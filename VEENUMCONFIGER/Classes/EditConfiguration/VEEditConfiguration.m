@@ -17,6 +17,7 @@
         _minVideoDuration = 0;
         _enableTextTitle                 = true;
         //片段编辑预设
+        _enableParticle = true;
         _enableSmear = true;
         _enableAperture = true;
         _enableHDR = true;
@@ -29,7 +30,6 @@
         _enableSingleMediaAdjust = true;
         _enableSingleSpecialEffects = true;
         _enableSingleMediaFilter         = true;
-        _enableTrim                      = true;
         _enableTrim                      = true;
         _enableSplit                     = true;
         _enableReplace                  = true;
@@ -116,6 +116,7 @@
 }
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEEditConfiguration *copy   = [[[self class] allocWithZone:zone] init];
+    copy.enableParticle = _enableParticle;
     copy.enableSmear = _enableSmear;
     copy.enableTon = _enableTon;
     copy.enableAperture = _enableAperture;
@@ -229,6 +230,7 @@
     VEEditConfiguration *copy   = [[[self class] allocWithZone:zone] init];
     copy.netMaterialTypeURL                     = _netMaterialTypeURL;
     copy.enableTon = _enableTon;
+    copy.enableParticle = _enableParticle;
     copy.enableAperture = _enableAperture;
     copy.enableHDR = _enableHDR;
     copy.enableHoly = _enableHoly;

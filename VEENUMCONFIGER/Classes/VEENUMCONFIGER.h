@@ -19,4 +19,4 @@
 #import <VEENUMCONFIGER/VEColorControlView.h>
 #import <VEENUMCONFIGER/VEDrawView.h>
 #import <VEENUMCONFIGER/VEUndoRedoObject.h>
-
+#import <VEENUMCONFIGER/VEMediaGroup.h>
