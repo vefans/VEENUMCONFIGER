@@ -39,6 +39,8 @@
         _watermarkPosition = VEWatermarkPosition_leftBottom;
         _enableSetExportParams = true;
         _isCanDeleteWatermark = true;
+        
+        _exportFileType = ExportFileTypeDefault;
     }
     return self;
 }
@@ -180,6 +182,10 @@
 - (void)setWaterPosition:(VEWatermarkPosition)waterPosition {
     _waterPosition = waterPosition;
     _watermarkPosition = waterPosition;
+}
+
+-(void)setExportFileType:(ExportFileType)exportFileType{
+    _exportFileType = exportFileType;
 }
 
 @end

@@ -79,7 +79,7 @@
     _trackprogressLabel.textColor = [UIColor whiteColor];
     _trackprogressLabel.font = [UIFont systemFontOfSize:17];
     _trackprogressLabel.textAlignment = NSTextAlignmentCenter;
-    _trackprogressLabel.text = @"0.0%%";
+    _trackprogressLabel.text = @"0.0%";
 
     [_childrensView addSubview:_progressTitleLabel];
     [_childrensView addSubview:_trackbackGround];
@@ -105,7 +105,7 @@
     
     if(isnan(progress) || progress <0){
 //        progress = 0.f;
-        _trackprogressLabel.text = @"0.0%%";
+        _trackprogressLabel.text = @"0.0%";
         return;
     }
     _progress = progress;
@@ -199,6 +199,15 @@
 - (void)setTrackprogressTintColor:(UIColor *)trackprogressTintColor{
     if(!_trackprogress && trackprogressTintColor){
         _trackprogress.backgroundColor = trackprogressTintColor;
+    }
+}
+
+- (void)setIsHiddenCancelBtn:(BOOL)isHiddenCancelBtn {
+    if (isHiddenCancelBtn) {
+        [_cancelBtn removeFromSuperview];
+        CGRect frame = _trackbackGround.frame;
+        frame.size.width = _childrensView.frame.size.width;
+        _trackbackGround.frame = frame;
     }
 }
 

@@ -16,7 +16,9 @@ typedef NS_ENUM(NSInteger, BackTypeCode) {
     NavBackCode,
     DisBackCode
 };
+@interface VEToolBarView : UIView
 
+@end
 
 @interface VENavBarViewController : UIViewController
 @property(nonatomic, strong)UIView               *navBar;       //导航栏
@@ -31,7 +33,7 @@ typedef NS_ENUM(NSInteger, BackTypeCode) {
 
 @property(nonatomic, assign)BackTypeCode         typeCode;      //返回类型
 
-@property(nonatomic, strong)UIView               *toolBar;
+@property(nonatomic, strong)VEToolBarView               *toolBar;
 
 @property(nonatomic,strong) VENavBarButton       *finishToolBarBtn; //工具栏完成按钮
 

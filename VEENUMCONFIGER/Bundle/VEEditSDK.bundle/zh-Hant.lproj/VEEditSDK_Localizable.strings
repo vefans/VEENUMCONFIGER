@@ -921,7 +921,7 @@
 "时长" = "時長";
 
 //2020.11.23 add
-"+ 音频合集" = "+ 音樂集合";
+"音频合集" = "音頻合集";
 "点击添加照片" = "點擊添加照片";
 "帧率" = "幀率";
 "文件大小约为：%.2fMB" = "文件大小約為：%.2fMB";
@@ -1179,11 +1179,11 @@
 "长按添加%@特效" = "Long press to add effect";
 "点击添加动感特效" = "Click to add filter effect";
 "点击添加%@特效" = "Click to add %@ effect";
-"码率:%.2fMbps" = "Bitrate:%.2fMbps";
+"码率:  %.2fMbps" = "Bitrate:%.2fMbps";
 "码率:" = "Bitrate:";
-"分辨率:%dx%d" = "Resolution:%dx%d";
+"分辨率:  %dx%d" = "Resolution:%dx%d";
 "分辨率:" = "Resolution:";
-"大小:%.2fMB" = "Size:%.2fMB";
+"大小:  %.2fMB" = "Size:%.2fMB";
 "压缩后大小:%.2fMB" = "Compressed size:%.2fMB";
 "Photos are syncing from iCloud, please retry later" = "Photos are syncing from iCloud, please retry later";
 "Videos are syncing from iCloud, please retry later" = "Videos are syncing from iCloud, please retry later";
@@ -1300,3 +1300,7 @@
 "sv-" = "瑞典语";
 "th-" = "泰语";
 "tr-" = "土耳其语";
+"Fade" = "淡化";
+"Edit" = "剪辑";
+"Delete" = "删除";
+"Volume" = "音量";

@@ -522,8 +522,8 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
     [basePath stroke];
     
     maskLayer.lineWidth = 1.0/_scale;
-    maskLayer.strokeColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:0.8].CGColor;
-    maskLayer.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.8].CGColor;
+    maskLayer.strokeColor = Main_Color.CGColor;
+    maskLayer.shadowColor = Main_Color.CGColor;
 //    maskLayer.shadowOffset = 0.2;
     maskLayer.path = basePath.CGPath;
     maskLayer.fillColor = nil; // 默认为blackColor

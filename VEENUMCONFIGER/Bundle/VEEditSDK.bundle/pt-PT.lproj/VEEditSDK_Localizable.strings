@@ -920,7 +920,7 @@
 
 
 //2020.11.23 add
-"+ 音频合集" = "+ Coleção de músicas";
+"音频合集" = "Coleção de músicas";
 "点击添加照片" = "Por favor, adicione imagens";
 "帧率" = "Por favor, adicione imagens";
 "文件大小约为：%.2fMB" = "O tamanho do arquivo é de aproximadamente：%.2fMB";
@@ -1178,11 +1178,11 @@
 "长按添加%@特效" = "Long press to add effect";
 "点击添加动感特效" = "Click to add filter effect";
 "点击添加%@特效" = "Click to add %@ effect";
-"码率:%.2fMbps" = "Bitrate:%.2fMbps";
+"码率:  %.2fMbps" = "Bitrate:%.2fMbps";
 "码率:" = "Bitrate:";
-"分辨率:%dx%d" = "Resolution:%dx%d";
+"分辨率:  %dx%d" = "Resolution:%dx%d";
 "分辨率:" = "Resolution:";
-"大小:%.2fMB" = "Size:%.2fMB";
+"大小:  %.2fMB" = "Size:%.2fMB";
 "压缩后大小:%.2fMB" = "Compressed size:%.2fMB";
 "Photos are syncing from iCloud, please retry later" = "Photos are syncing from iCloud, please retry later";
 "Videos are syncing from iCloud, please retry later" = "Videos are syncing from iCloud, please retry later";
@@ -1263,3 +1263,7 @@
 "音    量" = "Volumen";
 "旋     转" =  "Rotate";
 "视频抠像" = "VideoMatting";
+"请输入宽高比（例如：16:9）" = "Enter proportion（e.g：16:9）";
+"输入自定义比例" = "Enter custom proportion";
+"请输入正确的宽高比（例如：16:9）" = "Enter right proportion（e.g：16:9）"
+"请输入或粘贴文稿，开启提词器功能～" = "Please input or paste the text and turn on the function of the teleprompter ~";

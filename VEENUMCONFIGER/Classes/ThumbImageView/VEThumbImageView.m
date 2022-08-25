@@ -86,14 +86,14 @@ float distanceBetweenPoints(CGPoint a, CGPoint b);
         //_fileTypeView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.0];
         
         _thumbDeletedBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *image = [VEHelp imageNamed:@"jianji/fenge/剪辑_删除素材_"];
-        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        UIImage *image = [VEHelp imageNamed:@"jianji/fenge/视频截图-叉@3x"];
+        //image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         _thumbDeletedBtn.frame = CGRectMake(t_size.width - image.size.width, 0, image.size.width, image.size.height);
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.thumbDeletedBtn setImage:image forState:UIControlStateNormal];
-            self.thumbDeletedBtn.tintColor = Main_Color;
+            //self.thumbDeletedBtn.tintColor = Main_Color;
         });
-        _thumbDeletedBtn.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.5];
+        //_thumbDeletedBtn.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.5];
         _thumbDeletedBtn.layer.cornerRadius = image.size.width/2.0;
         _thumbDeletedBtn.layer.masksToBounds = YES;;
         [_thumbDeletedBtn addTarget:self action:@selector(deletedThumbFile) forControlEvents:UIControlEventTouchUpInside];

@@ -8,7 +8,14 @@
 #import "VEEditConfiguration.h"
 
 @implementation VEEditConfiguration
-
+- (void)setIsSingletrack:(bool)isSingletrack{
+    _isSingletrack = isSingletrack;
+    if(_isSingletrack){
+        [VEConfigManager sharedManager].iPad_HD = NO;
+    }else{
+        [VEConfigManager sharedManager].iPad_HD = iPad;
+    }
+}
 - (instancetype)init{
     if(self = [super init]){
         _supportFileType                        = SUPPORT_ALL;
@@ -54,9 +61,10 @@
         _enableAuidoCurveSpeed = true;
         _enableMediaCurveSpeed = true;
         _enableCaptionKeyframe = true;
-        _enableCaptionTrack = false;
+        _enableCaptionTrack = true;
         _enableMediaKeyframe = true;
         _enableAudioKeyframe = true;
+        _enableDoodlePenKeyframe = true;
         
         //编辑导出预设
         _enableMV           = false;
@@ -127,6 +135,7 @@
     copy.enableBlurry = _enableBlurry;
     copy.netMaterialTypeURL                     = _netMaterialTypeURL;
     copy.supportFileType                        = _supportFileType;
+    copy.isLivePhotoDisable                       = _isLivePhotoDisable;
     copy.defaultSelectAlbum                     = _defaultSelectAlbum;
     copy.mediaCountLimit                        = _mediaCountLimit;
     copy.mediaMinCount                          = _mediaMinCount;
@@ -152,6 +161,7 @@
     copy.enableCaptionTrack = _enableCaptionTrack;
     copy.enableMediaKeyframe = _enableMediaKeyframe;
     copy.enableAudioKeyframe = _enableAudioKeyframe;
+    copy.enableDoodlePenKeyframe = _enableDoodlePenKeyframe;
     
     copy.enableRotate                      = _enableRotate;
     copy.enableMirror                      = _enableMirror;
@@ -222,6 +232,7 @@
     copy.stickerResourceMinVersion      = _stickerResourceMinVersion;
     copy.netMaterialURL = _netMaterialURL;
     copy.onlineAlbumPath = _onlineAlbumPath;
+    copy.doodlePenResourcePath = _doodlePenResourcePath;
 
     return copy;
 }
@@ -238,6 +249,7 @@
     copy.enableSharpen = _enableSharpen;
     copy.enableBlurry = _enableBlurry;
     copy.supportFileType                        = _supportFileType;
+    copy.isLivePhotoDisable                       = _isLivePhotoDisable;
     copy.defaultSelectAlbum                     = _defaultSelectAlbum;
     copy.mediaCountLimit                         = _mediaCountLimit;
     copy.mediaMinCount                          = _mediaMinCount;
@@ -274,6 +286,7 @@
     copy.enableCaptionTrack = _enableCaptionTrack;
     copy.enableMediaKeyframe = _enableMediaKeyframe;
     copy.enableAudioKeyframe = _enableAudioKeyframe;
+    copy.enableDoodlePenKeyframe = _enableDoodlePenKeyframe;
     
     //编辑导出预设
     copy.enableMV   = _enableMV;
@@ -333,6 +346,7 @@
     copy.stickerResourceMinVersion      = _stickerResourceMinVersion;
     copy.netMaterialURL = _netMaterialURL;
     copy.onlineAlbumPath = _onlineAlbumPath;
+    copy.doodlePenResourcePath = _doodlePenResourcePath;
 
     return copy;
 }

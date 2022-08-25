@@ -154,7 +154,7 @@
                 contentsWidth += ItemBtnWidth+25;
                                 
                 
-                VESlider * slider = [[VESlider alloc] initWithFrame:CGRectMake(70, (CGRectGetHeight(sliderSupView.frame) - 35)/2.0,sliderSupView.frame.size.width - 140 , 35)];
+                VESlider * slider = [[VESlider alloc] initWithFrame:CGRectMake(90, (CGRectGetHeight(sliderSupView.frame) - 35)/2.0,sliderSupView.frame.size.width - 100 - 44 - 15 , 35)];
                 slider.tag = [list[i][@"id"] integerValue];
                 [slider setMinimumValue:0];
                 [slider setMaximumValue:1.0];
@@ -197,15 +197,17 @@
         }
         
         UIButton *compareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        compareBtn.frame = CGRectMake(self.frame.size.width - (64 + 15), (CGRectGetHeight(self.frame) - 44) - (iPhone_X ? 34 : 0), 64, 44);
+        compareBtn.frame = CGRectMake(self.frame.size.width - (44 + 15), (CGRectGetHeight(self.frame) - 44) - (iPhone_X ? 34 : 0), 44, 44);
         [compareBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@默认",@"对比"]] forState:UIControlStateNormal];
         [compareBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@选中",@"对比"]] forState:UIControlStateSelected];
         [compareBtn addTarget:self action:@selector(compareBtnDown:) forControlEvents:UIControlEventTouchDown];
         [compareBtn addTarget:self action:@selector(compareBtnUp:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
         [self addSubview:compareBtn];
         
-        UIButton * resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(15, compareBtn.frame.origin.y, 50, 44)];
-        [resetBtn setTitle:VELocalizedString(@"还原", nil) forState:UIControlStateNormal];
+        UIButton * resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, compareBtn.frame.origin.y, 80, 44)];
+        [resetBtn setImage:[VEHelp imageNamed:@"剪辑_重置默认_"] forState:UIControlStateNormal];
+        [resetBtn setImage:[VEHelp imageNamed:@"剪辑_重置选中_"] forState:UIControlStateHighlighted];
+        [resetBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
         [resetBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
         [resetBtn setTitleColor:Main_Color forState:UIControlStateHighlighted];
         resetBtn.titleLabel.font = [UIFont systemFontOfSize:12];
@@ -658,6 +660,7 @@
 
 -(void)resetAdjustment_Btn:( UIButton * ) sender
 {
+#if 0
     float value = 0.5;
     if([VEConfigManager sharedManager].iPad_HD){
         switch (_currentType) {
@@ -700,9 +703,19 @@
     {
         [_delegate fiveSenses_Reset:_currentType value:value];
     }
+#else
+    _faceAttribute = [FaceAttribute new];
+    for (int i = 0;i<_adjustmentSliders.count;i++) {
+        [_adjustmentSliders[i] setValue:0];
+    }
+    if( _delegate && [_delegate respondsToSelector:@selector(fiveSensesResetAll)] ) {
+        [_delegate fiveSensesResetAll];
+    }
+#endif
 }
 
 - (void)compareBtnDown:(UIButton *)sender {
+#if 0
     float value = 0.5;
     if([VEConfigManager sharedManager].iPad_HD){
         switch (_currentType) {
@@ -746,9 +759,15 @@
     {
         [_delegate fiveSensesCompare:_currentType value:value];
     }
+#else
+    if( _delegate && [_delegate respondsToSelector:@selector(fiveSensesResetAll)] ) {
+        [_delegate fiveSensesResetAll];
+    }
+#endif
 }
 
 - (void)compareBtnUp:(UIButton *)sender {
+#if 0
     FaceAttribute *faceAttribute = _faceAttribute;
     float value =  _currentType > KBeauty_Smile ? 0.0 : 0.5;
     {
@@ -858,6 +877,12 @@
     {
         [_delegate fiveSensesCompareCompletion:_currentType value:value];
     }
+#else
+    if( _delegate && [_delegate respondsToSelector:@selector(fiveSensesCompareCompletionAll:)] )
+    {
+        [_delegate fiveSensesCompareCompletionAll:_faceAttribute];
+    }
+#endif
 }
 
 

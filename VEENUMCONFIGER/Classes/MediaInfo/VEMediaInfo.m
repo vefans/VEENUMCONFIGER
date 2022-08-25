@@ -487,6 +487,8 @@
                 asset.url = url;
             }
         }
+        self.antiShakeUrl = asset.antiShakeUrl;
+        self.antiShakeType = asset.antiShakeType;
         self.contentURL = asset.url;
         _thumbImage = [VEHelp getThumbImageWithUrl:_contentURL];
         if ([VEHelp isImageUrl:_contentURL]) {
@@ -568,7 +570,7 @@
             _fxEffectTimeRange = customMultipleFilter.timeRange;
         }];
         if (asset.pointsInVideoArray.count > 0) {
-            _pointsInVideoArray = [asset.pointsInVideoArray copy];
+            _pointsInVideoArray = [asset.pointsInVideoArray mutableCopy];
         }
         [asset.animate enumerateObjectsUsingBlock:^(MediaAssetAnimatePosition * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (obj.pointsArray.count > 0) {
@@ -579,6 +581,7 @@
                                leftBottom:CGPointMake([obj.pointsArray[3][0] floatValue], [obj.pointsArray[3][1] floatValue])];
             }
         }];
+        _isPasterAssetViewDrag = !asset.isUseRect;
     }
     return self;
 }

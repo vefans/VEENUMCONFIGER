@@ -16,6 +16,12 @@ typedef NS_ENUM(NSInteger,VEWatermarkPosition){
     VEWatermarkPosition_rightBottom
 };
 
+//转码需要导出的文件方式，暂时只针对编码使用，其他功能选择默认  2022.07.20
+typedef NS_ENUM(NSInteger, ExportFileType) {
+    ExportFileTypeDefault = 0,        //默认,什么也不做
+    ExportFileTypeAlbum,  //相册
+    ExportFileTypeFile,    //文件
+};
 #pragma mark - 片尾
 @interface VEEndingMedia : NSObject
 
@@ -98,6 +104,14 @@ typedef NS_ENUM(NSInteger,VEWatermarkPosition){
  */
 @property (nonatomic,copy)NSString *createTemplateCategoryPath;
 
+/** 上传封面模板网络资源地址
+ */
+@property (nonatomic,copy)NSString *uploadCoverTemplatePath;
+
+/** 新建封面模板分类地址
+ */
+@property (nonatomic,copy)NSString *createCoverTemplateCategoryPath;
+
 /** 导出模板中分片段，(default false)
  */
 @property (nonatomic,assign) bool enableTemplateFragment;
@@ -129,7 +143,8 @@ typedef NS_ENUM(NSInteger,VEWatermarkPosition){
  */
 @property (nonatomic,assign) bool enableSetExportParams;
 
-
+//编码添加导出文件方式 2022.07.20
+@property (assign, assign)ExportFileType exportFileType;
 
 /** 是否禁用片尾，(default true)
  */
@@ -147,5 +162,7 @@ typedef NS_ENUM(NSInteger,VEWatermarkPosition){
 /** 显示位置
  */
 @property (nonatomic,assign)VEWatermarkPosition  waterPosition DEPRECATED_MSG_ATTRIBUTE("Use watermarkPosition instead.");
+
+
 
 @end

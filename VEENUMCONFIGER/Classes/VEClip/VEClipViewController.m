@@ -367,6 +367,7 @@
         [array addObject:[NSNumber numberWithInteger:9]];
         [array addObject:[NSNumber numberWithInteger:6]];
         [array addObject:[NSNumber numberWithInteger:7]];
+        
         float contWidth = 15;
         for( int i = 0; i < 12; i++ )
         {
@@ -422,9 +423,9 @@
                     selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_6-7选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
                 }
                     break;
-                case 6://1:2
+                case 6://5:8
                 {
-                    type = VE_VECROPTYPE_1TO2;
+                    type = VE_VECROPTYPE_5TO8;
                     namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_1-2默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
                     selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_1-2选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
                 }
@@ -464,6 +465,7 @@
                     selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_3-4选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
                 }
                     break;
+                    
                 default:
                     break;
             }
@@ -515,7 +517,13 @@
             VECropTypeModel * cropTypeModel = [[VECropTypeModel alloc] init];
             cropTypeModel.height = _cropTypeView.frame.size.height;
             NSString * str = nil;
-            if (i == 0) {
+            if (i == 0){
+                cropTypeModel.cropType = VE_VECROPTYPE_ORIGINAL;
+                str = VELocalizedString(@"原比例", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 1) {
                 cropTypeModel.cropType = VE_VECROPTYPE_FREE;
                 str = VELocalizedString(@"自由", nil);
                 cropTypeModel.iconNormal = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_free_nomal"];
@@ -523,13 +531,13 @@
                 cropTypeModel.isHaveIcon = YES;
                 cropTypeModel.isSelect = YES;
                 
-            }else if (i == 1){
-                cropTypeModel.cropType = VE_VECROPTYPE_ORIGINAL;
-                str = VELocalizedString(@"原比例", nil);
+            }else if (i == 2){
+                cropTypeModel.cropType = VE_VECROPTYPE_1TO1;
+                str = VELocalizedString(@"1:1", nil);
                 cropTypeModel.isHaveIcon = NO;
                 cropTypeModel.isSelect = NO;
                 
-            }else if (i == 2){
+            }else if (i == 3){
                 cropTypeModel.cropType = VE_VECROPTYPE_9TO16;
                 str = VELocalizedString(@"9:16", nil);
                 cropTypeModel.iconNormal = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_9to16_nomal"];
@@ -537,18 +545,12 @@
                 cropTypeModel.isHaveIcon = YES;
                 cropTypeModel.isSelect = NO;
                 
-            }else if (i == 3){
+            }else if (i == 4){
                 cropTypeModel.cropType = VE_VECROPTYPE_16TO9;
                 str = VELocalizedString(@"16:9", nil);
                 cropTypeModel.iconNormal = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_16to9_nomal"];
                 cropTypeModel.iconSelecct = [VEHelp imageWithContentOfFile:@"jianji/bianji/croptype_16to9_select"];
                 cropTypeModel.isHaveIcon = YES;
-                cropTypeModel.isSelect = NO;
-                
-            }else if (i == 4){
-                cropTypeModel.cropType = VE_VECROPTYPE_1TO1;
-                str = VELocalizedString(@"1:1", nil);
-                cropTypeModel.isHaveIcon = NO;
                 cropTypeModel.isSelect = NO;
                 
             }else if (i == 5){
@@ -560,22 +562,63 @@
                 cropTypeModel.isSelect = NO;
                 
             }else if (i == 6){
+                cropTypeModel.cropType = VE_VECROPTYPE_5TO8;
+                str = VELocalizedString(@"5.8\"", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 7){
                 cropTypeModel.cropType = VE_VECROPTYPE_4TO5;
                 str = VELocalizedString(@"4:5", nil);
                 cropTypeModel.isHaveIcon = NO;
                 cropTypeModel.isSelect = NO;
                 
-            }else if (i == 7){
+            }else if (i == 8){
                 cropTypeModel.cropType = VE_VECROPTYPE_4TO3;
                 str = VELocalizedString(@"4:3", nil);
                 cropTypeModel.isHaveIcon = NO;
                 cropTypeModel.isSelect = NO;
                 
-            }else if (i == 8){
+            }else if (i == 9){
+                cropTypeModel.cropType = VE_VECROPTYPE_3TO5;
+                str = VELocalizedString(@"3:5", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+            }else if (i == 10){
                 cropTypeModel.cropType = VE_VECROPTYPE_3TO4;
                 str = VELocalizedString(@"3:4", nil);
                 cropTypeModel.isHaveIcon = NO;
                 cropTypeModel.isSelect = NO;
+            }else if (i == 11){
+                cropTypeModel.cropType = VE_VECROPTYPE_3TO2;
+                str = VELocalizedString(@"3:2", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 12){
+                cropTypeModel.cropType = VE_VECROPTYPE_235TO1;
+                str = VELocalizedString(@"2.35:1", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 13){
+                cropTypeModel.cropType = VE_VECROPTYPE_2TO3;
+                str = VELocalizedString(@"2:3", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 14){
+                cropTypeModel.cropType = VE_VECROPTYPE_2TO1;
+                str = VELocalizedString(@"2:1", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+                
+            }else if (i == 15){
+                cropTypeModel.cropType = VE_VECROPTYPE_185TO1;
+                str = VELocalizedString(@"1.85:1", nil);
+                cropTypeModel.isHaveIcon = NO;
+                cropTypeModel.isSelect = NO;
+                
             }
             [self.dataCropTypeArray addObject:cropTypeModel];
             
@@ -642,7 +685,7 @@
     }
     scene.transition.type   = TransitionTypeNone;
     scene.transition.duration = 0.0;
-    vvasset.rotate = 0;
+    vvasset.rotate = _selectFile.rotate;
     vvasset.isVerticalMirror = _selectFile.isVerticalMirror;
     vvasset.isHorizontalMirror = _selectFile.isHorizontalMirror;
     [scene.media addObject:vvasset];
@@ -847,7 +890,7 @@
 }
 
 -(void)whirlButtonClicked{
-    _selectFile.rotate -= 90;
+    _selectFile.rotate += 90;
     
     self.videoCropView.hidden = YES;
     [self playVideo:NO];
@@ -1607,7 +1650,7 @@
                 {
                     if( _isCropTypeViewHidden )
                     {
-                        rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - kToolbarHeight);
+                        rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - kToolbarHeight - ipadToolBarHeight);
                     }
                     else
                         rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - 65 - kToolbarHeight);

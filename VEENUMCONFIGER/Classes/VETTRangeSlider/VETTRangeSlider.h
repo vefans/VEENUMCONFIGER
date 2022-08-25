@@ -13,6 +13,7 @@ IB_DESIGNABLE
 
 @property ( nonatomic, assign ) BOOL isSetSelected;
 @property (nonatomic, assign) BOOL      isStartMove;
+@property (nonatomic, assign) BOOL      isStartDrag;
 
 @property (nonatomic, strong) CALayer *leftLayer;
 @property (nonatomic, strong) CALayer *leftHightedLayer;

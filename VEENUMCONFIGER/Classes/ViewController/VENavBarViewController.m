@@ -6,7 +6,11 @@
 //
 
 #import "VENavBarViewController.h"
-
+@implementation VEToolBarView
+- (void)setFrame:(CGRect)frame{
+    [super setFrame:frame];
+}
+@end
 @interface VENavBarViewController ()
 
 @end
@@ -62,12 +66,16 @@
     return _navBar;
 }
 
-- (UIView *)toolBar {
+- (VEToolBarView *)toolBar {
     if (!_toolBar) {
         if([VEConfigManager sharedManager].iPad_HD){
-            _toolBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWIDTH, kToolbarHeight)];
+            _toolBar = [[VEToolBarView alloc] initWithFrame:CGRectMake(0, 0, kWIDTH, kToolbarHeight)];
         }else{
-            _toolBar = [[UIView alloc] initWithFrame:CGRectMake(0, kHEIGHT - kToolbarHeight, kWIDTH, kToolbarHeight)];
+            if([VEConfigManager sharedManager].editConfiguration.isSingletrack && iPad){
+                _toolBar = [[VEToolBarView alloc] initWithFrame:CGRectMake(0, kHEIGHT - kToolbarHeight - ipadToolBarHeight, kWIDTH, kToolbarHeight + ipadToolBarHeight)];
+            }else{
+                _toolBar = [[VEToolBarView alloc] initWithFrame:CGRectMake(0, kHEIGHT - kToolbarHeight, kWIDTH, kToolbarHeight)];
+            }
             _toolBar.backgroundColor = TOOLBAR_COLOR;
             [self.view addSubview:_toolBar];
         }

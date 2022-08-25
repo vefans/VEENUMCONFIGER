@@ -90,6 +90,8 @@ typedef NS_ENUM(NSInteger, BackGroundColorType) {
     BackGroundColorTypeLight,        //亮色
     BackGroundColorTypeDark, //深色
 };
+
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface VEEditConfiguration : NSObject<NSMutableCopying,NSCopying>
@@ -103,6 +105,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 编辑视频所支持的文件类型 (default all)
  */
 @property (assign, nonatomic)SUPPORTFILETYPE supportFileType;
+/** 相册是否禁止显示实况照片 (default false)
+ */
+@property (assign, nonatomic) BOOL isLivePhotoDisable;;
 
 #pragma mark-相册界面
 /** 默认选中视频还是图片
@@ -349,9 +354,15 @@ NS_ASSUME_NONNULL_BEGIN
 /** 模板网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *templatePath;
+/** 封面模板网络资源地址
+ */
+@property (nonatomic,copy,nullable)NSString    *coverTemplatePath;
 /** 在线相册地址
  */
 @property (nonatomic, copy, nullable) NSString *onlineAlbumPath;
+/** 涂鸦笔资源地址
+ */
+@property (nonatomic, copy, nullable) NSString *doodlePenResourcePath;
 
 /** MV (default false)
  */
@@ -460,6 +471,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 音频关键帧 (default true)
  */
 @property (nonatomic,assign) bool enableAudioKeyframe;
+/** 涂鸦笔关键帧 (default true)
+ */
+@property (nonatomic,assign) bool enableDoodlePenKeyframe;
 
 #pragma mark - 剪同款界面设置
 /** 是否显示开启循环功能控件 (default true)

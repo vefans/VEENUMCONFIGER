@@ -167,6 +167,11 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_Mask,//蒙版
     
     VEUndoRedoEditType_Hair,//头发
+    
+    VEUndoRedoEditType_DoodlePen_Add,//涂鸦笔添加
+    VEUndoRedoEditType_DoodlePen_Copy,//复制
+    VEUndoRedoEditType_DoodlePen_Delete,//删除
+    VEUndoRedoEditType_DoodlePen_Trim,//截取
 };
 
 
@@ -211,6 +216,8 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
 @property (nonatomic, assign) float         dstAssetAngle;
 @property (nonatomic, assign) float         orAssetAngle;
 
-
+//涂鸦笔
+@property (nonatomic, strong) NSObject *orDoodlePen;
+@property (nonatomic, strong) NSObject *dstDoodlePen;
 
 @end

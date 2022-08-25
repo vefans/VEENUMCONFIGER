@@ -21,6 +21,9 @@
 
 -(void)fiveSensesCompareCompletion:(NSInteger) type value:(float)value;
 
+- (void)fiveSensesResetAll;
+- (void)fiveSensesCompareCompletionAll:(FaceAttribute *)faceAttribute;
+
 @end
 
 @interface VEFiveCameraView : UIView

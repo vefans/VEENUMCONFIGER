@@ -32,7 +32,10 @@
         }
     }
 }
-
+-(CGRect)getFrame
+{
+    return  [super frame];
+}
 -(void)Cancel_selectePasterTextView
 {
     if( _isMask )
@@ -295,5 +298,4 @@
 {
     return _picturePreImageView.bounds;
 }
-
 @end

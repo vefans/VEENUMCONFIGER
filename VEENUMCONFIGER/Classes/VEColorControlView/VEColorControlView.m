@@ -162,7 +162,7 @@
         }
     }
     
-    if( index > 0 )
+    if( index >= 0 )
     {
         [self setColor_CurrentBtn:[colorScrollView viewWithTag:index + 1]];
     }

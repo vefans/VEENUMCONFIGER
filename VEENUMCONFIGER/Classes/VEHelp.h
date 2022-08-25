@@ -4,6 +4,28 @@
 #import <VEENUMCONFIGER/VEMediaInfo.h>
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
 
+typedef NSString *VENetworkResourceType NS_STRING_ENUM;
+
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CloudMusic;//配乐
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_OnlineAlbum;//在线相册
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_SoundEffect;//音效
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_MediaAnimation;//媒体动画
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Text;//文字
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_TextAnimation;//文字动画
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_TextTemplate;//文字模板
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Sticker;//贴纸
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_StickerAnimation;//贴纸动画
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Filter;//滤镜
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Transition;//转场
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_ScreenEffect;//画面特效
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Font;//字体
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_APITemplate;//API剪同款
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Canvas;//画布
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_ParticleEffect;//粒子特效
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_ShootParticle;//拍摄粒子
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CoverTemplate;//封面模板
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_DoodlePen;//涂鸦笔
+
 @interface VEHelp : NSObject
 
 +(NSString *)pathFontForURL:(NSURL *)aURL;
@@ -46,6 +68,7 @@
 + (NSString *)getEffectCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 + (NSString *)getSuperposiCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 + (NSString *)getBoxCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
++ (NSString *)getNetworkResourceCachedPathWithFolderPath:(NSString *)folderPath networkResourcePath:(NSString *)networkResourcePath updatetime:(NSString *)updatetime;
 +(id)objectForData:(NSData *)data;
 
 + (BOOL)isSystemPhotoPath:(NSString *)path;
@@ -161,6 +184,7 @@
 + (NSInteger)getColorIndex:(UIColor *)color;
 +(NSMutableArray *)getGroupColorArray;
 + (UIColor *)colorWithHexStr:(NSString *)hexString;
++ (NSMutableArray *)getDoodlePenColors;
 /**获取媒体的实际大小
  */
 + (CGSize)getFileActualSize:(VEMediaInfo *)file;
@@ -196,12 +220,15 @@
 + (NSString *)getMusicDownloadFolderWithDic:(NSDictionary *)itemDic;
 + (NSString *)getMediaIdentifier;
 + (NSString *)getCollageDownloadPathWithDic:(NSDictionary *)itemDic;
++ (NSString *)getCoverTemplateDownloadFolderWithDic:(NSDictionary *)itemDic;
 
 + (NSMutableArray *)getMaskArray;
 
 + (MaskObject *)getMaskWithName:(NSString *)maskName;
 
 + (MaskObject *)getMaskWithPath:(NSString *) path;
+
++ (NSDictionary *) getVideoInformation:( NSURL * ) url;
 
 +(CustomFilter *)copyCustomCaption:( CustomFilter * ) Animate atCpation:( Caption * ) caption;
 +(CustomFilter *)copyCustomCaptionEx:( CustomFilter * ) Animate atCpationItem:( CaptionItem * ) item;
@@ -228,14 +255,16 @@
 + (CGSize)getEditOrginSizeWithFile:(VEMediaInfo *)file ;
 + (CGSize)getEditSizeWithFile:(VEMediaInfo *)file;
 
++(UIView *)initAgainTrackView:(  UIViewController * ) viewController atTitle:( NSString * ) title atConfirm:(SEL) confirm atCancel:(SEL) cancel;
 +(UIView *)initReversevideoProgress:(  UIViewController * ) viewController atLabelTag:(int *) labelTag atCancel:(SEL)cancel;
++(UIView *)initReversevideoProgressView:(  UIView * ) reverseView atLabelTag:(int *) labelTag atCancel:(SEL)cancel;
 + (NSString *) getResourceFromBundle : (NSString *) bundleName resourceName:(NSString *)name Type : (NSString *) type;
 + (UIImage *)imageWithContentOfPath:(NSString *)path;
 + (UIImage *)imageWithContentOfPathFull:(NSString *)path;
 + (UIImage *)imageWithWebP:(NSString *)filePath error:(NSError **)error;
 ///获取当前时间戳作为文件名
 + (NSString *)getFileNameForNowTime;
-
++ (NSString *)getNowTimeToString;
 //获取
 +(NSString *)getPEImagePathForNowTime;
 
@@ -246,6 +275,10 @@
 +(CustomFilter *)getAnimateCustomFilter:(NSString *) path;
 
 +(NSInteger)setFontIndex:( NSString * ) name;
+
++ (NSInteger)getSubtitlePresetTypeIndexWithTextColor:(UIColor *)textColor
+                                         strokeColor:(UIColor *)strokeColor
+                                             bgColor:(UIColor *)bgColor;
 
 + (NSURL *)getFileUrlWithFolderPath:(NSString *)folderPath fileName:(NSString *)fileName;
 + (id)getNetworkMaterialWithType:(NSString *)type
@@ -273,13 +306,14 @@
                                  timeRange:(CMTimeRange)timeRange
                                  currentFrameTexturePath:(NSString *)currentFrameTexturePath
                                                   atPath:( NSString * ) path;
-
++(CaptionEffectColorParam *)getShadowStrokes:( NSDictionary * ) obj;
++(NSDictionary *)getConfig_Dic:( NSString * ) configPath;
 +(NSDictionary *)getCaptionConfig_Dic:( NSString * ) configPath;
 +(Caption *)getCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atType:(NSInteger) captionType;
 
 //字体
 +(void)downloadFonts:(void(^)(NSError *error))callBack;
-
++ (UIImage *)drawImage:(UIImage *)image bgImage:(UIImage *)bgImage;
 + (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize;
 + (UIImage *)rescaleImage:(UIImage *)image size:(CGSize)size;
 
@@ -461,4 +495,18 @@
 + (long long) freeDiskSpaceInBytes;
 + (UIColor *)getCategoryFilterBgColorWithDic:(NSDictionary *)dic categoryIndex:(NSInteger)categoryIndex;
 
++(UIView *)loadCircleProgressView:(CGRect) rect;
+
+
++ (Float64)getOriginalTime:( Float64 ) currentTime atOriginalTimeArray:(NSMutableArray *) originalTimeArray atShiftTimeArray:(NSMutableArray *) shiftTimeArray atCurveSpeedPointArray:( NSMutableArray<CurvedSpeedPoint*> *) curveSpeedPointArray;
+
++ (BOOL)isEqualGraphArray:(NSArray *)graphArray1 graphArray2:(NSArray *)graphArray2;
+
++(Float64)getCurveSpeedTime:(Float64) originalTime atOriginalTimeArray:(NSMutableArray *) originalTimeArray atShiftTimeArray:(NSMutableArray *) shiftTimeArray atCurveSpeedPointArray:( NSMutableArray<CurvedSpeedPoint*> *) curveSpeedPointArray;
+
++ (DoodleOption *)getDoodleOptionWithPath:(NSString *)path;
+
++ (BOOL)doodlePenIsHardnessEnableWithPath:(NSString *)path;
+//获取图片某一点的颜色
++ (UIColor *)colorAtPixel:(CGPoint)point source:(UIImage *)image;
 @end

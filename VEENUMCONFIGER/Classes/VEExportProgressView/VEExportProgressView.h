@@ -18,6 +18,7 @@ typedef void(^CancelExportBlock) (void);
 @property (nonatomic, assign)BOOL canTouchUpCancel;
 @property (nonatomic,strong)UIButton *cancelBtn;
 @property (nonatomic, copy) CancelExportBlock cancelExportBlock;
+@property (nonatomic, assign) BOOL isHiddenCancelBtn;//是否隐藏取消,默认为NO
 - (void)setProgressTitle:(NSString *)progressTitle;
 - (void)setProgress:(double)progress animated:(BOOL)animated;
 - (void)setProgress2:(double)progress animated:(BOOL)animated;

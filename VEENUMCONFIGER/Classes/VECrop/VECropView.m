@@ -210,11 +210,17 @@
         
         self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/7)*6, VE_CROPHEIGHT_MIN);
         
+    }else if(cropType == VE_VECROPTYPE_5TO8){
+        
+        [self ratioLessThan1WithValueX:1.0 WithToValueY:2.167];
+        [self setTrackButtonState:YES];
+        
+        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/2.167)*1, VE_CROPHEIGHT_MIN);
+        
     }else if(cropType == VE_VECROPTYPE_4TO5){
         
         [self ratioLessThan1WithValueX:4.0 WithToValueY:5.0];
         [self setTrackButtonState:YES];
-        
         
         self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/5)*4, VE_CROPHEIGHT_MIN);
         
@@ -225,6 +231,13 @@
         
         self.cropSizeMin = CGSizeMake(VE_CROPWIDTH_MIN, (VE_CROPHEIGHT_MIN/4)*3);
         
+    }else if(cropType == VE_VECROPTYPE_3TO5){
+        
+        [self ratioLessThan1WithValueX:3.0 WithToValueY:5.0];
+        [self setTrackButtonState:YES];
+        
+        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/5)*3, VE_CROPHEIGHT_MIN);
+        
     }else if(cropType == VE_VECROPTYPE_3TO4){
         
         [self ratioLessThan1WithValueX:3.0 WithToValueY:4.0];
@@ -232,26 +245,30 @@
         
         self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/4)*3, VE_CROPHEIGHT_MIN);
         
-    }
-    else if(cropType == VE_VECROPTYPE_1TO2){
-        [self ratioLessThan1WithValueX:1.0 WithToValueY:2.0];
+    }else if(cropType == VE_VECROPTYPE_3TO2){
+        [self ratioLessThan1WithValueX:3.0 WithToValueY:2.0];
         [self setTrackButtonState:YES];
-        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/1)*2, VE_CROPHEIGHT_MIN);
+        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/3.0)*2.0, VE_CROPHEIGHT_MIN);
     }
-    else if(cropType == VE_VECROPTYPE_2TO1){
-        [self ratioLessThan1WithValueX:2.0 WithToValueY:1.0];
+    else if(cropType == VE_VECROPTYPE_235TO1){
+        [self ratioLessThan1WithValueX:2.35 WithToValueY:1.0];
         [self setTrackButtonState:YES];
-        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/2.0)*1.0, VE_CROPHEIGHT_MIN);
+        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/1)*2.35, VE_CROPHEIGHT_MIN);
     }
     else if(cropType == VE_VECROPTYPE_2TO3){
         [self ratioLessThan1WithValueX:2.0 WithToValueY:3.0];
         [self setTrackButtonState:YES];
         self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/2.0)*3.0, VE_CROPHEIGHT_MIN);
     }
-    else if(cropType == VE_VECROPTYPE_3TO2){
-        [self ratioLessThan1WithValueX:3.0 WithToValueY:2.0];
+    else if(cropType == VE_VECROPTYPE_2TO1){
+        [self ratioLessThan1WithValueX:2.0 WithToValueY:1.0];
         [self setTrackButtonState:YES];
-        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/3.0)*2.0, VE_CROPHEIGHT_MIN);
+        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/2.0)*1.0, VE_CROPHEIGHT_MIN);
+    }
+    else if(cropType == VE_VECROPTYPE_185TO1){
+        [self ratioLessThan1WithValueX:1.85 WithToValueY:1.0];
+        [self setTrackButtonState:YES];
+        self.cropSizeMin = CGSizeMake((VE_CROPWIDTH_MIN/1.85)*1.0, VE_CROPHEIGHT_MIN);
     }
     if(self.cropType != VE_VECROPTYPE_FIXEDRATIO){
         self.ratio = self.cropWidth / self.cropHeight;

@@ -421,7 +421,7 @@ static const CGFloat kLabelsFontSize = 12.0f;
     CGPoint gesturePressLocation = [touch locationInView:self];
     startTouchPositionX = gesturePressLocation.x;
     _isStartMove = false;
-    
+    _isStartDrag = YES;
 //    startMoveTime = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(startMove_Time) userInfo:nil repeats:YES];
 
     if (CGRectContainsPoint(CGRectInset(_leftHandle.frame, VE_HANDLE_TOUCH_AREA_EXPANSION, VE_HANDLE_TOUCH_AREA_EXPANSION), gesturePressLocation) || CGRectContainsPoint(CGRectInset(_rightHandle.frame, VE_HANDLE_TOUCH_AREA_EXPANSION, VE_HANDLE_TOUCH_AREA_EXPANSION), gesturePressLocation))
@@ -535,8 +535,10 @@ static const CGFloat kLabelsFontSize = 12.0f;
 
 //#pragma mark - 拖拽调整
 - (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    if(!_isStartDrag){
+        return NO;
+    }
     CGPoint location = [touch locationInView:self];
-    
     if ( (((location.x - 0.1) > startTouchPositionX) || ( (location.x + 0.1) < startTouchPositionX ) )  && (_isStartMove) ) {//拖动了才继续往下走
         CGSize locationSize = [_delegate getLeftPointAndRightPoint];
         if(_leftHandleSelected){
@@ -581,18 +583,15 @@ static const CGFloat kLabelsFontSize = 12.0f;
             }
         }
         
-        
-        
-        
         //find out the percentage along the line we are in x coordinate terms (subtracting half the frames width to account for moving the middle of the handle, not the left hand side)
         //    float percentage = ((location.x-CGRectGetMinX(self.sliderLine.frame)) - VE_HANDLE_DIAMETER/2) / (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));
         
         float mainPercentage = fTrackingX/(CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));
         
-        float percentage = (location.x - 25 + fTrackingX)/ (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));//20180612 修改bug:在视频最后几秒添加字幕后，再次编辑时，拖动右把手时不能拖动到视频的最后
+        float percentage = (location.x - 25 + 3 + fTrackingX)/ (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));//20180612 修改bug:在视频最后几秒添加字幕后，再次编辑时，拖动右把手时不能拖动到视频的最后
         //
         if(_leftHandleSelected){
-            percentage = (location.x - 8 + fTrackingX)/ (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));//20180612 修改bug:在视频最后几秒添加字幕后，再次编辑时，拖动右把手时不能拖动到视频的最后
+            percentage = (location.x - 8  + fTrackingX)/ (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));//20180612 修改bug:在视频最后几秒添加字幕后，再次编辑时，拖动右把手时不能拖动到视频的最后
         }
         if( percentage > 1.0 )
         {
@@ -711,8 +710,11 @@ static const CGFloat kLabelsFontSize = 12.0f;
 }
 
 - (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    if(!_isStartDrag){
+        return;
+    }
+    _isStartDrag = NO;
     isFristTracking = true;
-    
     _isStartMove = false;
     [startMoveTime invalidate];
     startMoveTime = nil;
@@ -738,14 +740,45 @@ static const CGFloat kLabelsFontSize = 12.0f;
     }
     _leftHandleSelected = NO;
     _rightHandleSelected = NO;
-
 }
 
 - (void)cancelTrackingWithEvent:(nullable UIEvent *)event
 {
-    _isStartMove = false;
-    [startMoveTime invalidate];
-    startMoveTime = nil;
+//    _isStartMove = false;
+//    [startMoveTime invalidate];
+//    startMoveTime = nil;
+    [self endTrackingWithTouch:nil withEvent:event];
+    if (_isStartMove) {//20220708 有时不调用endTrackingWithTouch
+        _isStartMove = false;
+        [startMoveTime invalidate];
+        startMoveTime = nil;
+        isFristTracking = true;
+        fTrackingX = 0;
+        if (_leftHandleSelected){
+            if(_delegate && [_delegate respondsToSelector:@selector(rangeSlider:didEndChangeSelectedMinimumValue:andMaximumValue:)]){
+                [_delegate rangeSlider:self didEndChangeSelectedMinimumValue:self.selectedMinimum andMaximumValue:self.selectedMaximum];
+            }
+            _leftLabel.highlighted = NO;
+            _leftHandleSelected = NO;
+            [self animateHandle:_leftHandle withSelection:NO];
+        } else {
+            if(_delegate && [_delegate respondsToSelector:@selector(rangeSlider:didEndChangeSelectedMinimumValue:andMaximumValue:)]){
+                [_delegate rangeSlider:self didEndChangeSelectedMinimumValue:self.selectedMinimum andMaximumValue:self.selectedMaximum];
+            }
+            _rightLabel.highlighted = NO;
+            _rightHandleSelected = NO;
+            [self animateHandle:_rightHandle withSelection:NO];
+        }
+        if(_delegate && [_delegate respondsToSelector:@selector(stopMove)]){
+            [_delegate stopMove];
+        }
+        _leftHandleSelected = NO;
+        _rightHandleSelected = NO;
+    }else {
+        _isStartMove = false;
+        [startMoveTime invalidate];
+        startMoveTime = nil;
+    }
 }
 
 #pragma mark - Animation

@@ -483,4 +483,7 @@
  */
 @property(nonatomic, assign)BOOL    audioSeparate;
 
+@property (nonatomic, strong) NSURL *antiShakeUrl;
+@property (nonatomic, assign) AntiShakeType   antiShakeType;
+
 @end

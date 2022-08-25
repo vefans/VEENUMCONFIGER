@@ -7,6 +7,7 @@
 //
 
 #import "VELTTextView.h"
+#import "VEHelp.h"
 
 //这里是限制字数
 #define MAX_WOVEDeluxe_LIMIT 200
@@ -29,7 +30,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = UIColorFromRGB(0x3c3b43);
+        self.backgroundColor = UIColorFromRGB(0x272727);
         [self setupUI];
 
     }
@@ -115,21 +116,13 @@
 //    }
 }
 
-
-#pragma mark - --- event response 事件相应 ---
-
-#pragma mark - --- private methods 私有方法 ---
-
-#pragma mark - --- setters 属性 ---
-
-#pragma mark - --- getters 属性 —--
 - (UITextView *)textView{
     if (!_textView) {
         _textView = [[UITextView alloc]init];
-        _textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
-//        _textView.layer.borderColor = [UIColor lightGrayColor].CGColor;
-//        _textView.layer.borderWidth = 0.5;
+        _textView.backgroundColor = [UIColor clearColor];
         _textView.font = [UIFont systemFontOfSize:13];
+        _textView.textColor = [UIColor whiteColor];
+        _textView.textAlignment = NSTextAlignmentLeft;
         _textView.delegate = self;
     }
 
@@ -138,9 +131,10 @@
 - (UITextView *)placeholderTextView{
     if (!_placeholderTextView) {
         _placeholderTextView = [[UITextView alloc]init];
+        _placeholderTextView.backgroundColor = [UIColor clearColor];
         _placeholderTextView.font = [UIFont systemFontOfSize:13];
         _placeholderTextView.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
-        _placeholderTextView.backgroundColor = UIColorFromRGB(0x3c3b43);
+        _placeholderTextView.text = VELocalizedString(@"点击输入文字", nil);
     }
     return _placeholderTextView;
 }

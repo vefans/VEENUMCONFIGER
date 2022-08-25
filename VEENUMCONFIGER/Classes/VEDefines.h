@@ -95,33 +95,79 @@ typedef NS_ENUM(NSInteger,FileCropModeType)
     kCropTypeNone       = 0,
     kCropTypeOriginal   = 1,      /**< 原始 */
     kCropTypeFreedom    = 2,      /**< 自由 */
-    kCropType1v1        = 3,      /**< 1v1 */
-    kCropType16v9       = 4,
-    kCropType9v16       = 5,
-    kCropType4v3        = 6,
-    kCropType3v4        = 7,
-    kCropType6v7        = 8,
-    kCropType4v5        = 9,
-    kCropTypeFixed      = 10,    /**< 固定裁切范围 */
-    kCropTypeFixedRatio = 11,    /**< 固定比例裁切*/
+    kCropType9v16       = 3,      /**< 9v16 */
+    kCropType16v9       = 4,      /**< 16v9*/
+    kCropType1v1        = 5,      /**< 1v1 */
+    
+    kCropType6v7        = 6,
+    kCropType5v8        = 7,
+    kCropType4v5        = 8,
+    kCropType4v3        = 9,
+    kCropType3v5        = 10,
+    kCropType3v4        = 11,
+    kCropType3v2        = 12,
+    kCropType235v1      = 13,
+    kCropType2v3        = 14,
+    kCropType2v1        = 15,
+    kCropType185v1      = 16,
+    kCropTypeFixed      = 17,    /**< 固定裁切范围 */
+    kCropTypeFixedRatio = 18,    /**< 固定比例裁切*/
 };
 
 typedef NS_ENUM(NSInteger, VECropType){
-    VE_VECROPTYPE_FREE = 0,      //自由
-    VE_VECROPTYPE_ORIGINAL = 1,  //原比例
-    VE_VECROPTYPE_9TO16 = 2,      //9:16
-    VE_VECROPTYPE_16TO9 = 3,      //16:9
-    VE_VECROPTYPE_1TO1 = 4,      //1:1
-    VE_VECROPTYPE_6TO7 = 5,      //6:7
-    VE_VECROPTYPE_4TO5 = 6,      //4:5
-    VE_VECROPTYPE_4TO3 = 7,      //4:3
-    VE_VECROPTYPE_3TO4 = 8,      //3:4
-    VE_VECROPTYPE_FIXEDRATIO = 9,    /**< 固定比例裁切*/
-    VE_VECROPTYPE_1TO2 = 10,      //1:2
-    VE_VECROPTYPE_2TO1 = 11,      //2:1
-    VE_VECROPTYPE_2TO3 = 12,      //2:3
-    VE_VECROPTYPE_3TO2 = 13,      //3:2
+    VE_VECROPTYPE_ORIGINAL  = 0,  //原比例
+    VE_VECROPTYPE_FREE      = 1,      //自由
+    VE_VECROPTYPE_9TO16     = 2,      //9:16
+    VE_VECROPTYPE_16TO9     = 3,      //16:9
+    VE_VECROPTYPE_1TO1      = 4,      //1:1
+    
+    VE_VECROPTYPE_6TO7      = 5,      //6:7
+    VE_VECROPTYPE_5TO8      = 6,      //5.8"
+    VE_VECROPTYPE_4TO5      = 7,      //4:5
+    VE_VECROPTYPE_4TO3      = 8,      //4:3
+    VE_VECROPTYPE_3TO5      = 9,      //3:5
+    VE_VECROPTYPE_3TO4      = 10,      //3:4
+    VE_VECROPTYPE_3TO2      = 11,      //3:2
+    VE_VECROPTYPE_235TO1    = 12,      //2.35:1
+    VE_VECROPTYPE_2TO3      = 13,      //2:3
+    VE_VECROPTYPE_2TO1      = 14,      //2:1
+    VE_VECROPTYPE_185TO1    = 15,      //1.85:1
+    VE_VECROPTYPE_FIXEDRATIO = 16,    /**< 固定比例裁切*/
+    VE_VECROPTYPE_1TO2      = 17,      //2:1
 };
+
+//typedef NS_ENUM(NSInteger,FileCropModeType)
+//{
+//    kCropTypeNone       = 0,
+//    kCropTypeOriginal   = 1,      /**< 原始 */
+//    kCropTypeFreedom    = 2,      /**< 自由 */
+//    kCropType1v1        = 3,      /**< 1v1 */
+//    kCropType16v9       = 4,
+//    kCropType9v16       = 5,
+//    kCropType4v3        = 6,
+//    kCropType3v4        = 7,
+//    kCropType6v7        = 8,
+//    kCropType4v5        = 9,
+//    kCropTypeFixed      = 10,    /**< 固定裁切范围 */
+//    kCropTypeFixedRatio = 11,    /**< 固定比例裁切*/
+//};
+//
+//typedef NS_ENUM(NSInteger, VECropType){
+//    VE_VECROPTYPE_FREE = 0,      //自由
+//    VE_VECROPTYPE_ORIGINAL = 1,  //原比例
+//    VE_VECROPTYPE_9TO16 = 2,      //9:16
+//    VE_VECROPTYPE_16TO9 = 3,      //16:9
+//    VE_VECROPTYPE_1TO1 = 4,      //1:1
+//    VE_VECROPTYPE_6TO7 = 5,      //6:7
+//    VE_VECROPTYPE_4TO5 = 6,      //4:5
+//    VE_VECROPTYPE_4TO3 = 7,      //4:3
+//    VE_VECROPTYPE_3TO4 = 8,      //3:4
+//    VE_VECROPTYPE_FIXEDRATIO = 9,    /**< 固定比例裁切*/
+//    VE_VECROPTYPE_1TO2 = 10,      //1:2
+//    VE_VECROPTYPE_2TO1 = 11,      //2:1
+//    VE_VECROPTYPE_2TO3 = 12,      //2:3
+//    VE_VECROPTYPE_3TO2 = 13,      //3:2
+//};
 
 typedef NS_ENUM(NSInteger,TimeFilterType)
 {
@@ -176,37 +222,39 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     
     VEAdvanceEditType_Ton               =  32,  //调色
     VEAdvanceEditType_Canvas            =  33,  //画布
-    VEAdvanceEditType_Split            =  34,  //分割
-    VEAdvanceEditType_SubtitleToAudio = 35,   //文字转语音
+    VEAdvanceEditType_Split             =  34,  //分割
+    VEAdvanceEditType_SubtitleToAudio   = 35,   //文字转语音
     //PESDK
-    VEAdvanceEditType_Beauty        = 36,   //美颜
-    VEAdvanceEditType_Smear        = 37,   //涂抹
-    VEAdvanceEditType_Blurry        = 38,   //模糊
-    VEAdvanceEditType_Aperture        = 39,   //光圈
-    VEAdvanceEditType_HDR        = 40,   //HDR
-    VEAdvanceEditType_Holy        = 41,   //圣光
-    VEAdvanceEditType_Spirit        = 42,   //暗角
-    VEAdvanceEditType_Sharpen   = 43,   //锐化
-    VEAdvanceEditType_INTELLIGENT_KEY    = 44,//智能抠像
-    VEAdvanceEditType_Layer         = 45, //图层
-    VEAdvanceEditType_REPLACE         = 46, //替换
-    VEAdvanceEditType_TRANSPARENCY = 47,//透明度
-    VEAdvanceEditType_ChangeBackground = 48,//换背景
-    VEAdvanceEditType_ErasePen          = 49,//消除笔
-    VEAdvanceEditType_EdgeFeathering = 50,//边缘羽
-    VEAdvanceEditType_Fillet                = 51,   //圆角
-    VEAdvanceEditType_MIXEDMODE     =52,    //  混合模式
-    VEAdvanceEditType_MASK              = 52,   //  蒙版
-    VEAdvanceEditType_DOF                   = 53,   // 景深
-    VEAdvanceEditType_BOX                   = 54,   //  边框
-    VEAdvanceEditType_Superposi                   = 55,   // 叠加
-    VEAdvanceEditType_Sky                  = 56,      //天空
-    VEAdvanceEditType_Cato                 = 57,      //加图
-    VEAdvanceEditType_Cutout              = 58,     //抠图
-    VEAdvanceEditType_MergeLayers     = 59,     //图层合并
-    VEAdvanceEditType_Hair                  = 60,     //头发
-    VEAdvanceEditType_FineTun             = 61,   //微调
-    VEAdvanceEditType_Particle             = 62,   //粒子
+    VEAdvanceEditType_Beauty            = 36,   //美颜
+    VEAdvanceEditType_Smear             = 37,   //涂抹
+    VEAdvanceEditType_Blurry            = 38,   //模糊
+    VEAdvanceEditType_Aperture          = 39,   //光圈
+    VEAdvanceEditType_HDR               = 40,   //HDR
+    VEAdvanceEditType_Holy              = 41,   //圣光
+    VEAdvanceEditType_Spirit            = 42,   //暗角
+    VEAdvanceEditType_Sharpen           = 43,   //锐化
+    VEAdvanceEditType_INTELLIGENT_KEY   = 44,   //智能抠像
+    VEAdvanceEditType_Layer             = 45,   //图层
+    VEAdvanceEditType_REPLACE           = 46,   //替换
+    VEAdvanceEditType_TRANSPARENCY      = 47,   //透明度
+    VEAdvanceEditType_ChangeBackground  = 48,   //换背景
+    VEAdvanceEditType_ErasePen          = 49,   //消除笔
+    VEAdvanceEditType_EdgeFeathering    = 50,   //边缘羽
+    VEAdvanceEditType_Fillet            = 51,   //圆角
+    VEAdvanceEditType_MIXEDMODE         = 52,   //混合模式
+    VEAdvanceEditType_MASK              = 53,   //蒙版
+    VEAdvanceEditType_DOF               = 54,   //景深
+    VEAdvanceEditType_BOX               = 55,   //边框
+    VEAdvanceEditType_Superposi         = 56,   //叠加
+    VEAdvanceEditType_Sky               = 57,   //天空
+    VEAdvanceEditType_Cato              = 58,   //加图
+    VEAdvanceEditType_Cutout            = 59,   //抠图
+    VEAdvanceEditType_MergeLayers       = 60,   //图层合并
+    VEAdvanceEditType_Hair              = 61,   //头发
+    VEAdvanceEditType_FineTun           = 62,   //微调
+    VEAdvanceEditType_Particle          = 63,   //粒子
+    VEAdvanceEditType_DoodlePen         = 64,   //涂鸦笔
+    VEAdvanceEditType_Snapshort        =  66,   //视频截图
 };
 
 /*
@@ -265,6 +313,7 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KOPACITY        = 50,//隐藏
     KAUDIOSEPAR        = 51,//音频分离
     KAUDIOPLANTED        = 52,//
+    KANTI_SHAKE     = 53,
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -342,6 +391,21 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_BLURRY                  = 47,   //模糊
     KPIP_AUDIOSEPAR           = 48, //aduio Sepateted
     kPIP_REVERSEVIDEO       = 49,//倒放
+    KPIP_ANTI_SHAKE          = 50, // 防抖
+};
+
+/*
+ *素材编辑功能
+ */
+typedef NS_ENUM(NSInteger, VEMaterialEditType){
+    VEMaterialEditType_Add         = 0,//添加
+    VEMaterialEditType_Copy        = 1,//复制
+    VEMaterialEditType_Delete      = 2,//删除
+    VEMaterialEditType_Time        = 3,//调整起始时间
+    VEMaterialEditType_Trim        = 4,//截取
+    VEMaterialEditType_Split       = 5,//分割
+    VEMaterialEditType_Rect        = 6,//调整位置
+    VEMaterialEditType_Keyframe    = 7,//关键帧
 };
 
 //去水印类型
@@ -519,6 +583,7 @@ isPhoneX;\
 #define ADDEDMATERIALCOLOR UIColorFromRGB(0x8cb27b) //字幕等遮罩的颜色//58bb9d
 #define MATERIALMASKCOLOR ADDEDMATERIALCOLOR//[ADDEDMATERIALCOLOR colorWithAlphaComponent:0.9]
 #define ipadToolBarHeight (iPad?20:0)
+#define kSplitLineColor UIColorFromRGB(0x1f1f1f)//分割线颜色
 //视频导出帧率
 #define kEXPORTFPS 24
 //视频导出分辨率
@@ -532,7 +597,7 @@ isPhoneX;\
 #define kWIDTH [UIScreen mainScreen].bounds.size.width
 #define kHEIGHT [UIScreen mainScreen].bounds.size.height
 #define kNavigationBarHeight (iPhone_X ? 88 : 44)
-#define kToolbarHeight (iPhone_X ? 78 : 44 + ipadToolBarHeight )
+#define kToolbarHeight (iPhone_X ? 78 : 44 )// + ipadToolBarHeight
 #define kPlayerViewHeight (iPad ? (kHEIGHT - 223) : (kHEIGHT - (iPhone_X ? (44 + 34) : (0  + ipadToolBarHeight)) - ( 0.523 * kWIDTH ) - (iPad?0:20) - 30 ))
 //#define kToolbarHeight (iPhone_X ? 78 : 44)
 //#define kPlayerViewHeight (kHEIGHT - (iPhone_X ? 44 + 34 : 0) - ( 0.523 * kWIDTH ) - 20)
@@ -612,6 +677,9 @@ isPhoneX;\
 #define kAPITemplatePlistPath [kAPITemplateFolder stringByAppendingPathComponent:@"veNetworkApiTemplates.plist"]
 #define kFragmentAPITemplatePlistPath [kAPITemplateFolder stringByAppendingPathComponent:@"veNetworkFragmentApiTemplates.plist"]//test
 
+#define kCoverTemplateFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VENetworkCoverTemplate/"]
+#define kCoverTemplatePlistPath [kCoverTemplateFolder stringByAppendingPathComponent:@"veNetworkCoverTemplates.plist"]
+
 #define kSpecialEffectFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SpecialEffect"]
 #define kNewSpecialEffectPlistPath [kSpecialEffectFolder stringByAppendingPathComponent:@"SpecialEffectList_New.plist"]
 
@@ -635,8 +703,6 @@ isPhoneX;\
 #define kWatermarkFolder [NSTemporaryDirectory() stringByAppendingString:@"watermark/"]
 
 #define kMergeLayersFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/MergeLayersFloatder"]
-
-#define kHairFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/HairFloatder"]
 
 #define kCutoutFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/CutoutFloatder"]
 #define kErasePenFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ErasePenFloatder"]
@@ -727,14 +793,28 @@ isPhoneX;\
 #define kShootParticlesCategoryPlist [kShootParticlesFolder stringByAppendingPathComponent:@"shootParticlesCategory.plist"]
 #define kNewShootParticlesPlistPath [kShootParticlesFolder stringByAppendingPathComponent:@"shootParticlesTypeList.plist"]
 
+//自动踩点目录
+#define kPlantedsFolder [kVEDirectory stringByAppendingPathComponent:@"planteds"]
+#define kPlantedsPlistPath [kPlantedsFolder stringByAppendingPathComponent:@"plantedsPlistList.plist"]
+
+//防抖
+#define kAntiShakeFolder [kVEDirectory stringByAppendingPathComponent:@"kAntiShake"]
+
+//涂鸦笔
+#define kDoodlePensFolder [kVEDirectory stringByAppendingPathComponent:@"DoodlePens"]
+#define kDoodlePensCategoryPlist [kDoodlePensFolder stringByAppendingPathComponent:@"DoodlePensCategory.plist"]
+#define kDoodlePensPlistPath [kDoodlePensFolder stringByAppendingPathComponent:@"DoodlePensTypeList.plist"]
+#define kDoodlePensIconFolder [kDoodlePensFolder stringByAppendingPathComponent:@"DoodlePensIconFolder"]
+
+
 //换发目录
 #define kHairFolder [kVEDirectory stringByAppendingPathComponent:@"hairs"]
-#define kHairCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"hairCategory.plist"]
-#define kNewHairPlistPath [kFilterFolder stringByAppendingPathComponent:@"hairTypeList.plist"]
+#define kHairCategoryPlist [kHairFolder stringByAppendingPathComponent:@"hairCategory.plist"]
+#define kNewHairPlistPath [kHairFolder stringByAppendingPathComponent:@"hairTypeList.plist"]
 //换装目录
 #define kDressUpFolder [kVEDirectory stringByAppendingPathComponent:@"dressUps"]
-#define kDressUpCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"dressUpCategory.plist"]
-#define kNewDressUpPlistPath [kFilterFolder stringByAppendingPathComponent:@"dressUpTypeList.plist"]
+#define kDressUpCategoryPlist [kDressUpFolder stringByAppendingPathComponent:@"dressUpCategory.plist"]
+#define kNewDressUpPlistPath [kDressUpFolder stringByAppendingPathComponent:@"dressUpTypeList.plist"]
 #pragma mark-图片流动音乐
 #define kFlowCollageFolder [kVEDirectory stringByAppendingPathComponent:@"FlowCollages"]
 #define kCollageCategoryPlist [kFlowCollageFolder stringByAppendingPathComponent:@"CollageCategory.plist"]
@@ -771,5 +851,3 @@ isPhoneX;\
 #define VECustomErrorDomain @"com.VESDK.ErrorDomain"
 
 #define kThumbnailFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/thumbnailFolder"]
-
-#define kCoverModelFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/cover_model/"]

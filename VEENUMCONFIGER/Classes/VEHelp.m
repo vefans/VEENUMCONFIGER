@@ -18,6 +18,28 @@
 #import <SDWebImage/UIImage+GIF.h>
 #import <ZipArchive/ZipArchive.h>
 #import <VEENUMCONFIGER/VEFileDownloader.h>
+#import <VEENUMCONFIGER/VECircleView.h>
+#import <LibVECore/VECoreYYModel.h>
+
+VENetworkResourceType const VENetworkResourceType_CloudMusic = @"cloud_music";//配乐
+VENetworkResourceType const VENetworkResourceType_OnlineAlbum = @"cloud_video";//在线相册
+VENetworkResourceType const VENetworkResourceType_SoundEffect = @"audio";//音效
+VENetworkResourceType const VENetworkResourceType_MediaAnimation = @"animate";//媒体动画
+VENetworkResourceType const VENetworkResourceType_Text = @"sub_title";//文字
+VENetworkResourceType const VENetworkResourceType_TextAnimation = @"ani_subtitle";//文字动画
+VENetworkResourceType const VENetworkResourceType_TextTemplate = @"text_template";//文字模板
+VENetworkResourceType const VENetworkResourceType_Sticker = @"stickers";//贴纸
+VENetworkResourceType const VENetworkResourceType_StickerAnimation = @"ani_sticker";//贴纸动画
+VENetworkResourceType const VENetworkResourceType_Filter = @"filter2";//滤镜
+VENetworkResourceType const VENetworkResourceType_Transition = @"transition";//转场
+VENetworkResourceType const VENetworkResourceType_ScreenEffect = @"specialeffects";//画面特效
+VENetworkResourceType const VENetworkResourceType_Font = @"font_family_2";//字体
+VENetworkResourceType const VENetworkResourceType_APITemplate = @"templateapi";//API剪同款
+VENetworkResourceType const VENetworkResourceType_Canvas = @"bg_style";//画布
+VENetworkResourceType const VENetworkResourceType_ParticleEffect = @"particle";//粒子特效
+VENetworkResourceType const VENetworkResourceType_ShootParticle = @"shoot_particle";//拍摄粒子
+VENetworkResourceType const VENetworkResourceType_CoverTemplate = @"templatecover";//封面模板
+VENetworkResourceType const VENetworkResourceType_DoodlePen = @"doodleeffect";//涂鸦笔
 
 @implementation VEHelp
 + (NSString *) system
@@ -784,11 +806,19 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 +(UIImage *)imageWithContentOfFile:(NSString *)path atBundle:( NSBundle * ) bundle
 {
-    NSString *imagePath = [bundle pathForResource:[NSString stringWithFormat:@"%@@3x",path]  ofType:@"png"];
+    NSString *imagePath = nil;
     if([[path pathExtension] length] > 0){
         imagePath = [bundle pathForResource:[NSString stringWithFormat:@"%@",path]  ofType:@""];
     }
     UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
+    if(image){
+        return image;
+    }
+    imagePath = [bundle pathForResource:[NSString stringWithFormat:@"%@@3x",path]  ofType:@"png"];
+    if([[path pathExtension] length] > 0){
+        imagePath = [bundle pathForResource:[NSString stringWithFormat:@"%@",path]  ofType:@""];
+    }
+    image = [UIImage imageWithContentsOfFile:imagePath];
     NSData *data = nil;
     //如果用以下的方式生成UIImage，图片不会识别@3x,@2x,所以界面图标不要用这个方式，界面图标最好使用ImageName的方式加载
     //[NSData dataWithContentsOfFile:imagePath];
@@ -1637,6 +1667,78 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return colorArray;
 }
 
++ (NSMutableArray *)getDoodlePenColors {
+    NSMutableArray *colors = [NSMutableArray array];
+    [colors addObject:UIColorFromRGB(0xffffff)];//0
+    [colors addObject:UIColorFromRGB(0xbfbfbf)];//1
+    [colors addObject:UIColorFromRGB(0x878787)];//2
+    [colors addObject:UIColorFromRGB(0x535353)];//3
+    [colors addObject:UIColorFromRGB(0x000000)];//4
+    [colors addObject:UIColorFromRGB(0xf8bfc7)];//5
+    [colors addObject:UIColorFromRGB(0xf1736d)];//06
+    [colors addObject:UIColorFromRGB(0xee3842)];//7
+    [colors addObject:UIColorFromRGB(0xed002b)];//预设效果_02 //08
+    [colors addObject:UIColorFromRGB(0xa50816)];//09
+    [colors addObject:UIColorFromRGB(0xfad9a2)];//010
+    [colors addObject:UIColorFromRGB(0xf4c76c)];//011
+    [colors addObject:UIColorFromRGB(0xf17732)];//012
+    [colors addObject:UIColorFromRGB(0xed260b)];//013
+    [colors addObject:UIColorFromRGB(0xaf160d)];//014
+    [colors addObject:UIColorFromRGB(0xfdf9b8)];//015
+    [colors addObject:UIColorFromRGB(0xfeff7a)];//016
+    [colors addObject:UIColorFromRGB(0xfbe80d)];//预设效果_03 //017
+    [colors addObject:UIColorFromRGB(0xf5af0a)];//018
+    [colors addObject:UIColorFromRGB(0xef5409)];//019
+    [colors addObject:UIColorFromRGB(0xf5aac4)];//020
+    [colors addObject:UIColorFromRGB(0xf1679a)];//021
+    [colors addObject:UIColorFromRGB(0xee246e)];//022
+    [colors addObject:UIColorFromRGB(0xed0045)];//023
+    [colors addObject:UIColorFromRGB(0x94004f)];//024
+    [colors addObject:UIColorFromRGB(0xd9aee1)];//025
+    [colors addObject:UIColorFromRGB(0xe261fa)];//026
+    [colors addObject:UIColorFromRGB(0xd40dfa)];//027
+    [colors addObject:UIColorFromRGB(0xb000f5)];//028
+    [colors addObject:UIColorFromRGB(0x4900a1)];//029
+    [colors addObject:UIColorFromRGB(0xc6b4e2)];//030
+    [colors addObject:UIColorFromRGB(0xa36bff)];//031
+    [colors addObject:UIColorFromRGB(0x723cff)];//032
+    [colors addObject:UIColorFromRGB(0x5000fe)];//033
+    [colors addObject:UIColorFromRGB(0x2e00a9)];//034
+    [colors addObject:UIColorFromRGB(0xaed6fa)];//035
+    [colors addObject:UIColorFromRGB(0x6f9eff)];//036
+    [colors addObject:UIColorFromRGB(0x3671ff)];//037
+    [colors addObject:UIColorFromRGB(0x2353fd)];//038
+    [colors addObject:UIColorFromRGB(0x162cbd)];//039
+    [colors addObject:UIColorFromRGB(0xa4e6ed)];//040
+    [colors addObject:UIColorFromRGB(0x76fffc)];//041
+    [colors addObject:UIColorFromRGB(0x51ffff)];//042
+    [colors addObject:UIColorFromRGB(0x47dfff)];//043
+    [colors addObject:UIColorFromRGB(0x1f6469)];//044
+    [colors addObject:UIColorFromRGB(0xa3d9a0)];//045
+    [colors addObject:UIColorFromRGB(0xa4d7d3)];//046
+    [colors addObject:UIColorFromRGB(0x9aff82)];//047
+    [colors addObject:UIColorFromRGB(0x59ffd0)];//048
+    [colors addObject:UIColorFromRGB(0x47e6a6)];//预设效果_04 //049
+    [colors addObject:UIColorFromRGB(0x206750)];//050
+    [colors addObject:UIColorFromRGB(0xbce2bc)];//051
+    [colors addObject:UIColorFromRGB(0xacf5bc)];//052
+    [colors addObject:UIColorFromRGB(0x5cf19d)];//预设效果_04 //053
+    [colors addObject:UIColorFromRGB(0x44e462)];//054
+    [colors addObject:UIColorFromRGB(0x247930)];//055
+    [colors addObject:UIColorFromRGB(0xecf3b6)];//056
+    [colors addObject:UIColorFromRGB(0xf1ff6e)];//057
+    [colors addObject:UIColorFromRGB(0xeaff33)];//058
+    [colors addObject:UIColorFromRGB(0xbcff0b)];//059
+    [colors addObject:UIColorFromRGB(0x5c7e04)];//060
+    [colors addObject:UIColorFromRGB(0xccbfbc)];//061
+    [colors addObject:UIColorFromRGB(0x8f746b)];//062
+    [colors addObject:UIColorFromRGB(0x654338)];//063
+    [colors addObject:UIColorFromRGB(0x4a302a)];//064
+    [colors addObject:UIColorFromRGB(0x2f1c1b)];//065
+    
+    return colors;
+}
+
 +(NSString *)pathAssetVideoForURL:(NSURL *)aURL{
     return [NSString stringWithFormat:@"%@/cachedAsset_video-%lu.mp4",[self returnEditorVideoPath],(unsigned long)[[aURL description] hash]];
 }
@@ -1645,6 +1747,32 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSString *docmentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *editorvideoPath = [NSString stringWithFormat:@"%@/EDITORVIDEO",docmentsPath];
     return editorvideoPath;
+}
+
++ (NSDictionary *) getVideoInformation:( NSURL * ) url
+{
+    AVURLAsset *urlAsset = [AVURLAsset assetWithURL:url];
+    CGSize videoSize = [VEHelp getVideoSizeForTrack:urlAsset];
+    AVAssetTrack *videoTrack = nil;
+    
+    NSArray *videoTracks = [urlAsset tracksWithMediaType:AVMediaTypeVideo];
+    
+
+    if ([videoTracks count] > 0)
+        videoTrack = [videoTracks objectAtIndex:0];
+    
+    int width = videoSize.width;
+    int height = videoSize.height;
+    
+    float frameRate = [videoTrack nominalFrameRate];
+    float bitrate = [videoTrack estimatedDataRate];
+    
+    return @{
+             @"width":@(width),
+             @"height":@(height),
+             @"fps":@(frameRate),
+             @"bitrate":@(bitrate)};
+    
 }
 
 + (CGSize )getVideoSizeForTrack:(AVURLAsset *)asset{
@@ -1688,8 +1816,15 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         image = [UIImage imageWithCGImage:image.CGImage scale:image.scale orientation:UIImageOrientationUp];
         size = image.size;
     }
+    int width = size.width;
+    int height = size.height;
+    //保证宽高为2的倍数，防止导出画面出现其他颜色的边线
+    if(width%2 != 0)
+        width -= 1;
+    if(height%2 != 0)
+        height -= 1;
     
-    return size;
+    return CGSizeMake(width, height);
 }
 +(MediaAsset *)canvasFile:(VEMediaInfo *) file
 {
@@ -2153,6 +2288,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
     NSString *itemPath = [[[folderPath stringByAppendingString:@"/"] stringByAppendingString:itemDic[@"name"]] stringByAppendingPathExtension:pathExtension];
+    
+    return itemPath;
+}
+
++ (NSString *)getCoverTemplateDownloadFolderWithDic:(NSDictionary *)itemDic{
+    NSString *folderPath = kCoverTemplateFolder;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *itemPath = [folderPath stringByAppendingPathComponent:itemDic[@"ufid"]];
     
     return itemPath;
 }
@@ -3489,11 +3634,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             //newSize  = CGSizeMake(size.height, size.width);
             newSize  = CGSizeMake(MIN(size.width, size.height), MAX(size.width, size.height));
         }
-        if(rotate == -90 || rotate == -270){
+        if(rotate == -90 || rotate == -270 || rotate == 90 || rotate == 270){
             newSize  = CGSizeMake(MAX(size.width, size.height), MIN(size.width, size.height));
         }
     }else{
-        if(rotate == -90 || rotate == -270){
+        if(rotate == -90 || rotate == -270 || rotate == 90 || rotate == 270){
             //newSize  = CGSizeMake(size.height, size.width);
             newSize  = CGSizeMake(MIN(size.width, size.height), MAX(size.width, size.height));
         }else{
@@ -3588,11 +3733,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         if(size.height < size.width){
             newSize  = CGSizeMake(size.height, size.width);
         }
-        if(rotate == -90 || rotate == -270){
+        if(rotate == -90 || rotate == -270 || rotate == 90 || rotate == 270){
             newSize  = CGSizeMake(size.width, size.height);
         }
     }else{
-        if(rotate == -90 || rotate == -270){
+        if(rotate == -90 || rotate == -270 || rotate == 90 || rotate == 270){
             newSize  = CGSizeMake(size.height, size.width);
         }
     }
@@ -3664,10 +3809,94 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return isPortrait;
 }
 
-+(UIView *)initReversevideoProgress:(  UIViewController * ) viewController atLabelTag:(int *) labelTag atCancel:(SEL)cancel
++(UIView *)initReversevideoProgressView:(  UIView * ) reverseView atLabelTag:(int *) labelTag atCancel:(SEL)cancel
+{
+    UIView * view = [[UIView alloc] initWithFrame:reverseView.bounds];
+    view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.8];
+    [reverseView addSubview:view];
+    
+//    UIView * reverseVideoView = [[UIView alloc] initWithFrame:CGRectMake( (view.frame.size.width-150.0)/2.0, (view.frame.size.height-150.0)/2.0, 150.0, 150.0)];
+//    reverseVideoView.backgroundColor = [UIColor colorWithWhite:0.2 alpha:1.0];;
+//    reverseVideoView.layer.cornerRadius = 5.0;
+//    reverseVideoView.layer.masksToBounds = YES;
+//    [view addSubview:reverseVideoView];
+    
+//    UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake( (reverseVideoView.frame.size.width - 100)/2.0, 10, 100, 100)];
+//    [imageView sd_setImageWithURL:[NSURL fileURLWithPath:[[VEHelp getEditBundle] pathForResource:@"/New_EditVideo/animatSchedule_@3x" ofType:@"png"]]];
+//    [reverseVideoView addSubview:imageView];
+//
+//    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0 , imageView.frame.size.height + imageView.frame.origin.y, reverseVideoView.frame.size.width, 20)];
+//    label.textAlignment = NSTextAlignmentCenter;
+//    label.font = [UIFont systemFontOfSize:12];
+//    label.textColor = [UIColor whiteColor];
+//    label.tag = 30121;
+//    *labelTag = 30121;
+//    [reverseVideoView addSubview:label];
+
+    return view ;
+}
+
++(UIView *)initAgainTrackView:(  UIViewController * ) viewController atTitle:( NSString * ) title atConfirm:(SEL) confirm atCancel:(SEL) cancel
 {
     UIView * view = [[UIView alloc] initWithFrame:viewController.view.bounds];
     view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.8];
+    [viewController.view addSubview:view];
+    
+    UIView * reverseVideoView = [[UIView alloc] initWithFrame:CGRectMake( (view.frame.size.width-290)/2.0, (view.frame.size.height-200)/2.0, 290, 190)];
+    reverseVideoView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:1.0];
+    reverseVideoView.layer.cornerRadius = 5.0;
+    reverseVideoView.layer.masksToBounds = YES;
+    [view addSubview:reverseVideoView];
+    
+    {
+        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(20, 30, reverseVideoView.frame.size.width - 40, 60)];
+        label.font = [UIFont systemFontOfSize:16];
+        label.text = title;
+        //下面两行设置UILabel多行显示
+        label.lineBreakMode = NSLineBreakByCharWrapping;
+        label.numberOfLines = 0;
+        //设置大小自适应
+        [label sizeToFit];
+        [reverseVideoView addSubview:label];
+    }
+    
+    {
+        UIButton * confirmBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, 30 + 60 + 0, reverseVideoView.frame.size.width - 40, 40)];
+        confirmBtn.backgroundColor = Main_Color;
+        confirmBtn.layer.cornerRadius = 5.0;
+        confirmBtn.layer.masksToBounds = true;
+        [confirmBtn setTitle:VELocalizedString(@"确认", nil) forState:UIControlStateNormal];
+        [confirmBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        confirmBtn.titleLabel.font = [UIFont systemFontOfSize:16];
+        [confirmBtn addTarget:viewController action:confirm forControlEvents:UIControlEventTouchUpInside];
+        [reverseVideoView addSubview:confirmBtn];
+    }
+    
+    {
+        UIButton * cancelBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, 30 + 60 + 10 + 30 + 10, reverseVideoView.frame.size.width - 40, 40)];
+        cancelBtn.backgroundColor = [UIColor colorWithWhite:1.0 alpha:1.0];
+        cancelBtn.layer.cornerRadius = 5.0;
+        cancelBtn.layer.masksToBounds = true;
+        [cancelBtn setTitle:VELocalizedString(@"取消", nil) forState:UIControlStateNormal];
+        [cancelBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        cancelBtn.titleLabel.font = [UIFont systemFontOfSize:16];
+        [cancelBtn addTarget:viewController action:cancel forControlEvents:UIControlEventTouchUpInside];
+        [reverseVideoView addSubview:cancelBtn];
+    }
+    return view;
+}
+
++ (NSString *) getResourceFromBundle : (NSString *) bundleName resourceName:(NSString *)name Type : (NSString *) type
+{
+    NSBundle *bundle = nil;
+    bundle = [VEHelp getBundleName:bundleName];
+    return [bundle pathForResource:name ofType:type];
+}
+
++(UIView *)initReversevideoProgress:(  UIViewController * ) viewController atLabelTag:(int *) labelTag atCancel:(SEL)cancel
+{
+    UIView * view = [[UIView alloc] initWithFrame:viewController.view.bounds];
+    view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.5];
     [viewController.view addSubview:view];
     
     UIView * reverseVideoView = [[UIView alloc] initWithFrame:CGRectMake( (view.frame.size.width-150.0)/2.0, (view.frame.size.height-150.0)/2.0, 150.0, 150.0)];
@@ -3694,18 +3923,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     btn.layer.masksToBounds = YES;
 //    btn.backgroundColor = [UIColor  colorWithWhite:0.6 alpha:1.0];
     [btn setImage:[VEHelp imageNamed:@"jianji/music/剪辑-剪辑-音乐_关闭默认_"] forState:UIControlStateNormal];
-    [btn addTarget:viewController action:cancel forControlEvents:UIControlEventTouchUpInside];
+    if( cancel )
+        [btn addTarget:viewController action:cancel forControlEvents:UIControlEventTouchUpInside];
     [reverseVideoView addSubview:btn];
-    
+    if( cancel == nil )
+    {
+        btn.hidden = YES;
+    }
     return view ;
 }
 
-+ (NSString *) getResourceFromBundle : (NSString *) bundleName resourceName:(NSString *)name Type : (NSString *) type
-{
-    NSBundle *bundle = nil;
-    bundle = [VEHelp getBundleName:bundleName];
-    return [bundle pathForResource:name ofType:type];
-}
 
 ///获取当前时间戳作为文件名
 + (NSString *)getFileNameForNowTime{
@@ -3724,6 +3951,24 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSDate *date_ = [NSDate date];
     NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
     [dateformater setDateFormat:@"yyyy-MM-dd_HH-mm-ss-SSS"];
+    return [dateformater stringFromDate:date_];
+}
++ (NSString *)getNowTimeToString{
+
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
+    [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+    //设置时区,这个对于时间的处理有时很重要
+    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
+    [formatter setTimeZone:timeZone];
+//    NSDate *datenow = [NSDate date];//现在时间,你可以输出来看下是什么格式
+//    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]*1000];
+    
+    NSDate *date_ = [NSDate date];
+    NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
+    [dateformater setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     return [dateformater stringFromDate:date_];
 }
 
@@ -3964,6 +4209,204 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return index;
 }
 
++ (NSInteger)getSubtitlePresetTypeIndexWithTextColor:(UIColor *)textColor
+                                         strokeColor:(UIColor *)strokeColor
+                                             bgColor:(UIColor *)bgColor
+{
+    NSInteger presetTypeIndex = 0;
+    if (textColor) {
+        UIColor *presetTextColor = [UIColor clearColor];
+        UIColor *presetStrokeColor = [UIColor clearColor];
+        UIColor *presetBGColor = [UIColor clearColor];
+        if (bgColor && (!strokeColor || CGColorEqualToColor(strokeColor.CGColor, [UIColor clearColor].CGColor))) {
+            for (int i = 9; i < 14; i++) {
+                [self getPresetTypeIndex:i
+                         presetTextColor:&presetTextColor
+                       presetStrokeColor:&presetStrokeColor
+                           presetBgColor:&presetBGColor];
+                
+                if ([self colorIsEqual:bgColor color2:presetBGColor]) {
+                    if ([self colorIsEqual:textColor color2:presetTextColor]) {
+                        presetTypeIndex = i;
+                        break;
+                    }
+                }
+            }
+        }else if (strokeColor && (!bgColor || CGColorEqualToColor(bgColor.CGColor, [UIColor clearColor].CGColor))) {
+            for (int i = 1; i < 19; i++) {
+                if (i >= 9 && i <= 13) {
+                    continue;
+                }
+                [self getPresetTypeIndex:i
+                         presetTextColor:&presetTextColor
+                       presetStrokeColor:&presetStrokeColor
+                           presetBgColor:&presetBGColor];
+                
+                if ([self colorIsEqual:strokeColor color2:presetStrokeColor]) {
+                    if ([self colorIsEqual:textColor color2:presetTextColor]) {
+                        presetTypeIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    return presetTypeIndex;
+}
+
++ (void)getPresetTypeIndex:(NSInteger )index
+           presetTextColor:(UIColor **)presetTextColor
+         presetStrokeColor:(UIColor **)presetStrokeColor
+             presetBgColor:(UIColor **)presetBgColor
+{
+    UIColor *sutbtitleColor;
+    UIColor *strokeColor;
+    UIColor *bgColor;
+    switch (index) {
+        case 1:
+        {
+            sutbtitleColor = UIColorFromRGB(0xffffff);
+            strokeColor =  UIColorFromRGB(0x000000);
+        }
+            break;
+        case 2:
+        {
+            sutbtitleColor =  UIColorFromRGB(0x000000);
+            strokeColor =  UIColorFromRGB(0xffffff);
+        }
+            break;
+        case 3:
+        {
+            sutbtitleColor =  UIColorFromRGB(0xf8dd4a);
+            strokeColor =  UIColorFromRGB(0x000000);
+        }
+            break;
+        case 4:
+        {
+            sutbtitleColor =  UIColorFromRGB(0xffffff);
+            strokeColor =  UIColorFromRGB(0xed7667);
+        }
+            break;
+        case 5:
+        {
+            sutbtitleColor =  UIColorFromRGB(0xc1dcf8);
+            strokeColor =  UIColorFromRGB(0x000000);
+        }
+            break;
+        case 6:
+        {
+            sutbtitleColor =  UIColorFromRGB(0xac5125);
+            strokeColor =  UIColorFromRGB(0xffffff);
+        }
+            break;
+        case 7:
+        {
+            sutbtitleColor =  UIColorFromRGB(0xefe1ac);
+            strokeColor =  UIColorFromRGB(0x4a4238);
+        }
+            break;
+        case 8:
+        {
+            sutbtitleColor =  UIColorFromRGB(0xecc5bc);
+            strokeColor =  UIColorFromRGB(0x510b06);
+        }
+            break;
+        case 9:
+        {
+            sutbtitleColor =  UIColorFromRGB(0xffffff);
+            bgColor =  UIColorFromRGB(0x000000);
+        }
+            break;
+        case 10:
+        {
+            sutbtitleColor =  UIColorFromRGB(0x000000);
+            bgColor =  UIColorFromRGB(0xffffff);
+        }
+            break;
+        case 11:
+        {
+            sutbtitleColor =  UIColorFromRGB(0x000000);
+            bgColor =  UIColorFromRGB(0xffde00);
+        }
+            break;
+        case 12:
+        {
+            sutbtitleColor =  UIColorFromRGB(0xffffff);
+            bgColor =  UIColorFromRGB(0xa74f59);
+        }
+            break;
+        case 13:
+        {
+            sutbtitleColor =  UIColorFromRGB(0x69f0ae);
+            bgColor =  UIColorFromRGB(0x000000);
+        }
+            break;
+        case 14:
+        {
+            sutbtitleColor =  UIColorFromRGB(0xffd9e8);
+            strokeColor =  UIColorFromRGB(0xff619d);
+        }
+            break;
+        case 15:
+        {
+            sutbtitleColor =  UIColorFromRGB(0xc0f1f5);
+            strokeColor =  UIColorFromRGB(0x037cff);
+        }
+            break;
+        case 16:
+        {
+            sutbtitleColor =  UIColorFromRGB(0xc3cf47);
+            strokeColor =  UIColorFromRGB(0x3c5c37);
+        }
+            break;
+        case 17:
+        {
+            sutbtitleColor =  UIColorFromRGB(0x90c2cd);
+            strokeColor =  UIColorFromRGB(0x465773);
+        }
+            break;
+        case 18:
+        {
+            sutbtitleColor =  UIColorFromRGB(0xfffff0);
+            strokeColor =  UIColorFromRGB(0xff1837);
+        }
+            break;
+        default:
+            break;
+    }
+    if (sutbtitleColor && *presetTextColor) {
+        *presetTextColor = sutbtitleColor;
+    }
+    if (strokeColor && *presetStrokeColor) {
+        *presetStrokeColor = strokeColor;
+    }
+    if (bgColor && *presetBgColor) {
+        *presetBgColor = bgColor;
+    }
+}
+
++ (BOOL)colorIsEqual:(UIColor *)color1 color2:(UIColor *)color2 {
+    BOOL isEqual = NO;
+    if (color1 && color2) {
+        float r=0,g=0,b=0;
+        const CGFloat *components = CGColorGetComponents(color1.CGColor);
+        r = components[0];
+        g = components[1];
+        b = components[2];
+        
+        float r1=0,g1=0,b1=0;
+        const CGFloat *pComponents = CGColorGetComponents(color2.CGColor);
+        r1 = pComponents[0];
+        g1 = pComponents[1];
+        b1 = pComponents[2];
+        if (r == r1 && g == g1 && b == b1) {
+            isEqual = YES;
+        }
+    }
+    return isEqual;
+}
+
 #pragma mark-滤镜
 +(NSArray *)classificationParams:( NSString * ) type atAppkey:( NSString * ) appkey atURl:( NSString * ) netMaterialTypeURL
 {
@@ -3979,6 +4422,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 + (id)updateInfomation:(NSMutableDictionary *)params andUploadUrl:(NSString *)uploadUrl{
+    if(!uploadUrl){
+        return nil;
+    }
     @autoreleasepool {
         if(!params){
             params  = [[NSMutableDictionary alloc] init];
@@ -4232,6 +4678,30 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
 }
 
++(NSDictionary *)getConfig_Dic:( NSString * ) configPath
+{
+    NSString *path = configPath;
+    NSFileManager *manager = [[NSFileManager alloc] init];
+    if([manager fileExistsAtPath:path]){
+        NSLog(@"have");
+    }else{
+        NSLog(@"nohave");
+    }
+    NSData *data = [[NSData alloc] initWithContentsOfFile:path];
+    data = [[NSData alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path]];
+    
+    NSError *err;
+    if(data){
+        NSDictionary *subtitleEffectConfig = [NSJSONSerialization JSONObjectWithData:data
+                                                                                    options:NSJSONReadingMutableContainers
+                                                                                      error:&err];
+        return subtitleEffectConfig;
+    }
+    else
+    {
+        return nil;
+    }
+}
 +(NSDictionary *)getCaptionConfig_Dic:( NSString * ) configPath
 {
     NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
@@ -4580,6 +5050,18 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return image;
 }
 
++ (UIImage *)drawImage:(UIImage *)image bgImage:(UIImage *)bgImage
+{
+    @autoreleasepool {
+        UIGraphicsBeginImageContext(CGSizeMake(((int)bgImage.size.width), ((int)bgImage.size.height)));
+        [bgImage drawInRect:CGRectMake(0, 0, ((int)bgImage.size.width), ((int)bgImage.size.height))];
+        [image drawInRect:CGRectMake((bgImage.size.width - image.size.width)/2.0, (bgImage.size.height - image.size.height)/2.0, ((int)image.size.width), ((int)image.size.height))];
+        UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return scaledImage;
+    }
+}
+
 + (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize
 {
 #if 1   //20220105 使用保存到沙盒后再使用的方法iPhone6s（iOS13.7）会崩溃
@@ -4851,7 +5333,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     else
     {
         [asset.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ( CGRectContainsPoint(faceRect, CGPointMake(obj.faceRect.origin.x+obj.faceRect.size.width/2.0, obj.faceRect.origin.y+obj.faceRect.size.height/2.0)) ) {
+            if (CGRectEqualToRect(faceRect, obj.faceRect) ||  CGRectContainsPoint(faceRect, CGPointMake(obj.faceRect.origin.x+obj.faceRect.size.width/2.0, obj.faceRect.origin.y+obj.faceRect.size.height/2.0)) ) {
                 faceAttribute = obj;
                 *stop = YES;
             }
@@ -5022,7 +5504,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSMutableArray *transitionList = [VEHelp getTransitionArray];
     if( transitionList && (transitionList.count > 0) )
     {
-        if( ( transitionList.count <= file.transitionTypeIndex ))
+        if(transitionList.count < file.transitionTypeIndex)
         {
             return;
         }
@@ -5279,6 +5761,40 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 [overlays addObject:doodle];
             }
         }];
+    }
+    //MARK: 涂鸦笔
+    if (templateInfo.doodlePens.count > 0) {
+        NSMutableArray *doodlePens = [NSMutableArray array];
+        [templateInfo.doodlePens enumerateObjectsUsingBlock:^(VECoreTemplateDoodleEx * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            DoodleEx *doodleEx = [obj getDoodleExWithFolderPath:folderPath];
+            if (doodleEx) {
+                NSMutableArray *options = [NSMutableArray array];
+                [doodleEx.optionArrays enumerateObjectsUsingBlock:^(DoodleOption * _Nonnull option, NSUInteger idx, BOOL * _Nonnull stop) {
+                    option.folderPath = [VEHelp getFileURLFromAbsolutePath_str:option.folderPath];
+                    DoodleOption *op = [VEHelp getDoodleOptionWithPath:option.folderPath];
+                    op.autoBrush.fade = option.autoBrush.fade;
+                    op.pngBrush.fade = option.autoBrush.fade;
+                    op.networkCategoryId = option.networkCategoryId;
+                    op.networkResourceId = option.networkResourceId;
+                    op.folderPath = option.folderPath;
+                    op.opacityValue = option.opacityValue;
+                    op.paintSize = option.paintSize;
+                    if (option.color) {
+                        op.color = option.color;
+                    }
+                    op.eventArray = option.eventArray;
+                    [options addObject:op];
+                }];
+                [doodleEx.optionArrays removeAllObjects];
+                doodleEx.optionArrays = nil;
+                doodleEx.optionArrays = options;
+                
+                [doodlePens addObject:doodleEx];
+            }
+        }];
+        if (doodlePens.count > 0) {
+            veCoreSDK.doodleArray = doodlePens;
+        }
     }
     //MARK: 水印
     if (isExport && templateInfo.logoOverlay.path.length > 0) {
@@ -7142,7 +7658,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     NSLog(@"json解析失败：%@",err);
                 }
                 
-                captionEx.type =  CaptionExeTypStickers;
+                captionEx.type =  CaptionExTypeStickers;
                 CaptionImage * captionImage = [CaptionImage new];
                 float   x = [subtitleEffectConfig[@"centerX"] floatValue];
                 float   y = [subtitleEffectConfig[@"centerY"] floatValue];
@@ -7797,6 +8313,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 + (NSString *)getSuperposiCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
     NSString *cachedFilePath = [kSuperposiEffectFolder stringByAppendingPathComponent:[VEHelp cachedFileNameForKey:urlPath]];
+    cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
+    return cachedFilePath;
+}
+
++ (NSString *)getNetworkResourceCachedPathWithFolderPath:(NSString *)folderPath networkResourcePath:(NSString *)networkResourcePath updatetime:(NSString *)updatetime {
+    NSString *cachedFilePath = [folderPath stringByAppendingPathComponent:[VEHelp cachedFileNameForKey:networkResourcePath]];
     cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
     return cachedFilePath;
 }
@@ -10671,5 +11193,413 @@ static OSType help_inputPixelFormat(){
     
     return [UIColor colorWithRed:((float) r / 255.0f) green:((float) g / 255.0f) blue:((float) b / 255.0f) alpha:1.0f];
 }
+
+
++(UIView *)loadCircleProgressView:(CGRect) rect
+{
+    
+    UIColor *color = [UIColor colorWithWhite:0.0 alpha:0.3];
+    UIView *view = [[UIView alloc] initWithFrame:rect];
+    view.layer.masksToBounds = YES;
+    view.layer.cornerRadius = 5;
+    view.backgroundColor = color;
+    CGRect rect1 = CGRectMake((rect.size.width - 14)/2.0, (rect.size.width - 14)/2.0,14,14);
+    VECircleView * progressLabel = [[VECircleView alloc] initWithFrame:rect1];
+    progressLabel.backgroundColor = [UIColor clearColor];
+    progressLabel.progressBackgroundColor = [TEXT_COLOR colorWithAlphaComponent:0.9];
+    progressLabel.progressColor = Main_Color;
+    progressLabel.progressWidth = 2.0;
+    progressLabel.percent = 0.01;
+    progressLabel.tag = 10;
+    progressLabel.hidden = NO;
+    [view addSubview:progressLabel];
+    return view;
+}
+
++ (Float64)getOriginalTime:( Float64 ) currentTime atOriginalTimeArray:(NSMutableArray *) originalTimeArray atShiftTimeArray:(NSMutableArray *) shiftTimeArray atCurveSpeedPointArray:( NSMutableArray<CurvedSpeedPoint*> *) curveSpeedPointArray
+{
+    int index = -1;
+    for (int i = 0; i < shiftTimeArray.count; i++) {
+        CMTime time = kCMTimeZero;
+        NSValue* value = shiftTimeArray[i];
+        [value getValue:&time];
+         if( CMTimeGetSeconds(time) >  currentTime )
+         {
+             index = i;
+             break;
+         }
+    }
+    if( index == -1 )
+    {
+        index = (int)shiftTimeArray.count - 1;
+    }
+    
+    Float64 startTime = 0.0;
+    Float64 endTime = 0.0;
+    Float64 shifitCurrentTime = 0.0;
+    {
+        CMTime time = kCMTimeZero;
+        NSValue* value = originalTimeArray[index];
+        [value getValue:&time];
+        endTime = CMTimeGetSeconds(time);
+    }
+    {
+        CMTime time = kCMTimeZero;
+        if(index > 0)
+        {
+            NSValue* value = originalTimeArray[index - 1];
+            [value getValue:&time];
+        }
+        else{
+            time = CMTimeMakeWithSeconds(0, 10000);
+        }
+        startTime = CMTimeGetSeconds(time);
+    }
+    
+    {
+        CMTime time = kCMTimeZero;
+        if(index > 0)
+        {
+            NSValue* value = shiftTimeArray[index - 1];
+            [value getValue:&time];
+        }
+        else{
+            time = CMTimeMakeWithSeconds(0, 10000);
+        }
+        shifitCurrentTime = CMTimeGetSeconds(time);
+        shifitCurrentTime = currentTime - shifitCurrentTime;
+    }
+    
+//    NSLog(@"当前时间：%.2f,时长：%.2f",shifiCurrentTime,endTime - startTime);
+    Float64 time = [self getCurrentTime:shifitCurrentTime atDuration:endTime - startTime atObj:curveSpeedPointArray[index] atNextObj:curveSpeedPointArray[index + 1]];
+//    time = startTime+time;
+    
+//    NSLog(@"原始时间：%.2f,原始启始时间：%.2f",startTime+time,startTime);
+    return  startTime+time;
+}
+
++ (Float64)getCurrentTime:( Float64 ) currentTime atDuration:(Float64) duration atObj:(CurvedSpeedPoint *) obj atNextObj:(CurvedSpeedPoint *) nextObj
+{
+    Float64 startSpeed = obj.speed;
+    Float64 durationSpeed = nextObj.speed - obj.speed;
+    Float64 fCurveStart = 0.0;
+    Float64 fCurveEnd = 1.0;
+    if( durationSpeed != 0.0 )
+    {
+        if(obj.speed > nextObj.speed )
+        {
+            startSpeed = nextObj.speed;
+            durationSpeed = obj.speed - nextObj.speed;
+            
+            fCurveStart = 1.0;
+            fCurveEnd = 0.0;
+        }
+        
+        Float64 perDuration = 0.01;//10ms分块
+        int count = ceilf(duration/perDuration);
+        Float64 passThroughTime = 0.0;
+        Float64 originalPassThroughTime = 0.0;
+        for (int i = 0; i < count; i++) {
+            Float64 t = ((Float64)i)/((Float64)count);
+            Float64 tempT =  1.0 - t;
+            Float64 pointY = (fCurveStart * tempT * tempT * tempT + 3.0 * 0.5 * t * tempT * tempT + 3.0 * 0.5 * t * t * tempT + fCurveEnd * t * t * t) * durationSpeed + startSpeed;
+            
+            Float64 scaleDur = perDuration/pointY;
+            originalPassThroughTime += perDuration;
+            passThroughTime += scaleDur;
+            
+            if( passThroughTime >= currentTime )
+            {
+                break;
+            }
+        }
+//        NSLog(@"当前时间original：%.2f",originalPassThroughTime);
+        return originalPassThroughTime;
+    }
+    else{
+//        NSLog(@"当前时间original：%.2f",currentTime*startSpeed);
+        return currentTime*startSpeed;
+    }
+}
+
++(Float64)getCurveSpeedTime:(Float64) originalTime atOriginalTimeArray:(NSMutableArray *) originalTimeArray atShiftTimeArray:(NSMutableArray *) shiftTimeArray atCurveSpeedPointArray:( NSMutableArray<CurvedSpeedPoint*> *) curveSpeedPointArray
+{
+    int index = -1;
+    for (int i = 0; i < originalTimeArray.count; i++) {
+        CMTime time = kCMTimeZero;
+        NSValue* value = originalTimeArray[i];
+        [value getValue:&time];
+         if( CMTimeGetSeconds(time) >  originalTime )
+         {
+             index = i;
+             break;
+         }
+    }
+    if( index == -1 )
+    {
+        index = (int)shiftTimeArray.count - 1;
+    }
+    
+    Float64 startTime = 0.0;
+    Float64 endTime = 0.0;
+    Float64 originalCurrentTime = 0.0;
+    {
+        CMTime time = kCMTimeZero;
+        NSValue* value = originalTimeArray[index];
+        [value getValue:&time];
+        endTime = CMTimeGetSeconds(time);
+    }
+    {
+        CMTime time = kCMTimeZero;
+        if(index > 0)
+        {
+            NSValue* value = shiftTimeArray[index - 1];
+            [value getValue:&time];
+        }
+        else{
+            time = CMTimeMakeWithSeconds(0, 10000);
+        }
+        startTime = CMTimeGetSeconds(time);
+    }
+    
+    {
+        CMTime time = kCMTimeZero;
+        if(index > 0)
+        {
+            NSValue* value = originalTimeArray[index - 1];
+            [value getValue:&time];
+        }
+        else{
+            time = CMTimeMakeWithSeconds(0, 10000);
+        }
+        originalCurrentTime = CMTimeGetSeconds(time);
+    }
+    
+//    NSLog(@"当前时间：%.2f,时长：%.2f",shifiCurrentTime,endTime - startTime);
+    Float64 time = [self getShifitCurrentTime:originalTime - originalCurrentTime atDuration:endTime - originalCurrentTime atObj:curveSpeedPointArray[index] atNextObj:curveSpeedPointArray[index + 1]];
+//    time = startTime+time;
+    
+    NSLog(@"变速后时间：%.2f,变速后启始时间：%.2f",startTime+time,startTime);
+    return  startTime+time;
+}
+
++ (Float64)getShifitCurrentTime:( Float64 ) currentTime atDuration:(Float64) duration atObj:(CurvedSpeedPoint *) obj atNextObj:(CurvedSpeedPoint *) nextObj
+{
+    Float64 startSpeed = obj.speed;
+    Float64 durationSpeed = nextObj.speed - obj.speed;
+    Float64 fCurveStart = 0.0;
+    Float64 fCurveEnd = 1.0;
+    if( durationSpeed != 0.0 )
+    {
+        if(obj.speed > nextObj.speed )
+        {
+            startSpeed = nextObj.speed;
+            durationSpeed = obj.speed - nextObj.speed;
+            
+            fCurveStart = 1.0;
+            fCurveEnd = 0.0;
+        }
+        
+        Float64 perDuration = 0.01;//10ms分块
+        int count = ceilf(duration/perDuration);
+        Float64 passThroughTime = 0.0;
+        Float64 originalPassThroughTime = 0.0;
+        for (int i = 0; i < count; i++) {
+            Float64 t = ((Float64)i)/((Float64)count);
+            Float64 tempT =  1.0 - t;
+            Float64 pointY = (fCurveStart * tempT * tempT * tempT + 3.0 * 0.5 * t * tempT * tempT + 3.0 * 0.5 * t * t * tempT + fCurveEnd * t * t * t) * durationSpeed + startSpeed;
+            
+            Float64 scaleDur = perDuration/pointY;
+            originalPassThroughTime += perDuration;
+            passThroughTime += scaleDur;
+            
+            if( originalPassThroughTime >= currentTime )
+            {
+                break;
+            }
+        }
+//        NSLog(@"当前时间original：%.2f",originalPassThroughTime);
+        return passThroughTime;
+    }
+    else{
+//        NSLog(@"当前时间original：%.2f",currentTime*startSpeed);
+        return currentTime/startSpeed;
+    }
+}
+
++ (BOOL)isEqualGraphArray:(NSArray *)graphArray1 graphArray2:(NSArray *)graphArray2 {
+    BOOL isEqual = YES;
+    if (graphArray1.count != graphArray2.count) {
+        isEqual = NO;
+    }else {
+        for (int i = 0; i < graphArray1.count; i++) {
+            CurvedSpeedPoint *point1 = graphArray1[i];
+            CurvedSpeedPoint *point2 = graphArray2[i];
+            if (point1.timeFactor != point2.timeFactor || point1.speed != point2.speed) {
+                isEqual = NO;
+                break;
+            }
+        }
+    }
+    
+    return isEqual;
+}
+
++ (DoodleOption *)getDoodleOptionWithPath:(NSString *)path {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if (![fm fileExistsAtPath:path]) {
+        return nil;
+    }
+    NSArray *files = [fm contentsOfDirectoryAtPath:path error:nil];
+    
+    NSString *directoryName;
+    NSString *jsonPath;
+    if (files.count == 1) {
+        for (NSString *fileName in files) {
+            if (![fileName isEqualToString:@"__MACOSX"]) {
+                if(files.count == 1){
+                    NSString *folderPath = [path stringByAppendingPathComponent:fileName];
+                    BOOL isDirectory = NO;
+                    BOOL isExists = [fm fileExistsAtPath:folderPath isDirectory:&isDirectory];
+                    if (isExists && isDirectory) {
+                        directoryName = fileName;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    if (path.pathExtension.length == 0) {
+        if (directoryName.length > 0) {
+            jsonPath = [[path stringByAppendingPathComponent:directoryName] stringByAppendingPathComponent:@"config.json"];
+        }else {
+            jsonPath = [path stringByAppendingPathComponent:@"config.json"];
+        }
+    }else {
+        jsonPath = path;
+    }
+    
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
+    NSDictionary *effectDic = [VEHelp objectForData:jsonData];
+    if (!effectDic) {
+        return nil;
+    }
+    NSDictionary *configDic = effectDic[@"config"];
+    DoodleOption *option = [DoodleOption new];
+    if (configDic[@"opacityValue"]) {
+        option.opacityValue = [configDic[@"opacityValue"] floatValue];
+    }
+    if (configDic[@"paintSize"]) {
+        option.paintSize = [configDic[@"paintSize"] floatValue];
+    }
+    if (configDic[@"blendFunc"]) {
+        option.blendFunc = [configDic[@"blendFunc"] intValue];
+    }
+    if (configDic[@"angleSensor"]) {
+        option.angleSensor = [configDic[@"angleSensor"] boolValue];
+    }
+    if (configDic[@"distanceSensor"]) {
+        option.distanceSensor = [configDic[@"distanceSensor"] boolValue];
+    }
+    if (configDic[@"hardness"]) {
+        option.hardness = [configDic[@"hardness"] boolValue];
+    }
+    if (configDic[@"autoBrush"]) {
+        option.autoBrush = [AutoBrush veCore_yy_modelWithDictionary:configDic[@"autoBrush"]];
+    }
+    if (configDic[@"pngBrush"]) {
+        option.pngBrush = [PNGBrush veCore_yy_modelWithDictionary:configDic[@"pngBrush"]];
+        if (option.pngBrush.filename.length > 0) {
+            option.pngBrush.filename = [jsonPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:option.pngBrush.filename];
+        }
+        if (option.pngBrush.distMask.length > 0) {
+            option.pngBrush.distMask = [jsonPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:option.pngBrush.distMask];
+        }
+    }
+    if (configDic[@"textureGrain"]) {
+        option.textureGrain = [TextureGrain veCore_yy_modelWithDictionary:configDic[@"textureGrain"]];
+        if (option.textureGrain.filename.length > 0) {
+            option.textureGrain.filename = [jsonPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:option.textureGrain.filename];
+        }
+    }
+    
+    return option;
+}
+
++ (BOOL)doodlePenIsHardnessEnableWithPath:(NSString *)path {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if (![fm fileExistsAtPath:path]) {
+        return NO;
+    }
+    NSArray *files = [fm contentsOfDirectoryAtPath:path error:nil];
+    
+    NSString *directoryName;
+    NSString *jsonPath;
+    if (files.count == 1) {
+        for (NSString *fileName in files) {
+            if (![fileName isEqualToString:@"__MACOSX"]) {
+                if(files.count == 1){
+                    NSString *folderPath = [path stringByAppendingPathComponent:fileName];
+                    BOOL isDirectory = NO;
+                    BOOL isExists = [fm fileExistsAtPath:folderPath isDirectory:&isDirectory];
+                    if (isExists && isDirectory) {
+                        directoryName = fileName;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    if (directoryName.length > 0) {
+        jsonPath = [[path stringByAppendingPathComponent:directoryName] stringByAppendingPathComponent:@"config.json"];
+    }else {
+        jsonPath = [path stringByAppendingPathComponent:@"config.json"];
+    }
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
+    NSDictionary *effectDic = [VEHelp objectForData:jsonData];
+    if (!effectDic) {
+        return NO;
+    }
+    NSDictionary *configDic = effectDic[@"config"];
+    return [configDic[@"hardness"] boolValue];
+}
+
+//获取图片某一点的颜色
++ (UIColor *)colorAtPixel:(CGPoint)point source:(UIImage *)image{
+     if (!CGRectContainsPoint(CGRectMake(0.0f, 0.0f, image.size.width, image.size.height), point)) {
+         return nil;
+     }
+     
+     NSInteger pointX = trunc(point.x);
+     NSInteger pointY = trunc(point.y);
+     CGImageRef cgImage = image.CGImage;
+     NSUInteger width = image.size.width;
+     NSUInteger height = image.size.height;
+     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+     int bytesPerPixel = 4;
+     int bytesPerRow = bytesPerPixel * 1;
+     NSUInteger bitsPerComponent = 8;
+     unsigned char pixelData[4] = { 0, 0, 0, 0 };
+     CGContextRef context = CGBitmapContextCreate(pixelData,
+                                                  1,
+                                                  1,
+                                                  bitsPerComponent,
+                                                  bytesPerRow,
+                                                  colorSpace,
+                                                  kCGImageAlphaPremultipliedLast |     kCGBitmapByteOrder32Big);
+     CGColorSpaceRelease(colorSpace);
+     CGContextSetBlendMode(context, kCGBlendModeCopy);
+     
+     CGContextTranslateCTM(context, -pointX, pointY-(CGFloat)height);
+     CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, (CGFloat)width, (CGFloat)height), cgImage);
+     CGContextRelease(context);
+     
+     CGFloat red   = (CGFloat)pixelData[0] / 255.0f;
+     CGFloat green = (CGFloat)pixelData[1] / 255.0f;
+     CGFloat blue  = (CGFloat)pixelData[2] / 255.0f;
+     CGFloat alpha = (CGFloat)pixelData[3] / 255.0f;
+     return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+ }
 
 @end

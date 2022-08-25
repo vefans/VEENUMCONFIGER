@@ -920,7 +920,7 @@
 "时长" = "Продолжительность";
 
 //2020.11.23 add
-"+ 音频合集" = "+ Музыкальная коллекция";
+"音频合集" = "Музыкальная коллекция";
 "点击添加照片" = "Пожалуйста, добавьте изображения";
 "帧率" = "Частота кадров";
 "文件大小约为：%.2fMB" = "Размер файла составляет примерно：%.2fMB";
@@ -973,63 +973,6 @@
 "删除音效" = "Удалить Звуковые эффекты";
 "删除音乐" = "Удалить Музыка";
 "删除配音" = "Удалить Запись";
-
-
-
-//2020.11.23 add
-"+ 音频合集" = "+ Colección de música";
-"点击添加照片" = "Añadir imágenes";
-"帧率" = "Velocidad de cuadro";
-"文件大小约为：%.2fMB" = "El tamaño del archivo es aproximadamente：%.2fMB";
-"点击输入文字" = "Haga clic para añadir el texto";
-"正在获取贴纸网络资源！" = "Haga clic para añadir el texto！";
-"调色%d" = "Ajustar%d";
-"提取音乐%@_%d" = "Extraer la música%@_%d";
-
-"撤销：原音音量:%.1f" = "Deshacer：Original Volumen:%.1f";
-"撤销：%@" = "Deshacer：%@";
-"撤销：文字" = "Deshacer：Subtítulos:";
-"撤销：删除文字" = "Deshacer：Eliminar Subtítulos:";
-"撤销：贴纸" = "Deshacer：Pegatina";
-"撤销：删除贴纸" = "Deshacer：Eliminar Pegatina";
-"撤销：滤镜 %@" = "Deshacer：Filtro %@";
-"撤销：删除滤镜 %@" = "Deshacer：Eliminar Filtro %@";
-"撤销：特效 %@" = "Deshacer：Efecto %@";
-"撤销：删除特效 %@" = "Deshacer：Eliminar Efecto %@";
-"撤销：高斯模糊" = "Deshacer：Desenfoque gaussiano";
-"撤销：删除高斯模糊" = "Deshacer：Eliminar Desenfoque gaussiano";
-"撤销：马赛克" = "Deshacer：Mosaico";
-"撤销：删除马赛克" = "Deshacer：Eliminar Mosaico";
-"撤销：去水印" = "Deshacer：Eliminar la marca de agua";
-"撤销：删除去水印" = "Deshacer：Eliminar la marca de agua";
-"撤销：画中画" = "Deshacer：Imagen en imagen";
-"撤销：删除画中画" = "Deshacer：Eliminar Imagen en imagen";
-"撤销：删除画中画分割" = "Deshacer：Eliminar Imagen en imagen Dividir";
-
-"恢复：原音音量:%.1f" = "Rehacer：Original Volumen:%.1f";
-"恢复：%@" = "Rehacer：%@";
-"恢复：文字" = "Rehacer：Subtítulos:";
-"恢复：删除文字" = "Rehacer：Eliminar Subtítulos:";
-"恢复：贴纸" = "Rehacer：Pegatina";
-"恢复：删除贴纸" = "Rehacer：Eliminar Pegatina";
-"恢复：滤镜 %@" = "Rehacer：Filtro %@";
-"恢复：删除滤镜 %@" = "Rehacer：Eliminar Filtro %@";
-"恢复：特效 %@" = "Rehacer：Efecto %@";
-"恢复：删除特效 %@" = "Rehacer：Eliminar Efecto %@";
-"恢复：高斯模糊" = "Rehacer：Desenfoque gaussiano";
-"恢复：删除高斯模糊" = "Rehacer：Eliminar Desenfoque gaussiano";
-"恢复：马赛克" = "Rehacer：Mosaico";
-"恢复：删除马赛克" = "Rehacer：Eliminar Mosaico";
-"恢复：去水印" = "Rehacer：Eliminar la marca de agua";
-"恢复：删除去水印" = "Rehacer：Eliminar la marca de agua";
-"恢复：画中画" = "Rehacer：Imagen en imagen";
-"恢复：删除画中画" = "Rehacer：Eliminar Imagen en imagen";
-"恢复：删除画中画分割" = "Rehacer：Eliminar Imagen en imagen Dividir";
-
-
-"删除音效" = "Eliminar Efectos de sonido";
-"删除音乐" = "Eliminar Música";
-"删除配音" = "Eliminar Grabación";
 
 
 // 2020.11.24 add 没有对应的语言暂时用英文替代
@@ -1233,11 +1176,11 @@
 "长按添加%@特效" = "Long press to add effect";
 "点击添加动感特效" = "Click to add filter effect";
 "点击添加%@特效" = "Click to add %@ effect";
-"码率:%.2fMbps" = "Bitrate:%.2fMbps";
+"码率:  %.2fMbps" = "Bitrate:%.2fMbps";
 "码率:" = "Bitrate:";
-"分辨率:%dx%d" = "Resolution:%dx%d";
+"分辨率:  %dx%d" = "Resolution:%dx%d";
 "分辨率:" = "Resolution:";
-"大小:%.2fMB" = "Size:%.2fMB";
+"大小:  %.2fMB" = "Size:%.2fMB";
 "压缩后大小:%.2fMB" = "Compressed size:%.2fMB";
 "Photos are syncing from iCloud, please retry later" = "Photos are syncing from iCloud, please retry later";
 "Videos are syncing from iCloud, please retry later" = "Videos are syncing from iCloud, please retry later";
@@ -1318,3 +1261,7 @@
 "音    量" = "Volumen";
 "旋     转" =  "Rotate";
 "视频抠像" = "VideoMatting";
+"请输入宽高比（例如：16:9）" = "Enter proportion（e.g：16:9）";
+"输入自定义比例" = "Enter custom proportion";
+"请输入正确的宽高比（例如：16:9）" = "Enter right proportion（e.g：16:9）"
+"请输入或粘贴文稿，开启提词器功能～" = "Please input or paste the text and turn on the function of the teleprompter ~";

@@ -54,7 +54,7 @@
     itemIconView.clipsToBounds = YES;
     _itemIconView = itemIconView;
     
-    UILabel *itemTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.width, self.frame.size.width, 20)];
+    UILabel *itemTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height, self.frame.size.width, 20)];
     itemTitleLabel.backgroundColor = [UIColor clearColor];
     itemTitleLabel.font = [UIFont systemFontOfSize:_fontSize>0?_fontSize:14];
     itemTitleLabel.textAlignment = NSTextAlignmentCenter;

@@ -982,7 +982,52 @@
 
 -(void)resetAdjustment_Btn:( UIButton * ) sender
 {
-    [self setDefaultValue];
+#if 0
+    if(![VEConfigManager sharedManager].iPad_HD || _currentType < KBeauty_BlurIntensity){
+        [self setDefaultValue];
+    }
+#else   //20220721 重置/对比是恢复原始状态
+    _currentMedia.beautyBlurIntensity = 0.0;
+    _currentMedia.beautyBrightIntensity = 0.0;
+    _currentMedia.beautyToneIntensity = 0.0;
+    _currentMedia.beautyBigEyeIntensity = 0.0;
+    _currentMedia.beautyThinFaceIntensity = 0.0;
+    [_currentMedia.multipleFaceAttribute removeAllObjects];
+    
+    NSInteger index = 5;
+    if([VEConfigManager sharedManager].iPad_HD){
+        index = 0;
+        _adjustmentSliders[0].value = 0;
+        _adjustmentSliders[1].value = 0;
+        _adjustmentSliders[2].value = 0;
+        _adjustmentSliders[3].value = 0;
+        _adjustmentSliders[4].value = 0;
+    }
+    
+    _adjustmentSliders[5 - index].value = 0.5;
+    
+    _adjustmentSliders[6 - index].value = 0.5;
+    _adjustmentSliders[7 - index].value = 0.5;
+    
+    _adjustmentSliders[8 - index].value = 0.5;
+    _adjustmentSliders[9 - index].value = 0.5;
+    _adjustmentSliders[10 - index].value = 0.5;
+    _adjustmentSliders[11 - index].value = 0.5;
+    
+    _adjustmentSliders[12 - index].value = 0.5;
+    _adjustmentSliders[13 - index].value = 0.5;
+    
+    _adjustmentSliders[14 - index].value = 0.5;
+    _adjustmentSliders[15 - index].value = 0.5;
+    _adjustmentSliders[16 - index].value = 0.5;
+    
+    _adjustmentSliders[17 - index].value = 0.5;
+    
+    [_adjustmentSliders enumerateObjectsUsingBlock:^(UISlider * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        ((UILabel *)[obj.superview viewWithTag:100]).text = [NSString stringWithFormat:@"%.f",(obj.value * 100)];
+        [self sliderValueChanged:obj];
+    }];
+#endif
     if( _delegate && [_delegate respondsToSelector:@selector(fiveSenses_Reset:atVIew:)] )
     {
         [_delegate fiveSenses_Reset:_currentType atVIew:self];
@@ -992,6 +1037,7 @@
 - (void)compareBtnDown:(UIButton *)sender {
     _sliderValueLabel.hidden = YES;
     _editMedia = [_currentMedia copy];
+#if 0
     float value =  sender.tag > KBeauty_Smile ? 0 : 0.5;
     {
         for (int i = 0;i<_adjustmentSliders.count;i++) {
@@ -1001,7 +1047,7 @@
             }
         }
     }
-    
+#endif
     if( _delegate && [_delegate respondsToSelector:@selector(fiveSensesCompare:atVIew:)] )
     {
         [_delegate fiveSensesCompare:_currentType atVIew:self];
@@ -1009,7 +1055,7 @@
 }
 
 - (void)compareBtnUp:(UIButton *)sender {
-    _sliderValueLabel.hidden = NO;
+#if 0
     __block FaceAttribute *faceAttribute = nil;
     [_editMedia.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (CGRectContainsPoint(_currentFaceRect, CGPointMake(obj.faceRect.origin.x + obj.faceRect.size.width / 2.0, obj.faceRect.origin.y + obj.faceRect.size.height / 2.0)) || CGRectEqualToRect(_currentFaceRect, obj.faceRect)) {
@@ -1169,6 +1215,53 @@
         }
         
     }
+#else
+    __block FaceAttribute *faceAttribute = nil;
+    [_editMedia.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [_currentMedia.multipleFaceAttribute addObject:obj];
+        if (CGRectContainsPoint(_currentFaceRect, CGPointMake(obj.faceRect.origin.x + obj.faceRect.size.width / 2.0, obj.faceRect.origin.y + obj.faceRect.size.height / 2.0)) || CGRectEqualToRect(_currentFaceRect, obj.faceRect)) {
+            faceAttribute = obj;
+        }
+    }];
+    _currentMedia.beautyBlurIntensity = _editMedia.beautyBlurIntensity;
+    _currentMedia.beautyToneIntensity = _editMedia.beautyToneIntensity;
+    _currentMedia.beautyBrightIntensity = _editMedia.beautyBrightIntensity;
+    {
+        NSInteger index = 5;
+        if([VEConfigManager sharedManager].iPad_HD){
+            index = 0;
+            _adjustmentSliders[0].value = _editMedia.beautyBlurIntensity;
+            _adjustmentSliders[1].value = _editMedia.beautyBrightIntensity;
+            _adjustmentSliders[2].value = _editMedia.beautyToneIntensity;
+            _adjustmentSliders[3].value = _editMedia.beautyBigEyeIntensity;
+            _adjustmentSliders[4].value = _editMedia.beautyThinFaceIntensity;
+        }
+        
+        _adjustmentSliders[5 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.faceWidth;
+        
+        _adjustmentSliders[6 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.chinWidth;
+        _adjustmentSliders[7 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.chinHeight;
+        
+        _adjustmentSliders[8 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeWidth;
+        _adjustmentSliders[9 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeHeight;
+        _adjustmentSliders[10 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeSlant;
+        _adjustmentSliders[11 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.eyeDistance;
+        
+        _adjustmentSliders[12 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.noseWidth;
+        _adjustmentSliders[13 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.noseHeight;
+        
+        _adjustmentSliders[14 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.mouthWidth;
+        _adjustmentSliders[15 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.lipUpper;
+        _adjustmentSliders[16 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.lipLower;
+        
+        _adjustmentSliders[17 - index].value = faceAttribute == nil ? 0.5 : faceAttribute.smile;
+        
+        [_adjustmentSliders enumerateObjectsUsingBlock:^(UISlider * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            ((UILabel *)[obj.superview viewWithTag:100]).text = [NSString stringWithFormat:@"%.f",(obj.value * 100)];
+            [self sliderValueChanged:obj];
+        }];
+    }
+#endif
     if( _delegate && [_delegate respondsToSelector:@selector(fiveSensesCompareCompletion:atVIew:)] )
     {
         [_delegate fiveSensesCompareCompletion:_currentType atVIew:self];

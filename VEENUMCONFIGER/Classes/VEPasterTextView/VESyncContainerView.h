@@ -42,6 +42,6 @@
 - (void)contentTapped:(UITapGestureRecognizer*)tapGesture;
 
 -(void)Cancel_selectePasterTextView;
-
+-(CGRect)getFrame;
 @property(nonatomic, assign)BOOL isMask;
 @end

@@ -45,7 +45,7 @@
     [fxItemBtn addSubview:fxItemBtn.thumbnailIV];
     fxItemBtn.thumbnailIV.layer.cornerRadius = 3;
     fxItemBtn.thumbnailIV.layer.masksToBounds = YES;
-    fxItemBtn.thumbnailIV.layer.borderWidth = 2.0;
+    fxItemBtn.thumbnailIV.layer.borderWidth = 1.0;
     fxItemBtn.thumbnailIV.layer.borderColor = [UIColor clearColor].CGColor;
     fxItemBtn.thumbnailIV.tag = kFxIconTag;
     
