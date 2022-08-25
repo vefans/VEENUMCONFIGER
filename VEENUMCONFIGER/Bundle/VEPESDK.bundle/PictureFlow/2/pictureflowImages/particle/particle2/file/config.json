@@ -1,0 +1,20 @@
+{
+	"sourceRendingMode":2,
+	"emitterType":2,
+	"textureFileName":"frame.png",
+	"mask":true,
+	"maskPath":"mask.png",
+	"atlas":true,
+	"particleLifespan": 5,
+	"particleLifespanVariance": 2,
+	"maxParticles": 200,
+	"startParticleSize": 0.1,
+	"startParticleSizeVar": 0.02,
+	"angle": 15,
+	"rotationStart": 40,
+	"rotationStartVariance": 20,
+	"gravityx": 0.5,
+	"gravityy": 0.5,
+	"speed": 0.5,
+	"speedVariance": 0.2
+}
