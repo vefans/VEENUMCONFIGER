@@ -139,6 +139,9 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property(nonatomic,copy) VEPrepareExportHandler prepareExportHandler;
 @property(nonatomic,copy) VEExporTemplate  exporTemplate;   //导出模版
 
+@property (nonatomic, assign) BOOL  isFilmCamera;//是否为方弗相机
+@property (nonatomic, copy) void (^filmCameraBlock)(UIViewController *viewController);
+
 @property (nonatomic, weak) id<VESDKDelegate> veSDKDelegate;
 
 @property (nonatomic, assign) BOOL isSingleFunc;

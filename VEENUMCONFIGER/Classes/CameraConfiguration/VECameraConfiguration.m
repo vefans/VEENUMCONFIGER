@@ -42,6 +42,17 @@
         _cameraWaterMarkHeaderDuration      = 0;
         _cameraWaterMarkEndDuration         = 0;
         _enableMergeVideos                  = true;
+        
+        _enableSet = true;
+        _enableFstOrSlow = true;
+        _enableCountdown = true;
+        _enableFlash = true;
+        _enableFlip = true;
+        _enableBeautify = true;
+        _enableParticle = true;
+        _enableProportion = true;
+        _enableFile = true;
+        _enableFocalLength = true;
     }
     
     return self;
@@ -79,6 +90,17 @@
     copy.cameraMV_MinVideoDuration          = _cameraMV_MinVideoDuration;
     copy.cameraMV_MaxVideoDuration          = _cameraMV_MaxVideoDuration;
     copy.enableMergeVideos                  = _enableMergeVideos;
+    
+    copy.enableSet = _enableSet;
+    copy.enableFstOrSlow = _enableFstOrSlow;
+    copy.enableCountdown = _enableCountdown;
+    copy.enableFlash = _enableFlash;
+    copy.enableFlip = _enableFlip;
+    copy.enableBeautify = _enableBeautify;
+    copy.enableParticle = _enableParticle;
+    copy.enableProportion = _enableProportion;
+    copy.enableFile = _enableFile;
+    copy.enableFocalLength = _enableFocalLength;
 //    /*传入相机水印图片
 //     */
 //    @property (nonatomic, strong) UIImage          * cameraWaterMarkHeader;
@@ -131,6 +153,16 @@
     copy.cameraMV_MaxVideoDuration          = _cameraMV_MaxVideoDuration;
     copy.enableMergeVideos                  = _enableMergeVideos;
     
+    copy.enableSet = _enableSet;
+    copy.enableFstOrSlow = _enableFstOrSlow;
+    copy.enableCountdown = _enableCountdown;
+    copy.enableFlash = _enableFlash;
+    copy.enableFlip = _enableFlip;
+    copy.enableBeautify = _enableBeautify;
+    copy.enableParticle = _enableParticle;
+    copy.enableProportion = _enableProportion;
+    copy.enableFile = _enableFile;
+    copy.enableFocalLength = _enableFocalLength;
 //    copy.cameraWaterMarkEnd                  = _cameraWaterMarkEnd;
 //    copy.cameraWaterMarkHeader                  = _cameraWaterMarkHeader;
 //    copy.cameraWaterMarkBody                    = _cameraWaterMarkBody;

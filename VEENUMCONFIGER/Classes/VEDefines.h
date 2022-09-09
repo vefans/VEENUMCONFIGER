@@ -255,6 +255,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_Particle          = 63,   //粒子
     VEAdvanceEditType_DoodlePen         = 64,   //涂鸦笔
     VEAdvanceEditType_Snapshort        =  66,   //视频截图
+    VEAdvanceEditType_BlurBackground  =  67,   //背景虚化
 };
 
 /*
@@ -446,6 +447,7 @@ typedef NS_ENUM(NSInteger,AdjustType){
     Adjust_LightSensation,  //光感
     Adjust_Tint,            //色调
     Adjust_Fade,            //褪色
+    Adjust_Exposure,      //曝光
 };
 
 /**相册返回数据类型

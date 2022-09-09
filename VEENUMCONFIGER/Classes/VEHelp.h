@@ -26,9 +26,64 @@ FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_ShootParticl
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CoverTemplate;//封面模板
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_DoodlePen;//涂鸦笔
 
+//亮度
+extern float const VEAdjust_MinValue_Brightness;
+extern float const VEAdjust_MaxValue_Brightness;
+extern float const VEAdjust_DefaultValue_Brightness;
+//对比度
+extern float const VEAdjust_MinValue_Contrast;
+extern float const VEAdjust_MaxValue_Contrast;
+extern float const VEAdjust_DefaultValue_Contrast;
+//饱和度
+extern float const VEAdjust_MinValue_Saturation;
+extern float const VEAdjust_MaxValue_Saturation;
+extern float const VEAdjust_DefaultValue_Saturation;
+//锐度
+extern float const VEAdjust_MinValue_Sharpness;
+extern float const VEAdjust_MaxValue_Sharpness;
+extern float const VEAdjust_DefaultValue_Sharpness;
+//色温
+extern float const VEAdjust_MinValue_WhiteBalance;
+extern float const VEAdjust_MaxValue_WhiteBalance;
+extern float const VEAdjust_DefaultValue_WhiteBalance;
+//暗角
+extern float const VEAdjust_MinValue_Vignette;
+extern float const VEAdjust_MaxValue_Vignette;
+extern float const VEAdjust_DefaultValue_Vignette;
+//高光
+extern float const VEAdjust_MinValue_Highlight;
+extern float const VEAdjust_MaxValue_Highlight;
+extern float const VEAdjust_DefaultValue_Highlight;
+//阴影
+extern float const VEAdjust_MinValue_Shadow;
+extern float const VEAdjust_MaxValue_Shadow;
+extern float const VEAdjust_DefaultValue_Shadow;
+//颗粒
+extern float const VEAdjust_MinValue_Granule;
+extern float const VEAdjust_MaxValue_Granule;
+extern float const VEAdjust_DefaultValue_Granule;
+//光感
+extern float const VEAdjust_MinValue_LightSensation;
+extern float const VEAdjust_MaxValue_LightSensation;
+extern float const VEAdjust_DefaultValue_LightSensation;
+//色调
+extern float const VEAdjust_MinValue_Tint;
+extern float const VEAdjust_MaxValue_Tint;
+extern float const VEAdjust_DefaultValue_Tint;
+//褪色
+extern float const VEAdjust_MinValue_Fade;
+extern float const VEAdjust_MaxValue_Fade;
+extern float const VEAdjust_DefaultValue_Fade;
+//曝光
+extern float const VEAdjust_MinValue_Exposure;
+extern float const VEAdjust_MaxValue_Exposure;
+extern float const VEAdjust_DefaultValue_Exposure;
+
 @interface VEHelp : NSObject
 
 +(NSString *)pathFontForURL:(NSURL *)aURL;
+
++ (void)getCurrentImage:(BOOL)screenshot callBack:(void (^)(UIImage *))imageBlock;
 
 //获取最长的一段
 + (NSMutableArray *)getMaxLengthStringArr:(NSString *)string fontSize:(float)fontSize;
@@ -280,6 +335,7 @@ FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_DoodlePen;//
                                          strokeColor:(UIColor *)strokeColor
                                              bgColor:(UIColor *)bgColor;
 
++ (NSURL *)getUrlWithFolderPath:(NSString *)folderPath fileName:(NSString *)fileName;
 + (NSURL *)getFileUrlWithFolderPath:(NSString *)folderPath fileName:(NSString *)fileName;
 + (id)getNetworkMaterialWithType:(NSString *)type
                           appkey:(NSString *)appkey
@@ -442,7 +498,6 @@ FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_DoodlePen;//
 + (NSString *)getPathFolderName:(NSString *)path;
 
 + (CVPixelBufferRef)pixelBufferFromCGImage:(UIImage *)img;
-+ (CVPixelBufferRef)pixelBufferFromCGImageRGBA:(UIImage *)img;
 + (CVPixelBufferRef)pixelBufferFromCIImage:(CIImage *)image;
 + (void)copyPixelBuffer:(CVPixelBufferRef)copyedPixelBuffer toPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 +(void)saveUserInfo:(id) obj forKey:(NSString*) key;

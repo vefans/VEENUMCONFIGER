@@ -172,6 +172,36 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, copy, nullable) void (^cameraWaterProcessingCompletionBlock)(NSInteger type/*1:正方形录制，0：非正方形录制*/,RecordStatus status, UIView * _Nonnull waterMarkview ,float time);
 
+/**启用相册设置 (default true)
+ */
+@property (nonatomic,assign) bool enableSet;
+/**启用相册快慢速 (default true)
+ */
+@property (nonatomic,assign) bool enableFstOrSlow;
+/**启用相册倒计时 (default true)
+ */
+@property (nonatomic,assign) bool enableCountdown;
+/**启用相册闪光灯 (default true)
+ */
+@property (nonatomic,assign) bool enableFlash;
+/**启用相册翻转 (default true)
+ */
+@property (nonatomic,assign) bool enableFlip;
+/**启用相册美化 (default true)
+ */
+@property (nonatomic,assign) bool enableBeautify;
+/**启用相册粒子 (default true)
+ */
+@property (nonatomic,assign) bool enableParticle;
+/**启用相册比例 (default true)
+ */
+@property (nonatomic,assign) bool enableProportion;
+/**启用相册滤镜 (default true)
+ */
+@property (nonatomic,assign) bool enableFile;
+/**启用相册焦距 (default true)
+ */
+@property (nonatomic,assign) bool enableFocalLength;
 @end
 
 NS_ASSUME_NONNULL_END

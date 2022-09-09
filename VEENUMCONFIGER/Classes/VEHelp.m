@@ -20,7 +20,7 @@
 #import <VEENUMCONFIGER/VEFileDownloader.h>
 #import <VEENUMCONFIGER/VECircleView.h>
 #import <LibVECore/VECoreYYModel.h>
-
+//"cardpoint_music"
 VENetworkResourceType const VENetworkResourceType_CloudMusic = @"cloud_music";//配乐
 VENetworkResourceType const VENetworkResourceType_OnlineAlbum = @"cloud_video";//在线相册
 VENetworkResourceType const VENetworkResourceType_SoundEffect = @"audio";//音效
@@ -41,7 +41,61 @@ VENetworkResourceType const VENetworkResourceType_ShootParticle = @"shoot_partic
 VENetworkResourceType const VENetworkResourceType_CoverTemplate = @"templatecover";//封面模板
 VENetworkResourceType const VENetworkResourceType_DoodlePen = @"doodleeffect";//涂鸦笔
 
+//亮度
+float const VEAdjust_MinValue_Brightness = -1.0;
+float const VEAdjust_MaxValue_Brightness = 1.0;
+float const VEAdjust_DefaultValue_Brightness = 0.0;
+//对比度
+float const VEAdjust_MinValue_Contrast = 0.0;
+float const VEAdjust_MaxValue_Contrast = 2.0;
+float const VEAdjust_DefaultValue_Contrast = 1.0;
+//饱和度
+float const VEAdjust_MinValue_Saturation = 0.0;
+float const VEAdjust_MaxValue_Saturation = 2.0;
+float const VEAdjust_DefaultValue_Saturation = 1.0;
+//锐度
+float const VEAdjust_MinValue_Sharpness = 0.0;
+float const VEAdjust_MaxValue_Sharpness = 1.0;
+float const VEAdjust_DefaultValue_Sharpness = 0.0;
+//色温
+float const VEAdjust_MinValue_WhiteBalance = -1.0;
+float const VEAdjust_MaxValue_WhiteBalance = 1.0;
+float const VEAdjust_DefaultValue_WhiteBalance = 0.0;
+//暗角
+float const VEAdjust_MinValue_Vignette = 0.0;
+float const VEAdjust_MaxValue_Vignette = 1.0;
+float const VEAdjust_DefaultValue_Vignette = 0.0;
+//高光
+float const VEAdjust_MinValue_Highlight = -1.0;
+float const VEAdjust_MaxValue_Highlight = 1.0;
+float const VEAdjust_DefaultValue_Highlight = 0.0;
+//阴影
+float const VEAdjust_MinValue_Shadow = 0.0;
+float const VEAdjust_MaxValue_Shadow = 1.0;
+float const VEAdjust_DefaultValue_Shadow = 0.0;
+//颗粒
+float const VEAdjust_MinValue_Granule = 0.0;
+float const VEAdjust_MaxValue_Granule = 1.0;
+float const VEAdjust_DefaultValue_Granule = 0.0;
+//光感
+float const VEAdjust_MinValue_LightSensation = -1.0;
+float const VEAdjust_MaxValue_LightSensation = 1.0;
+float const VEAdjust_DefaultValue_LightSensation = 0.0;
+//色调
+float const VEAdjust_MinValue_Tint = -1.0;
+float const VEAdjust_MaxValue_Tint = 1.0;
+float const VEAdjust_DefaultValue_Tint = 0.0;
+//褪色
+float const VEAdjust_MinValue_Fade = 0.0;
+float const VEAdjust_MaxValue_Fade = 1.0;
+float const VEAdjust_DefaultValue_Fade = 0.0;
+//曝光
+float const VEAdjust_MinValue_Exposure = -1.0;
+float const VEAdjust_MaxValue_Exposure = 1.0;
+float const VEAdjust_DefaultValue_Exposure = 0.0;
+
 @implementation VEHelp
+
 + (NSString *) system
 {
     struct utsname systemInfo;
@@ -3972,6 +4026,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return [dateformater stringFromDate:date_];
 }
 
++ (NSURL *)getUrlWithFolderPath:(NSString *)folderPath fileName:(NSString *)fileName {
+    if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *filePath;
+    BOOL isExists = NO;
+    filePath = [[folderPath stringByAppendingPathComponent:fileName.stringByDeletingPathExtension] stringByAppendingPathExtension:fileName.pathExtension];
+    return [NSURL fileURLWithPath:filePath];
+}
+
 + (NSURL *)getFileUrlWithFolderPath:(NSString *)folderPath fileName:(NSString *)fileName {
     if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
         [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
@@ -4986,6 +5050,27 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return [kFontFolder stringByAppendingPathComponent:[NSString stringWithFormat:@"Font-%lu.zip", (unsigned long)[[aURL description] hash]]];
 }
 
++ (void)getCurrentImage:(BOOL)screenshot callBack:(void (^)(UIImage *))imageBlock {
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    if (status == PHAuthorizationStatusRestricted || status == PHAuthorizationStatusDenied) {
+        NSLog(@"相册权限未开放");
+        return;
+    }
+    // 获取所有资源的集合，并按资源的创建时间排序
+    PHFetchOptions *options = [[PHFetchOptions alloc] init];
+    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+    PHFetchResult *assetsFetchResults = [PHAsset fetchAssetsWithOptions:options];
+    PHImageManager *manager = [PHImageManager defaultManager];
+    [manager requestImageForAsset:[assetsFetchResults firstObject] targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage *resultImage, NSDictionary *info)
+     {
+        UIImage *image = resultImage;
+        if( imageBlock )
+        {
+            imageBlock(image);
+        }
+    }];
+}
+
 +(NSMutableAttributedString *)getAttrString:(NSString *) string atForegroundColor:(UIColor *) foregroundColor atStrokeColor:(UIColor *) strokeColor atShadowBlurRadius:(float) shadowBlurRadius atShadowOffset:(CGSize) shadowOffset atShadowColor:(UIColor *) shadowColor
 {
     NSString *str = string;
@@ -5665,6 +5750,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 }
                 overlay.identifier = [NSString stringWithFormat:@"overlay%lu", (unsigned long)idx];
                 overlay.media.fillType = ImageMediaFillTypeFit;
+                if (templateInfo.ver < 4.0) {
+                    overlay.media.adjustments.sharpness = (overlay.media.adjustments.sharpness + 4)/8.0;//old:-4~4 new:0~1
+                    overlay.media.adjustments.highlight = (overlay.media.adjustments.highlight + 1)/2.0;//old:-1~1 new:0~1
+                    [overlay.media.animate enumerateObjectsUsingBlock:^(MediaAssetAnimatePosition * _Nonnull obj1, NSUInteger idx, BOOL * _Nonnull stop) {
+                        obj1.adjustments = [overlay.media.adjustments copy];
+                    }];
+                }
                 if (overlay.media.mask) {
                     if (!folderPath) {
                         overlay.media.mask.folderPath = [VEHelp getFileURLFromAbsolutePath_str:overlay.media.mask.folderPath];
@@ -6461,6 +6553,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [templateInfo.tonings enumerateObjectsUsingBlock:^(VECoreTemplateToningInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             ToningInfo *toning = [obj getToningInfo];
             if (toning) {
+                if (templateInfo.ver < 4.0) {
+                    toning.sharpness = (toning.sharpness + 4)/8.0;//old:-4~4 new:0~1
+                    toning.highlight = (toning.highlight + 1)/2.0;//old:-1~1 new:0~1
+                }
                 [tonings addObject:toning];
             }
         }];
@@ -6535,6 +6631,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     }
                 }
                 asset.identifier = [NSString stringWithFormat:@"media%lu", (unsigned long)idx];
+                if (templateInfo.ver < 4.0) {
+                    asset.adjustments.sharpness = (asset.adjustments.sharpness + 4)/8.0;//old:-4~4 new:0~1
+                    asset.adjustments.highlight = (asset.adjustments.highlight + 1)/2.0;//old:-1~1 new:0~1
+                    [asset.animate enumerateObjectsUsingBlock:^(MediaAssetAnimatePosition * _Nonnull obj2, NSUInteger idx, BOOL * _Nonnull stop) {
+                        obj2.adjustments = [asset.adjustments copy];
+                    }];
+                }
                 if (asset.mask) {
                     if (!folderPath) {
                         asset.mask.folderPath = [VEHelp getFileURLFromAbsolutePath_str:asset.mask.folderPath];
@@ -10336,8 +10439,9 @@ static OSType help_inputPixelFormat(){
 
 + (CVPixelBufferRef)pixelBufferFromCGImage:(UIImage *)img{
     @autoreleasepool {
-        CGSize size = img.size;
+//        CGSize size = img.size;
         CGImageRef image = [img CGImage];
+        CGSize size = CGSizeMake(CGImageGetWidth(image), CGImageGetHeight(image));
         
         BOOL hasAlpha = help_CGImageRefContainsAlpha(image);
         uint32_t  _bitmapInfo  = help_bitmapInfoWithPixelFormatType(help_inputPixelFormat(), (bool)hasAlpha);

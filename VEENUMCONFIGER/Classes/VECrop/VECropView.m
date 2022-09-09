@@ -341,7 +341,7 @@
     
     CGRect rect =  _videoFrame;
     
-    if( VEVideoCropType_FixedCrop == self.videoCropType )
+    if( VEVideoCropType_FixedCrop == _videoCropType )
     {
         rect.origin.x = rect.origin.x + 20;
         rect.origin.y = rect.origin.y + 45;
@@ -352,37 +352,57 @@
     
     if ( _videoFrame.size.width > _videoFrame.size.height) {
         
-        if(videoR > 1.0 && self.cropType == VE_VECROPTYPE_FIXEDRATIO){
+        if(videoR > 1.0 && _cropType == VE_VECROPTYPE_FIXEDRATIO){
             
-            self.croporiginX = _videoFrame.origin.x;
-            self.croporiginY = _videoFrame.origin.y+ (_videoFrame.size.height -_videoFrame.size.width/videoR)/2;
-            self.cropWidth = _videoFrame.size.width;
-            self.cropHeight = _videoFrame.size.width /videoR;
+            _croporiginX = _videoFrame.origin.x;
+            _croporiginY = _videoFrame.origin.y+ (_videoFrame.size.height -_videoFrame.size.width/videoR)/2;
+            _cropWidth = _videoFrame.size.width;
+            _cropHeight = _videoFrame.size.width /videoR;
+            if (_cropHeight > _videoFrame.size.height) {
+                _croporiginX = _videoFrame.origin.x+ (_videoFrame.size.width -_videoFrame.size.height *valueX/valueY)/2;
+                _croporiginY = _videoFrame.origin.y;
+                _cropWidth = _videoFrame.size.height *valueX/valueY;
+                _cropHeight = _videoFrame.size.height;
+            }
         }else{
-            self.croporiginX = _videoFrame.origin.x+ (_videoFrame.size.width -_videoFrame.size.height *valueX/valueY)/2;
-            self.croporiginY = _videoFrame.origin.y;
-            self.cropWidth = _videoFrame.size.height *valueX/valueY;
-            self.cropHeight = _videoFrame.size.height;
+            _croporiginX = _videoFrame.origin.x+ (_videoFrame.size.width -_videoFrame.size.height *valueX/valueY)/2;
+            _croporiginY = _videoFrame.origin.y;
+            _cropWidth = _videoFrame.size.height *valueX/valueY;
+            _cropHeight = _videoFrame.size.height;
+            if (_cropWidth > _videoFrame.size.width) {
+                _croporiginX = _videoFrame.origin.x;
+                _croporiginY = _videoFrame.origin.y+ (_videoFrame.size.height -_videoFrame.size.width/videoR)/2;
+                _cropWidth = _videoFrame.size.width;
+                _cropHeight = _videoFrame.size.width /videoR;
+            }
         }
-        
     }else{
         
         if (videoR > _videoFrame.size.width / _videoFrame.size.height) {
             
-            self.croporiginX = _videoFrame.origin.x;
-            self.croporiginY = _videoFrame.origin.y + (_videoFrame.size.height -_videoFrame.size.width* valueY/valueX)/2;
-            self.cropWidth = _videoFrame.size.width;
-            self.cropHeight = _videoFrame.size.width* valueY/valueX;
-            
+            _croporiginX = _videoFrame.origin.x;
+            _croporiginY = _videoFrame.origin.y + (_videoFrame.size.height -_videoFrame.size.width* valueY/valueX)/2;
+            _cropWidth = _videoFrame.size.width;
+            _cropHeight = _videoFrame.size.width* valueY/valueX;
+            if (_cropHeight > _videoFrame.size.height) {
+                _croporiginX = _videoFrame.origin.x+ (_videoFrame.size.width -_videoFrame.size.height *valueX/valueY)/2;
+                _croporiginY = _videoFrame.origin.y;
+                _cropWidth = _videoFrame.size.height *valueX/valueY;
+                _cropHeight = _videoFrame.size.height;
+            }
         }else{
             
-            self.croporiginX = _videoFrame.origin.x+ (_videoFrame.size.width -_videoFrame.size.height *valueX/valueY)/2;
-            self.croporiginY = _videoFrame.origin.y;
-            self.cropWidth = _videoFrame.size.height *valueX/valueY;
-            self.cropHeight = _videoFrame.size.height;
+            _croporiginX = _videoFrame.origin.x+ (_videoFrame.size.width -_videoFrame.size.height *valueX/valueY)/2;
+            _croporiginY = _videoFrame.origin.y;
+            _cropWidth = _videoFrame.size.height *valueX/valueY;
+            _cropHeight = _videoFrame.size.height;
+            if (_cropWidth > _videoFrame.size.width) {
+                _croporiginX = _videoFrame.origin.x;
+                _croporiginY = _videoFrame.origin.y + (_videoFrame.size.height -_videoFrame.size.width* valueY/valueX)/2;
+                _cropWidth = _videoFrame.size.width;
+                _cropHeight = _videoFrame.size.width* valueY/valueX;
+            }
         }
-        
-                
     }
 }
 -(void)RatioEquals1{

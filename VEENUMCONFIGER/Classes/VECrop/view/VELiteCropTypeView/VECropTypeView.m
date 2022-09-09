@@ -67,7 +67,10 @@ static NSString *cellIconID = @"VECropIconTypeCell";
     return self;
 }
 
-
+- (void)setFrame:(CGRect)frame{
+    [super setFrame:frame];
+    self.collectionView.frame = CGRectMake(0, 0,frame.size.width,frame.size.height);
+}
 #pragma mark - 1.Setting View and Style
 
 -(void)reloadDataForDataArray:(NSMutableArray*)dataArray{
@@ -115,9 +118,10 @@ static NSString *cellIconID = @"VECropIconTypeCell";
 //            width += 10;
 //        }
         CGRect r = self.collectionView.frame;
-        r.size.width = width;
+        r.size.width = MIN(width, self.frame.size.width);
         r.origin.x = (CGRectGetWidth(self.frame) - r.size.width)/2.0;
         self.collectionView.frame = r;
+        [self.collectionView setContentSize:CGSizeMake(width, self.collectionView.frame.size.height)];
     }
 }
 
