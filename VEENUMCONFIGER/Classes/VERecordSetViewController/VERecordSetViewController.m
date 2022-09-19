@@ -7,7 +7,7 @@
 //
 
 #define kMinBitrate 400
-#define kMaxBitrate 3000
+#define kMaxBitrate 5000
 
 #import "VERecordSetViewController.h"
 #import <VEENUMCONFIGER/VEDefines.h>
@@ -106,6 +106,11 @@
     [itemArray2 addObject:@"480P"];
     [itemArray2 addObject:@"720P"];
     [itemArray2 addObject:@"1080P"];
+    if (_is4KEnable) {
+        [itemArray2 addObject:@"4K"];
+    }else {
+        setResolutionIndex = MIN(setResolutionIndex, 3);
+    }
     NSDictionary *itemDic2 = [NSDictionary dictionaryWithObjectsAndKeys:
                               VELocalizedString(@"分辨率", nil), @"title",
                               itemArray2, @"itemList",
@@ -213,7 +218,7 @@
         
         UILabel *maxLbl = [[UILabel alloc] initWithFrame:CGRectMake(tableView.frame.size.width - 135, slider.frame.origin.y + 30, 100, 15)];
         maxLbl.backgroundColor = [UIColor clearColor];
-        maxLbl.text = @"3000k";
+        maxLbl.text = @"5000";
         maxLbl.textColor = [UIColor whiteColor];
         maxLbl.font = [UIFont systemFontOfSize:12];
         maxLbl.textAlignment = NSTextAlignmentRight;
@@ -263,7 +268,8 @@
             case 3:
                 setBitrate = 3000*1000;
                 break;
-                
+            case 4:
+                setBitrate = 5000*1000;
             default:
                 break;
         }

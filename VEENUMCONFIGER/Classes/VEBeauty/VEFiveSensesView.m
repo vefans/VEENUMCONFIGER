@@ -300,10 +300,18 @@
        [_adjustmentSliders addObject:slider];
            [view addSubview:slider];
         
-        UIView *trackView = [[UIView alloc] initWithFrame:CGRectMake(slider.frame.size.width/2.0 ,CGRectGetMidY(slider.frame), 0, 1)];
-        trackView.backgroundColor = Main_Color;
-        trackView.tag = 100 + slider.tag;
-        [view addSubview:trackView];
+        if(([VEConfigManager sharedManager].iPad_HD &&
+           ![str isEqualToString:@"磨皮"] &&
+           ![str isEqualToString:@"美白"] &&
+           ![str isEqualToString:@"红润"] &&
+           ![str isEqualToString:@"大眼"] &&
+           ![str isEqualToString:@"瘦脸"]) || ![VEConfigManager sharedManager].iPad_HD){
+            
+            UIView *trackView = [[UIView alloc] initWithFrame:CGRectMake(slider.frame.size.width/2.0 ,CGRectGetMidY(slider.frame), 0, 1)];
+            trackView.backgroundColor = Main_Color;
+            trackView.tag = 100 + slider.tag;
+            [view addSubview:trackView];
+        }
        
    
        {

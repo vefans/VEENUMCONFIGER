@@ -190,11 +190,11 @@ static const CGFloat kLabelsFontSize = 12.0f;
             
             CGSize locationSize = [_delegate getLeftPointAndRightPoint];
             if ((center.x >= _moveCaptionViewBtn.frame.size.width/2.0 + 40)
-                && (center.x <= (locationSize.height + VE_HANDLE_DIAMETER - _moveCaptionViewBtn.frame.size.width/2.0 - 5/2.0))) {
+                && (center.x <= (locationSize.height + _leftLabel.frame.size.width - _moveCaptionViewBtn.frame.size.width/2.0 - 5/2.0))) {
                 _moveCaptionViewBtn.center = center;
                 
-                float percentage_left = ((_startCenter_leftHandle.x + translation.x - CGRectGetMinX(self.sliderLine.frame)) - VE_HANDLE_DIAMETER/2) / (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));
-                float percentage_right = ((_startCenter_rightHandle.x + translation.x - CGRectGetMinX(self.sliderLine.frame)) - VE_HANDLE_DIAMETER/2) / (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));
+                float percentage_left = ((_startCenter_leftHandle.x + translation.x - CGRectGetMinX(self.sliderLine.frame)) - _leftLabel.frame.size.width/2) / (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));
+                float percentage_right = ((_startCenter_rightHandle.x + translation.x - CGRectGetMinX(self.sliderLine.frame)) - _leftLabel.frame.size.width/2) / (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));
                 
                 _selectedMinimum = percentage_left * (self.maxValue - self.minValue) + self.minValue;
                 _selectedMaximum = percentage_right * (self.maxValue - self.minValue) + self.minValue;
@@ -239,7 +239,7 @@ static const CGFloat kLabelsFontSize = 12.0f;
     [super layoutSubviews];
  
     //positioning for the slider line
-    float barSidePadding = VE_HANDLE_DIAMETER;
+    float barSidePadding = _leftLabel.frame.size.width;
     CGRect currentFrame = self.frame;
     float yMiddle = currentFrame.size.height/2.0;
     CGPoint lineLeftSide = CGPointMake(barSidePadding, yMiddle);

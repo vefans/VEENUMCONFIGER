@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VERecordSetViewController : UIViewController
 
+@property (nonatomic, assign) BOOL is4KEnable;//是否支持4K，默认为NO
+
 @property (nonatomic,copy) void (^changeRecordSetFinish)(int bitrate, NSInteger resolutionIndex);
 
 @end

@@ -6,6 +6,7 @@
 
 typedef NSString *VENetworkResourceType NS_STRING_ENUM;
 
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CardMusic;//卡点音乐
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CloudMusic;//配乐
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_OnlineAlbum;//在线相册
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_SoundEffect;//音效

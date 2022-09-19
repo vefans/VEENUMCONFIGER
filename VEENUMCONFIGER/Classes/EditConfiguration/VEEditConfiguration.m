@@ -211,6 +211,7 @@
     copy.trimExportVideoType            = _trimExportVideoType;
     copy.newmvResourceURL               = _newmvResourceURL;
     copy.newmusicResourceURL            = _newmusicResourceURL;
+    copy.cardMusicResourceURL           = _cardMusicResourceURL;
     copy.newartist                      = _newartist;
     copy.newartistHomepageTitle         = _newartistHomepageTitle;
     copy.newartistHomepageUrl           = _newartistHomepageUrl;
@@ -325,6 +326,7 @@
     copy.trimExportVideoType            = _trimExportVideoType;
     copy.newmvResourceURL               = _newmvResourceURL;
     copy.newmusicResourceURL            = _newmusicResourceURL;
+    copy.cardMusicResourceURL           = _cardMusicResourceURL;
     copy.newartist                      = _newartist;
     copy.newartistHomepageTitle         = _newartistHomepageTitle;
     copy.newartistHomepageUrl           = _newartistHomepageUrl;

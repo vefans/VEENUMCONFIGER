@@ -297,6 +297,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 音乐网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *newmusicResourceURL;
+/** 卡点音乐网络资源地址
+ */
+@property (nonatomic,copy,nullable)NSString    *cardMusicResourceURL;
 /** 音乐家
  */
 @property (nonatomic,copy,nullable)NSString    *newartist;

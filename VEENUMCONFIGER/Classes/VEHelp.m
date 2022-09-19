@@ -20,7 +20,8 @@
 #import <VEENUMCONFIGER/VEFileDownloader.h>
 #import <VEENUMCONFIGER/VECircleView.h>
 #import <LibVECore/VECoreYYModel.h>
-//"cardpoint_music"
+
+VENetworkResourceType const VENetworkResourceType_CardMusic = @"cardpoint_music";//卡点音乐
 VENetworkResourceType const VENetworkResourceType_CloudMusic = @"cloud_music";//配乐
 VENetworkResourceType const VENetworkResourceType_OnlineAlbum = @"cloud_video";//在线相册
 VENetworkResourceType const VENetworkResourceType_SoundEffect = @"audio";//音效
