@@ -97,6 +97,20 @@ float const VEAdjust_DefaultValue_Exposure = 0.0;
 
 @implementation VEHelp
 
++ (UIEdgeInsets) safeAreaInsets{
+
+    UIEdgeInsets safeAreaInsets = UIEdgeInsetsZero;
+
+    if (@available(iOS 11.0, *)) {
+
+        safeAreaInsets = [[[[UIApplication sharedApplication] delegate]window]safeAreaInsets];
+
+    }
+
+    return safeAreaInsets;
+
+}
+
 + (NSString *) system
 {
     struct utsname systemInfo;

@@ -81,7 +81,7 @@ extern float const VEAdjust_MaxValue_Exposure;
 extern float const VEAdjust_DefaultValue_Exposure;
 
 @interface VEHelp : NSObject
-
++ (UIEdgeInsets) safeAreaInsets;
 +(NSString *)pathFontForURL:(NSURL *)aURL;
 
 + (void)getCurrentImage:(BOOL)screenshot callBack:(void (^)(UIImage *))imageBlock;

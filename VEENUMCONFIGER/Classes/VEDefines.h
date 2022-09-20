@@ -611,7 +611,7 @@ isPhoneX;\
 /*状态栏高度*/
 #define kStatusBarHeight (CGFloat)(kIs_iPhoneX?(44.0):(20.0))
 /*底部安全区域远离高度*/
-#define kBottomSafeHeight (CGFloat)(kIs_iPhoneX?(34.0):(0))
+#define kBottomSafeHeight [VEHelp safeAreaInsets].bottom//(CGFloat)(kIs_iPhoneX?(34.0):(0))
 #define kStickerMinScale   0.1
 #define kStickerMaxScale   4.0
 #define kTransitionMinValue   0.1
@@ -853,3 +853,5 @@ isPhoneX;\
 #define VECustomErrorDomain @"com.VESDK.ErrorDomain"
 
 #define kThumbnailFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/thumbnailFolder"]
+
+
