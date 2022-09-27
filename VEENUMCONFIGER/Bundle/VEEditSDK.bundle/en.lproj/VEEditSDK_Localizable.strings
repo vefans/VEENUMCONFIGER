@@ -859,6 +859,7 @@
 "硬度" = "Hardness";
 "变速"    = "Speed";
 "加水印"  = "Watermark";
+"水印"  = "Watermark";
 "旋转角度" = "angle";
 "长按并拖动某一素材，调整顺序" = "Long press and drag a clip to adjust the order.";
 "倒计时拍摄时间" = "Countdown shooting time";
@@ -1700,6 +1701,7 @@
 "撤销：删除画中画分割" = "Undo：Delete overlay Split";
 "撤销：AI识别字幕" = "Undo: AI-recognized subtitles";
 "撤销：删除AI识别字幕" = "Undo: Delete AI-recognized subtitles";
+"撤销：HDR" = "Undo: HDR";
 
 "恢复：原音音量:%.1f" = "Redo：original volum:%.1f";
 "恢复：%@" = "Redo：%@";
@@ -1722,6 +1724,7 @@
 "恢复：删除画中画分割" = "Redo：Delete overlay Split";
 "恢复：AI识别字幕" = "Redo: AI-recognized subtitles";
 "恢复：删除AI识别字幕" = "Redo: Delete AI-recognized subtitles";
+"恢复：HDR" = "Redo: HDR";
 
 "删除音效" = "Delete the sound";
 "删除音乐" = "Delete the music";
@@ -2529,7 +2532,7 @@
 "眼距" = "Eye space";
 "倾斜" = "Tilt";
 
-"绿幕" = "Green";
+"绿幕" = "Green Screen";
 "智能" = "A I";
 "关闭" = "Close";
 
@@ -2607,3 +2610,10 @@
 "导入音乐" = "Import music";
 "该功能暂未实现" = "This function is not implemented yet";
 "请选择你要提取的音乐" = "Please select the music you want to extract";
+"取色器" = "Pick Color";
+"选取颜色" = "Pick Color";
+"读取图片中,请稍等..." = "Please wait while reading the picture...";
+"读取图片失败!" = "Failed to read the picture!";
+"自动踩点" = "Auto Planting";
+"踩点" = "Planting";
+"实况" = "LivePhotos";

@@ -29,4 +29,7 @@
 
 - (void)moveCurrentCaptionView:(CGPoint)moveOffset;
 
+- (void)touchesEnded:(VETTRangeSlider *)sender;
+- (void)touchesBegan:(VETTRangeSlider *)sender isLeft:(BOOL)isLeft isRight:(BOOL)isRight;
+
 @end

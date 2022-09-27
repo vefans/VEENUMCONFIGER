@@ -254,8 +254,8 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_FineTun           = 62,   //微调
     VEAdvanceEditType_Particle          = 63,   //粒子
     VEAdvanceEditType_DoodlePen         = 64,   //涂鸦笔
-    VEAdvanceEditType_Snapshort        =  66,   //视频截图
-    VEAdvanceEditType_BlurBackground  =  67,   //背景虚化
+    VEAdvanceEditType_Snapshort         = 66,   //视频截图
+    VEAdvanceEditType_BlurBackground    = 67,   //背景虚化
 };
 
 /*
@@ -393,6 +393,13 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_AUDIOSEPAR           = 48, //aduio Sepateted
     kPIP_REVERSEVIDEO       = 49,//倒放
     KPIP_ANTI_SHAKE          = 50, // 防抖
+    
+    KPIP_CUTLEFT            =60, //截掉左边部分
+    KPIP_CUTRIGHT           =61, //截掉右边部分
+    KPIP_ALIGNMENTLEFT      =62,//靠左
+    KPIP_ALIGNMENTRIGHT     =63,//靠右
+    KPIP_ADJSTLEFT          =64,//延长到左
+    KPIP_ADJSTRIGHT         =65,//延长到右
 };
 
 /*

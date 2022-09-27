@@ -205,6 +205,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSBundle *)getRecordBundle;
 + (NSBundle *)getDemoUseBundle;
 + (NSString *)getLocalizedString:(NSString *)key;
+
++(void)getStickerAnimation:( NSString * ) path atCaption:( Caption * ) caption atCustomFiler:( CustomFilter * ) customFilter;
 /**
  *  获取设备可用容量(G)
  */
@@ -522,8 +524,6 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 + (UIImage *)imageRotatedByDegrees:(UIImage *)cImage rotation:(float)rotation;
 
-+ (UIImage *)imageNamed:(NSString *)name;
-
 +(NSString *)pathAssetVideoForURL:(NSURL *)aURL;
 
 + (CGSize )getVideoSizeForTrack:(AVURLAsset *)asset;
@@ -565,4 +565,6 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (BOOL)doodlePenIsHardnessEnableWithPath:(NSString *)path;
 //获取图片某一点的颜色
 + (UIColor *)colorAtPixel:(CGPoint)point source:(UIImage *)image;
++ (UIImage *)getOriginalImageWithUrl:(NSURL *)url;
+
 @end

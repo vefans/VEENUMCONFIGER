@@ -25,6 +25,9 @@ const float VE_TEXT_HEIGHT = 14;
     
     NSTimer *startMoveTime;
     UITouch *startMoveTouch;
+    BOOL      _isLeft;
+    BOOL      _isRight;
+    BOOL      _isMiddle;
 }
 
 @property (nonatomic, strong) CALayer *sliderLine;
@@ -78,7 +81,10 @@ static const CGFloat kLabelsFontSize = 12.0f;
     _rightHandle = [CALayer layer];
     _rightHandle.cornerRadius = 2.0f;
     [self.layer addSublayer:_rightHandle];
-    float handWidth = VE_HANDLE_DIAMETER;//[VEConfigManager sharedManager].editConfiguration.isSingletrack ? 16 : VE_HANDLE_DIAMETER;
+    float handWidth = ([VEConfigManager sharedManager].editConfiguration.isSingletrack == true ? 14 : VE_HANDLE_DIAMETER);
+    if(CGRectGetHeight(self.frame)> 40){
+        handWidth = VE_HANDLE_DIAMETER;
+    }
     _leftHandle.frame = CGRectMake(20 - handWidth, 0, handWidth, self.frame.size.height);
     _rightHandle.frame = CGRectMake(0, 0, handWidth, self.frame.size.height);
     
@@ -322,7 +328,7 @@ static const CGFloat kLabelsFontSize = 12.0f;
 #pragma mark - Set Positions
 - (void)updateHandlePositions {
     @try {
-        CGPoint leftHandleCenter = CGPointMake([self getXPositionAlongLineForValue:self.selectedMinimum] - 10.0, CGRectGetMidY(self.sliderLine.frame));
+        CGPoint leftHandleCenter = CGPointMake([self getXPositionAlongLineForValue:self.selectedMinimum] - CGRectGetWidth(self.leftHandle.frame)/2.0, CGRectGetMidY(self.sliderLine.frame));
         if (leftHandleCenter.x<0) {
             leftHandleCenter.x = 0;
         }
@@ -330,13 +336,13 @@ static const CGFloat kLabelsFontSize = 12.0f;
             leftHandleCenter.x = 0;
         }
         _leftHandle.position = leftHandleCenter;
-        self.leftLabel.frame = CGRectMake(leftHandleCenter.x - 10.0, 0, self.leftLabel.frame.size.width, self.leftLabel.frame.size.height);
-        CGPoint rightHandleCenter = CGPointMake([self getXPositionAlongLineForValue:self.selectedMaximum] + 10.0 , CGRectGetMidY(self.sliderLine.frame));
+        self.leftLabel.frame = CGRectMake(leftHandleCenter.x - CGRectGetWidth(self.leftHandle.frame)/2.0, 0, self.leftLabel.frame.size.width, self.leftLabel.frame.size.height);
+        CGPoint rightHandleCenter = CGPointMake([self getXPositionAlongLineForValue:self.selectedMaximum] + CGRectGetWidth(self.leftHandle.frame)/2.0 , CGRectGetMidY(self.sliderLine.frame));
         if(isnan(rightHandleCenter.x) || rightHandleCenter.x < 0){
             rightHandleCenter.x = 0;
         }
         _rightHandle.position= rightHandleCenter;
-        self.rightLabel.frame = CGRectMake(rightHandleCenter.x - 10, 0, self.rightLabel.frame.size.width, self.rightLabel.frame.size.height);
+        self.rightLabel.frame = CGRectMake(rightHandleCenter.x - CGRectGetWidth(self.leftHandle.frame)/2.0, 0, self.rightLabel.frame.size.width, self.rightLabel.frame.size.height);
     }
     @catch (NSException *exception) {
         
@@ -414,62 +420,6 @@ static const CGFloat kLabelsFontSize = 12.0f;
 }
 
 #pragma mark - Touch Tracking
-- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-    if (_isDragDisable) {
-        return NO;
-    }
-    CGPoint gesturePressLocation = [touch locationInView:self];
-    startTouchPositionX = gesturePressLocation.x;
-    _isStartMove = false;
-    _isStartDrag = YES;
-//    startMoveTime = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(startMove_Time) userInfo:nil repeats:YES];
-
-    if (CGRectContainsPoint(CGRectInset(_leftHandle.frame, VE_HANDLE_TOUCH_AREA_EXPANSION, VE_HANDLE_TOUCH_AREA_EXPANSION), gesturePressLocation) || CGRectContainsPoint(CGRectInset(_rightHandle.frame, VE_HANDLE_TOUCH_AREA_EXPANSION, VE_HANDLE_TOUCH_AREA_EXPANSION), gesturePressLocation))
-    {
-        //the touch was inside one of the handles so we're definitely going to start movign one of them. But the handles might be quite close to each other, so now we need to find out which handle the touch was closest too, and activate that one.
-        float distanceFromLeftHandle = [self distanceBetweenPoint:gesturePressLocation andPoint:[self getCentreOfRect:_leftHandle.frame]];
-        float distanceFromRightHandle =[self distanceBetweenPoint:gesturePressLocation andPoint:[self getCentreOfRect:_rightHandle.frame]];
-
-        if (distanceFromLeftHandle < distanceFromRightHandle && !self.disableRange){
-            _leftHandleSelected = YES;
-//            _leftLabel.highlighted = YES;
-//
-//            [_rightHightedLayer removeFromSuperlayer];
-//            [_rightHandle addSublayer:_rightLayer];
-//            [_leftLayer removeFromSuperlayer];
-//            [_leftHandle addSublayer:_leftHightedLayer];
-//            [self animateHandle:_leftHandle withSelection:NO];
-        } else {
-            if (self.selectedMaximum == self.maxValue && [self getCentreOfRect:_leftHandle.frame].x == [self getCentreOfRect:_rightHandle.frame].x) {
-                _leftHandleSelected = YES;
-//                _leftLabel.highlighted = YES;
-//
-//                [_rightHightedLayer removeFromSuperlayer];
-//                [_rightHandle addSublayer:_rightLayer];
-//                [_leftLayer removeFromSuperlayer];
-//                [_leftHandle addSublayer:_leftHightedLayer];
-//                [self animateHandle:_leftHandle withSelection:NO];
-            }
-            else {
-                _rightHandleSelected = YES;
-//                _rightLabel.highlighted = YES;
-//
-//                [_leftHightedLayer removeFromSuperlayer];
-//                [_leftHandle addSublayer:_leftLayer];
-//                [_rightLayer removeFromSuperlayer];
-//                [_rightHandle addSublayer:_rightHightedLayer];
-//                [self animateHandle:_rightHandle withSelection:NO];
-            }
-        }
-        startMoveTouch = touch;
-        
-        [self startMove_Time];
-        
-        return YES;
-    } else {
-        return NO;
-    }
-}
 
 - (void)refresh {
     if (self.enableStep && self.step>=0.0f){
@@ -530,6 +480,197 @@ static const CGFloat kLabelsFontSize = 12.0f;
     //update the delegate
     if (_delegate && (_leftHandleSelected || _rightHandleSelected)){
         [_delegate rangeSlider:self didChangeSelectedMinimumValue:self.selectedMinimum andMaximumValue:self.selectedMaximum isRight:(_leftHandleSelected)?false:true];
+    }
+}
+
+#if 1
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    UITouch *touch = [touches anyObject];
+    CGPoint location = [touch locationInView:self];
+    CGRect lRect = self.leftHandle.frame;
+    lRect.origin.x -= 5;
+    lRect.size.width += 10;
+    
+    CGRect rRect = self.rightHandle.frame;
+    rRect.origin.x -= 5;
+    rRect.size.width += 10;
+    
+    if(CGRectContainsPoint(lRect, location)){
+        _isLeft = YES;
+        _isRight = NO;
+        if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+            [_delegate touchesBegan:self isLeft:YES isRight:NO];
+        }
+    }else if(CGRectContainsPoint(rRect, location)){
+        _isRight = YES;
+        _isLeft = NO;
+        if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+            [_delegate touchesBegan:self isLeft:NO isRight:YES];
+        }
+    }else{
+        _isLeft = NO;
+        _isRight = NO;
+        _isMiddle = YES;
+        if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+            [_delegate touchesBegan:self isLeft:NO isRight:NO];
+        }
+    }
+    startTouchPositionX = location.x;
+    
+}
+
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    UITouch *touch = [touches anyObject];
+    if(!_isStartDrag){
+        CGPoint location = [touch locationInView:self];
+        if(fabs(startTouchPositionX - location.x) > 1.0){
+            [self beginTrackingWithTouch:touch withEvent:event];
+        }
+    }else{
+        [self continueTrackingWithTouch:touch withEvent:event];
+    }
+}
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    UITouch *touch = [touches anyObject];
+    CGPoint location = [touch locationInView:self];
+    location.y = self.frame.size.height/2.0;
+    CGRect lRect = self.leftHandle.frame;
+    lRect.origin.x -= 5;
+    lRect.size.width += 10;
+    
+    CGRect rRect = self.rightHandle.frame;
+    rRect.origin.x -= 5;
+    rRect.size.width += 10;
+    if(_isStartDrag){
+        [self endTrackingWithTouch:touch withEvent:event];
+        if(CGRectContainsPoint(lRect, location)){
+            if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+                [_delegate touchesBegan:self isLeft:YES isRight:NO];
+            }
+        }else if(CGRectContainsPoint(rRect, location)){
+            if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+                [_delegate touchesBegan:self isLeft:NO isRight:YES];
+            }
+        }
+    }else{
+        if(CGRectContainsPoint(lRect, location)){
+            if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+                [_delegate touchesBegan:self isLeft:YES isRight:NO];
+            }
+        }else if(CGRectContainsPoint(rRect, location)){
+            if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+                [_delegate touchesBegan:self isLeft:NO isRight:YES];
+            }
+        }else{
+            if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+                [_delegate touchesBegan:self isLeft:NO isRight:NO];
+            }
+        }
+    }
+    _isLeft = NO;
+    _isRight = NO;
+}
+- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    UITouch *touch = [touches anyObject];
+    CGPoint location = [touch locationInView:self];
+    location.y = self.frame.size.height/2.0;
+    CGRect lRect = self.leftHandle.frame;
+    lRect.origin.x -= 5;
+    lRect.size.width += 10;
+    
+    CGRect rRect = self.rightHandle.frame;
+    rRect.origin.x -= 5;
+    rRect.size.width += 10;
+    if(_isStartDrag){
+        [self cancelTrackingWithEvent:event];
+        if(CGRectContainsPoint(lRect, location)){
+            if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+                [_delegate touchesBegan:self isLeft:YES isRight:NO];
+            }
+        }else if(CGRectContainsPoint(rRect, location)){
+            if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+                [_delegate touchesBegan:self isLeft:NO isRight:YES];
+            }
+        }
+    }else{
+        if(CGRectContainsPoint(lRect, location)){
+            if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+                [_delegate touchesBegan:self isLeft:YES isRight:NO];
+            }
+        }else if(CGRectContainsPoint(rRect, location)){
+            if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+                [_delegate touchesBegan:self isLeft:NO isRight:YES];
+            }
+        }else{
+            if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
+                [_delegate touchesBegan:self isLeft:NO isRight:NO];
+            }
+        }
+    }
+    _isLeft = NO;
+    _isRight = NO;
+    
+}
+//#else
+
+- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    if (_isDragDisable) {
+        return NO;
+    }
+    CGPoint gesturePressLocation = [touch locationInView:self];
+    startTouchPositionX = gesturePressLocation.x;
+    _isStartMove = false;
+    _isStartDrag = YES;
+//    startMoveTime = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(startMove_Time) userInfo:nil repeats:YES];
+
+    //if (CGRectContainsPoint(CGRectInset(_leftHandle.frame, VE_HANDLE_TOUCH_AREA_EXPANSION, VE_HANDLE_TOUCH_AREA_EXPANSION), gesturePressLocation) || CGRectContainsPoint(CGRectInset(_rightHandle.frame, VE_HANDLE_TOUCH_AREA_EXPANSION, VE_HANDLE_TOUCH_AREA_EXPANSION), gesturePressLocation))
+    if(_isLeft || _isRight || _isMiddle)
+    {
+        //the touch was inside one of the handles so we're definitely going to start movign one of them. But the handles might be quite close to each other, so now we need to find out which handle the touch was closest too, and activate that one.
+        float distanceFromLeftHandle = [self distanceBetweenPoint:gesturePressLocation andPoint:[self getCentreOfRect:_leftHandle.frame]];
+        float distanceFromRightHandle =[self distanceBetweenPoint:gesturePressLocation andPoint:[self getCentreOfRect:_rightHandle.frame]];
+
+        if(!_isMiddle){
+            if (distanceFromLeftHandle < distanceFromRightHandle && !self.disableRange){
+                _leftHandleSelected = YES;
+    //            _leftLabel.highlighted = YES;
+    //
+    //            [_rightHightedLayer removeFromSuperlayer];
+    //            [_rightHandle addSublayer:_rightLayer];
+    //            [_leftLayer removeFromSuperlayer];
+    //            [_leftHandle addSublayer:_leftHightedLayer];
+    //            [self animateHandle:_leftHandle withSelection:NO];
+            } else {
+                if (self.selectedMaximum == self.maxValue && [self getCentreOfRect:_leftHandle.frame].x == [self getCentreOfRect:_rightHandle.frame].x) {
+                    _leftHandleSelected = YES;
+    //                _leftLabel.highlighted = YES;
+    //
+    //                [_rightHightedLayer removeFromSuperlayer];
+    //                [_rightHandle addSublayer:_rightLayer];
+    //                [_leftLayer removeFromSuperlayer];
+    //                [_leftHandle addSublayer:_leftHightedLayer];
+    //                [self animateHandle:_leftHandle withSelection:NO];
+                }
+                else {
+                    _rightHandleSelected = YES;
+    //                _rightLabel.highlighted = YES;
+    //
+    //                [_leftHightedLayer removeFromSuperlayer];
+    //                [_leftHandle addSublayer:_leftLayer];
+    //                [_rightLayer removeFromSuperlayer];
+    //                [_rightHandle addSublayer:_rightHightedLayer];
+    //                [self animateHandle:_rightHandle withSelection:NO];
+                }
+            }
+        }
+        startMoveTouch = touch;
+        
+        [self startMove_Time];
+        
+        return YES;
+    } else {
+        return NO;
     }
 }
 
@@ -742,8 +883,7 @@ static const CGFloat kLabelsFontSize = 12.0f;
     _rightHandleSelected = NO;
 }
 
-- (void)cancelTrackingWithEvent:(nullable UIEvent *)event
-{
+- (void)cancelTrackingWithEvent:(nullable UIEvent *)event{
 //    _isStartMove = false;
 //    [startMoveTime invalidate];
 //    startMoveTime = nil;
@@ -780,6 +920,8 @@ static const CGFloat kLabelsFontSize = 12.0f;
         startMoveTime = nil;
     }
 }
+
+#endif
 
 #pragma mark - Animation
 - (void)animateHandle:(CALayer*)handle withSelection:(BOOL)selected {
@@ -911,6 +1053,10 @@ static const CGFloat kLabelsFontSize = 12.0f;
     _numberFormatterOverride = numberFormatterOverride;
     [self updateLabelValues];
 }
+- (void)setFrame:(CGRect)frame{
+    [super setFrame:frame];
+}
+
 - (void)dealloc{
     NSLog(@"%s",__func__);
 }
