@@ -452,6 +452,11 @@
  */
 @property (nonatomic, strong) NSArray<MediaAssetAnimatePosition*>*  animate;
 
+/** 是否通过导入文件生成的animate，Default is NO.
+ *  Whether to generate animation by importing files
+ */
+@property (nonatomic, assign) BOOL importMorph;
+
 /**在video中四个顶点的坐标，可设置非矩形。
  * (0, 0)为左上角 (1, 1)为右下角
  * rectInVideo与pointsInVideoArray只有一个有效，以最后设置的为准

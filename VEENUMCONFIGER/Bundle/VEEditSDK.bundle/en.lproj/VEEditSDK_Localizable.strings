@@ -96,7 +96,7 @@
 "原始比例" = "Original";
 "1 : 1" = "1 : 1";
 "自由裁剪" = "Free cropping";
-"自由" = "Free";
+"自由" = "Custom";
 "上下翻转" = "Vertical";
 "垂直翻转" = "Vertical";
 "水平翻转" = "Horizontal";
@@ -1028,6 +1028,7 @@
 "弓形水平" = "Bow Tie H";
 "方向扭曲" = "Direct Warp";
 "变形" = "Morph";
+"边角定位" = "Morph";
 "色差" = "Color Distance";
 "柏林" = "Perlin";
 "鹰眼" = "Fly Eye";
@@ -1151,7 +1152,6 @@
 "正在加载" = "Loading";
 "垂直翻转" = "Vertical";
 "左右翻转" = "Horizontal";
-"自由" = "Free";
 "语音识别中" = "Audio recognition";
 "识别失败" = "Recognition failed";
 "语音识别失败（超出当月试用次数）" = "Failed to recognize the audio(have no free trials left in this month)";
@@ -1995,7 +1995,6 @@
 "底图" = "Basemap";
 "图层" = "Layer";
 "水印" = "Watermark";
-"快慢速" = "Fast slow speed";
 "美颜" = "Beauty";
 "拍照" = "Shoot";
 "录像" =  "Record";
@@ -2532,7 +2531,7 @@
 "眼距" = "Eye space";
 "倾斜" = "Tilt";
 
-"绿幕" = "Green Screen";
+"绿幕" = "Green";
 "智能" = "A I";
 "关闭" = "Close";
 
@@ -2563,7 +2562,7 @@
 "粒子特效" = "Particle effects";
 "基础画笔" = "Basic Brush";
 "素材笔" = "Material Brush";
-"相册导入" = "Album Import";
+"相册导入" = "Album";
 "封面模板" = "Template";
 "导出封面" = "Export";
 "左右拖动选择封面" = "Drag left and right to select cover";
@@ -2596,9 +2595,9 @@
 "防抖" = "Anti-shake";
 "防抖转换中..." = "Anti-shake transitioning...";
 "音频卡点" = "Audio Card Point";
-"去选图" = "Go to the album";
-"自动卡点" = "Automatic card point";
-"一键清除" = "One Click Clear";
+"去选图" = "Album";
+"自动卡点" = "Automatic";
+"一键清除" = "Delete all";
 "清除点" = "Delete";
 "自动卡点中,请稍候..." = "Automatic card point is in progress, please wait...";
 "点数:%d" = "Points: %d";
@@ -2617,3 +2616,12 @@
 "自动踩点" = "Auto Planting";
 "踩点" = "Planting";
 "实况" = "LivePhotos";
+"使用边角定位跟踪需从本地文件\n夹导入顶点数据，是否继续？" = "Using corner positioning requires importing vertex data from the local folder. Do you want to continue?";
+"查看示例" = "View Example";
+"边角定位文本示例" = "Sample corner positioning text";
+"手动变形" = "Manual";
+"导入数据" = "Import";
+"提词器" = "Prompter";
+"曝光" = "Exposure";
+"主视频" = "Main video";
+"主媒体" = "Main";

@@ -282,6 +282,8 @@
         newObject.gain = obj.gain;
         [copy.eq addObject:newObject];
     }];
+    copy.importMorph = _importMorph;
+    
     return copy;
 }
 
@@ -464,6 +466,8 @@
         newObject.gain = obj.gain;
         [copy.eq addObject:newObject];
     }];
+    copy.importMorph = _importMorph;
+    
     return copy;
 }
 

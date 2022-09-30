@@ -308,13 +308,14 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KNOISE              = 43,//降噪
     KMONGOLIANKEYFRAME  = 44,//蒙板关键帧
     kVEUSEDSINGLEFILTER = 45, //所有滤镜
-    KDEFORMED       = 46,   //变形
-    KEQUALIZER      = 47, //均衡器
-    KBLURRY           = 48, //模糊
-    KOPACITY        = 50,//隐藏
-    KAUDIOSEPAR        = 51,//音频分离
-    KAUDIOPLANTED        = 52,//
-    KANTI_SHAKE     = 53,
+    KDEFORMED           = 46,   //变形
+    KEQUALIZER          = 47, //均衡器
+    KBLURRY             = 48, //模糊
+    KOPACITY            = 50,//隐藏
+    KAUDIOSEPAR         = 51,//音频分离
+    KAUDIOPLANTED       = 52,//
+    KANTI_SHAKE         = 53,
+    KANTI_MORPH         = 54,//边角定位
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {

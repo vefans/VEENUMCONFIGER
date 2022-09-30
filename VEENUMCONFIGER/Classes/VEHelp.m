@@ -4164,7 +4164,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0 , imageView.frame.size.height + imageView.frame.origin.y, reverseVideoView.frame.size.width, 20)];
     label.textAlignment = NSTextAlignmentCenter;
     label.font = [UIFont systemFontOfSize:12];
-    label.text = VELocalizedString(@"倒放中0%", nil);
+    label.text = [NSString stringWithFormat:VELocalizedString(@"倒放中%0.1f%%", nil),0];
     label.textColor = [UIColor whiteColor];
     label.tag = 30121;
     *labelTag = 30121;
@@ -11809,6 +11809,12 @@ static OSType help_inputPixelFormat(){
     }
     if (configDic[@"hardness"]) {
         option.hardness = [configDic[@"hardness"] boolValue];
+    }
+    if(configDic[@"usePaintedColor"]){
+        option.usePaintedColor = [configDic[@"usePaintedColor"] boolValue];
+    }
+    if(configDic[@"strokeMask"]){
+        option.strokeMask = [configDic[@"strokeMask"] intValue];
     }
     if (configDic[@"autoBrush"]) {
         option.autoBrush = [AutoBrush veCore_yy_modelWithDictionary:configDic[@"autoBrush"]];
