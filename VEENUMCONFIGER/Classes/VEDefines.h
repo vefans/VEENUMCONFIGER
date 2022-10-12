@@ -314,8 +314,8 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KOPACITY            = 50,//隐藏
     KAUDIOSEPAR         = 51,//音频分离
     KAUDIOPLANTED       = 52,//
-    KANTI_SHAKE         = 53,
-    KANTI_MORPH         = 54,//边角定位
+    KANTI_SHAKE         = 53,//防抖
+    KMORPH              = 54,//边角定位
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -401,6 +401,8 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_ALIGNMENTRIGHT     =63,//靠右
     KPIP_ADJSTLEFT          =64,//延长到左
     KPIP_ADJSTRIGHT         =65,//延长到右
+    KPIP_MORPH              =66,//边角定位
+    KPIP_MORPH_DELETE       =67,//删除边角定位
 };
 
 /*

@@ -26,7 +26,19 @@
 //        contentOffset.y = -25;
 //    }
     NSLog(@"%s : %@",__func__,NSStringFromCGPoint(contentOffset));
-    [super setContentOffset:contentOffset animated:animated];
+    if (animated) {
+        if (@available(iOS 16.0, *)) {//20221009 iOS16.0 animated为true时，会将contentOffset设为(0,0)
+            WeakSelf(self);
+            [UIView animateWithDuration:0.3 animations:^{
+                StrongSelf(self);
+                strongSelf.contentOffset = contentOffset;
+            }];
+        }else {
+            [super setContentOffset:contentOffset animated:animated];
+        }
+    }else {
+        [super setContentOffset:contentOffset animated:animated];
+    }
 }
 - (void)setContentInset:(UIEdgeInsets)contentInset{
     NSLog(@"%s ,top:%f,left:%f,bottom:%f,right:%f",__func__,contentInset.top,contentInset.left,contentInset.bottom,contentInset.right);

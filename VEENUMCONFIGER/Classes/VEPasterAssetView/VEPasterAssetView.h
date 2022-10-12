@@ -10,12 +10,16 @@
 NS_ASSUME_NONNULL_BEGIN
 @class VEPasterAssetView;
 @protocol VEPasterAssetViewDelegate <NSObject>
+
+- (void)dragPasterAssetViewBegin:(VEPasterAssetView *)pasterAssetView;
+
 //位置移动
 -(void)pasterAssetViewMove:( VEPasterAssetView * ) pasterAssetView atUpLeft:( CGPoint ) upLeftPoint atUpRight:( CGPoint ) upRightPoint atBottomRight:( CGPoint ) bottomRightPoint atBottomLeft:( CGPoint ) bottomLeftPoint;
 //获取是否可以拖动
--(BOOL)isCurrentPasterAssetView:( VEPasterAssetView * ) pasterAssetView;
+-(BOOL)isDragPasterAssetViewEnable:( VEPasterAssetView * ) pasterAssetView;
 //是否显示字幕文字编辑界面
 - (void)pasterAssetViewShow:( VEPasterAssetView * _Nullable )pasterAssetView;
+
 @end
 
 

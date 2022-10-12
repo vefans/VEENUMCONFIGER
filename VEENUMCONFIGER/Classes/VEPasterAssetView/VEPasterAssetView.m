@@ -622,6 +622,9 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
         _centerPoint = self.center;
         _isDrag = true;
         self.isDrag_Upated = false;
+        if (_delegate && [_delegate respondsToSelector:@selector(dragPasterAssetViewBegin:)]) {
+            [_delegate dragPasterAssetViewBegin:self];
+        }
     }else if((recognizer.state == UIGestureRecognizerStateChanged) || (recognizer.state == UIGestureRecognizerStateEnded) ) {
         
         if( self.isDrag_Upated == true )
@@ -673,6 +676,9 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
             _oldScale = _scale;
             _pinScale = recognizer.scale;
             _isDrag = true;
+            if (_delegate && [_delegate respondsToSelector:@selector(dragPasterAssetViewBegin:)]) {
+                [_delegate dragPasterAssetViewBegin:self];
+            }
         }
             break;
         case UIGestureRecognizerStateChanged://缩放改变
@@ -752,6 +758,9 @@ CG_INLINE CGFloat CGAffineTransformGetAngle(CGAffineTransform t)
             _beginAngle      = rotation.rotation;
             _isScale = true;
             _isDrag = true;
+            if (_delegate && [_delegate respondsToSelector:@selector(dragPasterAssetViewBegin:)]) {
+                [_delegate dragPasterAssetViewBegin:self];
+            }
         }
             break;
         case UIGestureRecognizerStateChanged://缩放改变

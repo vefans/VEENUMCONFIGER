@@ -311,6 +311,10 @@
             trackView.backgroundColor = Main_Color;
             trackView.tag = 100 + slider.tag;
             [view addSubview:trackView];
+        }else{
+            if([VEConfigManager sharedManager].iPad_HD){
+                [slider setMinimumTrackImage: [VEHelp imageWithColor:Main_Color size:CGSizeMake(slider.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
+            }
         }
        
    

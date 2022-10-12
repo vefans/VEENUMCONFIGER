@@ -283,6 +283,7 @@
         [copy.eq addObject:newObject];
     }];
     copy.importMorph = _importMorph;
+    copy.speedHoldPitch = _speedHoldPitch;
     
     return copy;
 }
@@ -467,6 +468,7 @@
         [copy.eq addObject:newObject];
     }];
     copy.importMorph = _importMorph;
+    copy.speedHoldPitch = _speedHoldPitch;
     
     return copy;
 }

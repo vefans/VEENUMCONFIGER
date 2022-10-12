@@ -93,6 +93,11 @@
  */
 @property (nonatomic, assign) double speed;
 
+/**  是否音调校正，设置曲线变速后无效，Default is NO。
+ *   Tone correction, invalid after setting curve speed change.
+ */
+@property (nonatomic,assign) BOOL speedHoldPitch;
+
 /**当前选中的播放速度下标
  */
 @property(nonatomic,assign)NSInteger speedIndex;
