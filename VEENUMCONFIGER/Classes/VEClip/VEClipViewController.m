@@ -1020,6 +1020,11 @@
     oldselectFile.cropRect = cropRect;
     if(_flowPicture){
         _selectFile.crop = r;
+        if (self.presentingViewController && self.navigationController.viewControllers.count == 1) {
+            [self dismissViewControllerAnimated:NO completion:nil];
+        } else {
+            [self.navigationController popViewControllerAnimated:NO];
+        }
     }else{
         if([VEConfigManager sharedManager].isSingleFunc && [VEConfigManager sharedManager].callbackBlock){
             _selectFile.crop = r;

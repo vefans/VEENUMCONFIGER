@@ -64,25 +64,6 @@ typedef NS_ENUM(NSInteger ,KBeautyType) {
     KBeauty_beauty              = 21,   //一键美颜
 };
 
-typedef NS_ENUM(NSInteger ,MediaType) {
-    kFILEVIDEO,
-    kFILEIMAGE,
-    kFILETEXT
-};
-
-typedef NS_ENUM(NSInteger,CanvasType){
-    KCanvasType_None                = 0, //无
-    KCanvasType_Color               = 1, //场景背景颜色
-    KCanvasType_Style               = 2, //场景图片样式
-    KCanvasType_Blurry              = 3, //场景模糊
-};
-
-typedef NS_ENUM(NSInteger,ContentAlignment) {
-    kContentAlignmentCenter,
-    kContentAlignmentLeft,
-    kContentAlignmentRight
-};
-
 //选择本地还是音乐类型
 typedef NS_ENUM(NSInteger, VESELECTMUSICTYPE){
     kVEMUSICLIBRARY,
@@ -114,28 +95,6 @@ typedef NS_ENUM(NSInteger,FileCropModeType)
     kCropTypeFixedRatio = 18,    /**< 固定比例裁切*/
 };
 
-typedef NS_ENUM(NSInteger, VECropType){
-    VE_VECROPTYPE_ORIGINAL  = 0,  //原比例
-    VE_VECROPTYPE_FREE      = 1,      //自由
-    VE_VECROPTYPE_9TO16     = 2,      //9:16
-    VE_VECROPTYPE_16TO9     = 3,      //16:9
-    VE_VECROPTYPE_1TO1      = 4,      //1:1
-    
-    VE_VECROPTYPE_6TO7      = 5,      //6:7
-    VE_VECROPTYPE_5TO8      = 6,      //5.8"
-    VE_VECROPTYPE_4TO5      = 7,      //4:5
-    VE_VECROPTYPE_4TO3      = 8,      //4:3
-    VE_VECROPTYPE_3TO5      = 9,      //3:5
-    VE_VECROPTYPE_3TO4      = 10,      //3:4
-    VE_VECROPTYPE_3TO2      = 11,      //3:2
-    VE_VECROPTYPE_235TO1    = 12,      //2.35:1
-    VE_VECROPTYPE_2TO3      = 13,      //2:3
-    VE_VECROPTYPE_2TO1      = 14,      //2:1
-    VE_VECROPTYPE_185TO1    = 15,      //1.85:1
-    VE_VECROPTYPE_FIXEDRATIO = 16,    /**< 固定比例裁切*/
-    VE_VECROPTYPE_1TO2      = 17,      //2:1
-};
-
 //typedef NS_ENUM(NSInteger,FileCropModeType)
 //{
 //    kCropTypeNone       = 0,
@@ -151,31 +110,6 @@ typedef NS_ENUM(NSInteger, VECropType){
 //    kCropTypeFixed      = 10,    /**< 固定裁切范围 */
 //    kCropTypeFixedRatio = 11,    /**< 固定比例裁切*/
 //};
-//
-//typedef NS_ENUM(NSInteger, VECropType){
-//    VE_VECROPTYPE_FREE = 0,      //自由
-//    VE_VECROPTYPE_ORIGINAL = 1,  //原比例
-//    VE_VECROPTYPE_9TO16 = 2,      //9:16
-//    VE_VECROPTYPE_16TO9 = 3,      //16:9
-//    VE_VECROPTYPE_1TO1 = 4,      //1:1
-//    VE_VECROPTYPE_6TO7 = 5,      //6:7
-//    VE_VECROPTYPE_4TO5 = 6,      //4:5
-//    VE_VECROPTYPE_4TO3 = 7,      //4:3
-//    VE_VECROPTYPE_3TO4 = 8,      //3:4
-//    VE_VECROPTYPE_FIXEDRATIO = 9,    /**< 固定比例裁切*/
-//    VE_VECROPTYPE_1TO2 = 10,      //1:2
-//    VE_VECROPTYPE_2TO1 = 11,      //2:1
-//    VE_VECROPTYPE_2TO3 = 12,      //2:3
-//    VE_VECROPTYPE_3TO2 = 13,      //3:2
-//};
-
-typedef NS_ENUM(NSInteger,TimeFilterType)
-{
-    kTimeFilterTyp_None             = 0, //无
-    kTimeFilterTyp_Slow             = 1, //慢动作
-    kTimeFilterTyp_Repeat           = 2, //反复
-    kTimeFilterTyp_Reverse          = 3, //倒序
-};
 
 /**方向
  */
@@ -256,6 +190,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_DoodlePen         = 64,   //涂鸦笔
     VEAdvanceEditType_Snapshort         = 66,   //视频截图
     VEAdvanceEditType_BlurBackground    = 67,   //背景虚化
+    VEAdvanceEditType_MaskDoodlePen         = 68,   //马赛克涂鸦笔
 };
 
 /*
@@ -489,27 +424,6 @@ typedef NS_ENUM(NSInteger, VENetworkMaterialType){
     VENetworkMaterialType_Transition        = 10,   //转场
     VENetworkMaterialType_AETemplate        = 11,   //剪同款
     VENetworkMaterialType_CameraTemplate    = 12,   //拍同款
-};
-
-
-typedef NS_ENUM(NSInteger, VEMaskType)
-{
-    VEMaskType_NONE             =0,
-    VEMaskType_LINNEAR          =1, //线性
-    VEMaskType_MIRRORSURFACE    =2, //镜面
-    VEMaskType_ROUNDNESS        =3, //圆形
-    VEMaskType_RECTANGLE        =4, //矩形
-    VEMaskType_PENTACLE         =5, //五角星
-    VEMaskType_LOVE             =6, //爱心
-    VEMaskType_QUADRILATERAL    =7, //四边形
-    
-    VEMaskType_InterMIRRORSURFACE = 1017474, //镜面
-    VEMaskType_InterQUADRILATERAL = 1017479, //四边形
-    VEMaskType_InterLOVE = 1017478, //爱心
-    VEMaskType_InterPENTACLE = 1017477, //五角星
-    VEMaskType_InterRECTANGLE = 1017476, //矩形
-    VEMaskType_InterROUNDNESS = 1017475, //圆形
-    VEMaskType_InterLINNEAR = 1017473, //线性
 };
 
 typedef void(^VERecordCompletionHandler) (int result,NSString *path,VEMusicInfo *music);

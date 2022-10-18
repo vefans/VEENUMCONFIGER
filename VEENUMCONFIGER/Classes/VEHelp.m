@@ -5817,7 +5817,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             return;
         
         NSFileManager *manager = [[NSFileManager alloc] init];
-        if( [manager fileExistsAtPath:configPath] ){
+        if(![manager fileExistsAtPath:configPath] && [manager fileExistsAtPath:file.transition.maskURL.path]){
+            configPath = file.transition.maskURL.path;
+        }
+        if ([manager fileExistsAtPath:configPath]) {
             NSString *maskpath = configPath;
             NSURL *maskUrl = maskpath.length == 0 ? nil : [NSURL fileURLWithPath:maskpath];
             file.transitionMask = maskUrl;
@@ -5827,6 +5830,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             file.transitionNetworkCategoryId = transition.networkCategoryId = [transitionList[file.transitionTypeIndex - 1] objectForKey:@"id"];
             file.transitionNetworkResourceId = transition.networkResourceId = obj[@"id"];
             
+        }else if (file.transition && file.transition.type != TransitionTypeNone) {
+            transition.type = file.transition.type;
+            transition.duration = file.transitionDuration;
         }
     }
 }
@@ -6994,7 +7000,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 
                 float imageW = [configDic[@"width"] floatValue];
                 float imageH = [configDic[@"height"] floatValue];
-                if (obj.folderPath.length == 0) {
+//                if (obj.folderPath.length == 0)
+                if( [VEConfigManager sharedManager].isAndroidTemplate )
+                {
                     caption.originalSize = CGSizeMake(obj.showRectF.size.width / obj.scale, obj.showRectF.size.height / obj.scale);//20210914 跟安卓统一
                 }else {
                     caption.originalSize = CGSizeMake(imageW / videoSize.width, imageH / videoSize.height);
@@ -7015,7 +7023,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     double t_top = [textPadding[1] doubleValue];
                     double t_buttom = [textPadding[3] doubleValue];
                     //20210914 跟安卓统一
-                    if (obj.folderPath.length == 0) {
+//                    if (obj.folderPath.length == 0)
+                    if( [VEConfigManager sharedManager].isAndroidTemplate )
+                    {
                         item.padding = CGRectMake(0, 0, 1, 1);
                     }else {
                         CGRect textLabelRect = CGRectMake(t_left + 8, t_top + 8, imageW - t_left - t_right, imageH - t_top - t_buttom);
@@ -7028,7 +7038,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     NSInteger lineCount = MAX(1, lines.count);
                     
                     //20210914 跟安卓统一
-                    if (!CGRectEqualToRect(obj.wordItem.firstObject.showRectF, CGRectZero)) {
+//                    if (!CGRectEqualToRect(obj.wordItem.firstObject.showRectF, CGRectZero))
+                    if( [VEConfigManager sharedManager].isAndroidTemplate )
+                    {
                         if(item.isVertical)
                         {
                             double width = ((obj.showRectF.size.width/ obj.scale * videoSize.width) -  t_left - t_right)/lineCount + t_left + t_right;

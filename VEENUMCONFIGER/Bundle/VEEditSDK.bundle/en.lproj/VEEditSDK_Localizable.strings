@@ -2084,6 +2084,7 @@
 "马赛克" = "Mosaic";
 "调色" = "Tone";
 "天空" = "Sky";
+"马赛克" = "Mosaic";
 "音频" = "Audio";
 "运动" = "Sports";
 "固定" = "Fixed";
@@ -2182,6 +2183,7 @@
 "文字" = "Text";
 "图层" = "Layer";
 "天空" = "Sky";
+"马赛克" = "Mosaic";
 "加图" = "Add image";
 "调色" = "Tone";
 "保存" = "Save";
@@ -2625,3 +2627,8 @@
 "曝光" = "Exposure";
 "主视频" = "Main video";
 "主媒体" = "Main";
+"声音变调" = "Tone";
+"您确定要删除此草稿吗？" = "Do you sure delete this draft?";
+"您确定要删除此画板吗？" = "Do you sure delete this draft?";
+"您确定要清除画板吗？" = "Clear current layer?";
+"温馨提示" = "Kind tips";

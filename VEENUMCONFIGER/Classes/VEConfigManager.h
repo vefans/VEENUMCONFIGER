@@ -9,6 +9,7 @@
 #import <VEENUMCONFIGER/VECameraConfiguration.h>
 #import <VEENUMCONFIGER/VEEditConfiguration.h>
 #import <VEENUMCONFIGER/VEExportConfiguration.h>
+#import "VEMediaInfo.h"
 
 /**支持的语言
  */
@@ -84,6 +85,32 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
  */
 - (void)saveDraftResult:(NSError *)error;
 
+/** 显示截取视频界面
+ *  Display video capture interface.
+ */
+- (void)veShowTrimControllerWithSuperView:(UIViewController *)superViewController
+                                     file:(VEMediaInfo *)file
+                           isRotateEnable:(BOOL)isRotateEnable
+                        completionHandler:(void (^)(float rotate, CMTimeRange trimTimeRange))completionHandler;
+
+/** 显示裁剪图片界面
+ *  Display Cropping Picture Interface.
+ */
+- (void)veShowCropControllerWithSuperView:(UIViewController *)superViewController
+                                     file:(VEMediaInfo *)file
+                             isOnlyRotate:(BOOL)isOnlyRotate
+                               isOnlyCrop:(BOOL)isOnlyCrop
+                                videoSize:(CGSize)videoSize
+                        completionHandler:(void (^)(VEMediaInfo *cropedFile))completionHandler;
+
+/** 显示文字板界面
+ *  Display the text board interface.
+ */
+- (void)veShowTextBoardControllerWithSuperView:(UIViewController *)superViewController
+                                          file:(VECustomTextPhotoFile *)file
+                               videoProportion:(float)videoProportion
+                             completionHandler:(void (^)(NSString *textImagePath, VECustomTextPhotoFile *file))completionHandler;
+
 @end
 
 @interface VEConfigManager : NSObject
@@ -102,6 +129,8 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property (nonatomic,strong) VEExportConfiguration   *peExportConfiguration;
 @property (nonatomic,strong) VEEditConfiguration     *peEditConfiguration;
 @property (nonatomic,strong) VECameraConfiguration   *peCameraConfiguration;
+
+@property (nonatomic, assign) BOOL  isAndroidTemplate;
 
 /**视频输出路径
  */
@@ -138,6 +167,12 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property(nonatomic,copy) VECloudBackupCompletionHandler cloudBackupCompletionHandler;
 @property(nonatomic,copy) VEPrepareExportHandler prepareExportHandler;
 @property(nonatomic,copy) VEExporTemplate  exporTemplate;   //导出模版
+
+/** 显示相机界面回调
+ *  Display camera interface callback.
+ *  isTakePhoto: Whether to take photos by default.
+ */
+@property(nonatomic, copy) void(^showCameraControllerHandler) (UIViewController *superViewController, BOOL isTakePhoto);
 
 @property (nonatomic, assign) BOOL  isFilmCamera;//是否为方弗相机
 @property (nonatomic, copy) void (^filmCameraBlock)(UIViewController *viewController);
