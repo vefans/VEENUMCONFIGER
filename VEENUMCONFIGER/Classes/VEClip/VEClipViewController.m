@@ -1069,6 +1069,7 @@
     
     if(_editVideoForOnce_timeFinishAction){
         _selectFile.contentURL = oldselectFile.contentURL;
+        [self removeFromParentViewController];
         _editVideoForOnce_timeFinishAction(NO,
                                            CGRectMake(point.x/imageSize.width, point.y/imageSize.height, size.width/imageSize.width, size.height/imageSize.height),
                                            _videoCropView.cropView.cropRectView.frame,

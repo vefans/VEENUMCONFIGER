@@ -2576,10 +2576,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Linear",@"title",@(VEMaskType_LINNEAR),@"id", nil]];
     [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Mirror",@"title",@(VEMaskType_MIRRORSURFACE),@"id", nil]];
     [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Round",@"title",@(VEMaskType_ROUNDNESS),@"id", nil]];
+#if 0
+    [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Text",@"title",@(VEMaskType_LOVE),@"id", nil]];
+#endif
     [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Rectangle",@"title",@(VEMaskType_RECTANGLE),@"id", nil]];
     [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Quadrilateral",@"title",@(VEMaskType_QUADRILATERAL),@"id", nil]];
     [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Star",@"title",@(VEMaskType_PENTACLE),@"id", nil]];
     [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Love",@"title",@(VEMaskType_LOVE),@"id", nil]];
+#if 0
+    [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Shape",@"title",@(VEMaskType_LOVE),@"id", nil]];
+#endif
     return maskArray;
 }
 
@@ -7304,12 +7310,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             [textArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 CaptionItem *captionItem = [CaptionItem new];
                 [texts addObject:captionItem];
-                float texDuraiton = [obj[@"duration"] floatValue];
-                if( texDuraiton == 0 )
+                float textStartTime = [obj[@"startTime"] floatValue];
+                textStartTime = MAX(0, textStartTime);
+                float textDuraiton = [obj[@"duration"] floatValue];
+                if( textDuraiton == 0 )
                 {
-                    texDuraiton = captionExDuariton;
+                    textDuraiton = captionExDuariton - textStartTime;
                 }
-                captionItem.timeRange = CMTimeRangeMake( CMTimeMakeWithSeconds(0, TIMESCALE), CMTimeMakeWithSeconds(texDuraiton, TIMESCALE));
+                captionItem.timeRange = CMTimeRangeMake( CMTimeMakeWithSeconds(textStartTime, TIMESCALE), CMTimeMakeWithSeconds(textDuraiton, TIMESCALE));
                 
                 captionItem.text = obj[@"textContent"];                //文字颜色
                 {
@@ -7515,7 +7523,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         
                         if( [animsType isEqualToString:@"out"] )
                         {
-                            timeRage = CMTimeRangeMake(CMTimeMakeWithSeconds(texDuraiton - animDuration, TIMESCALE), CMTimeMakeWithSeconds(animDuration, TIMESCALE));
+                            timeRage = CMTimeRangeMake(CMTimeMakeWithSeconds(textDuraiton - animDuration, TIMESCALE), CMTimeMakeWithSeconds(animDuration, TIMESCALE));
                             captionItem.animateOut = filter;
                             filter.timeRange = timeRage;
 //                            captionItem.animate = nil;
@@ -7523,7 +7531,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         else if( [animsType isEqualToString:@"cycle"] ){
                             captionItem.animate = filter;
                             captionItem.animate.cycleDuration = animDuration;
-                            timeRage = CMTimeRangeMake(CMTimeMakeWithSeconds(0, TIMESCALE),CMTimeMakeWithSeconds(texDuraiton, TIMESCALE));
+                            timeRage = CMTimeRangeMake(CMTimeMakeWithSeconds(0, TIMESCALE),CMTimeMakeWithSeconds(textDuraiton, TIMESCALE));
                             captionItem.animate.timeRange = timeRage;
                         }
                         else{
@@ -11104,7 +11112,7 @@ static OSType help_inputPixelFormat(){
     Particle * particle = [Particle new];
     
     
-    NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
+    NSString *jsonPath = [NSString stringWithFormat:@"%@/file/config.json", path];
     
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
     NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
@@ -11275,7 +11283,7 @@ static OSType help_inputPixelFormat(){
     }
     else{
         NSString * textureFileName = effectDic[@"textureFileName"];
-        NSString *maskPath = [NSString stringWithFormat:@"%@/%@", path,textureFileName];
+        NSString *maskPath = [NSString stringWithFormat:@"%@/file/%@", path,textureFileName];
         particle.textureFileName = maskPath;
     }
     

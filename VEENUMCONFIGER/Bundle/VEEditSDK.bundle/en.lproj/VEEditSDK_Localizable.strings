@@ -2632,3 +2632,7 @@
 "您确定要删除此画板吗？" = "Do you sure delete this draft?";
 "您确定要清除画板吗？" = "Clear current layer?";
 "温馨提示" = "Kind tips";
+"添加涂鸦笔" = "Add doodle pen";
+"添加画面特效" = "Add video effects";
+"静态" = "Static";
+"动态" = "Dynamic";

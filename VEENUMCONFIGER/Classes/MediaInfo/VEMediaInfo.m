@@ -587,7 +587,9 @@
                                leftBottom:CGPointMake([obj.pointsArray[3][0] floatValue], [obj.pointsArray[3][1] floatValue])];
             }
         }];
-        _isPasterAssetViewDrag = !asset.isUseRect;
+        if (!asset.isUseRect && !asset.importMorph) {
+            _isPasterAssetViewDrag = YES;
+        }
     }
     return self;
 }

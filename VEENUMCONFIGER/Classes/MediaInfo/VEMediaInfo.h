@@ -34,6 +34,8 @@ typedef NS_ENUM(NSInteger, VEMaskType)
     VEMaskType_PENTACLE         =5, //五角星
     VEMaskType_LOVE             =6, //爱心
     VEMaskType_QUADRILATERAL    =7, //四边形
+    VEMaskType_TEXT             =8, //文字
+    VEMaskType_SHAPE            =9, //形状
     
     VEMaskType_InterMIRRORSURFACE = 1017474, //镜面
     VEMaskType_InterQUADRILATERAL = 1017479, //四边形

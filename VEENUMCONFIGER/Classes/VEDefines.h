@@ -251,6 +251,7 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KAUDIOPLANTED       = 52,//
     KANTI_SHAKE         = 53,//防抖
     KMORPH              = 54,//边角定位
+    KMORPH_DELETE       = 55,//删除边角定位
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
