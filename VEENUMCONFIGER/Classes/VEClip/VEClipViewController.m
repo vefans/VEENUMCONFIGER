@@ -45,6 +45,7 @@
 @property(nonatomic,strong)VECropTypeView            * cropTypeView;
 @property(nonatomic,strong) NSMutableArray           * dataCropTypeArray;
 
+@property(nonatomic, weak)UIView                            * ribbtonView;
 @property(nonatomic, weak)UIScrollView                     *cropTypeScrollView;
 @property(nonatomic, weak)UIButton                          *cropTypeSelectBtn;
 
@@ -346,14 +347,14 @@
     {
         self.cropTypeView.hidden = YES;
         {
-            UIScrollView *scrollView= [[UIScrollView alloc] initWithFrame:self.cropTypeView.frame];
+            UIScrollView *scrollView= [[UIScrollView alloc] initWithFrame:CGRectMake(self.cropTypeView.frame.origin.x, self.cropTypeView.frame.origin.y, self.cropTypeView.frame.size.width, self.cropTypeView.frame.size.height+20)];
             [_photoView addSubview:scrollView];
             _cropTypeScrollView = scrollView;
             _cropTypeScrollView.tag = 222221;
         }
         
-        float cropTypeWidth = _cropTypeScrollView.frame.size.height;
-        float cropTypeHeight =  _cropTypeScrollView.frame.size.height;
+        float cropTypeWidth = _cropTypeScrollView.frame.size.height - 20;
+        float cropTypeHeight =  _cropTypeScrollView.frame.size.height - 20;
         NSMutableArray * array = [NSMutableArray new];
         [array addObject:[NSNumber numberWithInteger:0]];
         [array addObject:[NSNumber numberWithInteger:3]];
@@ -377,7 +378,7 @@
             UIImage * namedImage = nil;
             UIImage *selectImage = nil;
             
-            UIButton   *sender = [[UIButton alloc] initWithFrame:CGRectMake(contWidth, 0, cropTypeWidth, cropTypeHeight)];
+            UIButton   *sender = [[UIButton alloc] initWithFrame:CGRectMake(contWidth, 5, cropTypeWidth, cropTypeHeight)];
             
             switch (index) {
                 case 0://原比例
@@ -470,8 +471,9 @@
                     break;
             }
             
-            sender.frame = CGRectMake(contWidth, 0, (namedImage.size.width/namedImage.size.height)*cropTypeHeight, cropTypeHeight);
-            contWidth += (namedImage.size.width/namedImage.size.height)*cropTypeHeight + 10;
+            sender.frame = CGRectMake(contWidth, 5, (namedImage.size.width/namedImage.size.height)*cropTypeHeight, cropTypeHeight);
+            contWidth += (namedImage.size.width/namedImage.size.height)*cropTypeHeight + 5;
+
             
             if( str )
             {
@@ -507,10 +509,45 @@
             }
             [sender addTarget:self action:@selector(cropType_Btn:) forControlEvents:UIControlEventTouchUpInside];
         }
-        [self.cropTypeScrollView setContentSize:CGSizeMake(contWidth, self.cropTypeScrollView.frame.size.height)];
+        [self.cropTypeScrollView setContentSize:CGSizeMake(contWidth + 5, self.cropTypeScrollView.frame.size.height)];
         [self.cropTypeScrollView setContentOffset:CGPointMake(0, 0)];
         self.cropTypeScrollView.showsVerticalScrollIndicator = NO;
         self.cropTypeScrollView.showsHorizontalScrollIndicator = NO;
+        
+        {
+            
+            UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - (self.cropTypeScrollView.frame.size.height + self.toolBar.frame.size.height+kBottomSafeHeight), self.view.frame.size.width, self.cropTypeScrollView.frame.size.height + self.toolBar.frame.size.height)];
+            [VEHelp addShadowToView:view withColor:UIColorFromRGB(0x000000)];
+            {
+                UIView *gsView = [[UIView alloc] init];
+                gsView.backgroundColor = [UIColor clearColor];
+                gsView.frame = CGRectMake(0, 0, view.frame.size.width, 15);
+                [gsView addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(view_GSAction:)]];
+                {
+                    UIView *lineView = [UIView new];
+                    lineView.backgroundColor = [UIColor colorWithRed:218/255.0 green:218/255.0 blue:218/255.0 alpha:1.0];
+                    lineView.frame = CGRectMake( (gsView.frame.size.width - 44)/2.0 , (gsView.frame.size.height - 4)/2.0 + 3, 44, 4);
+                    lineView.layer.cornerRadius = 2;
+                    lineView.layer.masksToBounds = YES;
+                    [gsView addSubview:lineView];
+                }
+                [view addSubview:gsView];
+            }
+            
+            {
+                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 39.5 + 20, view.frame.size.width, 0.5)];
+                label.backgroundColor = UIColorFromRGB(0xe1e1e1);
+                [view addSubview:label];
+            }
+            
+            self.ribbtonView = view;
+            [self.view addSubview:view];
+            self.cropTypeScrollView.frame = CGRectMake(0, 20 + 40, self.cropTypeScrollView.frame.size.width, self.cropTypeScrollView.frame.size.height);
+            self.toolBar.frame = CGRectMake(0,  15, self.toolBar.frame.size.width, 40);
+            self.titlelab.frame = CGRectMake(50, 0, kWIDTH-100, 40);
+            [view addSubview:self.cropTypeScrollView];
+            [view addSubview:self.toolBar];
+        }
     }
     else{
         for (int i = 0; i< 9; i++) {
@@ -629,6 +666,13 @@
     }
 }
 
+
+-(void)view_GSAction:(UIPanGestureRecognizer *)gesture
+{
+    if(gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled){
+        [self finishToolBarButtonClicked];
+    }
+}
 /**初始化播放器
  */
 - (void)initPlayer{

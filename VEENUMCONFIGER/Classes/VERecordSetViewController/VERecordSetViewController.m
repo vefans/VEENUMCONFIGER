@@ -57,6 +57,7 @@
 
 - (void)refreshNavgation{
     self.title = VELocalizedString(@"设置", nil);
+    self.navigationController.navigationBar.backgroundColor = NAVIBGCOLOR;
     self.navigationController.navigationBar.barTintColor = NAVIBGCOLOR;
     self.navigationController.navigationBarHidden = NO;
     
@@ -120,7 +121,7 @@
 
 - (void)initSetTableView {
     setTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kWIDTH, kHEIGHT - (iPhone_X ? 88 : 44)) style:UITableViewStylePlain];
-    setTableView.backgroundColor    = [UIColor clearColor];
+    setTableView.backgroundColor    = SCREEN_BACKGROUND_COLOR;
     setTableView.backgroundView     = nil;
     setTableView.delegate           = self;
     setTableView.dataSource         = self;

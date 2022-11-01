@@ -49,7 +49,7 @@
     VEDrawTouchPointView *draw = [[VEDrawTouchPointView alloc] initWithFrame:self.bounds];
     _drawView = draw;
     _drawView.canDrawLine = YES;
-    
+    _drawView.delegate = self;
     //_drawView.layer.borderColor = [UIColor grayColor].CGColor;
     //_drawView.layer.borderWidth = 1;
     [self addSubview:_drawView];
@@ -79,6 +79,11 @@
 /** 撤消操作 */
 - (void)revokeScreen {
     [_drawView revokeScreen];
+}
+
+- (void)redoRevokeScreen
+{
+    [_drawView redoRevokeScreen];
 }
 
 /** 擦除 */
@@ -209,7 +214,11 @@
     }
     return isHasContent;
 }
-
+- (void)drawCallback:(VEDrawTouchPointView *)drawView{
+    if([self.delegate respondsToSelector:@selector(drawCallback:)]){
+        [self.delegate drawCallback:self];
+    }
+}
 - (void)dealloc {
     NSLog(@"%s", __func__);
 }
@@ -280,11 +289,16 @@
     [self setNeedsDisplay];
 }
 
-
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    if([self.delegate respondsToSelector:@selector(drawCallback:)]){
+        [self.delegate drawCallback:self];
+    }
+}
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        _redostroks = [NSMutableArray new];
         _textDescs = [[NSMutableArray alloc] init];
         _stroks = [[NSMutableArray alloc] initWithCapacity:1];
         self.backgroundColor = [UIColor clearColor];
@@ -319,10 +333,24 @@
 - (void)revokeScreen {
     _isEarse = NO;
     if(_canDrawLine){
+        [_redostroks addObject:[_stroks lastObject]];
         [_stroks removeLastObject];
     }else{
         [[_textDescs lastObject] removeFromSuperview];
         [_textDescs removeLastObject];
+    }
+    [self setNeedsDisplay];
+}
+
+/** 恢复操作 */
+- (void)redoRevokeScreen {
+    if([[_redostroks lastObject] isKindOfClass:[VEDWStroke class]]){
+        [_stroks addObject:[_redostroks lastObject]];
+        [_redostroks removeLastObject];
+    }else{
+        [self.superview addSubview:[_redostroks lastObject]];
+        [_textDescs addObject:[_redostroks lastObject]];
+        [_redostroks removeLastObject];
     }
     [self setNeedsDisplay];
 }

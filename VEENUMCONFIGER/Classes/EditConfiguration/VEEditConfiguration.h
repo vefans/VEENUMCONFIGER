@@ -136,7 +136,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 是否禁止编辑(default false)
  */
 @property (nonatomic, assign) bool isDisableEdit;
-
+/** 选取素材进入GIF制作
+ */
+@property (nonatomic, assign) bool isGIFAlbum;
 #pragma mark- 设置截取界面
 /** 截取时间模式
  */
@@ -366,6 +368,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 涂鸦笔资源地址
  */
 @property (nonatomic, copy, nullable) NSString *doodlePenResourcePath;
+/** 蒙版资源地址
+ */
+@property (nonatomic, copy, nullable) NSString *maskResourcePath;
 
 /** MV (default false)
  */

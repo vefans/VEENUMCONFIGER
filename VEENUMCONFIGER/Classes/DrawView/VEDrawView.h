@@ -30,6 +30,8 @@
 - (void)clearScreen;
 /** 撤消操作 */
 - (void)revokeScreen;
+/** 恢复操作 */
+- (void)redoRevokeScreen;
 /** 擦除 */
 - (void)eraseSreen;
 /** 设置画笔颜色 */
@@ -52,18 +54,24 @@
 @end
 
 
-
+@protocol VEDrawTouchPointViewDelegate <NSObject>
+- (void)drawCallback:(VEDrawTouchPointView *) drawView;
+@end
 @interface VEDrawTouchPointView : UIView
 @property (nonatomic, strong) NSMutableArray *stroks;
+@property (nonatomic, strong) NSMutableArray *redostroks;
 @property (nonatomic, strong) NSMutableArray <UILabel *> *textDescs;
 @property (nonatomic, assign,readonly) CGPoint touchupCurrentPoint;
 @property (nonatomic,assign)BOOL canDrawLine;
 @property (nonatomic, assign) VEDoodleType doodleType;
+@property (nonatomic,weak) id <VEDrawTouchPointViewDelegate> delegate;
 
 /** 清屏 */
 - (void)clearScreen;
 /** 撤消操作 */
 - (void)revokeScreen;
+/** 恢复操作 */
+- (void)redoRevokeScreen;
 /** 擦除 */
 - (void)eraseSreen;
 /** 设置画笔颜色 */

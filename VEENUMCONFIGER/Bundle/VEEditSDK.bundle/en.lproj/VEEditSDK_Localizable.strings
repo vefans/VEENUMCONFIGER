@@ -1855,6 +1855,8 @@
 "请选择编组的默认片段" = "Please select the default segment of the group";
 "仅支持视频导入" = "Only supports video import";
 "仅支持图片导入" = "Only supports picture import";
+"不支持同时导入图片和视频" = "Importing pictures and videos at the same time is not supported";
+"不支持同时导入图片和实况" = "Importing pictures and livephotos at the same time is not supported";
 "已有分类" = "Existed";
 "新建分类" = "Create";
 "新建分类中,请稍候..." = "New category, please wait...";
@@ -2059,10 +2061,13 @@
 "版本" = "Version";
 "关于" = "About";
 "上传完成" =  "Upload complete";
+"备份完成" =  "Backup complete";
+"开始备份" =  "Backup start";
 "存在失败,请点击重新上传" = "Upload fail, please try again";
 "立刻备份" = "Backup now";
 "选择需要备份的草稿" = "Select draft to backup";
 "%d个草稿可备份" = "%d drafts can be backup";
+"%d个草稿正在备份中" = "%d drafts be backuping";
 "上传提示" = "Upload notice";
 "已经存在云备份，是覆盖还是新建?" = "Cloud backup already exists, overwrite or create new file?";
 "新建" = "Create";
@@ -2636,3 +2641,6 @@
 "添加画面特效" = "Add video effects";
 "静态" = "Static";
 "动态" = "Dynamic";
+
+"输入自定义分辨率" = "Enter custom resolution";
+"请输入分辨率（例如：1280:720）" = "For example: 1280:720";

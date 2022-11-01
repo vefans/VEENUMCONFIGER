@@ -234,6 +234,7 @@
     copy.netMaterialURL = _netMaterialURL;
     copy.onlineAlbumPath = _onlineAlbumPath;
     copy.doodlePenResourcePath = _doodlePenResourcePath;
+    copy.maskResourcePath = _maskResourcePath;
 
     return copy;
 }
@@ -349,6 +350,7 @@
     copy.netMaterialURL = _netMaterialURL;
     copy.onlineAlbumPath = _onlineAlbumPath;
     copy.doodlePenResourcePath = _doodlePenResourcePath;
+    copy.maskResourcePath = _maskResourcePath;
 
     return copy;
 }

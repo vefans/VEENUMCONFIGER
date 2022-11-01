@@ -41,6 +41,8 @@ VENetworkResourceType const VENetworkResourceType_ParticleEffect = @"particle";/
 VENetworkResourceType const VENetworkResourceType_ShootParticle = @"shoot_particle";//拍摄粒子
 VENetworkResourceType const VENetworkResourceType_CoverTemplate = @"templatecover";//封面模板
 VENetworkResourceType const VENetworkResourceType_DoodlePen = @"doodleeffect";//涂鸦笔
+VENetworkResourceType const VENetworkResourceType_Mask = @"mask";//蒙版
+VENetworkResourceType const VENetworkResourceType_MaskShape = @"mask_shape";//形状蒙版
 
 //亮度
 float const VEAdjust_MinValue_Brightness = -1.0;
@@ -2674,23 +2676,78 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return mask;
 }
 
-+ (MaskObject *)getMaskWithPath:(NSString *) path
-{
++ (VEMaskType)getMaskTypeWithPath:(NSString *)path {
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:configPath]) {
+        for (NSString *fileName in [[NSFileManager defaultManager] enumeratorAtPath:path].allObjects) {
+            if ([fileName.pathExtension isEqualToString:@"json"]) {
+                configPath = [path stringByAppendingPathComponent:fileName];
+                break;
+            }
+        }
+    }
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
     NSMutableDictionary *configDic = [self objectForData:jsonData];
     jsonData = nil;
+    
+    NSString *name = configDic[@"name"];
+    VEMaskType maskType = VEMaskType_NONE;
+    if ([name isEqualToString:@"maskL"]) {
+        maskType = VEMaskType_LINNEAR;
+    }
+    else if ([name isEqualToString:@"maskM"]) {
+        maskType = VEMaskType_MIRRORSURFACE;
+    }
+    else if ([name isEqualToString:@"maskC"]) {
+        maskType = VEMaskType_ROUNDNESS;
+    }
+    else if ([name isEqualToString:@"maskR"]) {
+        maskType = VEMaskType_RECTANGLE;
+    }
+    else if ([name isEqualToString:@"maskQuadRangle"]) {
+        maskType = VEMaskType_QUADRILATERAL;
+    }
+    else if ([name isEqualToString:@"maskS"]) {
+        maskType = VEMaskType_PENTACLE;
+    }
+    else if ([name isEqualToString:@"maskH"]) {
+        maskType = VEMaskType_LOVE;
+    }
+    else if (name.length > 0) {
+        maskType = VEMaskType_SHAPE;
+    }
+    
+    return maskType;
+}
+
++ (MaskObject *)getMaskWithPath:(NSString *) path
+{
+    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:configPath]) {
+        for (NSString *fileName in [[NSFileManager defaultManager] enumeratorAtPath:path].allObjects) {
+            if ([fileName.pathExtension isEqualToString:@"json"]) {
+                configPath = [path stringByAppendingPathComponent:fileName];
+                path = configPath.stringByDeletingLastPathComponent;
+                break;
+            }
+        }
+    }
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
+    NSMutableDictionary *configDic = [self objectForData:jsonData];
+    jsonData = nil;
+    if (![configDic.allKeys containsObject:@"fragShader"]) {
+        return [self getMaskShapeWithPath:path];
+    }
     NSString *fragPath = [path stringByAppendingPathComponent:configDic[@"fragShader"]];
     NSString *vertPath = [path stringByAppendingPathComponent:configDic[@"vertShader"]];
     NSError * error = nil;
     
     MaskObject *mask = [[MaskObject alloc] init];
-    mask.maskImagePath = path;
     mask.folderPath = path;
     mask.frag = [NSString stringWithContentsOfFile:fragPath encoding:NSUTF8StringEncoding error:&error];
     mask.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
     mask.name = configDic[@"name"];
-//    mask.maskName = maskName;
+    mask.maskName = mask.name;
     
     NSArray *uniformParams = configDic[@"uniformParams"];
     [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -2755,6 +2812,31 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     {
         mask.maskImagePath = nil;
     }
+    return mask;
+}
+
++ (MaskObject *)getMaskShapeWithPath:(NSString *)path {
+    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:configPath]) {
+        for (NSString *fileName in [[NSFileManager defaultManager] enumeratorAtPath:path].allObjects) {
+            if ([fileName.pathExtension isEqualToString:@"json"]) {
+                configPath = [path stringByAppendingPathComponent:fileName];
+                path = configPath.stringByDeletingLastPathComponent;
+                break;
+            }
+        }
+    }
+    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
+    NSMutableDictionary *configDic = [self objectForData:jsonData];
+    jsonData = nil;
+    
+    MaskObject *mask = [[MaskObject alloc] init];
+    mask.folderPath = path;
+    if ([configDic[@"name"] length] > 0) {
+        mask.maskImagePath = [path stringByAppendingPathComponent:configDic[@"name"]];
+    }
+    mask.isRepeat = [configDic[@"repeat"] boolValue];
+    
     return mask;
 }
 
@@ -5974,7 +6056,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     if (!folderPath) {
                         overlay.media.mask.folderPath = [VEHelp getFileURLFromAbsolutePath_str:overlay.media.mask.folderPath];
                     }
+#ifndef kNewMask
                     MaskObject *mask = [VEHelp getMaskWithName:overlay.media.mask.folderPath.lastPathComponent];
+#else
+                    MaskObject *mask = [VEHelp getMaskWithPath:overlay.media.mask.folderPath];
+#endif
                     overlay.media.mask.name = mask.name;
                     overlay.media.mask.frag = mask.frag;
                     overlay.media.mask.vert = mask.vert;
@@ -6855,8 +6941,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     if (!folderPath) {
                         asset.mask.folderPath = [VEHelp getFileURLFromAbsolutePath_str:asset.mask.folderPath];
                     }
+#ifndef kNewMask
                     NSString *maskName = asset.mask.folderPath.lastPathComponent;
                     MaskObject *mask = [VEHelp getMaskWithName:maskName];
+#else
+                    MaskObject *mask = [VEHelp getMaskWithPath:asset.mask.folderPath];
+#endif
                     asset.mask.frag = mask.frag;
                     asset.mask.vert = mask.vert;
                     asset.mask.maskImagePath = mask.maskImagePath;
@@ -7369,6 +7459,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 //文字对齐方式
                 NSString * alignment = obj[@"alignment"];
                 
+                
                 if( [alignment isEqualToString:@"center"] )
                 {
                     captionItem.textAlignment = CaptionTextAlignmentCenter;
@@ -7433,6 +7524,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 //文字旋转角度
                 float angle = [obj[@"angle"] floatValue];
                 captionItem.angle = angle;
+                //字间距
+                if( [obj[@"space"] floatValue] )
+                {
+                    captionItem.wordSpacing = [obj[@"space"] floatValue];
+                }
                 //描边
                 if( [obj[@"outline"] floatValue] )
                 {
@@ -10738,8 +10834,13 @@ static OSType help_inputPixelFormat(){
                  @"Image buffer must have 32BGRA pixel format type");
         size_t width = CVPixelBufferGetWidth(copyedPixelBuffer);
         size_t height = CVPixelBufferGetHeight(copyedPixelBuffer);
-        NSAssert(CVPixelBufferGetWidth(pixelBuffer) == width, @"Height must match");
-        NSAssert(CVPixelBufferGetHeight(pixelBuffer) == height, @"Width must match");
+        size_t width1 = CVPixelBufferGetWidth(pixelBuffer);
+        size_t height1 = CVPixelBufferGetHeight(pixelBuffer);
+        if (width != width1 || height != height1) {
+            NSLog(@"width:%zu width1:%zu height:%zu height1:%zu", width, width1, height, height1);
+//            NSAssert(CVPixelBufferGetWidth(pixelBuffer) == width, @"Width must match");
+//            NSAssert(CVPixelBufferGetHeight(pixelBuffer) == height, @"Height must match");
+        }
         
         CVPixelBufferLockBaseAddress(pixelBuffer, 0);
         CVPixelBufferLockBaseAddress(copyedPixelBuffer, 0);
@@ -12002,6 +12103,37 @@ static OSType help_inputPixelFormat(){
             return nil;
         }
     }
+}
++ (void)addShadowToView:(UIView *)view withColor:(UIColor *)theColor {
+    [self addShadowToView:view withColor:theColor shadowRadius:8.0 cornerRadii:CGSizeMake(15, 15)];
+}
++ (void)addShadowToView:(UIView *)view withColor:(UIColor *)theColor shadowRadius:(float)shadowRadius{
+    [self addShadowToView:view withColor:theColor shadowRadius:shadowRadius cornerRadii:CGSizeMake(15, 15)];
+}
++ (void)addShadowToView:(UIView *)view withColor:(UIColor *)theColor cornerRadii:(CGSize)cornerRadii{
+    [self addShadowToView:view withColor:theColor shadowRadius:8.0 cornerRadii:cornerRadii];
+}
++ (void)addShadowToView:(UIView *)view withColor:(UIColor *)theColor shadowRadius:(float)shadowRadius cornerRadii:(CGSize)cornerRadii{
+//    //阴影
+       if( theColor )
+       {
+           view.backgroundColor = nil;
+           view.layer.shadowColor = theColor.CGColor;
+           view.layer.shadowOpacity = 0.3;
+           view.layer.shadowRadius = 8.0;
+           view.layer.shadowOffset = CGSizeMake(0,0);
+           view.layer.masksToBounds = NO;
+       }
+
+       //圆角
+       UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:view.bounds byRoundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight cornerRadii:CGSizeMake(15, 15)];
+       CALayer *maskLayer = [[CAShapeLayer alloc] init];
+       maskLayer.backgroundColor = [UIColor whiteColor].CGColor;
+       maskLayer.frame = view.bounds;
+       CAShapeLayer *lay = [CAShapeLayer layer];
+       lay.path = maskPath.CGPath;
+       maskLayer.mask = lay;
+       [view.layer insertSublayer:maskLayer atIndex:0];
 }
 
 @end

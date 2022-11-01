@@ -26,6 +26,8 @@ FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_ParticleEffe
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_ShootParticle;//拍摄粒子
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CoverTemplate;//封面模板
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_DoodlePen;//涂鸦笔
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Mask;//蒙版
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_MaskShape;//形状蒙版
 
 //亮度
 extern float const VEAdjust_MinValue_Brightness;
@@ -283,8 +285,9 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSMutableArray *)getMaskArray;
 
 + (MaskObject *)getMaskWithName:(NSString *)maskName;
-
++ (VEMaskType)getMaskTypeWithPath:(NSString *)path;
 + (MaskObject *)getMaskWithPath:(NSString *) path;
++ (MaskObject *)getMaskShapeWithPath:(NSString *) path;
 
 + (NSDictionary *) getVideoInformation:( NSURL * ) url;
 
@@ -567,4 +570,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (UIColor *)colorAtPixel:(CGPoint)point source:(UIImage *)image;
 + (UIImage *)getOriginalImageWithUrl:(NSURL *)url;
 
++ (void)addShadowToView:(UIView *)view withColor:(UIColor *)theColor;
++ (void)addShadowToView:(UIView *)view withColor:(UIColor *)theColor shadowRadius:(float)shadowRadius;
++ (void)addShadowToView:(UIView *)view withColor:(UIColor *)theColor cornerRadii:(CGSize)cornerRadii;
 @end
