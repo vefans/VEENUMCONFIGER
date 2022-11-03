@@ -91,6 +91,8 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 - (void)veShowTrimControllerWithSuperView:(UIViewController *)superViewController
                                      file:(VEMediaInfo *)file
                            isRotateEnable:(BOOL)isRotateEnable
+                                 trimType:(TRIMMODE)trimType
+              trimDuration_OneSpecifyTime:(double)trimDuration_OneSpecifyTime
                         completionHandler:(void (^)(float rotate, CMTimeRange trimTimeRange))completionHandler;
 
 /** 显示裁剪图片界面
