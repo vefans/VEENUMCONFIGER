@@ -17,6 +17,7 @@
 //特效
 @property(nonatomic,weak)LongCacheImageView *thumbnailIV;
 @property(nonatomic,strong)UIView *maskView;
+@property(nonatomic,strong)UIView *editView;
 @property(nonatomic,weak)UILabel *label;
 @property(nonatomic,weak)UILabel *moveTitleLabel;
 @property(nonatomic,assign)float propor;

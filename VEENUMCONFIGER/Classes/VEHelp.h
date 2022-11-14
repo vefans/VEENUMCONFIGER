@@ -83,6 +83,8 @@ extern float const VEAdjust_MaxValue_Exposure;
 extern float const VEAdjust_DefaultValue_Exposure;
 
 @interface VEHelp : NSObject
++ (NSString *)createFilename;
+
 + (UIEdgeInsets) safeAreaInsets;
 +(NSString *)pathFontForURL:(NSURL *)aURL;
 
@@ -573,4 +575,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (void)addShadowToView:(UIView *)view withColor:(UIColor *)theColor;
 + (void)addShadowToView:(UIView *)view withColor:(UIColor *)theColor shadowRadius:(float)shadowRadius;
 + (void)addShadowToView:(UIView *)view withColor:(UIColor *)theColor cornerRadii:(CGSize)cornerRadii;
++ (UIImage *)getScreenshotWithView:(UIView *)view;
+
++ (NSString *)getAnitionPenConfigDownloadPathWithDic:(NSDictionary *)itemDic;
 @end

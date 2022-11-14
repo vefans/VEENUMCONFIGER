@@ -7,6 +7,7 @@
 //
 
 #import "VEAddItemButton.h"
+#import "VEHelp.h"
 #define kFxIconTag 1000
 
 @interface VEAddItemButton()<CAAnimationDelegate>
@@ -52,8 +53,34 @@
     fxItemBtn.userInteractionEnabled = YES;
     fxItemBtn.layer.masksToBounds = YES;
     
+    
+    {
+        UIView * editView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, fxItemBtn.frame.size.width, fxItemBtn.frame.size.width)];
+        editView.backgroundColor = [UIColorFromRGB(0x000000) colorWithAlphaComponent:0.3];
+        fxItemBtn.editView = editView;
+        [fxItemBtn.thumbnailIV addSubview:editView];
+        fxItemBtn.editView.tag = kFxIconTag + 10;
+        
+        UIImageView * editIconView = [[UIImageView alloc] initWithFrame:CGRectMake((editView.frame.size.width - 22)/2.0, (editView.frame.size.height - 20 - 22)/2.0, 22, 22)];
+        editIconView.userInteractionEnabled = YES;
+        editIconView.image = [VEHelp imageNamed:@"手写动画画笔"];
+        editIconView.tag = 1;
+        [fxItemBtn.editView addSubview:editIconView];
+        
+        UILabel * editLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(editIconView.frame), editView.frame.size.width, 15)];
+        editLabel.backgroundColor = [UIColor clearColor];
+        editLabel.userInteractionEnabled = YES;
+        editLabel.font = [UIFont systemFontOfSize:9];
+        editLabel.textColor = [UIColor whiteColor];
+        editLabel.text = @"更换画笔";
+        editLabel.textAlignment = NSTextAlignmentCenter;
+        [fxItemBtn.editView addSubview:editLabel];
+        editView.hidden = YES;
+    }
+    
     return fxItemBtn;
 }
+
 
 -(void)pauseLayer:(CALayer*)layer
 {

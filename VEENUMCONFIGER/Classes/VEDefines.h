@@ -705,6 +705,11 @@ isPhoneX;\
 #define kStickerTypesPath [kStickerFolder stringByAppendingPathComponent:@"EffectTypesList.plist"]
 #define kNewStickerPlistPath [kStickerFolder stringByAppendingPathComponent:@"EffectPlistList.plist"]
 #define kNewStickerCategoryPlistPath [kStickerFolder stringByAppendingPathComponent:@"EffectCategoryPlistList.plist"]
+//笔配置
+#define kP_anitConfigFolder [kVEDirectory stringByAppendingPathComponent:@"P_anitConfigs"]
+#define kP_anitConfigCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"p_anitConfigCategory.plist"]
+#define kP_anitConfigTypeListPath [kFilterFolder stringByAppendingPathComponent:@"p_anitConfigTypeList.plist"]
+
 //滤镜目录
 #define kFilterFolder [kVEDirectory stringByAppendingPathComponent:@"filters"]
 #define kFilterCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"filterCategory.plist"]
@@ -778,5 +783,3 @@ isPhoneX;\
 #define VECustomErrorDomain @"com.VESDK.ErrorDomain"
 
 #define kThumbnailFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/thumbnailFolder"]
-
-

@@ -2499,6 +2499,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return itemPath;
 }
 
+
 + (NSString *)getFilterDownloadPathWithDic:(NSDictionary *)itemDic {
     NSString *filterFolderPath = kFilterFolder;
     if(![[NSFileManager defaultManager] fileExistsAtPath:filterFolderPath]){
@@ -2712,6 +2713,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     else if ([name isEqualToString:@"maskH"]) {
         maskType = VEMaskType_LOVE;
+    }
+    else if ([name isEqualToString:@"maskText"]) {
+        maskType = VEMaskType_TEXT;
     }
     else if (name.length > 0) {
         maskType = VEMaskType_SHAPE;
@@ -7262,6 +7266,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return customFilter;
 }
 
+
 #pragma mark- 字幕花字
 + (CaptionEffectCfg *)getFLowerWordConfigWithIndex:(NSInteger)index {
     NSString *configPath = [[VEHelp getEditBundle] pathForResource:[NSString stringWithFormat:@"/New_EditVideo/flowerWord/colortext%ld.json", index] ofType:nil];
@@ -7305,6 +7310,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }];
     }
     return stroke;
+}
+
++ (NSString *)createFilename {
+    NSDate *date_ = [NSDate date];
+    NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
+    [dateformater setDateFormat:@"yyyy-MM-dd_HH-mm-ss-sss"];
+    NSString *timeFileName = [dateformater stringFromDate:date_];
+    return timeFileName;
 }
 
 #pragma mark- 文字模版
@@ -7860,7 +7873,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             captionItem.otherAnimates = [NSMutableArray new];
             NSArray *array = effectDic[@"other"];
             [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                [captionItem.otherAnimates addObject:[VEHelp getAnmationDic:(NSMutableDictionary*)obj atPath:path]];
+                NSMutableDictionary *configer = [[NSMutableDictionary alloc] init];
+                CustomFilter *otherAnimation = [VEHelp getAnmationDic:(NSMutableDictionary*)obj atPath:path];
+                [configer setObject:effectDic[@"nibOffset"] forKey:@"nibOffset"];
+                [configer setObject:effectDic[@"penAspectRatio"] forKey:@"penAspectRatio"];
+                [configer setObject:effectDic[@"penScale"] forKey:@"penScale"];
+                otherAnimation.configure = configer;
+                
+                [captionItem.otherAnimates addObject:otherAnimation];
             }];
         }
         else{
@@ -12134,6 +12154,28 @@ static OSType help_inputPixelFormat(){
        lay.path = maskPath.CGPath;
        maskLayer.mask = lay;
        [view.layer insertSublayer:maskLayer atIndex:0];
+}
+
++ (UIImage *)getScreenshotWithView:(UIView *)view {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
++ (NSString *)getAnitionPenConfigDownloadPathWithDic:(NSDictionary *)itemDic {
+    NSString *filterFolderPath = kFilterFolder;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:filterFolderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:filterFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *file = itemDic[@"file"];
+    NSString *pathExtension = [[[file pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    NSString *itemPath = [[filterFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[file hash]]] stringByAppendingPathExtension:pathExtension];
+    if ([file.pathExtension isEqualToString:@"zip"]) {
+        itemPath = [itemPath stringByDeletingPathExtension];
+    }
+    return itemPath;
 }
 
 @end

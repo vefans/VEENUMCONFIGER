@@ -299,7 +299,11 @@
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"NetworkMaterialCollectionViewCell";
     VENetworkMaterialCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    
+    if( cell.collectionView )
+    {
+        [cell.collectionView removeFromSuperview];
+        cell.collectionView = nil;
+    }
     cell.delegate = self;
     if( self.isImageShow )
     {

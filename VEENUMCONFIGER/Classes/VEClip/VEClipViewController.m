@@ -477,7 +477,7 @@
             
             if( str )
             {
-                UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, sender.frame.size.height - ( 20/2.0 + sender.frame.size.width/2.0 ), sender.frame.size.width, 20)];
+                UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, sender.frame.size.height - 11 - ( 20/2.0 + (sender.frame.size.width - 16)/2.0 ), sender.frame.size.width, 20)];
                 label.tag = 22222;
                 label.textColor = PESDKTEXT_COLOR;
                 label.textAlignment = NSTextAlignmentCenter;
@@ -516,7 +516,7 @@
         
         {
             
-            UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - (self.cropTypeScrollView.frame.size.height + self.toolBar.frame.size.height+kBottomSafeHeight), self.view.frame.size.width, self.cropTypeScrollView.frame.size.height + self.toolBar.frame.size.height)];
+            UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - (self.cropTypeScrollView.frame.size.height + self.toolBar.frame.size.height+kBottomSafeHeight + 3), self.view.frame.size.width, self.cropTypeScrollView.frame.size.height + self.toolBar.frame.size.height+kBottomSafeHeight + 3)];
             [VEHelp addShadowToView:view withColor:UIColorFromRGB(0x000000)];
             {
                 UIView *gsView = [[UIView alloc] init];
