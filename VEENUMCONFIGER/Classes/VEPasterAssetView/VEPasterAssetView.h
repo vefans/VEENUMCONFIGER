@@ -80,6 +80,9 @@ NS_ASSUME_NONNULL_BEGIN
 -( NSMutableArray * )getPasterAssetViewArray;
 
 -( void )recoverPasterAssetView;
+
+
+@property (nonatomic, assign) UIGestureRecognizerState gestureState;
 @end
 
 NS_ASSUME_NONNULL_END

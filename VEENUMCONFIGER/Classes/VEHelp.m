@@ -7873,14 +7873,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             captionItem.otherAnimates = [NSMutableArray new];
             NSArray *array = effectDic[@"other"];
             [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                NSMutableDictionary *configer = [[NSMutableDictionary alloc] init];
-                CustomFilter *otherAnimation = [VEHelp getAnmationDic:(NSMutableDictionary*)obj atPath:path];
-                [configer setObject:effectDic[@"nibOffset"] forKey:@"nibOffset"];
-                [configer setObject:effectDic[@"penAspectRatio"] forKey:@"penAspectRatio"];
-                [configer setObject:effectDic[@"penScale"] forKey:@"penScale"];
-                otherAnimation.configure = configer;
-                
-                [captionItem.otherAnimates addObject:otherAnimation];
+                [captionItem.otherAnimates addObject:[VEHelp getAnmationDic:(NSMutableDictionary*)obj atPath:path]];
             }];
         }
         else{
