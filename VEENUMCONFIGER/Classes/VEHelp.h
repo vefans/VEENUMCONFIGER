@@ -578,4 +578,5 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (UIImage *)getScreenshotWithView:(UIView *)view;
 
 + (NSString *)getAnitionPenConfigDownloadPathWithDic:(NSDictionary *)itemDic;
++ (NSString *)getAnitionPenConfigFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 @end

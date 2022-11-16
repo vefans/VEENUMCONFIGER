@@ -14,7 +14,6 @@
         _appId = @"1259660397";
         _secretId = @"AKIDmOlskNuJdiY8Sqhxf8LI5wXtzpQ63K4Y";
         _secretKey = @"OXQcYEiwusa1EAqGPIxM5apoXzCBuACy";
-        _serverCallbackPath = @"http://d.56show.com/filemanage2/public/filemanage/voice2text/audio2text4tencent";
     }
     return self;
 }

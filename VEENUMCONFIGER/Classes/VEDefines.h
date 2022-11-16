@@ -252,6 +252,7 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KANTI_SHAKE         = 53,//防抖
     KMORPH              = 54,//边角定位
     KMORPH_DELETE       = 55,//删除边角定位
+    kVEVR               = 60, //全景
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -555,11 +556,6 @@ isPhoneX;\
 
 #define MAX_DETECT_NUM 21 //最大检测次数
 
-
-#define getEffectTypeUrl @"http://kx.56show.com/kuaixiu/openapi/video/getcaption3"
-#define getCaptionTypeNoIdUrl @"http://kx.56show.com/kuaixiu/openapi/video/getzimu4"
-#define getFontTypeUrl @"http://kx.56show.com/kuaixiu/openapi/video/getfont3"
-
 #define kBundName @"VEEditSDK"
 #define kVELanguage @"VELanguage"
 
@@ -747,6 +743,10 @@ isPhoneX;\
 #define kDressUpFolder [kVEDirectory stringByAppendingPathComponent:@"dressUps"]
 #define kDressUpCategoryPlist [kDressUpFolder stringByAppendingPathComponent:@"dressUpCategory.plist"]
 #define kNewDressUpPlistPath [kDressUpFolder stringByAppendingPathComponent:@"dressUpTypeList.plist"]
+#pragma mark-图片上色
+#define kFlowColorFillFolder [kVEDirectory stringByAppendingPathComponent:@"FlowColorFills"]
+#define kColorFillCategoryPlist [kFlowCollageFolder stringByAppendingPathComponent:@"ColorFillCategory.plist"]
+#define kNewColorFillPlistPath [kFlowCollageFolder stringByAppendingPathComponent:@"ColorFillTypeList.plist"]
 #pragma mark-图片流动音乐
 #define kFlowCollageFolder [kVEDirectory stringByAppendingPathComponent:@"FlowCollages"]
 #define kCollageCategoryPlist [kFlowCollageFolder stringByAppendingPathComponent:@"CollageCategory.plist"]

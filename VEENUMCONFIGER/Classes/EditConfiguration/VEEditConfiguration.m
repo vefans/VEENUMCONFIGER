@@ -101,14 +101,12 @@
         _trimExportVideoType            = TRIMEXPORTVIDEOTYPE_ORIGINAL;
         _presentAnimated            = true;
         _dissmissAnimated           = true;
-        _netMaterialTypeURL = @"http://d.56show.com/filemanage2/public/filemanage/file/typeData";
         _newmvResourceURL = nil;
         _newmusicResourceURL = nil;
         _newartist = VEENUMCONFIGERLocalizedString(@"音乐家 Jason Shaw", nil);
         _newartistHomepageTitle = @"@audionautix.com";
         _newartistHomepageUrl = @"https://audionautix.com";
         _newmusicAuthorizationTitle = VEENUMCONFIGERLocalizedString(@"授权证书", nil);
-        _newmusicAuthorizationUrl = @"http://d.56show.com/accredit/accredit.jpg";
         _filterResourceURL = nil;
         _subtitleResourceURL = nil;
         _effectResourceURL = nil;

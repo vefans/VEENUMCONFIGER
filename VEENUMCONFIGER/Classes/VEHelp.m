@@ -2513,6 +2513,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     return itemPath;
 }
+
 + (NSString *)getCollageDownloadPathWithDic:(NSDictionary *)itemDic {
     NSString *folderPath = kFlowCollageFolder;
     NSString *itemPath = [folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[itemDic[@"file"] hash]]];
@@ -5222,34 +5223,23 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 +(void)downloadFonts:(void(^)(NSError *error))callBack
 {
     VEEditConfiguration *editConfig =  [VEConfigManager sharedManager].peEditConfiguration;
-    BOOL hasNewFont =  editConfig.fontResourceURL.length>0;
-    NSString *uploadUrl = (hasNewFont ? editConfig.fontResourceURL : getFontTypeUrl);
+    NSString *uploadUrl = editConfig.fontResourceURL;
     NSMutableDictionary *fontListDic;
-    if(hasNewFont){
-        
-        if( [VEConfigManager sharedManager].isNewFont )
-            fontListDic = [VEHelp getNetworkMaterialWithType:kPESDKFontType
-                                                             appkey:[VEConfigManager sharedManager].appKey
-                                                      urlPath:uploadUrl];
-        else
-            fontListDic = [VEHelp getNetworkMaterialWithType:kFontType
-                                                             appkey:[VEConfigManager sharedManager].appKey
-                                                      urlPath:uploadUrl];
-        
-
-    }else{
-        fontListDic = [VEHelp updateInfomation:nil andUploadUrl:uploadUrl];
-    }
-    if (hasNewFont ? ([fontListDic[@"code"] intValue] != 0) : ([fontListDic[@"code"] intValue] != 200)){
+    if( [VEConfigManager sharedManager].isNewFont )
+        fontListDic = [VEHelp getNetworkMaterialWithType:kPESDKFontType
+                                                         appkey:[VEConfigManager sharedManager].appKey
+                                                  urlPath:uploadUrl];
+    else
+        fontListDic = [VEHelp getNetworkMaterialWithType:kFontType
+                                                         appkey:[VEConfigManager sharedManager].appKey
+                                                  urlPath:uploadUrl];
+    
+    if ([fontListDic[@"code"] intValue] != 0){
         dispatch_async(dispatch_get_main_queue(), ^{
             if (callBack) {
                 NSString *message;
                 if (fontListDic) {
-                    if (hasNewFont) {
-                        message = fontListDic[@"msg"];
-                    }else {
-                        message = fontListDic[@"message"];
-                    }
+                    message = fontListDic[@"msg"];
                 }
                 if (!message || message.length == 0) {
                     message = VELocalizedString(@"下载失败，请检查网络!", nil);
@@ -5270,30 +5260,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [[NSFileManager defaultManager] createDirectoryAtPath:cacheFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     
-    if([[NSFileManager defaultManager] contentsOfDirectoryAtPath:cacheIconPath error:nil].count==0 && !hasNewFont){
-        //将plist文件写入文件夹
-        BOOL suc = [fontList writeToFile:kFontPlistPath atomically:YES];
-        suc = [fontIconDic writeToFile:kFontIconPlistPath atomically:YES];
-        [VEFileDownloader downloadFileWithURL:iconUrl cachePath:cacheFolderPath HTTPMethod:VEGET cancelBtn: nil progress:^(NSNumber *numProgress) {
-            NSLog(@"progress:%f",[numProgress floatValue]);
-//            if(progressBlock){
-//                progressBlock([numProgress floatValue]);
-//            }
-        } finish:^(NSString *fileCachePath) {
-            [VEHelp OpenZipp:fileCachePath unzipto:cacheFolderPath];
-        } fail:^(NSError *error) {
-        }cancel:^{
-        }];
-    }else{
-        [self updateLocalMaterialWithType:VEAdvanceEditType_None newList:fontList];
-        BOOL suc = [fontList writeToFile:kFontPlistPath atomically:YES];
-        suc = [fontIconDic writeToFile:kFontIconPlistPath atomically:YES];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (callBack) {
-                callBack(nil);
-            }
-        });
-    }
+    [self updateLocalMaterialWithType:VEAdvanceEditType_None newList:fontList];
+    BOOL suc = [fontList writeToFile:kFontPlistPath atomically:YES];
+    suc = [fontIconDic writeToFile:kFontIconPlistPath atomically:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (callBack) {
+            callBack(nil);
+        }
+    });
 }
 
 + (void)updateLocalMaterialWithType:(VEAdvanceEditType)type newList:(NSArray *)newList {
@@ -7262,7 +7236,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     customFilter.networkCategoryId = categoryId;
     customFilter.networkResourceId = itemDic[@"id"];
     customFilter.folderPath = path;
-    
+    if(captionItem.otherAnimates.firstObject.configure){
+        customFilter.configure = [captionItem.otherAnimates.firstObject.configure mutableCopy];
+    }
+    captionItem.otherAnimates.firstObject.configure = nil;
     return customFilter;
 }
 
@@ -7873,7 +7850,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             captionItem.otherAnimates = [NSMutableArray new];
             NSArray *array = effectDic[@"other"];
             [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                [captionItem.otherAnimates addObject:[VEHelp getAnmationDic:(NSMutableDictionary*)obj atPath:path]];
+                CustomFilter *otherAnimation = [VEHelp getAnmationDic:(NSMutableDictionary*)obj atPath:path];
+                if([[effectDic allKeys] containsObject:@"extPaint"]){
+                    NSMutableDictionary *configer = effectDic[@"extPaint"];
+                    otherAnimation.configure = configer;
+                }
+                
+                [captionItem.otherAnimates addObject:otherAnimation];
             }];
         }
         else{
@@ -9446,26 +9429,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 
             case VEAdvanceEditType_None:
             {
-                BOOL hasNewFont =  editConfig.fontResourceURL.length>0;
-                NSString *uploadUrl = (hasNewFont ? editConfig.fontResourceURL : getFontTypeUrl);
-                NSMutableDictionary *fontListDic;
-                if(hasNewFont){
-                    fontListDic = [self getNetworkMaterialWithType:kFontType
+                NSMutableDictionary *fontListDic = [self getNetworkMaterialWithType:kFontType
                                                                    appkey:appKey
-                                                                  urlPath:uploadUrl];
-                }else{
-                    fontListDic = [self updateInfomation:nil andUploadUrl:uploadUrl];
-                }
-                if (hasNewFont ? ([fontListDic[@"code"] intValue] != 0) : ([fontListDic[@"code"] intValue] != 200)){
+                                                                  urlPath:editConfig.fontResourceURL];
+                
+                if ([fontListDic[@"code"] intValue] != 0){
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if (callBack) {
                             NSString *message;
                             if (fontListDic) {
-                                if (hasNewFont) {
-                                    message = fontListDic[@"msg"];
-                                }else {
-                                    message = fontListDic[@"message"];
-                                }
+                                message = fontListDic[@"msg"];
                             }
                             if (!message || message.length == 0) {
                                 message = VELocalizedString(@"下载失败，请检查网络!", nil);
@@ -9486,40 +9459,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     [[NSFileManager defaultManager] createDirectoryAtPath:cacheFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
                 }
                 
-                if([[NSFileManager defaultManager] contentsOfDirectoryAtPath:cacheIconPath error:nil].count==0 && !hasNewFont){
-                    //将plist文件写入文件夹
-                    BOOL suc = [fontList writeToFile:kFontPlistPath atomically:YES];
-                    suc = [fontIconDic writeToFile:kFontIconPlistPath atomically:YES];
-                    
-                    [VEFileDownloader downloadFileWithURL:iconUrl cachePath:cacheFolderPath HTTPMethod:VEGET cancelBtn:cancelBtn progress:^(NSNumber *numProgress) {
-                        NSLog(@"progress:%f",[numProgress floatValue]);
-                        if(progressBlock){
-                            progressBlock([numProgress floatValue]);
-                        }
-                    } finish:^(NSString *fileCachePath) {
-                        [VEHelp OpenZipp:fileCachePath unzipto:cacheFolderPath];
-                        if (callBack) {
-                            callBack(nil);
-                        }
-                    } fail:^(NSError *error) {
-                        if (callBack) {
-                            callBack(error);
-                        }
-                    } cancel:^{
-                        if (cancelBlock) {
-                            cancelBlock();
-                        }
-                    }];
-                }else{
-                    [self updateLocalMaterialWithType:type newList:fontList];
-                    BOOL suc = [fontList writeToFile:kFontPlistPath atomically:YES];
-                    suc = [fontIconDic writeToFile:kFontIconPlistPath atomically:YES];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (callBack) {
-                            callBack(nil);
-                        }
-                    });
-                }
+                [self updateLocalMaterialWithType:type newList:fontList];
+                BOOL suc = [fontList writeToFile:kFontPlistPath atomically:YES];
+                suc = [fontIconDic writeToFile:kFontIconPlistPath atomically:YES];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (callBack) {
+                        callBack(nil);
+                    }
+                });
             }
                 break;
                 
@@ -9597,28 +9544,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         
     }
     
+    NSMutableDictionary *effectTypeList = [self getNetworkMaterialWithType:@"effects"
+                                                                    appkey:appKey
+                                                                   urlPath:editConfig.effectResourceURL];
     
-    BOOL hasNewEffect =  editConfig.effectResourceURL.length>0;
-    NSString *uploadUrl = (hasNewEffect ? editConfig.effectResourceURL : getEffectTypeUrl);
-    NSMutableDictionary *effectTypeList;
-    if(hasNewEffect){
-        effectTypeList = [self getNetworkMaterialWithType:@"effects"
-                                                          appkey:appKey
-                                                         urlPath:uploadUrl];
-    }else{
-        effectTypeList = [self updateInfomation:nil andUploadUrl:uploadUrl];
-    }
-    
-    if(![effectTypeList isKindOfClass:[NSMutableDictionary class]] || !effectTypeList || (hasNewEffect ? ([effectTypeList[@"code"] intValue] != 0) : ([effectTypeList[@"code"] intValue] != 200))){
+    if(![effectTypeList isKindOfClass:[NSMutableDictionary class]] || !effectTypeList || [effectTypeList[@"code"] intValue] != 0){
         dispatch_async(dispatch_get_main_queue(), ^{
             if (callBack) {
                 NSString *message;
                 if (effectTypeList) {
-                    if (hasNewEffect) {
-                        message = effectTypeList[@"msg"];
-                    }else {
-                        message = effectTypeList[@"message"];
-                    }
+                    message = effectTypeList[@"msg"];
                 }
                 if (!message || message.length == 0) {
                     message = VELocalizedString(@"下载失败，请检查网络!", nil);
@@ -9639,43 +9574,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if(![[NSFileManager defaultManager] fileExistsAtPath:cacheEffectFolderPath]){
         [[NSFileManager defaultManager] createDirectoryAtPath:cacheEffectFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
-    
-    if([[NSFileManager defaultManager] contentsOfDirectoryAtPath:cacheIconPath error:nil].count==0 && !hasNewEffect){
-        //将plist文件写入文件夹
-        BOOL suc = [effectList writeToFile:kStickerPlistPath atomically:YES];
-        suc = [effectIconDic writeToFile:kStickerIconPlistPath atomically:YES];
-        
-        [VEFileDownloader downloadFileWithURL:effectIconUrl cachePath:cacheEffectFolderPath HTTPMethod:VEGET cancelBtn:cancelBtn progress:^(NSNumber *numProgress) {
-            NSLog(@"progress:%f",[numProgress floatValue]);
-            if(progressBlock){
-                progressBlock([numProgress floatValue]);
-            }
-        } finish:^(NSString *fileCachePath) {
-            [VEHelp OpenZipp:fileCachePath unzipto:cacheEffectFolderPath];
-            if (callBack) {
-                callBack(nil);
-            }
-        } fail:^(NSError *error) {
-            if (callBack) {
-                callBack(error);
-                
-            }
-        } cancel:^{
-            if (cancelBlock) {
-                cancelBlock();
-                
-            }
-        }];
-    }else{
-        [self updateLocalMaterialWithType:type newList:effectList];
-        BOOL suc = [effectList writeToFile:kStickerPlistPath atomically:YES];
-        suc = [effectIconDic writeToFile:kStickerIconPlistPath atomically:YES];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (callBack) {
-                callBack(nil);
-            }
-        });
-    }
+    [self updateLocalMaterialWithType:type newList:effectList];
+    BOOL suc = [effectList writeToFile:kStickerPlistPath atomically:YES];
+    suc = [effectIconDic writeToFile:kStickerIconPlistPath atomically:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (callBack) {
+            callBack(nil);
+        }
+    });
 }
 +(NSString *)pathEffectForURL:(NSURL *)aURL{
     return [kStickerFolder stringByAppendingPathComponent:[NSString stringWithFormat:@"EffectType-%lu.zip", (unsigned long)[[aURL description] hash]]];
@@ -10367,10 +10273,18 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 //                    [captionex.captionImage.otherAnimates addObject:[VEHelp getAnmationDic:(NSMutableDictionary*)obj atPath:path]];
 //                }];
                 captionex.captionImage.otherAnimates = [VEHelp getAnmationDic:(NSMutableDictionary*)[array firstObject] atPath:path];
+                if([[effectDic allKeys] containsObject:@"extPaint"]){
+                    NSMutableDictionary *configer = effectDic[@"extPaint"];
+                    captionex.captionImage.otherAnimates.configure = configer;
+                }
             }
             else
             {
                 captionex.captionImage.otherAnimates = [VEHelp getAnmationDic:(NSMutableDictionary*)effectDic[@"other"] atPath:path];
+                if([[effectDic allKeys] containsObject:@"extPaint"]){
+                    NSMutableDictionary *configer = effectDic[@"extPaint"];
+                    captionex.captionImage.otherAnimates.configure = configer;
+                }
             }
         }
         else{
@@ -10380,7 +10294,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
         }
     }
-    
+    if(captionex.captionImage.otherAnimates.configure && customFilter.animateType == CustomAnimationTypeIn){
+        customFilter.configure = [captionex.captionImage.otherAnimates.configure mutableCopy];
+        captionex.captionImage.otherAnimates = nil;
+    }
     return  customFilter;
 }
 
@@ -12158,7 +12075,7 @@ static OSType help_inputPixelFormat(){
     return image;
 }
 + (NSString *)getAnitionPenConfigDownloadPathWithDic:(NSDictionary *)itemDic {
-    NSString *filterFolderPath = kFilterFolder;
+    NSString *filterFolderPath = kP_anitConfigFolder;
     if(![[NSFileManager defaultManager] fileExistsAtPath:filterFolderPath]){
         [[NSFileManager defaultManager] createDirectoryAtPath:filterFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
@@ -12171,4 +12088,11 @@ static OSType help_inputPixelFormat(){
     return itemPath;
 }
 
++ (NSString *)getAnitionPenConfigFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
+    NSString *cachedFilePath = [kP_anitConfigFolder stringByAppendingPathComponent:[self cachedFileNameForKey:urlPath]];
+    if( updatetime ) {
+        cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
+    }
+    return cachedFilePath;
+}
 @end

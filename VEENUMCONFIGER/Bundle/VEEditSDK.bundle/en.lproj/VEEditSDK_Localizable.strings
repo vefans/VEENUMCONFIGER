@@ -2134,7 +2134,7 @@
 "光感" = "Exposure";
 "色调" = "Hue";
 "褪色" = "Fade";
-"光效" = "Light effect";
+"光效" = "Light";
 "色彩" = "Color";
 "细节" = "Detail";
 "像素化" = "Pixelated";
@@ -2218,7 +2218,6 @@
 "画笔" = "Brush";
 "识别中" =  "Recognizing";
 "手动抠图" = "Mannual cutout";
-"橡皮擦" = "Rubber";
 
 "尚未指定抠图区域,无法抠图" = "Area not selected, can not cutout";
 "网络资源加载中..." = "Network resource loading...";
@@ -2341,9 +2340,6 @@
 
 
 "正在存入草稿箱...." = "Saving to draft box....";
-
-"光效" = "Light effect";
-"色彩" = "Color";
 
 "模板名称" = "Template name";
 "%1$d/%2$d" = "%1$d/%2$d";
@@ -2648,3 +2644,46 @@
 "双击字幕可进行编辑" = "Double click the subtitle to edit";
 "已经是最后一个了" = "It's the last one";
 "双击屏幕显示功能按键" = "Double click the screen display function key";
+"微调" = "Adjustment";
+"大小翻转" = "Size Flip";
+"人像背景" = "Portrait BG";
+"背景虚化" = "BG falsification";
+"过渡" = "Intensity";
+"直线" = "Straight line";
+"手动" = "Manual";
+"智能选区" = "Auto";
+"橡皮" = "Eraser";
+"尺寸" = "Size";
+"智能抠图" = "Smart matting";
+"内半径" = "Radius";
+"换发" = "Hair";
+"在画面中涂抹选择消除的区域" = "Smear the area selected for elimination in the picture";
+"羽化边缘" = "Feather";
+"边框填充" = "Color";
+"笔触" = "Strokes";
+"照片比例" = "Format";
+"颗粒强度" = "Particle strength";
+"颗粒弱" = "Weak";
+"颗粒强" = "Strong";
+"保存一张应用效果后的 JPEG 图片" = "Save a JPEG picture after applying the effect";
+"保存 2 张图片，一张带效果的 JPEG 格式，一张不带任何效果的 JPEG 原图" = "Save 2 pictures, one in JPEG format with effect and one in JPEG original without any effect";
+"分布" = "Distribution";
+"密度" = "Density";
+"重新选择图片会将当前的所有操作保存到草稿，当前所有操作不会添加到新的图片" = "Re selecting a picture will save all current operations to the draft, and all current operations will not be added to the new picture";
+"重新选择" = "Reselect";
+"短发" = "Short hair";
+"长发" = "Long hair";
+"底色" = "Bg";
+"换装" = "Clothes";
+"自由画" = "Free painting";
+"临摹" = "Copy";
+"上色" = "Coloring";
+"教学" = "Teaching";
+"我的画板" = "My drawing board";
+"笔刷" = "Brush";
+"最近" = "Recently";
+"常规" = "Routine";
+"多彩画笔（每一笔颜色都不一样）" = "Colorful brushes (each color is different)";
+"横向标尺" = "Horizontal";
+"纵向标尺" = "Vertical";
+"矫正" = "Correct";
