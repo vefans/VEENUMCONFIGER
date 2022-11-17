@@ -2692,3 +2692,5 @@
 "陀螺仪" = "Gyroscope";
 "打开全景后开启陀螺仪，也可手指拖动变换方向" = "Turn on the gyroscope after opening the panorama, or drag with your finger to change the direction";
 "选择画笔" = "Choose Pen";
+"单帧导出" = "Shot Frame";
+"图片导出成功" = "Succeed save image to album";
