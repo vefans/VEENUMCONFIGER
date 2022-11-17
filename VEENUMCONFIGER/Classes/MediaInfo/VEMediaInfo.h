@@ -577,4 +577,8 @@ typedef NS_ENUM(NSInteger, VECropType){
 @property (nonatomic, strong) NSURL *antiShakeUrl;
 @property (nonatomic, assign) AntiShakeType   antiShakeType;
 
+/** 全景图
+ */
+@property (nonatomic, strong) Panorama* panorama;
+
 @end

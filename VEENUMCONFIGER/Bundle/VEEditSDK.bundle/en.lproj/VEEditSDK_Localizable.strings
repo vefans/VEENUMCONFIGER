@@ -2687,3 +2687,8 @@
 "横向标尺" = "Horizontal";
 "纵向标尺" = "Vertical";
 "矫正" = "Correct";
+
+"全景" = "VR";
+"陀螺仪" = "Gyroscope";
+"打开全景后开启陀螺仪，也可手指拖动变换方向" = "Turn on the gyroscope after opening the panorama, or drag with your finger to change the direction";
+"选择画笔" = "Choose Pen";

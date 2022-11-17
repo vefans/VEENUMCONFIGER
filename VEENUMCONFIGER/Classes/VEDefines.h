@@ -340,6 +340,7 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_ADJSTRIGHT         =65,//延长到右
     KPIP_MORPH              =66,//边角定位
     KPIP_MORPH_DELETE       =67,//删除边角定位
+    KPIP_VR                 =70,//全景
 };
 
 /*
@@ -702,9 +703,13 @@ isPhoneX;\
 #define kNewStickerPlistPath [kStickerFolder stringByAppendingPathComponent:@"EffectPlistList.plist"]
 #define kNewStickerCategoryPlistPath [kStickerFolder stringByAppendingPathComponent:@"EffectCategoryPlistList.plist"]
 //笔配置
-#define kP_anitConfigFolder [kVEDirectory stringByAppendingPathComponent:@"P_anitConfigs"]
-#define kP_anitConfigCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"p_anitConfigCategory.plist"]
-#define kP_anitConfigTypeListPath [kFilterFolder stringByAppendingPathComponent:@"p_anitConfigTypeList.plist"]
+#define kP_anitSubtitleConfigFolder [kVEDirectory stringByAppendingPathComponent:@"P_SubtitleAnitConfigs"]
+#define kP_anitSubtitleConfigCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"p_SubtitleAnitConfigCategory.plist"]
+#define kP_anitSubtitleConfigTypeListPath [kFilterFolder stringByAppendingPathComponent:@"p_SubtitleAnitConfigTypeList.plist"]
+
+#define kP_anitStickerConfigFolder [kVEDirectory stringByAppendingPathComponent:@"P_StickerAnitConfigs"]
+#define kP_anitStickerConfigCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"p_StickerAnitConfigCategory.plist"]
+#define kP_anitStickerConfigTypeListPath [kFilterFolder stringByAppendingPathComponent:@"p_StickerAnitConfigTypeList.plist"]
 
 //滤镜目录
 #define kFilterFolder [kVEDirectory stringByAppendingPathComponent:@"filters"]

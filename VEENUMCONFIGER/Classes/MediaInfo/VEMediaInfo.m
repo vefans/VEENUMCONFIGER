@@ -284,6 +284,7 @@
     }];
     copy.importMorph = _importMorph;
     copy.speedHoldPitch = _speedHoldPitch;
+    copy.panorama = [_panorama mutableCopy];
     
     return copy;
 }
@@ -469,6 +470,7 @@
     }];
     copy.importMorph = _importMorph;
     copy.speedHoldPitch = _speedHoldPitch;
+    copy.panorama = [_panorama copy];
     
     return copy;
 }

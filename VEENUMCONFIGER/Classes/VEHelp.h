@@ -577,6 +577,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (void)addShadowToView:(UIView *)view withColor:(UIColor *)theColor cornerRadii:(CGSize)cornerRadii;
 + (UIImage *)getScreenshotWithView:(UIView *)view;
 
-+ (NSString *)getAnitionPenConfigDownloadPathWithDic:(NSDictionary *)itemDic;
-+ (NSString *)getAnitionPenConfigFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
++ (NSString *)getAnitionSubtitlePenConfigDownloadPathWithDic:(NSDictionary *)itemDic;
++ (NSString *)getAnitionStickerPenConfigDownloadPathWithDic:(NSDictionary *)itemDic;
++ (NSString *)getAnitionSubtitlePenConfigFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
++ (NSString *)getAnitionStickerPenConfigFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 @end

@@ -7968,7 +7968,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 if (sourceName.length > 0) {
                     __weak NSString *newPath = path;
                     newPath = [newPath stringByAppendingPathComponent:sourceName];
-                     
+                    //UIImage *image = [UIImage imageWithContentsOfFile:newPath];
                     NSMutableArray *paths = [NSMutableArray arrayWithObject:newPath];
                     param.pathArray = paths;
                 }
@@ -7978,7 +7978,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 NSMutableArray *arr = [NSMutableArray array];
                 for (NSString * _Nonnull imageName in sourceArray) {
                     NSString *newpath = [path stringByAppendingPathComponent:imageName];
-
+                    //UIImage *image = [UIImage imageWithContentsOfFile:newpath];
                     [arr addObject:newpath];
                 }
                 param.pathArray = [NSMutableArray arrayWithArray:arr];//
@@ -10169,7 +10169,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
         customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
     }
-    
     NSArray *uniformParams = effectDic[@"uniformParams"];
     [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *type = obj[@"type"];
@@ -10273,17 +10272,22 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 //                    [captionex.captionImage.otherAnimates addObject:[VEHelp getAnmationDic:(NSMutableDictionary*)obj atPath:path]];
 //                }];
                 captionex.captionImage.otherAnimates = [VEHelp getAnmationDic:(NSMutableDictionary*)[array firstObject] atPath:path];
-                if([[effectDic allKeys] containsObject:@"extPaint"]){
-                    NSMutableDictionary *configer = effectDic[@"extPaint"];
-                    captionex.captionImage.otherAnimates.configure = configer;
+                if (effectDic[@"extPaint"]) {
+                    NSMutableDictionary *extPaint = [effectDic[@"extPaint"] mutableCopy];
+                    [extPaint setObject:@(captionex.captionImage.otherAnimates.writingMode) forKey:@"writingMode"];
+                    captionex.captionImage.otherAnimates.configure = extPaint;
+                    captionex.captionImage.animate.configure =extPaint;
                 }
+              
             }
             else
             {
                 captionex.captionImage.otherAnimates = [VEHelp getAnmationDic:(NSMutableDictionary*)effectDic[@"other"] atPath:path];
-                if([[effectDic allKeys] containsObject:@"extPaint"]){
-                    NSMutableDictionary *configer = effectDic[@"extPaint"];
-                    captionex.captionImage.otherAnimates.configure = configer;
+                if (effectDic[@"extPaint"]) {
+                    NSMutableDictionary *extPaint = [effectDic[@"extPaint"] mutableCopy];
+                    [extPaint setObject:@(captionex.captionImage.otherAnimates.writingMode) forKey:@"writingMode"];
+                    captionex.captionImage.otherAnimates.configure = extPaint;
+                    captionex.captionImage.animate.configure = extPaint;
                 }
             }
         }
@@ -10293,10 +10297,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 captionex.captionImage.otherAnimates = nil;
             }
         }
-    }
-    if(captionex.captionImage.otherAnimates.configure && customFilter.animateType == CustomAnimationTypeIn){
-        customFilter.configure = [captionex.captionImage.otherAnimates.configure mutableCopy];
-        captionex.captionImage.otherAnimates = nil;
     }
     return  customFilter;
 }
@@ -12074,8 +12074,8 @@ static OSType help_inputPixelFormat(){
     
     return image;
 }
-+ (NSString *)getAnitionPenConfigDownloadPathWithDic:(NSDictionary *)itemDic {
-    NSString *filterFolderPath = kP_anitConfigFolder;
++ (NSString *)getAnitionSubtitlePenConfigDownloadPathWithDic:(NSDictionary *)itemDic {
+    NSString *filterFolderPath = kP_anitSubtitleConfigFolder;
     if(![[NSFileManager defaultManager] fileExistsAtPath:filterFolderPath]){
         [[NSFileManager defaultManager] createDirectoryAtPath:filterFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
@@ -12087,9 +12087,28 @@ static OSType help_inputPixelFormat(){
     }
     return itemPath;
 }
-
-+ (NSString *)getAnitionPenConfigFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
-    NSString *cachedFilePath = [kP_anitConfigFolder stringByAppendingPathComponent:[self cachedFileNameForKey:urlPath]];
++ (NSString *)getAnitionStickerPenConfigDownloadPathWithDic:(NSDictionary *)itemDic {
+    NSString *filterFolderPath = kP_anitStickerConfigFolder;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:filterFolderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:filterFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *file = itemDic[@"file"];
+    NSString *pathExtension = [[[file pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    NSString *itemPath = [[filterFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[file hash]]] stringByAppendingPathExtension:pathExtension];
+    if ([file.pathExtension isEqualToString:@"zip"]) {
+        itemPath = [itemPath stringByDeletingPathExtension];
+    }
+    return itemPath;
+}
++ (NSString *)getAnitionSubtitlePenConfigFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
+    NSString *cachedFilePath = [kP_anitSubtitleConfigFolder stringByAppendingPathComponent:[self cachedFileNameForKey:urlPath]];
+    if( updatetime ) {
+        cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
+    }
+    return cachedFilePath;
+}
++ (NSString *)getAnitionStickerPenConfigFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
+    NSString *cachedFilePath = [kP_anitStickerConfigFolder stringByAppendingPathComponent:[self cachedFileNameForKey:urlPath]];
     if( updatetime ) {
         cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
     }
