@@ -1141,6 +1141,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [customFilter setShaderUniformParams:paramArray isRepeat:[obj[@"repeat"] boolValue] forUniform:obj[@"paramName"]];
     }];
     NSArray *textureParams = effectDic[@"textureParams"];
+    NSMutableDictionary *extPaint= effectDic[@"extPaint"];
+    customFilter.configure = extPaint;
     
    for(id  _Nonnull obj in textureParams) {
         @autoreleasepool {
@@ -1229,6 +1231,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             else
             {
                 ((CaptionEx*)caption).captionImage.otherAnimates  = [VEHelp getAnmationDic:(NSMutableDictionary*)effectDic[@"other"] atPath:path];
+            }
+            if(extPaint && [[extPaint allKeys] containsObject:@"writingMode"]){
+                ((CaptionEx*)caption).captionImage.otherAnimates.writingMode = [extPaint[@"writingMode"] intValue];
             }
         }
         else{
