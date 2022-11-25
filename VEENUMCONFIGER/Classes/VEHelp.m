@@ -2732,6 +2732,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 + (MaskObject *)getMaskWithPath:(NSString *) path
 {
+    if (path.pathExtension.length > 0) {
+        MaskObject *mask = [[MaskObject alloc] init];
+        mask.folderPath = path;
+        
+        return mask;
+    }
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
     if (![[NSFileManager defaultManager] fileExistsAtPath:configPath]) {
         for (NSString *fileName in [[NSFileManager defaultManager] enumeratorAtPath:path].allObjects) {
@@ -2842,7 +2848,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     MaskObject *mask = [[MaskObject alloc] init];
     mask.folderPath = path;
-    if ([configDic[@"name"] length] > 0) {
+    NSString *imageName = configDic[@"name"];
+    if (imageName.length > 0 && imageName.pathExtension.length > 0) {
         mask.maskImagePath = [path stringByAppendingPathComponent:configDic[@"name"]];
     }
     mask.isRepeat = [configDic[@"repeat"] boolValue];
@@ -2862,14 +2869,21 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     jsonData = nil;
     NSArray* shaderArray = effectDic[@"effect"];
     if (shaderArray.count) {
-        [shaderArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSMutableDictionary* shaderDic = obj;
-            NSLog(@"name:%@",shaderDic[@"name"]);
-            [filterArray addObject:[self getCustomFilterWithDictionary:shaderDic folderPath:folderPath currentFrameTexturePath:currentFrameImagePath]];
+        [shaderArray enumerateObjectsUsingBlock:^(NSMutableDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            CustomFilter *customFilter = [self getCustomFilterWithDictionary:obj folderPath:folderPath currentFrameTexturePath:currentFrameImagePath];
+            if (customFilter) {
+                customFilter.cycleDuration = [effectDic[@"duration"] floatValue];
+                [filterArray addObject:customFilter];
+            }
         }];
     }
-    else
-        [filterArray addObject:[self getCustomFilterWithDictionary:effectDic folderPath:folderPath currentFrameTexturePath:currentFrameImagePath]];
+    else {
+        CustomFilter *customFilter = [self getCustomFilterWithDictionary:effectDic folderPath:folderPath currentFrameTexturePath:currentFrameImagePath];
+        if (customFilter) {
+            customFilter.cycleDuration = [effectDic[@"duration"] floatValue];
+            [filterArray addObject:customFilter];
+        }
+    }
     customMultipleFilter = [[CustomMultipleFilter alloc] initWithFilterArray:filterArray];
     customMultipleFilter.folderPath = folderPath;
     return customMultipleFilter;
@@ -3189,6 +3203,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             [customFilter setShaderTextureParams:param];
         }
     }
+    NSMutableDictionary *extPaint= effectDic[@"extPaint"];
+    customFilter.configure = extPaint;
+    
     if( mediaOrFile )
     {
         __block CustomFilter *animate;
@@ -3205,7 +3222,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             {
                 animate = [VEHelp getAnmationDic:(NSMutableDictionary*)effectDic[@"other"] atPath:folderPath];
             }
-        }
+            if(animate && extPaint && [[extPaint allKeys] containsObject:@"writingMode"]){
+                animate.writingMode = [extPaint[@"writingMode"] intValue];
+            }
+       }
         if ([mediaOrFile isKindOfClass:[MediaAsset class]]) {
             MediaAsset *asset = (MediaAsset *)mediaOrFile;
             asset.customOtherAnimate = animate;
@@ -4798,8 +4818,25 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         if(![[params allKeys] containsObject:@"ver"]){
             [params setObject:[NSNumber numberWithInt:[VECore getSDKVersion]] forKey:@"ver"];
         }
-        if ([params[@"type"] isEqualToString:@"stickers"]) {
+        NSString *type = params[@"type"];
+        if ([type isEqualToString:@"stickers"]) {
             [params setValue:[NSNumber numberWithInt:[VEConfigManager sharedManager].editConfiguration.stickerResourceMinVersion] forKey:@"ver_min"];//用于控制最小版本号,只对素材生效
+        }
+        int veCoreVersion = [VECore getSDKVersion];
+        if (veCoreVersion > 154) {
+            NSString *disabledName;
+            if ([type isEqualToString:VENetworkResourceType_StickerAnimation]
+                || [type isEqualToString:VENetworkResourceType_MediaAnimation])
+            {
+                disabledName = @"手绘1,手绘2,手绘3,手绘4,手绘5,手绘6,手绘7";
+            }
+            else if ([type isEqualToString:VENetworkResourceType_TextAnimation]) {
+                disabledName = @"手写1,手写2,手写3,手写4,手写5,手写6,手写7";
+            }
+            if (disabledName.length > 0) {
+                //20221122 动态屏蔽素材，传素材name，以“,”分割
+                [params setValue:disabledName forKey:@"disabled"];
+            }
         }
         if (isEnglish) {
             [params setObject:@"en" forKey:@"lang"];
@@ -5943,7 +5980,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
         }else {
             transition.type = TransitionTypeCustom;
-            transition.customTransition = [self getCustomTransitionWithJsonPath:configPath];
+            if ([configDic objectForKey:@"effect"]) {
+                transition.customMultipleFilter = [VEHelp getCustomMultipleFilerWithFolderPath:configPath.stringByDeletingLastPathComponent currentFrameImagePath:nil];
+            }else {
+                transition.customTransition = [self getCustomTransitionWithJsonPath:configPath];
+            }
         }
     }
     else {
@@ -6047,7 +6088,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     overlay.media.mask.name = mask.name;
                     overlay.media.mask.frag = mask.frag;
                     overlay.media.mask.vert = mask.vert;
-                    overlay.media.mask.maskImagePath = mask.maskImagePath;
+                    if (mask.maskImagePath.length > 0) {
+                        overlay.media.mask.maskImagePath = mask.maskImagePath;
+                    }
                 }
                 if (overlay.media.customAnimate) {
                     if (!folderPath) {
@@ -6877,7 +6920,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     scene.transition.maskURL = [VEHelp getFileURLFromAbsolutePath:scene.transition.maskURL.path];
                 }
                 if (scene.transition.type == TransitionTypeCustom && [[NSFileManager defaultManager] fileExistsAtPath:scene.transition.maskURL.path]) {
-                    scene.transition.customTransition = [VEHelp getCustomTransitionWithJsonPath:scene.transition.maskURL.path];
+                    NSData *jsonData = [[NSData alloc] initWithContentsOfFile:scene.transition.maskURL.path];
+                    NSMutableDictionary *configDic = [VEHelp objectForData:jsonData];
+                    jsonData = nil;
+                    if ([configDic objectForKey:@"effect"]) {
+                        scene.transition.customMultipleFilter = [VEHelp getCustomMultipleFilerWithFolderPath:scene.transition.maskURL.path.stringByDeletingLastPathComponent currentFrameImagePath:nil];
+                    }else {
+                        scene.transition.customTransition = [VEHelp getCustomTransitionWithJsonPath:scene.transition.maskURL.path];
+                    }
                 }
             }
             if (!folderPath && scene.backgroundAsset && ![VEHelp isSystemPhotoUrl:scene.backgroundAsset.url]) {
@@ -6932,7 +6982,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 #endif
                     asset.mask.frag = mask.frag;
                     asset.mask.vert = mask.vert;
-                    asset.mask.maskImagePath = mask.maskImagePath;
+                    if (mask.maskImagePath.length > 0) {
+                        asset.mask.maskImagePath = mask.maskImagePath;
+                    }
                 }
                 if (asset.customAnimate) {
                     if (!folderPath) {
@@ -8366,12 +8418,19 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSArray* shaderArray = effectDic[@"effect"];
     if (shaderArray.count) {
         [shaderArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [filterArray addObject:[self getCustomFilterWithDictionary:obj folderPath:path categoryId:categoryId resourceId:resourceId fxId:fxId filterFxArray:filterFxArray timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath]];
+            CustomFilter *customFilter = [self getCustomFilterWithDictionary:obj folderPath:path categoryId:categoryId resourceId:resourceId fxId:fxId filterFxArray:filterFxArray timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath];
+            if (customFilter) {
+                customFilter.cycleDuration = [effectDic[@"duration"] floatValue];
+                [filterArray addObject:customFilter];
+            }
         }];
     }
-    else
-        [filterArray addObject:[self getCustomFilerWithFxId:fxId filterFxArray:filterFxArray timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath atPath:path]];
-    
+    else {
+        CustomFilter *customFilter = [self getCustomFilerWithFxId:fxId filterFxArray:filterFxArray timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath atPath:path];
+        if (customFilter) {
+            [filterArray addObject:customFilter];
+        }
+    }
     customMultipleFilter = [[CustomMultipleFilter alloc] initWithFilterArray:filterArray];
     
     customMultipleFilter.networkCategoryId = categoryId;

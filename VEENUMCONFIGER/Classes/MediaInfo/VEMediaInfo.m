@@ -83,6 +83,9 @@
     return self;
 }
 
+- (void)setSpeed:(double)speed{
+    _speed = speed;
+}
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
     copy.isPasterAssetViewDrag = _isPasterAssetViewDrag;
@@ -300,6 +303,8 @@
         [array  addObject:((NSMutableArray*)obj)[1]];
         [copy.pointsInVideoArray addObject:array];
     }];
+    copy.animationPenIndex = _animationPenIndex;
+    copy.animationWritingModel = _animationWritingModel;
     copy.sceneIdentifier = _sceneIdentifier;
     copy.groupId = _groupId;
     copy.fxEffect = _fxEffect;
@@ -747,11 +752,17 @@
         _mask.folderPath = [VEHelp getFileURLFromAbsolutePath_str:_mask.folderPath];
         
         _maskName = _mask.folderPath.lastPathComponent;
+#ifndef kNewMask
         MaskObject *mask = [VEHelp getMaskWithName:_maskName];
+#else
+        MaskObject *mask = [VEHelp getMaskWithPath:_mask.folderPath];
+#endif
         _mask.name = mask.name;
         _mask.frag = mask.frag;
         _mask.vert = mask.vert;
-        _mask.maskImagePath = mask.maskImagePath;
+        if (mask.maskImagePath.length > 0) {
+            _mask.maskImagePath = mask.maskImagePath;
+        }        
         if (_mask.edgeColor) {
             _maskThickColorIndex = [VEHelp getColorIndex:_mask.edgeColor];
         }

@@ -18,6 +18,7 @@ typedef NS_ENUM(NSInteger,VLSegmentType){
     KVLSegment_None = 0, //无
     KVLSegment_Green, //绿幕
     KVLSegment_AI, //智能
+    KVLSegment_ChromaColor, //色度抠图
 };
 typedef NS_ENUM(NSInteger,KVLBeautyType){
     KVLBeautyType_Blur = 0, //磨皮

@@ -514,7 +514,8 @@ typedef NS_ENUM(NSInteger, VECropType){
 /** 动画序号 出场
 */
 @property (nonatomic, assign) NSInteger animationOutIndex;
-
+@property (nonatomic, assign) NSInteger animationPenIndex;
+@property(nonatomic,assign)NSInteger    animationWritingModel;
 /** 动画时间段 出场
 */
 @property (nonatomic, assign) CMTimeRange animationOutTimeRange;

@@ -113,6 +113,14 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
                                videoProportion:(float)videoProportion
                              completionHandler:(void (^)(NSString *textImagePath, VECustomTextPhotoFile *file))completionHandler;
 
+/** 开始直播推流
+ */
+- (void)startLivePush;
+
+/** 停止直播推流
+ */
+- (void)stopLivePush;
+
 /** 获取推流视频数据
  *  Get streaming video data.
  */
@@ -121,7 +129,7 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 /** 获取推流音频数据
  *  Get streaming audio data.
  */
-- (void)getInputStreamAudioData:(NSMutableData *)audioData;
+- (void)getInputStreamAudioSampleBuffer:(CMSampleBufferRef)audioSampleBuffer;
 
 @end
 

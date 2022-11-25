@@ -157,6 +157,13 @@ typedef struct TextureList
 
 }TextureList;
 
+
+typedef NS_ENUM(NSInteger, VESegmentStatu) {
+    VESegment_Begin,
+    VESegment_Finish,
+
+};
+
 @implementation VESegmentFilter
 {
     CVOpenGLESTextureCacheRef _videoTextureCache;
@@ -181,6 +188,9 @@ typedef struct TextureList
     OutputPixelBufferList *_pOutputPixelBufferList;
     FrameBufferObjectList* _pFBOList;
     TextureList* _pMaskTextureList;
+    
+    VESegmentStatu _statu;
+    
 }
 
 
@@ -193,6 +203,7 @@ typedef struct TextureList
         _pOutputPixelBufferList = NULL;
         _videoTextureCache = NULL;
         _pFBOList = NULL;
+        _statu = VESegment_Finish;
     }
     return self;
 }
@@ -901,16 +912,32 @@ bail:
     
     return lightWrapPixel;
 }
+
+-(void)stop
+{
+    while (_statu == VESegment_Begin) {
+//        NSLog(@"VESegmentFilter stop ~~~~");
+        usleep(20);
+    }
+    return;
+}
+
 -(int)segmentPixelBuffer:(CVPixelBufferRef)pixel maskPixelBuffer:(CVPixelBufferRef)mask
 {
+    _statu = VESegment_Begin;
     if(!pixel || !mask)
+    {
+        _statu = VESegment_Finish;
         return 0;
-    
+    }
     //创建新的上下文
     if (!_curContext &&  [EAGLContext currentContext])
         _curContext = [EAGLContext currentContext];
     if(!_curContext)
+    {
+        _statu = VESegment_Finish;
         return 0;
+    }
 
 //    if(!_newContext)
 //        _newContext = [[EAGLContext alloc] initWithAPI:[_oldContext API] sharegroup: [_oldContext sharegroup]];
@@ -924,6 +951,7 @@ bail:
     
     if((_bilateralProgram <= 0) && (![self loadShaders]))
     {
+        _statu = VESegment_Finish;
         NSLog(@"error:segmentPixelBuffer load shader error ,line:%d",__LINE__);
         return 0;
     }
@@ -933,6 +961,7 @@ bail:
     CVPixelBufferRef jointBilateralPixel = [self processJointBilateralFromPixelBuffer:pixel maskPixelBuffer:mask];
     if(!jointBilateralPixel)
     {
+        _statu = VESegment_Finish;
         NSLog(@"error:processJointBilateralFromPixelBuffer error ,line:%d",__LINE__);
         return 0;
     }
@@ -941,6 +970,7 @@ bail:
     CVPixelBufferRef lightWrapPixel = [self processLightWrapFromPixelBuffer:pixel maskPixelBuffer:jointBilateralPixel];
     if(!lightWrapPixel)
     {
+        _statu = VESegment_Finish;
         NSLog(@"error:processJointBilateralFromPixelBuffer error ,line:%d",__LINE__);
         return 0;
     }
@@ -971,6 +1001,7 @@ bail:
     
     
     [EAGLContext setCurrentContext:_curContext];
+    _statu = VESegment_Finish;
     return 1;
 }
 
@@ -1045,6 +1076,8 @@ bail:
 
 - (void)dealloc
 {
+    if(_statu != VESegment_Finish)
+        [self stop];
 
     [EAGLContext setCurrentContext:_curContext];
     if (_bilateralVert) {
@@ -1106,6 +1139,8 @@ bail:
         _pOutputPixelBufferList = pList;
     }
     [EAGLContext setCurrentContext:_curContext];
+    
+    NSLog(@"VESegmentFilter dealloc ~~");
 }
 
 @end

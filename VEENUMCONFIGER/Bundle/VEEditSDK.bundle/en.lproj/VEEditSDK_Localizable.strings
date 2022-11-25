@@ -2202,8 +2202,6 @@
 "圣光" = "Holy light";
 "水印" = "Watermark";
 
-"强度" = "Blur";
-
 "颜色值不正确" = "Wrong color value";
 "选择" = "Select";
 "图片保存中..." = "Saving image...";
@@ -2460,7 +2458,7 @@
 "关闭原声" = "Mute clip\naudio";
 "开启原声" = "Unmute clip\naudio";
 "设置\n封面" = "Cover";
-"强度" = "Blur";
+"强度" = "Strength";
 "行间距" = "Line";
 "字间距" = "Character";
 "还原音频" = "Recover audio";
@@ -2694,3 +2692,7 @@
 "选择画笔" = "Choose Pen";
 "单帧导出" = "Shot Frame";
 "图片导出成功" = "Succeed save image to album";
+"红" = "Red";
+"绿" = "Green";
+"蓝" = "Blue";
+"删除画中画" = "Delete overlay";
