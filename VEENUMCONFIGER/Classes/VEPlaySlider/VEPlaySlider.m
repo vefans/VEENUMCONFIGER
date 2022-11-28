@@ -127,7 +127,9 @@
             break;
     }
 }
-
+- (void)setHidden:(BOOL)hidden{
+    [super setHidden:hidden];
+}
 - (void)setEnabled:(BOOL)enabled {
     [super setEnabled:enabled];
     [self setNeedsLayout];

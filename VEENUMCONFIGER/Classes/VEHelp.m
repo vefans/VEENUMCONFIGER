@@ -12178,4 +12178,12 @@ static OSType help_inputPixelFormat(){
     }
     return cachedFilePath;
 }
+
++ (NSString *)getTemplateThemeFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
+    NSString *cachedFilePath = [kTemplateThemeFolder stringByAppendingPathComponent:[self cachedFileNameForKey:urlPath]];
+    if( updatetime ) {
+        cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
+    }
+    return cachedFilePath;
+}
 @end

@@ -2692,6 +2692,26 @@
 "选择画笔" = "Choose Pen";
 "单帧导出" = "Shot Frame";
 "图片导出成功" = "Succeed save image to album";
+
+"套索" = "Lasso";
+"橡皮" = "Eraser";
+"消除" = "Eliminate";
+"在画面中涂抹选择需要消除的区域" = "Smear the area selected for elimination in the picture";
+"在画面中画出形状选择需要消除的区域" = "Draw the area in the picture that the shape selection needs to eliminate.";
+"在画面中圈出需要消除的区域" = "Circle the area to be eliminated in the frame";
+"在画面中可擦除选区多余的区域" = "You can erase the extra area of the selection in the screen";
+
+"色彩方案" = "Color scheme";
+"基本调整" = "Basic adjustment";
+"曲线" = "Curve";
+"色调分离" = "Hue separation";
+"边框" = "Frame";
+"清晰度" = "Clarity";
+"自然饱和度" = "Natural saturation";
+"柔光" = "Soft light";
+"移轴模糊" = "Axis displacement ambiguity";
+"径向模糊" = "Radial blur";
+
 "红" = "Red";
 "绿" = "Green";
 "蓝" = "Blue";

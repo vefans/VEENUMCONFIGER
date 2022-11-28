@@ -129,6 +129,7 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 /** 获取推流音频数据
  *  Get streaming audio data.
  */
+//- (void)getInputStreamAudioData:(NSMutableData *)audioData;
 - (void)getInputStreamAudioSampleBuffer:(CMSampleBufferRef)audioSampleBuffer;
 
 @end

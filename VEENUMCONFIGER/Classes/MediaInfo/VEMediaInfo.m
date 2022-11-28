@@ -10,7 +10,9 @@
 #import <LibVECore/VECoreYYModel.h>
 
 @implementation VEMediaInfo
-
+- (void)setBackgroundType:(CanvasType)backgroundType{
+    _backgroundType = backgroundType;
+}
 - (instancetype)init{
     self = [super init];
     if(self){
@@ -476,7 +478,7 @@
     copy.importMorph = _importMorph;
     copy.speedHoldPitch = _speedHoldPitch;
     copy.panorama = [_panorama copy];
-    
+    copy.isTemplateTheme = _isTemplateTheme;
     return copy;
 }
 

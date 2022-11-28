@@ -526,7 +526,7 @@
                 {
                     UIView *lineView = [UIView new];
                     lineView.backgroundColor = [UIColor colorWithRed:218/255.0 green:218/255.0 blue:218/255.0 alpha:1.0];
-                    lineView.frame = CGRectMake( (gsView.frame.size.width - 44)/2.0 , (gsView.frame.size.height - 4)/2.0 + 3, 44, 4);
+                    lineView.frame = CGRectMake( (gsView.frame.size.width - 28)/2.0 , (gsView.frame.size.height - 5)/2.0 + 3, 28, 5);
                     lineView.layer.cornerRadius = 2;
                     lineView.layer.masksToBounds = YES;
                     [gsView addSubview:lineView];

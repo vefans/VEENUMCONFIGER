@@ -18,6 +18,7 @@
 }
 - (instancetype)init{
     if(self = [super init]){
+        _enableTemplateTheme = true;
         _supportFileType                        = SUPPORT_ALL;
         _defaultSelectAlbum                     = VEDEFAULTSELECTALBUM_VIDEO;
         _mediaCountLimit                         = 0;

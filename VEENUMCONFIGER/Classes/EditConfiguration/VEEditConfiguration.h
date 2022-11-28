@@ -490,6 +490,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //不截取缩略图
 @property (assign, nonatomic)bool isSingletrack;
+@property (assign, nonatomic)bool enableTemplateTheme;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -581,4 +581,5 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSString *)getAnitionStickerPenConfigDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getAnitionSubtitlePenConfigFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 + (NSString *)getAnitionStickerPenConfigFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
++ (NSString *)getTemplateThemeFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 @end

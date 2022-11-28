@@ -919,6 +919,9 @@ static const CGFloat kLabelsFontSize = 12.0f;
         [startMoveTime invalidate];
         startMoveTime = nil;
     }
+    
+    
+    
 }
 
 #endif
@@ -1034,7 +1037,6 @@ static const CGFloat kLabelsFontSize = 12.0f;
     if (selectedMaximum > self.maxValue){
         selectedMaximum = self.maxValue;
     }
-
     _selectedMaximum = selectedMaximum;
     [self refresh];
 }

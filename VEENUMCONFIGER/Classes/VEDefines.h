@@ -192,6 +192,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_Snapshort         = 66,   //视频截图
     VEAdvanceEditType_BlurBackground    = 67,   //背景虚化
     VEAdvanceEditType_MaskDoodlePen         = 68,   //马赛克涂鸦笔
+    VEAdvanceEditType_TemplatedTheme        = 69, //主题
 };
 
 /*
@@ -254,6 +255,7 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KMORPH              = 54,//边角定位
     KMORPH_DELETE       = 55,//删除边角定位
     kVEVR               = 60, //全景
+    kVEEXPORTFRAME      = 61,//单帧导出
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -342,7 +344,6 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_MORPH              =66,//边角定位
     KPIP_MORPH_DELETE       =67,//删除边角定位
     KPIP_VR                 =70,//全景
-    kVEExportFrame        =71,//单帧导出
 };
 
 /*
@@ -398,6 +399,10 @@ typedef NS_ENUM(NSInteger,AdjustType){
     Adjust_Tint,            //色调
     Adjust_Fade,            //褪色
     Adjust_Exposure,      //曝光
+    
+    Adjust_Clarity,      //清晰度
+    Adjust_NaturalSaturation,      //自然饱和度
+    Adjust_SoftLight,        //柔光
 };
 
 /**相册返回数据类型
@@ -790,3 +795,9 @@ isPhoneX;\
 #define VECustomErrorDomain @"com.VESDK.ErrorDomain"
 
 #define kThumbnailFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/thumbnailFolder"]
+
+#define kTemplateThemeFolder [kVEDirectory stringByAppendingPathComponent:@"TemplateThemes"]
+#define kTemplateThemeCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"TemplateThemeCategory.plist"]
+#define kTemplateThemeTypeListPath [kFilterFolder stringByAppendingPathComponent:@"TemplateThemeTypeList.plist"]
+
+#define kNewMask

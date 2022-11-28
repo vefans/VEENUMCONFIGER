@@ -582,4 +582,7 @@ typedef NS_ENUM(NSInteger, VECropType){
  */
 @property (nonatomic, strong) Panorama* panorama;
 
+/** 是否为主题中的音乐的标识符
+ */
+@property (nonatomic,assign) BOOL isTemplateTheme;
 @end
