@@ -799,5 +799,6 @@ isPhoneX;\
 #define kTemplateThemeFolder [kVEDirectory stringByAppendingPathComponent:@"TemplateThemes"]
 #define kTemplateThemeCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"TemplateThemeCategory.plist"]
 #define kTemplateThemeTypeListPath [kFilterFolder stringByAppendingPathComponent:@"TemplateThemeTypeList.plist"]
+#define kTemplateThemeIconFolder [kVEDirectory stringByAppendingPathComponent:@"TemplateThemeIconFolder"]
 
 #define kNewMask

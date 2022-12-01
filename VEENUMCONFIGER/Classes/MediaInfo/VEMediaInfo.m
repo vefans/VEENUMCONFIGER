@@ -10,6 +10,9 @@
 #import <LibVECore/VECoreYYModel.h>
 
 @implementation VEMediaInfo
+- (void)setTransition:(Transition *)transition{
+    _transition = transition;
+}
 - (void)setBackgroundType:(CanvasType)backgroundType{
     _backgroundType = backgroundType;
 }
