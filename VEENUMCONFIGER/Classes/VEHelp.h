@@ -181,7 +181,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 /**从URL获取缩率图照片
  */
 + (UIImage * )getThumbImageWithUrl:(NSURL * )url;
-
++ (UIImage * )getThumbImageWithPath:(NSString *)path;
 +(NSString * )getMaterialThumbnail:(NSURL * ) fileUrl;
 //多线程保存缩略图
 +(void)fileImage_Save:(NSMutableArray<VEMediaInfo *> * ) fileArray atProgress:(void(^)(float progress))completedBlock atReturn:(void(^)(bool isSuccess))completedReturn;

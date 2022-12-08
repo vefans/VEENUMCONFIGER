@@ -135,6 +135,9 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @end
 
 @interface VEConfigManager : NSObject
+/**  设置是否为 图片编辑
+ */
+@property (nonatomic, assign) BOOL isPEPhotoAlbum;
 
 + (instancetype)sharedManager;
 
@@ -205,6 +208,7 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 /**  语言设置
  */
 @property (nonatomic,assign) SUPPORTLANGUAGE language;
+
 
 /** APP的主色调
  *  默认为：0xffd500

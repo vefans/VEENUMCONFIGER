@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "LongCacheImageView.h"
+#import <SDWebImage/SDAnimatedImageView.h>
 
 @interface VEAddItemButton : UIButton
 
@@ -16,6 +17,7 @@
 +(VEAddItemButton *)initFXframe:(CGRect) rect atpercentage:(float) propor;
 //特效
 @property(nonatomic,weak)LongCacheImageView *thumbnailIV;
+@property(nonatomic,weak)SDAnimatedImageView *animatedImageView;
 @property(nonatomic,strong)UIView *maskView;
 @property(nonatomic,strong)UIView *editView;
 @property(nonatomic,weak)UILabel *label;

@@ -782,9 +782,11 @@ isPhoneX;\
 #define kStickerAnimationPath [KStickerAnimationFolder stringByAppendingPathComponent:@"StickerAnimationPath.plist"]
 
 #define kTextToSpeechFolder [kVEDirectory stringByAppendingPathComponent:@"TextToSpeech"]
-
 #define kAutoSegmentImageFolder [kVEDirectory stringByAppendingPathComponent:@"AutoSegmentImage"]
 
+#pragma mark- 相册网络素材库
+#define KCloudVideoFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/CloudVideo"]
+#define kCloudVideoPath [KCloudVideoFolder stringByAppendingPathComponent:@"CloudVideoPath.plist"]
 
 #define kVERecordSet @"VERecordSet"
 #define kVEProportionIndex  @"VEProportionIndex"    //视频比例

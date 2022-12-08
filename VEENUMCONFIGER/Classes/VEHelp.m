@@ -624,6 +624,65 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
 }
 
++ (UIImage *)getThumbImageWithPath:(NSString *)path {
+    NSURL *url;
+    if([self isSystemPhotoPath:path]){
+        url = [NSURL URLWithString:path];
+        __block UIImage *image;
+        PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+        options.synchronous = YES;
+        options.resizeMode = PHImageRequestOptionsResizeModeExact;
+        options.networkAccessAllowed = YES;//解决草稿箱获取不到缩略图的问题
+        PHFetchResult *phAsset = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
+        PHAsset * asset = [phAsset firstObject];
+        if(asset){
+            [[PHImageManager defaultManager] requestImageForAsset:[phAsset firstObject] targetSize:CGSizeMake(100*[UIScreen mainScreen].scale, 100*[UIScreen mainScreen].scale) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                image = result;
+                result  = nil;
+                info = nil;
+            }];
+        }
+        
+        options = nil;
+        phAsset = nil;
+        return image;
+    }else{
+        url = [NSURL fileURLWithPath:path];
+        if([self isImageUrl:url]){
+           NSData *imagedata = [NSData dataWithContentsOfURL:url];
+            UIImage *image = [UIImage imageWithData:imagedata];
+            if (MIN(image.size.width, image.size.height) > IMAGE_MAX_SIZE_WIDTH) {
+                float scale;
+                if (image.size.width >= image.size.height) {
+                    scale = IMAGE_MAX_SIZE_WIDTH / image.size.width;
+                }else {
+                    scale = IMAGE_MAX_SIZE_WIDTH / image.size.height;
+                }
+                image = [self scaleImage:image toScale:(scale*(480.0/1080.0))];
+            }
+            image = [self fixOrientation:image];
+            return image;//[UIImage imageWithContentsOfFile:url.path];
+        }else{
+            UIImage *image = [VEHelp imageWithWebP:url.path error:nil];
+            if( !image )
+                return [self assetGetThumImage:0.5 url:url urlAsset:nil];
+            else{
+                if (MIN(image.size.width, image.size.height) > IMAGE_MAX_SIZE_WIDTH) {
+                    float scale;
+                    if (image.size.width >= image.size.height) {
+                        scale = IMAGE_MAX_SIZE_WIDTH / image.size.width;
+                    }else {
+                        scale = IMAGE_MAX_SIZE_WIDTH / image.size.height;
+                    }
+                    image = [self scaleImage:image toScale:(scale*(480.0/1080.0))];
+                }
+                image = [self fixOrientation:image];
+                return image;//[UIImage imageWithContentsOfFile:url.path];
+            }
+        }
+    }
+}
+
 + (BOOL)isSystemPath:(NSString *)path {
     BOOL isSystemPath = YES;
     NSRange range = [path rangeOfString:@"Bundle/Application/"];
@@ -826,7 +885,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     __block int index = currentIndex;
     [imageGenerator generateCGImagesAsynchronouslyForTimes:times completionHandler:^(CMTime requestedTime, CGImageRef  _Nullable image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError * _Nullable error) {
         
-        UIImage* videoScreen = [[UIImage alloc] initWithCGImage:image scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];        
+        UIImage* videoScreen = [[UIImage alloc] initWithCGImage:image scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];
         NSString *filePath = [fileImagePatch stringByAppendingPathComponent:
                               [NSString stringWithFormat:@"%d.png",index]];  // 保存文件的名称
         [UIImagePNGRepresentation(videoScreen) writeToFile:filePath atomically:YES];
@@ -1660,7 +1719,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         //    UIFont *font = [UIFont fontWithName:fontName size:size];
         CGFontRelease(fontRef);
         return fontName;//SimHei,SimSun,YouYuan,FZJZJW--GB1-0,FZJLJW--GB1-0,FZSEJW--GB1-0,FZNSTK--GBK1-0,HYy1gj,HYg3gj,HYk1gj,JLinBo,JLuobo,Jpangtouyu,SentyTEA-Platinum
-    }    
+    }
 }
 
 /**通过字体文件路径加载字体, 适用于 ttf ，otf,ttc
@@ -2684,6 +2743,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 + (VEMaskType)getMaskTypeWithPath:(NSString *)path {
+    if (path.pathExtension.length > 0) {
+        return VEMaskType_SHAPE;
+    }
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
     if (![[NSFileManager defaultManager] fileExistsAtPath:configPath]) {
         for (NSString *fileName in [[NSFileManager defaultManager] enumeratorAtPath:path].allObjects) {
@@ -2870,18 +2932,39 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSArray* shaderArray = effectDic[@"effect"];
     if (shaderArray.count) {
         [shaderArray enumerateObjectsUsingBlock:^(NSMutableDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            CustomFilter *customFilter = [self getCustomFilterWithDictionary:obj folderPath:folderPath currentFrameTexturePath:currentFrameImagePath];
+            CustomFilter *customFilter = [self getCustomFilterWithDictionary:obj folderPath:folderPath currentFrameTexturePath:currentFrameImagePath  atCallback:^(CustomFilter *customFilter) {
+                if( [effectDic[@"ver"] integerValue] >= 8 )
+                {
+                    customFilter.decodeName = effectDic[@"name"];
+                }
+            }];
             if (customFilter) {
                 customFilter.cycleDuration = [effectDic[@"duration"] floatValue];
                 [filterArray addObject:customFilter];
             }
+            if (effectDic[@"script"]) {
+               NSError * error = nil;
+               NSString *scriptPath = [folderPath stringByAppendingPathComponent:effectDic[@"script"]];
+               customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+            }
         }];
     }
     else {
-        CustomFilter *customFilter = [self getCustomFilterWithDictionary:effectDic folderPath:folderPath currentFrameTexturePath:currentFrameImagePath];
+        CustomFilter *customFilter = [self getCustomFilterWithDictionary:effectDic folderPath:folderPath currentFrameTexturePath:currentFrameImagePath  atCallback:^(CustomFilter *customFilter) {
+            if( [effectDic[@"ver"] integerValue] >= 8 )
+            {
+                customFilter.decodeName = effectDic[@"name"];
+            }
+        }];
         if (customFilter) {
             customFilter.cycleDuration = [effectDic[@"duration"] floatValue];
             [filterArray addObject:customFilter];
+        }
+        
+        if (effectDic[@"script"]) {
+           NSError * error = nil;
+           NSString *scriptPath = [folderPath stringByAppendingPathComponent:effectDic[@"script"]];
+           customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
         }
     }
     customMultipleFilter = [[CustomMultipleFilter alloc] initWithFilterArray:filterArray];
@@ -2891,13 +2974,17 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 + (CustomFilter *)getCustomFilterWithDictionary:(NSMutableDictionary*)effectDic
                                      folderPath:(NSString*)path
-                        currentFrameTexturePath:(NSString *)currentFrameTexturePath
+                        currentFrameTexturePath:(NSString *)currentFrameTexturePath atCallback:( void(^)(CustomFilter *customFilter) ) callback
 {
     //TODO:解析json新增的字段
     NSError * error = nil;
     CustomFilter *customFilter = [[CustomFilter alloc] init];
     
     customFilter.folderPath = path;
+    if( callback )
+    {
+        callback( customFilter );
+    }
     customFilter.name = effectDic[@"name"];
     if(!customFilter.name) //必须设置名字，多脚本滤镜根据名字确定绘制顺序
         customFilter.name = @"linghunchuqiao";
@@ -3086,7 +3173,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (effectDic[@"vertShader"]) {
         NSString *vertPath = [folderPath stringByAppendingPathComponent:effectDic[@"vertShader"]];
         customFilter.vert = [NSString stringWithContentsOfFile:vertPath encoding:NSUTF8StringEncoding error:&error];
-    }    
+    }
     if (effectDic[@"script"]) {
         NSString *scriptPath = [folderPath stringByAppendingPathComponent:effectDic[@"script"]];
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
@@ -3702,7 +3789,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 result = nil;
                 info = nil;
             }];
-        }        
+        }
         options = nil;
         phAsset = nil;
         return image;
@@ -3764,7 +3851,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (dataError != nil) {
         if (error) {
             *error = dataError;
-        }        
+        }
         return nil;
     }
     return [UIImage sd_imageWithData:imgData];
@@ -5983,6 +6070,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             if ([configDic objectForKey:@"effect"]) {
                 transition.customMultipleFilter = [VEHelp getCustomMultipleFilerWithFolderPath:configPath.stringByDeletingLastPathComponent currentFrameImagePath:nil];
             }else {
+                transition.customMultipleFilter = nil;
                 transition.customTransition = [self getCustomTransitionWithJsonPath:configPath];
             }
         }
@@ -8189,7 +8277,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                                                                                        error:&err];
                 if (config) {
                     (*config) = subtitleEffectConfig;
-                }                
+                }
                 if(err) {
                     NSLog(@"json解析失败：%@",err);
                 }
@@ -8418,10 +8506,21 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSArray* shaderArray = effectDic[@"effect"];
     if (shaderArray.count) {
         [shaderArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            CustomFilter *customFilter = [self getCustomFilterWithDictionary:obj folderPath:path categoryId:categoryId resourceId:resourceId fxId:fxId filterFxArray:filterFxArray timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath];
+            CustomFilter *customFilter = [self getCustomFilterWithDictionary:obj folderPath:path categoryId:categoryId resourceId:resourceId fxId:fxId filterFxArray:filterFxArray timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath atCallback:^(CustomFilter *customFilter) {
+                if( [effectDic[@"ver"] integerValue] >= 8 )
+                {
+                    customFilter.decodeName = effectDic[@"name"];
+                }
+            }];
             if (customFilter) {
                 customFilter.cycleDuration = [effectDic[@"duration"] floatValue];
                 [filterArray addObject:customFilter];
+            }
+            if (effectDic[@"script"]) {
+                NSError * error = nil;
+                NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
+                customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+                customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
             }
         }];
     }
@@ -8625,6 +8724,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                                   filterFxArray:(NSArray *)filterFxArray
                                       timeRange:(CMTimeRange)timeRange
                         currentFrameTexturePath:(NSString *)currentFrameTexturePath
+                                     atCallback:( void(^)(CustomFilter *customFilter) ) callback
 {
     //TODO:解析json新增的字段
     NSError * error = nil;
@@ -8633,6 +8733,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     customFilter.networkResourceId = resourceId;
     
     customFilter.folderPath = path;
+    if( callback )
+    {
+        callback( customFilter );
+    }
     customFilter.name = effectDic[@"name"];
     if(!customFilter.name) //必须设置名字，多脚本滤镜根据名字确定绘制顺序
         customFilter.name = @"linghunchuqiao";

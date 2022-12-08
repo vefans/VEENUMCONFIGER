@@ -530,7 +530,7 @@
                                                                 resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
                         self.gifData = imageData;
                         float imageDuration = [VECore isGifWithData:imageData];
-                        self.imageDurationTime = CMTimeMakeWithSeconds(imageDuration, NSEC_PER_SEC);
+                        self.imageDurationTime = CMTimeMakeWithSeconds(imageDuration, TIMESCALE);
                                                                 }];
                 }
             }else {
@@ -542,7 +542,7 @@
                     _isGif = YES;
                     _gifData = data;
                     float imageDuration = [VECore isGifWithData:data];
-                    _imageDurationTime = CMTimeMakeWithSeconds(imageDuration, NSEC_PER_SEC);
+                    _imageDurationTime = CMTimeMakeWithSeconds(imageDuration, TIMESCALE);
                 }
                 if (source) {
                     CFRelease(source);

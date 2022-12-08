@@ -50,6 +50,13 @@
     fxItemBtn.thumbnailIV.layer.borderColor = [UIColor clearColor].CGColor;
     fxItemBtn.thumbnailIV.tag = kFxIconTag;
     
+    SDAnimatedImageView * animatedImageView = [[SDAnimatedImageView alloc] initWithFrame:fxItemBtn.thumbnailIV.bounds];
+    animatedImageView.contentMode = UIViewContentModeScaleAspectFill;
+    imageView.backgroundColor = [UIColor clearColor];
+    fxItemBtn.animatedImageView = animatedImageView;
+    [fxItemBtn.thumbnailIV addSubview:fxItemBtn.animatedImageView];
+    fxItemBtn.animatedImageView.tag = kFxIconTag+ 10000;
+    
     fxItemBtn.userInteractionEnabled = YES;
     fxItemBtn.layer.masksToBounds = YES;
     
