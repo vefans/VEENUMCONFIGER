@@ -681,145 +681,148 @@ static const CGFloat kLabelsFontSize = 12.0f;
     }
     CGPoint location = [touch locationInView:self];
     if ( (((location.x - 0.1) > startTouchPositionX) || ( (location.x + 0.1) < startTouchPositionX ) )  && (_isStartMove) ) {//拖动了才继续往下走
-        CGSize locationSize = [_delegate getLeftPointAndRightPoint];
-        if(_leftHandleSelected){
-            
-            if(location.x < locationSize.width){
-                location.x = locationSize.width;
-            }else if(location.x > (locationSize.height)){
-                location.x = locationSize.height;
-            }
-        }
-        else
-        {
-            if(location.x < locationSize.width + 35){
-                location.x = locationSize.width + 35;
-            }else if(location.x > (locationSize.height + 35)){
-                location.x = locationSize.height + 35;
-            }
-        }
-        
-        if( isFristTracking )
-        {
-            isFristTracking = false;
-            if(_leftHandleSelected)
-            {
-                fTrackingX = _leftHandle.bounds.size.width/2.0 -  [self convertPoint:location toView:self.leftLabel].x;
-                
-            }
-            else
-            {
-                fTrackingX =  _rightHandle.bounds.size.width/2.0 -  [self convertPoint:location toView:self.rightLabel].x;
-                
-            }
-        }
-        if(_leftHandleSelected){
-            if(location.x > _rightHandle.frame.origin.x - 11){
-                location.x = _rightHandle.frame.origin.x - 11;
-            }
-        }
-        if(_rightHandleSelected){
-            if(location.x < _leftHandle.frame.origin.x + _leftHandle.frame.size.width + 12 ){
-                location.x = _leftHandle.frame.origin.x + _leftHandle.frame.size.width + 12;
-            }
-        }
         
         //find out the percentage along the line we are in x coordinate terms (subtracting half the frames width to account for moving the middle of the handle, not the left hand side)
         //    float percentage = ((location.x-CGRectGetMinX(self.sliderLine.frame)) - VE_HANDLE_DIAMETER/2) / (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));
         
         float mainPercentage = fTrackingX/(CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));
         
-        float percentage = (location.x - 25 + 3 + fTrackingX)/ (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));//20180612 修改bug:在视频最后几秒添加字幕后，再次编辑时，拖动右把手时不能拖动到视频的最后
-        //
-        if(_leftHandleSelected){
-            percentage = (location.x - 8  + fTrackingX)/ (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));//20180612 修改bug:在视频最后几秒添加字幕后，再次编辑时，拖动右把手时不能拖动到视频的最后
-        }
-        if( percentage > 1.0 )
-        {
-            percentage = 1.0;
-        }
-        //multiply that percentage by self.maxValue to get the new selected minimum value
-        float selectedValue = percentage * (self.maxValue - self.minValue) + self.minValue;
-        
-        mainPercentage = mainPercentage * (self.maxValue - self.minValue) + self.minValue;
-        
-        if( _rightHandleSelected )
-        {
-            if( mainPercentage > 0 )
-                mainPercentage = 0;
-        }
-        else
-        {
-            if( mainPercentage < 0 )
-                mainPercentage = 0;
-        }
-        
-        bool isLeft = true;
-        bool isIsSlide = false;
-        
-        if (_leftHandleSelected)
-        {
-            if ( (selectedValue - mainPercentage ) < (self.selectedMaximum - mainPercentage) ){
-                self.selectedMinimum = selectedValue;
-                isIsSlide = true;
-            }
-            else {
-                self.selectedMinimum = self.selectedMaximum - mainPercentage;
+            CGSize locationSize = [_delegate getLeftPointAndRightPoint];
+            if(_leftHandleSelected){
                 
-            }
-            
-        }
-        else if (_rightHandleSelected)
-        {
-            
-            isLeft = false;
-            if (selectedValue > (self.selectedMinimum  + fabsf(mainPercentage)) || (self.disableRange && selectedValue >= self.minValue)){ //don't let the dots cross over, (unless range is disabled, in which case just dont let the dot fall off the end of the screen)
-                self.selectedMaximum = selectedValue;
-                isIsSlide = true;
-                
-            }
-            else {
-                self.selectedMaximum = self.selectedMinimum + fabsf(mainPercentage);
-                
-            }
-        }
-        isUpdateSlider = true;
-        //no need to refresh the view because it is done as a sideeffect of setting the property
-        if(_delegate && [_delegate respondsToSelector:@selector(dragRangeSlider:didEndChangeSelectedMinimumValue:andMaximumValue:isRight:isUpdate:)]){
-            [_delegate dragRangeSlider:self didEndChangeSelectedMinimumValue:self.selectedMinimum andMaximumValue:self.selectedMaximum isRight:_rightHandleSelected isUpdate:&isUpdateSlider];
-        }
-        if( !startMoveTime && _delegate && [_delegate respondsToSelector:@selector(getIsSlide:atoriginX:atIsLeft:atTouch:)])
-        {
-            if( isCollageSilder && isUpdateSlider && isIsSlide )
-            {
-                if( isLeft )
-                {
-                    [_delegate getIsSlide:location.x atoriginX: self.frame.origin.x atIsLeft:true atTouch:touch];
-                }
-                else{
-                    [_delegate getIsSlide:location.x atoriginX: self.frame.origin.x atIsLeft:false atTouch:touch];
+                if(location.x < locationSize.width){
+                    location.x = locationSize.width;
+                }else if(location.x > (locationSize.height)){
+                    location.x = locationSize.height;
                 }
             }
             else
             {
-                if( isIsSlide )
+                if(location.x < locationSize.width + 35){
+                    location.x = locationSize.width + 35;
+                }else if(location.x > (locationSize.height + 35)){
+                    location.x = locationSize.height + 35;
+                }
+            }
+            
+            if( isFristTracking )
+            {
+                isFristTracking = false;
+                if(_leftHandleSelected)
+                {
+                    fTrackingX = _leftHandle.bounds.size.width/2.0 -  [self convertPoint:location toView:self.leftLabel].x;
+                    
+                }
+                else
+                {
+                    fTrackingX =  _rightHandle.bounds.size.width/2.0 -  [self convertPoint:location toView:self.rightLabel].x;
+                    
+                }
+            }
+            if(_leftHandleSelected){
+                if(location.x > _rightHandle.frame.origin.x - 11){
+                    location.x = _rightHandle.frame.origin.x - 11;
+                }
+            }
+            if(_rightHandleSelected){
+                if(location.x < _leftHandle.frame.origin.x + _leftHandle.frame.size.width + 12 ){
+                    location.x = _leftHandle.frame.origin.x + _leftHandle.frame.size.width + 12;
+                }
+            }
+            float percentage = (location.x - 25 + 3 + fTrackingX)/ (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));//20180612 修改bug:在视频最后几秒添加字幕后，再次编辑时，拖动右把手时不能拖动到视频的最后
+            //
+            if(_leftHandleSelected){
+                percentage = (location.x - 8  + fTrackingX)/ (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame));//20180612 修改bug:在视频最后几秒添加字幕后，再次编辑时，拖动右把手时不能拖动到视频的最后
+            }
+            if( percentage > 1.0 )
+            {
+                percentage = 1.0;
+            }
+            
+            //multiply that percentage by self.maxValue to get the new selected minimum value
+            float selectedValue = percentage * (self.maxValue - self.minValue) + self.minValue;
+            
+            mainPercentage = mainPercentage * (self.maxValue - self.minValue) + self.minValue;
+            
+            if( _rightHandleSelected )
+            {
+                if( mainPercentage > 0 )
+                    mainPercentage = 0;
+            }
+            else
+            {
+                if( mainPercentage < 0 )
+                    mainPercentage = 0;
+            }
+            
+            
+            bool isLeft = true;
+            bool isIsSlide = false;
+            
+            if (_leftHandleSelected)
+            {
+                if ( (selectedValue - mainPercentage ) < (self.selectedMaximum - mainPercentage) ){
+                    self.selectedMinimum = selectedValue;
+                    isIsSlide = true;
+                }
+                else {
+                    self.selectedMinimum = self.selectedMaximum - mainPercentage;
+                    
+                }
+                
+            }
+            else if (_rightHandleSelected)
+            {
+                
+                isLeft = false;
+                if (selectedValue > (self.selectedMinimum  + fabsf(mainPercentage)) || (self.disableRange && selectedValue >= self.minValue)){ //don't let the dots cross over, (unless range is disabled, in which case just dont let the dot fall off the end of the screen)
+                    self.selectedMaximum = selectedValue;
+                    isIsSlide = true;
+                    
+                }
+                else {
+                    self.selectedMaximum = self.selectedMinimum + fabsf(mainPercentage);
+                    
+                }
+            }
+            
+            isUpdateSlider = true;
+            //no need to refresh the view because it is done as a sideeffect of setting the property
+            if(_delegate && [_delegate respondsToSelector:@selector(dragRangeSlider:didEndChangeSelectedMinimumValue:andMaximumValue:isRight:isUpdate:)]){
+                [_delegate dragRangeSlider:self didEndChangeSelectedMinimumValue:self.selectedMinimum andMaximumValue:self.selectedMaximum isRight:_rightHandleSelected isUpdate:&isUpdateSlider];
+            }
+            if( !startMoveTime && _delegate && [_delegate respondsToSelector:@selector(getIsSlide:atoriginX:atIsLeft:atTouch:)])
+            {
+                if( isCollageSilder && isUpdateSlider && isIsSlide )
                 {
                     if( isLeft )
                     {
-                        if( isCollageSilder )
-                            [_delegate getIsSlide:(self.selectedMinimum - self.minValue)/(self.maxValue - self.minValue) * (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame)) + 25 - fTrackingX atoriginX: self.frame.origin.x atIsLeft:true atTouch:touch];
+                        [_delegate getIsSlide:location.x atoriginX: self.frame.origin.x atIsLeft:true atTouch:touch];
                     }
                     else{
-                        if( isCollageSilder )
-                            [_delegate getIsSlide:location.x atoriginX: self.frame.origin.x atIsLeft:false atTouch:touch];
+                        [_delegate getIsSlide:location.x atoriginX: self.frame.origin.x atIsLeft:false atTouch:touch];
+                    }
+                }
+                else
+                {
+                    if( isIsSlide )
+                    {
+                        if( isLeft )
+                        {
+                            if( isCollageSilder )
+                                [_delegate getIsSlide:(self.selectedMinimum - self.minValue)/(self.maxValue - self.minValue) * (CGRectGetMaxX(self.sliderLine.frame) - CGRectGetMinX(self.sliderLine.frame)) + 25 - fTrackingX atoriginX: self.frame.origin.x atIsLeft:true atTouch:touch];
+                        }
+                        else{
+                            if( isCollageSilder )
+                                [_delegate getIsSlide:location.x atoriginX: self.frame.origin.x atIsLeft:false atTouch:touch];
+                        }
                     }
                 }
             }
-        }
-        else{
-            [startMoveTime invalidate];
-            startMoveTime = nil;
-        }
+            else{
+                [startMoveTime invalidate];
+                startMoveTime = nil;
+            }
     }
     else
     {

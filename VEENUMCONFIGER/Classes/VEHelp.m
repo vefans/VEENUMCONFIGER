@@ -3590,34 +3590,45 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     UIImage *apngImage = [UIImage ve_animatedGIFWithData:apngData];
     
     [jsonDic setObject:[NSNumber numberWithFloat:apngImage.duration] forKey:@"duration"];
-    NSArray *timeArray = [NSArray arrayWithObject:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], @"beginTime", [NSNumber numberWithFloat:apngImage.duration], @"endTime", nil]];
-    [jsonDic setObject:timeArray forKey:@"timeArray"];
-    NSMutableArray *frameArray = [NSMutableArray array];
-    if (apngImage.images > 0) {
-        [apngImage.images enumerateObjectsUsingBlock:^(UIImage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSString *imagePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%lu.png", jsonDic[@"name"], (unsigned long)idx]];
-            BOOL result = [UIImagePNGRepresentation(obj) writeToFile:imagePath atomically:YES];
-            if(!result) {
-                NSLog(@"%zd保存失败", idx);
-            }else {
-                NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], @"time", [NSNumber numberWithInteger:idx], @"pic", nil];
-                [frameArray addObject:dic];
-            }
-        }];
-    }else {
-        NSString *imagePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@0.png", jsonDic[@"name"]]];
-        
-        BOOL result = [UIImagePNGRepresentation(apngImage) writeToFile:imagePath atomically:YES];
-        if(!result) {
-            NSLog(@"0保存失败");
-        }else {
-            NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], @"time", [NSNumber numberWithInteger:0], @"pic", nil];
-            [frameArray addObject:dic];
+    if (![jsonDic.allKeys containsObject:@"timeArray"] || [jsonDic[@"timeArray"] count] == 0) {
+        NSArray *timeArray = [NSArray arrayWithObject:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], @"beginTime", [NSNumber numberWithFloat:apngImage.duration], @"endTime", nil]];
+        [jsonDic setObject:timeArray forKey:@"timeArray"];
+    }
+    else if ([jsonDic.allKeys containsObject:@"timeArray"] && [jsonDic[@"timeArray"] count] > 1) {
+        for (int i = 0; i < apngImage.images.count; i++) {
+            NSString *imagePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%d.png", jsonDic[@"name"], i]];
+            UIImage *image = apngImage.images[i];
+            [UIImagePNGRepresentation(image) writeToFile:imagePath atomically:NO];
         }
     }
+    if (![jsonDic.allKeys containsObject:@"timeArray"] || [jsonDic[@"timeArray"] count] == 0) {
+        NSMutableArray *frameArray = [NSMutableArray array];
+        if (apngImage.images > 0) {
+            [apngImage.images enumerateObjectsUsingBlock:^(UIImage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSString *imagePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%lu.png", jsonDic[@"name"], (unsigned long)idx]];
+                BOOL result = [UIImagePNGRepresentation(obj) writeToFile:imagePath atomically:YES];
+                if(!result) {
+                    NSLog(@"%zd保存失败", idx);
+                }else {
+                    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], @"time", [NSNumber numberWithInteger:idx], @"pic", nil];
+                    [frameArray addObject:dic];
+                }
+            }];
+        }else {
+            NSString *imagePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@0.png", jsonDic[@"name"]]];
+            
+            BOOL result = [UIImagePNGRepresentation(apngImage) writeToFile:imagePath atomically:YES];
+            if(!result) {
+                NSLog(@"0保存失败");
+            }else {
+                NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], @"time", [NSNumber numberWithInteger:0], @"pic", nil];
+                [frameArray addObject:dic];
+            }
+        }
         if (frameArray.count > 0) {
             [jsonDic setObject:frameArray forKey:@"frameArray"];
         }
+    }
     apngData = nil;
     apngImage = nil;
 }
@@ -8239,6 +8250,18 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 captionImage.frameArray = subtitleEffectConfig[@"frameArray"];
                 captionImage.timeArray = subtitleEffectConfig[@"timeArray"];
                 captionEx.captionImage = captionImage;
+                if (subtitleEffectConfig[@"audio"]) {
+                    NSArray *audios = subtitleEffectConfig[@"audio"];
+                    captionEx.musics = [NSMutableArray array];
+                    for (NSString *name in audios) {
+                        MusicInfo *music = [[MusicInfo alloc] init];
+                        music.url = [NSURL fileURLWithPath:[configPath stringByAppendingPathComponent:name]];
+                        AVURLAsset *musicAsset = [[AVURLAsset alloc]initWithURL:music.url options:nil];
+                        music.clipTimeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(CMTimeGetSeconds(musicAsset.duration), TIMESCALE));
+                        music.volume = 1.0;
+                        [captionEx.musics addObject:music];
+                    }
+                }
                 {
                     float duration = [subtitleEffectConfig[@"duration"] floatValue];
                     if( duration == 0 )

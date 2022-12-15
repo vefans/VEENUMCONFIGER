@@ -157,7 +157,6 @@
 //        if( self.cropTypeSelectBtn.tag == VE_VECROPTYPE_ORIGINAL )
 //            ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = PESDKMain_Color;
 //    }
-        
     _selectFile = selectFile;
 }
 
@@ -719,7 +718,7 @@
         else
             vvasset.speed        = _selectFile.speed;
         
-        vvasset.volume       = _selectFile.videoVolume;
+        vvasset.volume       = 1.0;//_selectFile.videoVolume;
     }else{
         NSLog(@"图片");
         vvasset.type         = MediaAssetTypeImage;
