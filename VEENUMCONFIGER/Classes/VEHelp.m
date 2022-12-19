@@ -3594,37 +3594,30 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         NSArray *timeArray = [NSArray arrayWithObject:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], @"beginTime", [NSNumber numberWithFloat:apngImage.duration], @"endTime", nil]];
         [jsonDic setObject:timeArray forKey:@"timeArray"];
     }
-    else if ([jsonDic.allKeys containsObject:@"timeArray"] && [jsonDic[@"timeArray"] count] > 1) {
-        for (int i = 0; i < apngImage.images.count; i++) {
-            NSString *imagePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%d.png", jsonDic[@"name"], i]];
-            UIImage *image = apngImage.images[i];
-            [UIImagePNGRepresentation(image) writeToFile:imagePath atomically:NO];
-        }
-    }
-    if (![jsonDic.allKeys containsObject:@"timeArray"] || [jsonDic[@"timeArray"] count] == 0) {
-        NSMutableArray *frameArray = [NSMutableArray array];
-        if (apngImage.images > 0) {
-            [apngImage.images enumerateObjectsUsingBlock:^(UIImage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                NSString *imagePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%lu.png", jsonDic[@"name"], (unsigned long)idx]];
-                BOOL result = [UIImagePNGRepresentation(obj) writeToFile:imagePath atomically:YES];
-                if(!result) {
-                    NSLog(@"%zd保存失败", idx);
-                }else {
-                    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], @"time", [NSNumber numberWithInteger:idx], @"pic", nil];
-                    [frameArray addObject:dic];
-                }
-            }];
-        }else {
-            NSString *imagePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@0.png", jsonDic[@"name"]]];
-            
-            BOOL result = [UIImagePNGRepresentation(apngImage) writeToFile:imagePath atomically:YES];
+    NSMutableArray *frameArray = [NSMutableArray array];
+    if (apngImage.images > 0) {
+        [apngImage.images enumerateObjectsUsingBlock:^(UIImage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString *imagePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%lu.png", jsonDic[@"name"], (unsigned long)idx]];
+            BOOL result = [UIImagePNGRepresentation(obj) writeToFile:imagePath atomically:YES];
             if(!result) {
-                NSLog(@"0保存失败");
+                NSLog(@"%zd保存失败", idx);
             }else {
-                NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], @"time", [NSNumber numberWithInteger:0], @"pic", nil];
+                NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], @"time", [NSNumber numberWithInteger:idx], @"pic", nil];
                 [frameArray addObject:dic];
             }
+        }];
+    }else {
+        NSString *imagePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@0.png", jsonDic[@"name"]]];
+        
+        BOOL result = [UIImagePNGRepresentation(apngImage) writeToFile:imagePath atomically:YES];
+        if(!result) {
+            NSLog(@"0保存失败");
+        }else {
+            NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], @"time", [NSNumber numberWithInteger:0], @"pic", nil];
+            [frameArray addObject:dic];
         }
+    }
+    if (![jsonDic.allKeys containsObject:@"frameArray"] || [jsonDic[@"frameArray"] count] == 0) {
         if (frameArray.count > 0) {
             [jsonDic setObject:frameArray forKey:@"frameArray"];
         }
