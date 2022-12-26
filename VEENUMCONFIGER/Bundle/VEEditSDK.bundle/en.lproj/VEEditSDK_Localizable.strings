@@ -2579,6 +2579,10 @@
 "表情包" = "Emoji";
 "标清" = "SD";
 "高清" = "HD";
+"标清GIF" = "SD GIF";
+"高清GIF" = "HD GIF";
+"超清GIF" = "FHD GIF";
+"导出GIF大小约为%dMB" = "Export GIF size is about %dMB";
 "一键成片" = "MV";
 "长按拖动可调整位置" = "Long press and drag to adjust position";
 "切换人脸" = "Switch faces";
@@ -2716,3 +2720,4 @@
 "绿" = "Green";
 "蓝" = "Blue";
 "删除画中画" = "Delete overlay";
+"该视频时长过短！" = "The video duration is too short!";

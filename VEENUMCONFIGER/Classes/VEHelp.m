@@ -2943,9 +2943,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 [filterArray addObject:customFilter];
             }
             if (effectDic[@"script"]) {
-               NSError * error = nil;
-               NSString *scriptPath = [folderPath stringByAppendingPathComponent:effectDic[@"script"]];
-               customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+                NSError * error = nil;
+                NSString *scriptPath = [folderPath stringByAppendingPathComponent:effectDic[@"script"]];
+                customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+                customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
             }
         }];
     }
@@ -2962,9 +2963,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }
         
         if (effectDic[@"script"]) {
-           NSError * error = nil;
-           NSString *scriptPath = [folderPath stringByAppendingPathComponent:effectDic[@"script"]];
-           customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+            NSError * error = nil;
+            NSString *scriptPath = [folderPath stringByAppendingPathComponent:effectDic[@"script"]];
+            customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+            customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
         }
     }
     customMultipleFilter = [[CustomMultipleFilter alloc] initWithFilterArray:filterArray];
@@ -2997,6 +2999,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (effectDic[@"script"]) {
         NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+        customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
     }
 //    customFilter.name = effectDic[@"name"];
     
@@ -4568,6 +4571,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (effectDic[@"script"]) {
         NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+        customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
     }
     
     NSArray *uniformParams = effectDic[@"uniformParams"];
@@ -6822,62 +6826,151 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
         }];
     }
-    if (captionExs.count > 0) {
-        veCoreSDK.captionExs = captionExs;
-    }
     //MARK: 贴纸
     if (templateInfo.stickers.count > 0) {
         [templateInfo.stickers enumerateObjectsUsingBlock:^(VECoreTemplateSticker * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            Caption *caption = [obj getStickerWithFolderPath:folderPath];
-            if (caption) {
-                caption.imageFolderPath = [VEHelp getFileURLFromAbsolutePath_str:caption.imageFolderPath];
-                caption.type = CaptionTypeNoText;
-                                    
-                NSArray *images = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:caption.imageFolderPath error:nil];
-                [images enumerateObjectsUsingBlock:^(NSString * _Nonnull imageName, NSUInteger idx, BOOL * _Nonnull stop) {
-                    if ([imageName.pathExtension isEqualToString:@"webp"]) {
-                        [VEHelp webpToPng:[caption.imageFolderPath stringByAppendingPathComponent:imageName]];
-                    }
-                }];
-                
-                NSString *configPath = [caption.imageFolderPath stringByAppendingPathComponent:@"config.json"];
-                NSData *data = [[NSData alloc] initWithContentsOfFile:configPath];
-                if(data){
-                    NSError *error = nil;
-                    NSMutableDictionary *configDic = [NSJSONSerialization JSONObjectWithData:data
-                                                                                options:NSJSONReadingMutableContainers
-                                                                                  error:&error];
-                    if (!error) {
-                        if ([configDic[@"apng"] boolValue]) {
-                            [VEHelp setApngCaptionFrameArrayWithImagePath:configPath.stringByDeletingLastPathComponent jsonDic:configDic];
+            if ([obj isKindOfClass:[CaptionEx class]]) {
+                CaptionEx *caption = [obj getStickerExWithFolderPath:folderPath];
+                caption.type =  CaptionExTypeStickers;
+                if (caption) {
+                    if (caption.captionImage.imageFolderPath.length > 0) {
+                        caption.captionImage.imageFolderPath = [VEHelp getFileURLFromAbsolutePath_str:caption.captionImage.imageFolderPath];
+                        NSArray *images = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:caption.captionImage.imageFolderPath error:nil];
+                        [images enumerateObjectsUsingBlock:^(NSString * _Nonnull imageName, NSUInteger idx, BOOL * _Nonnull stop) {
+                            if ([imageName.pathExtension isEqualToString:@"webp"]) {
+                                [VEHelp webpToPng:[caption.captionImage.imageFolderPath stringByAppendingPathComponent:imageName]];
+                            }
+                        }];
+                        NSString *configPath = [caption.captionImage.imageFolderPath stringByAppendingPathComponent:@"config.json"];
+                        NSData *data = [[NSData alloc] initWithContentsOfFile:configPath];
+                        if(data){
+                            NSError *error = nil;
+                            NSMutableDictionary *configDic = [NSJSONSerialization JSONObjectWithData:data
+                                                                                             options:NSJSONReadingMutableContainers
+                                                                                               error:&error];
+                            if (!error) {
+                                if ([configDic[@"apng"] boolValue]) {
+                                    [VEHelp setApngCaptionFrameArrayWithImagePath:configPath.stringByDeletingLastPathComponent jsonDic:configDic];
+                                }
+                                caption.captionImage.frameArray = configDic[@"frameArray"];
+                                caption.captionImage.timeArray = configDic[@"timeArray"];
+                                caption.captionImage.imageName = configDic[@"name"];
+                                caption.duration = [configDic[@"duration"] floatValue];
+                                int imageW = [configDic[@"width"] intValue];
+                                int imageH = [configDic[@"height"] intValue];
+                                caption.originalSize = CGSizeMake(imageW / templateInfo.size.width, imageH / templateInfo.size.height);
+                                caption.scale = obj.sizeF.width/caption.originalSize.width;
+                                
+                                if (configDic[@"audio"]) {
+                                    NSArray *audios = configDic[@"audio"];
+                                    caption.musics = [NSMutableArray array];
+                                    for (NSString *name in audios) {
+                                        MusicInfo *music = [[MusicInfo alloc] init];
+                                        music.url = [NSURL fileURLWithPath:[caption.captionImage.imageFolderPath stringByAppendingPathComponent:name]];
+                                        AVURLAsset *musicAsset = [[AVURLAsset alloc]initWithURL:music.url options:nil];
+                                        music.clipTimeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(CMTimeGetSeconds(musicAsset.duration), TIMESCALE));
+                                        music.effectiveTimeRange = caption.timeRange;
+                                        music.identifier = [NSString stringWithFormat:@"captionExMusic_%@", [VEHelp getMediaIdentifier]];
+                                        music.volume = obj.volume;
+                                        music.volumePointArray = obj.volumePointArray;
+                                        [caption.musics addObject:music];
+                                    }
+                                }
+                            }
+                        }else {
+                            caption.captionImage.captionImagePath =  caption.captionImage.imageFolderPath;
+                            caption.captionImage.imageFolderPath = nil;
                         }
-                        caption.frameArray = configDic[@"frameArray"];
-                        caption.timeArray = configDic[@"timeArray"];
-                        caption.imageName = configDic[@"name"];
-                        caption.duration = [configDic[@"duration"] floatValue];
+                    }else {
+                        caption.captionImage.captionImagePath = [VEHelp getFileURLFromAbsolutePath_str:caption.captionImage.captionImagePath];
                     }
+                    if( caption.captionImage.animate )
+                    {
+                        NSString *animateFolderPath = caption.captionImage.animate.folderPath;
+                        animateFolderPath = [VEHelp getFileURLFromAbsolutePath_str:caption.captionImage.animate.folderPath];
+                        
+                        CustomFilter *animate = [self getStickerAnimationCustomFilter:animateFolderPath atCaptionEx:caption atAnimate:caption.captionImage.animate];
+                        animate.timeRange = caption.captionImage.animate.timeRange;
+                        if (caption.captionImage.animate.animateType == CustomAnimationTypeCombined) {
+                            animate.cycleDuration = caption.captionImage.animate.cycleDuration;
+                        }
+                        animate.networkCategoryId = caption.captionImage.animate.networkCategoryId;
+                        animate.networkResourceId = caption.captionImage.animate.networkResourceId;
+                        animate.animateType = caption.captionImage.animate.animateType;
+                        
+                        caption.captionImage.animate = animate;
+                    }
+                    if (caption.captionImage.animateOut) {
+                        NSString *animateFolderPath = caption.captionImage.animateOut.folderPath;
+                        animateFolderPath = [VEHelp getFileURLFromAbsolutePath_str:caption.captionImage.animateOut.folderPath];
+
+                        CustomFilter *animate = [self getStickerAnimationCustomFilter:animateFolderPath atCaptionEx:caption atAnimate:caption.captionImage.animateOut];
+                        animate.timeRange = caption.captionImage.animateOut.timeRange;
+                        animate.networkCategoryId = caption.captionImage.animateOut.networkCategoryId;
+                        animate.networkResourceId = caption.captionImage.animateOut.networkResourceId;
+                        animate.animateType = caption.captionImage.animateOut.animateType;
+                        
+                        caption.captionImage.animateOut = animate;
+                    }
+                    [captionExs addObject:caption];
                 }
-                if (caption.customAnimate) {
-                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:caption.customAnimate.folderPath currentFrameImagePath:nil caption:caption];
-                    animate.timeRange = caption.customAnimate.timeRange;
-                    animate.cycleDuration = caption.customAnimate.cycleDuration;
-                    animate.networkCategoryId = caption.customAnimate.networkCategoryId;
-                    animate.networkResourceId = caption.customAnimate.networkResourceId;
-                    animate.animateType = caption.customAnimate.animateType;
+            }else {
+                Caption *caption = [obj getStickerWithFolderPath:folderPath];
+                if (caption) {
+                    caption.imageFolderPath = [VEHelp getFileURLFromAbsolutePath_str:caption.imageFolderPath];
+                    caption.type = CaptionTypeNoText;
                     
-                }
-                if (caption.customOutAnimate) {
-                    CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:caption.customOutAnimate.folderPath currentFrameImagePath:nil caption:caption];
-                    animate.timeRange = caption.customOutAnimate.timeRange;
-                    animate.cycleDuration = caption.customOutAnimate.cycleDuration;
-                    animate.networkCategoryId = caption.customOutAnimate.networkCategoryId;
-                    animate.networkResourceId = caption.customOutAnimate.networkResourceId;
-                    animate.animateType = caption.customOutAnimate.animateType;
+                    NSArray *images = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:caption.imageFolderPath error:nil];
+                    [images enumerateObjectsUsingBlock:^(NSString * _Nonnull imageName, NSUInteger idx, BOOL * _Nonnull stop) {
+                        if ([imageName.pathExtension isEqualToString:@"webp"]) {
+                            [VEHelp webpToPng:[caption.imageFolderPath stringByAppendingPathComponent:imageName]];
+                        }
+                    }];
                     
+                    NSString *configPath = [caption.imageFolderPath stringByAppendingPathComponent:@"config.json"];
+                    NSData *data = [[NSData alloc] initWithContentsOfFile:configPath];
+                    if(data){
+                        NSError *error = nil;
+                        NSMutableDictionary *configDic = [NSJSONSerialization JSONObjectWithData:data
+                                                                                         options:NSJSONReadingMutableContainers
+                                                                                           error:&error];
+                        if (!error) {
+                            if ([configDic[@"apng"] boolValue]) {
+                                [VEHelp setApngCaptionFrameArrayWithImagePath:configPath.stringByDeletingLastPathComponent jsonDic:configDic];
+                            }
+                            caption.frameArray = configDic[@"frameArray"];
+                            caption.timeArray = configDic[@"timeArray"];
+                            caption.imageName = configDic[@"name"];
+                            caption.duration = [configDic[@"duration"] floatValue];
+                        }
+                    }
+                    if (caption.customAnimate) {
+                        CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:caption.customAnimate.folderPath currentFrameImagePath:nil caption:caption];
+                        animate.timeRange = caption.customAnimate.timeRange;
+                        animate.cycleDuration = caption.customAnimate.cycleDuration;
+                        animate.networkCategoryId = caption.customAnimate.networkCategoryId;
+                        animate.networkResourceId = caption.customAnimate.networkResourceId;
+                        animate.animateType = caption.customAnimate.animateType;
+                        
+                        caption.customAnimate = animate;
+                    }
+                    if (caption.customOutAnimate) {
+                        CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:caption.customOutAnimate.folderPath currentFrameImagePath:nil caption:caption];
+                        animate.timeRange = caption.customOutAnimate.timeRange;
+                        animate.cycleDuration = caption.customOutAnimate.cycleDuration;
+                        animate.networkCategoryId = caption.customOutAnimate.networkCategoryId;
+                        animate.networkResourceId = caption.customOutAnimate.networkResourceId;
+                        animate.animateType = caption.customOutAnimate.animateType;
+                        
+                        caption.customOutAnimate = animate;
+                    }
+                    [captions addObject:caption];
                 }
-                [captions addObject:caption];
             }
         }];
+    }
+    if (captionExs.count > 0) {
+        veCoreSDK.captionExs = captionExs;
     }
     if (captions.count > 0) {
         veCoreSDK.captions = captions;
@@ -6997,6 +7090,21 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     
     [veCoreSDK build];
+}
+
++ (CustomFilter *)getStickerAnimationCustomFilter:(NSString*) path atCaptionEx:(CaptionEx *) captionEx atAnimate:( CustomFilter * ) Animate
+{
+    NSMutableDictionary *effectDic = nil;
+    CustomFilter *animate = [[CustomFilter alloc] init];
+    animate.animateType = Animate.animateType;
+    [VEHelp getStickerAnimation:path atCaption:captionEx atCustomFiler:animate];
+    animate.timeRange = Animate.timeRange;
+    animate.cycleDuration = Animate.cycleDuration;
+    animate.networkCategoryId = Animate.networkCategoryId;
+    animate.networkResourceId = Animate.networkResourceId;
+    animate.animateType = Animate.animateType;
+    
+    return animate;
 }
 
 + (void)setVeCoreSDKSecens:(VECore *)veCoreSDK
@@ -8251,7 +8359,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         music.url = [NSURL fileURLWithPath:[configPath stringByAppendingPathComponent:name]];
                         AVURLAsset *musicAsset = [[AVURLAsset alloc]initWithURL:music.url options:nil];
                         music.clipTimeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(CMTimeGetSeconds(musicAsset.duration), TIMESCALE));
-                        music.volume = 1.0;
+                        music.volume = 2.0;
                         [captionEx.musics addObject:music];
                     }
                 }
@@ -8543,6 +8651,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     else {
         CustomFilter *customFilter = [self getCustomFilerWithFxId:fxId filterFxArray:filterFxArray timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath atPath:path];
         if (customFilter) {
+            if( [effectDic[@"ver"] integerValue] >= 8 )
+            {
+                customFilter.decodeName = effectDic[@"name"];
+            }
             [filterArray addObject:customFilter];
         }
     }
@@ -8629,6 +8741,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (effectDic[@"script"]) {
         NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+        customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
     }
     
     NSString *builtIn = effectDic[@"builtIn"];
@@ -8765,6 +8878,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (effectDic[@"script"]) {
         NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+        customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
     }
 //    customFilter.name = effectDic[@"name"];
     
@@ -10540,6 +10654,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (effectDic[@"script"]) {
         NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+        customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
     }
     
     NSArray *uniformParams = effectDic[@"uniformParams"];

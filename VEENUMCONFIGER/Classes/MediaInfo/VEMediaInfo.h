@@ -98,6 +98,7 @@ typedef NS_ENUM(NSInteger, VECropType){
 @property (nonatomic, assign)BOOL       isFixedAngle;
 
 @property (nonatomic, strong) NSString *sceneIdentifier;
+@property (nonatomic, strong) NSString *mediaIdentifier;
 
 @property (nonatomic, assign) int groupId;
 
@@ -515,6 +516,7 @@ typedef NS_ENUM(NSInteger, VECropType){
 */
 @property (nonatomic, assign) NSInteger animationOutIndex;
 @property (nonatomic, assign) NSInteger animationPenIndex;
+@property (nonatomic, strong) NSString  *animationPenPath;
 @property(nonatomic,assign)NSInteger    animationWritingModel;
 /** 动画时间段 出场
 */

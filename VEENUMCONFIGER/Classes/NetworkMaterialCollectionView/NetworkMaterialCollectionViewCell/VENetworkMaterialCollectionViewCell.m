@@ -252,6 +252,12 @@
     return cell;
 }
 
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    VENetworkMaterialBtn_Cell *btnCell = (VENetworkMaterialBtn_Cell *)cell;
+    VEAddItemButton *btn = (VEAddItemButton *)btnCell.btnCollectBtn;
+    [btn.thumbnailIV long_stopAnimating];
+}
+
 -(void)setIsNotMove:(bool)isNotMove
 {
 //    if( !isNotMove )

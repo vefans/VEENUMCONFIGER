@@ -1,0 +1,47 @@
+{
+    "ver":1,
+    "type": 0,
+    "vertical" : 1,
+    "centerX": 0.3781,
+    "centerY": 0.8222,
+    "width": 40,
+    "height": 156,
+    "stretchability": 1,
+    "singleLine":0,
+    "borderPadding": [
+           2.0,
+           2.0,
+           2.0,
+           2.0
+             ],
+    "textPadding": [
+		6,
+		6,
+		6,
+		6
+            ],
+    "name": "text_vertical",
+    "textContent":"点击输入字幕",
+    "textFont":"MicrosoftYaHei",
+    "textColor": [
+		255,
+		255,
+		255
+	],
+   "strokeColor": [
+		225,
+		225,
+		225
+	],
+    "strokeWidth":0,
+    "frameArray": [
+                 {"time":0,"pic":0}
+                 ],
+    
+    "timeArray": [{
+                 "beginTime": 0.0,
+		 "endTime": 1.3 
+                 }
+                 ]
+  
+}

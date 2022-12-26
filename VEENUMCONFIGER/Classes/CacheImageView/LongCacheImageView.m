@@ -31,6 +31,18 @@
     }
     
     NSUInteger numberOfFrames = CGImageSourceGetCount(self.imageSourceRef);
+    if (numberOfFrames == 1) {//20221221 不是动图的情况
+        if (_displayLink) {
+            self.displayLink.paused = YES;
+            [self.displayLink invalidate];
+            self.displayLink = nil;
+        }
+        CGImageRef imageRef = CGImageSourceCreateImageAtIndex(self.imageSourceRef, 0, NULL);
+        self.image = [UIImage imageWithCGImage:imageRef];
+    //    [self.layer setNeedsDisplay];
+        CFRelease(imageRef);
+        return;
+    }
     NSInteger index = self.longIndex.integerValue;
     if (index >= numberOfFrames) {
         index = 0;
@@ -119,6 +131,7 @@
         CFRelease(_imageSourceRef);
 //        NSLog(@"释放");
     }
+    [self long_stopAnimating];
     self.image = nil;
 //    NSLog(@"%s",__FUNCTION__);
 }

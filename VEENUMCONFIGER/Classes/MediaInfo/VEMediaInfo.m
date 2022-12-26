@@ -19,7 +19,9 @@
 - (instancetype)init{
     self = [super init];
     if(self){
-        _chromaColor = UIColorFromRGB(0x000000);
+        _sceneIdentifier = [NSString stringWithFormat:@"scene_%@", [VEHelp getMediaIdentifier]];
+        _mediaIdentifier = [NSString stringWithFormat:@"media_%@", [VEHelp getMediaIdentifier]];
+        _chromaColor = nil;
         _backgroundColor = UIColorFromRGB(0x000000);
         _rectInFile = CGRectZero;
         _rectInScale = 1.0;
@@ -93,6 +95,8 @@
 }
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
+    copy.sceneIdentifier = [NSString stringWithFormat:@"scene_%@", [VEHelp getMediaIdentifier]];
+    copy.mediaIdentifier = [NSString stringWithFormat:@"media_%@", [VEHelp getMediaIdentifier]];
     copy.isPasterAssetViewDrag = _isPasterAssetViewDrag;
     copy.audioSeparate = _audioSeparate;
     copy.pointsInVideoArray = [NSMutableArray new];
@@ -299,6 +303,8 @@
 
 - (id)copyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
+    copy.sceneIdentifier = [NSString stringWithFormat:@"scene_%@", [VEHelp getMediaIdentifier]];
+    copy.mediaIdentifier = [NSString stringWithFormat:@"media_%@", [VEHelp getMediaIdentifier]];
     copy.isPasterAssetViewDrag = _isPasterAssetViewDrag;
     copy.audioSeparate = _audioSeparate;
     copy.pointsInVideoArray = [NSMutableArray new];
