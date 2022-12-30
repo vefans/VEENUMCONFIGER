@@ -26,7 +26,7 @@
     [self addGestureRecognizer:centreImageViewMoveGesture1];
     
     {
-        UIView * view = [[VEOvalView alloc] initWithFrame:CGRectMake( (self.curretnView.frame.size.width - (RoundnessHeight + 60))/2.0, (self.curretnView.frame.size.height - (RoundnessHeight + 60))/2.0, RoundnessHeight + 60, RoundnessHeight + 60) atType:3 atColor:self.mainColor];
+        UIView * view = [[VEOvalView alloc] initWithFrame:CGRectMake( (self.curretnView.frame.size.width - (RoundnessHeight + 60))/2.0, (self.curretnView.frame.size.height - (RoundnessHeight + 60))/2.0, RoundnessHeight + 60, RoundnessHeight + 60) atType:VEMaskType_ROUNDNESS atColor:self.mainColor];
         view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
 //        view.layer.borderColor =  self.mainColor.CGColor;
 //        view.layer.borderWidth = 1.5;

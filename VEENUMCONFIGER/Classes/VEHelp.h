@@ -117,7 +117,17 @@ extern float const VEAdjust_DefaultValue_Exposure;
                                   materialUrlPath:(NSString *)materialUrlPath
                                      materialType:(VECustomizationFunctionType)materialType;
 
-+(float)getMediaAssetScale_File:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark;
+/** 获取媒体添加时默认大小
+ */
++ (CGSize)getMediaDefaultSizeWithSyncContainerSize:(CGSize)syncContainerSize
+                                         mediaSize:(CGSize)size
+                                         mediaType:(VEAdvanceEditType)mediaType;
+
++(float)getMediaAssetScale_File:( CGSize ) size
+                         atRect:(CGRect) rect
+                         atCorp:(CGRect) corp
+          atSyncContainerHeihgt:(CGSize) syncContainerSize
+                      mediaType:(VEAdvanceEditType)mediaType;
 
 +(NSMutableAttributedString *)getAttrString:(NSString *) string atForegroundColor:(UIColor *) foregroundColor atStrokeColor:(UIColor *) strokeColor atShadowBlurRadius:(float) shadowBlurRadius atShadowOffset:(CGSize) shadowOffset atShadowColor:(UIColor *) shadowColor;
 
@@ -247,6 +257,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(NSMutableArray *)getGroupColorArray;
 + (UIColor *)colorWithHexStr:(NSString *)hexString;
 + (NSMutableArray *)getDoodlePenColors;
++ (BOOL)colorIsEqual:(UIColor *)color1 color2:(UIColor *)color2;
 /**获取媒体的实际大小
  */
 + (CGSize)getFileActualSize:(VEMediaInfo *)file;
@@ -448,7 +459,11 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 +(NSString*)getBackgroundStyleConfigPath:(NSDictionary *)obj atPath:( NSString * ) path;
 
-+(float)getMediaAssetScale:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark;
++(float)getMediaAssetScale:( CGSize ) size
+                    atRect:(CGRect) rect
+                    atCorp:(CGRect) corp
+     atSyncContainerHeihgt:(CGSize) syncContainerSize
+                 mediaType:(VEAdvanceEditType)mediaType;
 
 +(CGSize)URL_ImageSize:(NSURL *) url atCrop:(CGRect) crop;
 

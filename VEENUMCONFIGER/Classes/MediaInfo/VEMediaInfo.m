@@ -496,6 +496,9 @@
     NSDictionary *dic = [asset veCore_yy_modelToJSONObject];
     if (dic) {
         self = [VEMediaInfo veCore_yy_modelWithDictionary:dic];
+        if (asset.identifier.length > 0) {
+            _mediaIdentifier = asset.identifier;
+        }
         if (![VEHelp isSystemPhotoUrl:asset.url]) {
             asset.url = [VEHelp getFileURLFromAbsolutePath:asset.url.path];
             if ([asset.url.absoluteString.pathExtension isEqualToString:@"webp"]) {
@@ -784,6 +787,9 @@
                 *stop = YES;
             }
         }];
+        if (_maskType == VEMaskType_NONE) {
+            _maskType = VEMaskType_SHAPE;
+        }
     }
     
     return YES;

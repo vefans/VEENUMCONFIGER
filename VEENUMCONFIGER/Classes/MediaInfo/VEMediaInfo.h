@@ -31,10 +31,10 @@ typedef NS_ENUM(NSInteger, VEMaskType)
     VEMaskType_MIRRORSURFACE    =2, //镜面
     VEMaskType_ROUNDNESS        =3, //圆形
     VEMaskType_RECTANGLE        =4, //矩形
-    VEMaskType_PENTACLE         =5, //五角星
-    VEMaskType_LOVE             =6, //爱心
-    VEMaskType_QUADRILATERAL    =7, //四边形
-    VEMaskType_TEXT             =8, //文字
+    VEMaskType_TEXT             =5, //文字
+    VEMaskType_QUADRILATERAL    =6, //四边形
+    VEMaskType_PENTACLE         =7, //五角星
+    VEMaskType_LOVE             =8, //爱心
     VEMaskType_SHAPE            =9, //形状
     
     VEMaskType_InterMIRRORSURFACE = 1017474, //镜面

@@ -710,11 +710,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         range = [path rangeOfString:@"Data/Application/"];
         if (range.location != NSNotFound) {
             isSystemUrl = NO;
-        }else {
-            range = [path rangeOfString:@"/var/mobile"];//LivePhotos
-            if (range.location != NSNotFound) {
-                isSystemUrl = NO;
-            }
         }
     }
     return isSystemUrl;
@@ -1201,8 +1196,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }];
     NSArray *textureParams = effectDic[@"textureParams"];
     NSMutableDictionary *extPaint= effectDic[@"extPaint"];
-    customFilter.configure = extPaint;
-    
+    if (extPaint) {
+        if([[extPaint allKeys] containsObject:@"writingMode"]){
+            ((CaptionEx*)caption).captionImage.otherAnimates.writingMode = [extPaint[@"writingMode"] intValue];
+        }
+        if ([[extPaint allKeys] containsObject:@"penScale"]) {
+            //20221229 手写笔太大，将画笔的缩放系数设置为：0.3
+            [extPaint setValue:[NSNumber numberWithFloat:0.3] forKey:@"penScale"];
+        }
+        customFilter.configure = extPaint;
+    }
    for(id  _Nonnull obj in textureParams) {
         @autoreleasepool {
             
@@ -2651,9 +2654,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Quadrilateral",@"title",@(VEMaskType_QUADRILATERAL),@"id", nil]];
     [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Star",@"title",@(VEMaskType_PENTACLE),@"id", nil]];
     [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Love",@"title",@(VEMaskType_LOVE),@"id", nil]];
-#if 0
-    [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Shape",@"title",@(VEMaskType_LOVE),@"id", nil]];
-#endif
+    [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"Shape",@"title",@(VEMaskType_SHAPE),@"id", nil]];
+
     return maskArray;
 }
 
@@ -2797,6 +2799,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (path.pathExtension.length > 0) {
         MaskObject *mask = [[MaskObject alloc] init];
         mask.folderPath = path;
+        mask.maskImagePath = path;
         
         return mask;
     }
@@ -3294,6 +3297,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }
     }
     NSMutableDictionary *extPaint= effectDic[@"extPaint"];
+    if (extPaint && [[extPaint allKeys] containsObject:@"penScale"]) {
+        //20221226 手写笔太大，将画笔的缩放系数设置为：0.25
+        [extPaint setValue:[NSNumber numberWithFloat:0.25] forKey:@"penScale"];
+    }
     customFilter.configure = extPaint;
     
     if( mediaOrFile )
@@ -4671,16 +4678,28 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 {
     NSMutableArray * fonts = [NSMutableArray arrayWithContentsOfFile:kFontPlistPath];
     __block NSInteger index = -1;
-    [fonts enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSDictionary *itemDic = obj;
-        BOOL hasNew = [[itemDic allKeys] containsObject:@"cover"] ? YES : NO;
-        NSString *fontCode = hasNew ? [[itemDic[@"file"] lastPathComponent] stringByDeletingPathExtension] : itemDic[@"name"];
-        if( [name isEqualToString:[NSString stringWithFormat:@"%@.%@",fontCode,@"ttf" ]] )
-        {
-            index = idx;
-            *stop = true;
-        }
-    }];
+    if (name.pathExtension.length > 0) {
+        [fonts enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSDictionary *itemDic = obj;
+                BOOL hasNew = [[itemDic allKeys] containsObject:@"cover"] ? YES : NO;
+                NSString *fontCode = hasNew ? [[itemDic[@"file"] lastPathComponent] stringByDeletingPathExtension] : itemDic[@"name"];
+                if( [name isEqualToString:[fontCode stringByAppendingPathExtension:@"ttf"]] )
+                {
+                    index = idx;
+                    *stop = true;
+                }
+            }];
+    }else {
+        [fonts enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSDictionary *itemDic = obj;
+            NSString *fontCode = [[itemDic[@"file"] stringByDeletingLastPathComponent] lastPathComponent];
+            if( [name isEqualToString:fontCode] )
+            {
+                index = idx;
+                *stop = true;
+            }
+        }];
+    }
     return index;
 }
 
@@ -5765,39 +5784,82 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return isSystemUrl;
 }
 
-+(float)getMediaAssetScale_File:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark
+/** 获取媒体添加时默认大小
+ *  @property mediaType：0(主媒体)  1(画中画)  2(水印)
+ */
++ (CGSize)getMediaDefaultSizeWithSyncContainerSize:(CGSize)syncContainerSize
+                                         mediaSize:(CGSize)size
+                                         mediaType:(VEAdvanceEditType)mediaType
+{
+    float width;
+    float height;
+    switch (mediaType) {
+        case VEAdvanceEditType_Collage://画中画
+        {
+            if (syncContainerSize.width >= syncContainerSize.height) {
+                width = syncContainerSize.width * 0.9;
+                height = width / (size.width / size.height);
+                if (height > syncContainerSize.height * 0.9) {
+                    height = syncContainerSize.height * 0.9;
+                    width = height * (size.width / size.height);
+                }
+            }else {
+                height = syncContainerSize.height * 0.9;
+                width = height * (size.width / size.height);
+                if (width > syncContainerSize.width * 0.9) {
+                    width = syncContainerSize.width * 0.9;
+                    height = width / (size.width / size.height);
+                }
+            }
+        }
+            break;
+        case VEAdvanceEditType_Watermark://水印
+        {
+            if (syncContainerSize.width >= syncContainerSize.height) {
+                width = syncContainerSize.width/2.0/3.0;
+                height = width / (size.width / size.height);
+            }else {
+                width = syncContainerSize.width/2.0/2.0;
+                height = width / (size.width / size.height);
+            }
+        }
+            break;
+            
+        default://主媒体
+        {
+            if (syncContainerSize.width == syncContainerSize.height) {
+                width = syncContainerSize.width/4.0;
+                height = width / (size.width / size.height);
+            }
+            else if (syncContainerSize.width < syncContainerSize.height) {
+                width = syncContainerSize.width/2.0;
+                height = width / (size.width / size.height);
+            }else {
+                height = syncContainerSize.height / 2.0;
+                width = height * (size.width / size.height);
+            }
+        }
+            break;
+    }
+    
+    CGSize defaultSize = CGSizeMake(width, height);
+    return defaultSize;
+}
+
++(float)getMediaAssetScale_File:( CGSize ) size
+                         atRect:(CGRect) rect
+                         atCorp:(CGRect) corp
+          atSyncContainerHeihgt:(CGSize) syncContainerSize
+                      mediaType:(VEAdvanceEditType)mediaType
 {
     if (CGRectEqualToRect(corp, CGRectZero)) {
         corp = CGRectMake(0, 0, 1, 1);
     }
+    CGSize defaultSize = [self getMediaDefaultSizeWithSyncContainerSize:syncContainerSize mediaSize:size mediaType:mediaType];
     
-    float scale = 1;
+    size = CGSizeMake(defaultSize.width * corp.size.width, defaultSize.height * corp.size.height);
     
-    float width;
-    float height;
-    if (syncContainerSize.width == syncContainerSize.height) {
-        if( isWatermark )
-            width = syncContainerSize.width/4.0/4.0;
-        else
-            width = syncContainerSize.width/4.0;
-        height = width / (size.width / size.height);
-    }else if (syncContainerSize.width < syncContainerSize.height) {
-        if( isWatermark )
-            width = syncContainerSize.width/2.0/4.0;
-        else
-            width = syncContainerSize.width/2.0;
-        height = width / (size.width / size.height);
-    }else {
-        if( isWatermark )
-            height = syncContainerSize.height/2.0/4.0;
-        else
-            height = syncContainerSize.height/2.0;
-        width = height * (size.width / size.height);
-    }
-    
-    size = CGSizeMake(width * corp.size.width, height * corp.size.height);
-    
-    scale = rect.size.height*syncContainerSize.height/size.height;
+    float scale = rect.size.height*syncContainerSize.height/size.height;
     
     return scale;
 }
@@ -9097,7 +9159,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return configPath;
 }
 
-+(float)getMediaAssetScale:( CGSize ) size atRect:(CGRect) rect atCorp:(CGRect) corp atSyncContainerHeihgt:(CGSize) syncContainerSize atIsWatermark:(BOOL) isWatermark
++(float)getMediaAssetScale:( CGSize ) size
+                    atRect:(CGRect) rect
+                    atCorp:(CGRect) corp
+     atSyncContainerHeihgt:(CGSize) syncContainerSize
+                 mediaType:(VEAdvanceEditType)mediaType
 {
     if (CGRectEqualToRect(corp, CGRectZero)) {
         corp = CGRectMake(0, 0, 1, 1);
@@ -9105,29 +9171,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     float scale = 1;
     
-    float width;
-    float height;
-    if (syncContainerSize.width == syncContainerSize.height) {
-        if( isWatermark )
-            width = syncContainerSize.width/4.0/4.0;
-        else
-            width = syncContainerSize.width/4.0;
-        height = width / (size.width / size.height);
-    }else if (syncContainerSize.width < syncContainerSize.height) {
-        if( isWatermark )
-            width = syncContainerSize.width/2.0/4.0;
-        else
-            width = syncContainerSize.width/2.0;
-        height = width / (size.width / size.height);
-    }else {
-        if( isWatermark )
-            height = syncContainerSize.height/2.0/4.0;
-        else
-            height = syncContainerSize.height/2.0;
-        width = height * (size.width / size.height);
-    }
+    CGSize defaultSize = [self getMediaDefaultSizeWithSyncContainerSize:syncContainerSize mediaSize:size mediaType:mediaType];
     
-    size = CGSizeMake(width * corp.size.width, height * corp.size.height);
+    size = CGSizeMake(defaultSize.width * corp.size.width, defaultSize.height * corp.size.height);
     
     CGSize screenWidthSize = CGSizeMake(syncContainerSize.height*( size.width /size.height ) , syncContainerSize.height);
     
@@ -10657,6 +10703,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
     }
     
+    NSDictionary *extPaint= effectDic[@"extPaint"];
+    if(extPaint && [[extPaint allKeys] containsObject:@"penScale"]){
+        //20221226 手写笔太大，将画笔的缩放系数设置为：0.25
+        [extPaint setValue:[NSNumber numberWithFloat:0.25] forKey:@"penScale"];
+    }
+    customFilter.configure = extPaint;
     NSArray *uniformParams = effectDic[@"uniformParams"];
     [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *type = obj[@"type"];

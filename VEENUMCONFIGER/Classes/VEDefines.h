@@ -344,6 +344,7 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_MORPH              =66,//边角定位
     KPIP_MORPH_DELETE       =67,//删除边角定位
     KPIP_VR                 =70,//全景
+    KPIP_Bind                 =71,//绑定
 };
 
 /*

@@ -2721,3 +2721,6 @@
 "蓝" = "Blue";
 "删除画中画" = "Delete overlay";
 "该视频时长过短！" = "The video duration is too short!";
+"导出选择" = "Export Selection";
+"导出为视频" = "Export as video";
+"导出为GIF" = "Export as GIF";

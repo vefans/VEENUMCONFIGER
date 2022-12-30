@@ -2464,7 +2464,7 @@
 //    CGPoint point = CGPointMake(rectInScene.origin.x + rectInScene.size.width/2.0, rectInScene.origin.y + rectInScene.size.height/2.0);
 //    point = CGPointMake(point.x*self.syncContainerView.frame.size.width, point.y*self.syncContainerView.frame.size.height);
     
-    fileScale = [VEHelp getMediaAssetScale_File:thumbImage.size atRect:rectInScene atCorp:CGRectMake(0, 0, 1, 1) atSyncContainerHeihgt:self.syncContainerView.bounds.size atIsWatermark:NO];
+    fileScale = [VEHelp getMediaAssetScale_File:thumbImage.size atRect:rectInScene atCorp:CGRectMake(0, 0, 1, 1) atSyncContainerHeihgt:self.syncContainerView.bounds.size mediaType:VEAdvanceEditType_None];
     file.fileScale = fileScale;
     CGAffineTransform transform2 = CGAffineTransformMakeRotation( -rotate/(180.0/M_PI) );
     self.pasterTextView.transform = CGAffineTransformScale(transform2, fileScale, fileScale);

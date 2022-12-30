@@ -29,13 +29,13 @@
 - (void)drawRect:(CGRect)rect{
     
     switch (_type) {
-        case 3:
+        case VEMaskType_ROUNDNESS:
             [self drawOver:rect];
             break;
-        case 5:
+        case VEMaskType_PENTACLE:
             [self drawPentacle:rect];
             break;
-        case 6:
+        case VEMaskType_LOVE:
             [self draw_Love:rect];
             break;
         case VEMaskType_QUADRILATERAL:
