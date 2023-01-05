@@ -70,6 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 -(void)seekTime:(CMTime) time;
 @property(nonatomic,assign)BOOL            flowPicture;
+@property (nonatomic,assign)BOOL isPresentModel;
 @end
 
 NS_ASSUME_NONNULL_END

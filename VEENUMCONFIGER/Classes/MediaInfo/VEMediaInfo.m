@@ -22,6 +22,7 @@
         _sceneIdentifier = [NSString stringWithFormat:@"scene_%@", [VEHelp getMediaIdentifier]];
         _mediaIdentifier = [NSString stringWithFormat:@"media_%@", [VEHelp getMediaIdentifier]];
         _chromaColor = nil;
+        _cutoutEdgeSize = 2.0;
         _backgroundColor = UIColorFromRGB(0x000000);
         _rectInFile = CGRectZero;
         _rectInScale = 1.0;

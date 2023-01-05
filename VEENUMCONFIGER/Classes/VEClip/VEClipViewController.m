@@ -851,6 +851,10 @@
         [self removeFromParentViewController];
         return;
     }
+    if(_isPresentModel){
+        [self dismissViewControllerAnimated:NO completion:nil];
+        return;
+    }
     UIViewController *upView = [self.navigationController popViewControllerAnimated:NO];
     if(!upView){
         [self dismissViewControllerAnimated:NO completion:nil];

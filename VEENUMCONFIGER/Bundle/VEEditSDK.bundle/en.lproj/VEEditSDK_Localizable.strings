@@ -731,7 +731,6 @@
 "视频编辑" = "Video Editor";
 "启用动画（仅限图片）" = "Enable animation (picture only)";
 "自绘" = "CustomDraw";
-"封面" = "Cover";
 "描边粗细" = "Thickness";
 "粗细" = "Thickness";
 "自定义" = "Custom";
@@ -1168,7 +1167,6 @@
 "水印" = "Watermark";
 "调节" = "Adjust";
 "片尾" = "Ending";
-"分割" = "Split";
 "音乐提取" = "Extract music";
 "切画中画" = "Overlay";
 "复制" = "Copy";
@@ -2087,7 +2085,6 @@
 "字幕模板" = "Subtitle template";
 "贴纸" = "Stickers";
 "马赛克" = "Mosaic";
-"调色" = "Tone";
 "天空" = "Sky";
 "马赛克" = "Mosaic";
 "音频" = "Audio";
@@ -2190,7 +2187,6 @@
 "天空" = "Sky";
 "马赛克" = "Mosaic";
 "加图" = "Add image";
-"调色" = "Tone";
 "保存" = "Save";
 "素材" = "Material";
 "边框" = "Border";
@@ -2334,8 +2330,6 @@
 "请选择带人像的图片" = "Please select picture with human portrait";
 "请选择带天空的图片" = "Please select picture with sky";
 
-"调色" = "Tone";
-
 
 "正在存入草稿箱...." = "Saving to draft box....";
 
@@ -2358,7 +2352,6 @@
 "上传分类" = "Upload category";
 
 "文件" = "File";
-"封面" = "Cover";
 
 "图片: %d   文字: %d " = "Image: %d   Text: %d ";
 "取消" = "Cancel";
