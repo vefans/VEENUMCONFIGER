@@ -2626,18 +2626,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 + (NSString *)getMediaIdentifier {
-    NSDate *date_ = [NSDate date];
-    NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
-    [dateformater setDateFormat:@"yyyy-MM-dd_HH-mm-ss-sss"];
-    NSString *identifier = [dateformater stringFromDate:date_];
+    NSString *identifier = [self getVideoUUID];
     return identifier;
 }
 
 + (NSString *)geCaptionExSubtitleIdentifier{
-    NSDate *date_ = [NSDate date];
-    NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
-    [dateformater setDateFormat:@"yyyy-MM-dd_HH-mm-ss-sss"];
-    NSString *identifier = [dateformater stringFromDate:date_];
+    NSString *identifier = [self getVideoUUID];
     return [NSString stringWithFormat:@"subtitle_%@",identifier];
 }
 
@@ -6154,23 +6148,20 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 +(NSString *)getCollageIdentifier:( NSInteger ) idx
 {
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    formatter.dateFormat = @"yyyyMMddHHmmssSSS";
-    return  [NSString stringWithFormat:@"collage_%@+%lu", [formatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:0]], idx];
+    NSString *identifier = [self getVideoUUID];
+    return  [NSString stringWithFormat:@"collage_%@+%lu", identifier, idx];
 }
 
 +(NSString *)getCollageIdentifier
 {
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    formatter.dateFormat = @"yyyyMMddHHmmssSSS";
-    return  [NSString stringWithFormat:@"collage_%@", [formatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:0]]];
+    NSString *identifier = [self getVideoUUID];
+    return  [NSString stringWithFormat:@"collage_%@", identifier];
 }
 
 +(NSString *)getSuperposiIdentifier
 {
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    formatter.dateFormat = @"yyyyMMddHHmmssSSS";
-    return  [NSString stringWithFormat:@"superposi_%@", [formatter stringFromDate:[NSDate dateWithTimeIntervalSinceNow:0]]];
+    NSString *identifier = [self getVideoUUID];
+    return  [NSString stringWithFormat:@"superposi_%@", identifier];
 }
 
 + (NSString *) getVideoUUID {

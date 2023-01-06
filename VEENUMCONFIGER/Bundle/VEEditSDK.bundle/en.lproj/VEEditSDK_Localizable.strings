@@ -245,7 +245,7 @@
 "无配乐" = "None";
 "本地" = "Local";
 "云音乐" = "Cloud";
-
+"本地草稿" = "Local Draft";
 "画布颜色" = "Color";
 "画布样式" = "Background";
 "画布模糊" = "Blur";
@@ -2717,3 +2717,5 @@
 "导出选择" = "Export Selection";
 "导出为视频" = "Export as video";
 "导出为GIF" = "Export as GIF";
+
+"分屏排版" = "Split screen";
