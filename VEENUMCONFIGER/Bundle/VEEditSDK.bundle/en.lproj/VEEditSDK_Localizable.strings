@@ -1883,6 +1883,7 @@
 "下嘴唇" = "Lower";
 "嘴宽" = "Mouth";
 "备份" = "Backup";
+"批量管理" = "Batch";
 "管理" = "Manage";
 "正在等待" = "Waiting";
 "全部取消" = "Cancel all";

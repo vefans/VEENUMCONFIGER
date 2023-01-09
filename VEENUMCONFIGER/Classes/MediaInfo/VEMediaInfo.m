@@ -1128,7 +1128,7 @@
     if (_contentURL
         && ![VEHelp isSystemPhotoUrl:_contentURL]
         && [fman fileExistsAtPath:[[VEHelp getFileURLFromAbsolutePath:_contentURL.absoluteString] path]]
-        && ![_contentURL.path containsString:kAPITemplateFolder.lastPathComponent])
+        && ![_contentURL.path containsString:kAPITemplateFolder.lastPathComponent] && ![_contentURL.path containsString:kTemplateThemeFolder.lastPathComponent])
     {
         NSURL *url = [VEHelp getFileURLFromAbsolutePath:_contentURL.absoluteString];
         [fman removeItemAtPath:[url path] error:&err];
