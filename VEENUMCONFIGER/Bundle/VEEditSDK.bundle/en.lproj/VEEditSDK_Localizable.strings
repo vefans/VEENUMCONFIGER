@@ -245,7 +245,8 @@
 "无配乐" = "None";
 "本地" = "Local";
 "云音乐" = "Cloud";
-"本地草稿" = "Local Draft";
+"本地草稿" = "Local Drafts";
+"副本" = "copy";
 "画布颜色" = "Color";
 "画布样式" = "Background";
 "画布模糊" = "Blur";
@@ -1147,7 +1148,6 @@
 "音乐" = "Music";
 "替换" = "Replace";
 "上拉加载更多" = "Pull up to load more";
-"已经到底了" = "It's over";
 "正在加载" = "Loading";
 "垂直翻转" = "Vertical";
 "左右翻转" = "Horizontal";
@@ -1661,6 +1661,7 @@
 "上拉加载更多" = "Pull up to load more";
 "正在加载中" = "Loading...";
 "已经全部加载完毕" = "It's over";
+"已经到底了" = "Already in the end";
 "授权证书" = "Authorization certificate";
 "没有音乐" = "No music yet";
 "音乐提取" = "Extract music";
@@ -1889,12 +1890,13 @@
 "全部取消" = "Cancel all";
 "%@个草稿备份中" = "%@ drafts are being backed up";
 "备份列表" = "Backup List";
-"更新于 %@" = "Last update: %@";
+"更新于：%@" = "Last update: %@";
+"时长：" = "Duration：";
 "重命名" = "Rename";
 "复制草稿" = "Duplicate";
 "输入草稿名称" = "Enter draft name";
 "无用户ID" = "No user ID";
-"备份于%@" = "Backed up at %@";
+"备份于：%@" = "Backed up at %@";
 "云草稿" = "Cloud Draft";
 "您还没有上传云草稿" = "You have not uploaded a cloud draft";
 "确定删除所选视频？" = "Are you sure to delete the selected video?";
@@ -2515,6 +2517,14 @@
 "sv-" = "Swedish";
 "th-" = "Thai";
 "tr-" = "Turkish";
+"ca-" = "Latin";
+"bg-" = "Bulgarian";
+"hr-" = "Croatian";
+"ms-" = "Malay";
+"nb-" = "Norwegian";
+"uk-" = "Ukrainian";
+"vi-" = "Vietnamese";
+
 "搜你感兴趣的模板" = "Search for templates you are interested in";
 "历史搜索" = "History Search";
 "时长：%.1fs" = "Duration：%.1fs";
@@ -2720,3 +2730,91 @@
 "导出为GIF" = "Export as GIF";
 
 "分屏排版" = "Split screen";
+"视频排版" = "Video typography";
+"请至少选择2个素材" = "Please select at least 2 assets";
+"请删减素材至9个以内" = "Please cut the material to no more than 9";
+
+"adjustSpeed" = "Speed";
+"speed" = "Speed";
+"rateintensity" = "Speed";
+
+"alphaFactor" = "Transparency";
+"minAlpha" = "Transparency";
+"alpha" = "Transparency";
+
+"param_3d_color_offset" = "Color Offset";
+"colorOffset" = "Color Offset";
+"colOffset" = "Color Offset";
+"colorV" = "Color";
+"chromaticIntensity" = "Chroma";
+"adjustColor" = "Color";
+
+"adjustSize" = "Size";
+"size" = "Size";
+"sizeIntensity" = "Size";
+"blendAdjustSize" = "Size";
+
+"adjustRange" = "Range";
+"range" = "Range";
+"scopeintensity" = "Range";
+"rangeIntensity" = "Range";
+
+"adjustIntensity" = "Intensity";
+"intensity" = "Intensity";
+
+"adjustRotate" = "Rotate";
+"rotateIntensity" = "Rotate";
+
+"adjustFilter" = "Filter";
+"filterIntensity" = "Filter";
+"soft" = "Soft";
+"blurSize" = "Blur";
+"distortion" = "Distortion";
+
+"adjustShake" = "Shake";
+"CameraScale" = "Camera";
+"filterAlpha" = "Filter";
+"strength" = "Strength";
+"scale" = "Scale";
+"region" = "Region";
+"edgeIntensity" = "Edge";
+"numberIntensity" = "Number";
+
+"shiftH" = "ShiftH";
+"shiftV" = "ShiftV";
+"fRadius" = "Radius";
+"radius" = "Radius";
+
+"texelWidthOffset" = "Focusing speed";
+"texelHeightOffset" = "Blur intensity";
+"blurStep0" = "Horizontal blur";
+"blurStep1" = "Vertical blur";
+"adjustShift0" = "Horizontal offset";
+"adjustShift1" = "Vertical offset";
+"fullBlendTexSize0" = "Horizontal twist";
+"fullBlendTexSize1" = "Vertical twist";
+"blendTexSize0" = "Horizontal twist";
+"blendTexSize1" = "Vertical twist";
+"offset0" = "OffsetH";
+"offset1" = "OffsetV";
+"size0" = "SizeH";
+"size1" = "SizeV";
+"sharp" = "Sharp";
+"contrast" = "Contrast";
+"enables0" = "Brightness1";
+"enables1" = "Brightness2";
+"enables2" = "Brightness3";
+"enables3" = "Brightness4";
+"enables4" = "Brightness5";
+"filterAdjust" = "Filter";
+"colhow" = "Color filter";
+"texhow" = "Manga texture";
+"uniAlpha" = "UniAlpha";
+"split0" = "Split0";
+"split1" = "Split1";
+"" = "";
+"" = "";
+"" = "";
+"" = "";
+"" = "";
+"" = "";

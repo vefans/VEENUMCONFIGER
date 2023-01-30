@@ -96,6 +96,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VEEditConfiguration : NSObject<NSMutableCopying,NSCopying>
 
+@property(nonatomic, assign)BOOL    isMultiGridVideo;
+@property(nonatomic, assign)BOOL    isShowSplitScreen;
+@property(nonatomic, assign)BOOL    isSplitScreenTypography;
+@property(nonatomic, assign)CGSize  SplitScreenSize;
+
 /** 相册选中媒体后，是否禁止生成缩略图(default false)
  */
 @property (assign, nonatomic)bool thumbDisable;

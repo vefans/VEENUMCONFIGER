@@ -608,7 +608,6 @@
 "音乐" = "音乐";
 "替换" = "替换";
 "上拉加载更多" = "上拉加载更多";
-"已经到底了" = "已经到底了";
 "正在加载" = "正在加载";
 "垂直翻转" = "垂直翻转";
 "左右翻转" = "左右翻转";
@@ -1137,6 +1136,7 @@
 "上拉加载更多" = "上拉加载更多";
 "正在加载中" = "正在加载中";
 "已经全部加载完毕" = "已经全部加载完毕";
+"已经到底了" = "已经到底了";
 "授权证书" = "授权证书";
 "没有音乐" = "没有音乐";
 "音乐提取" = "音乐提取";
@@ -1285,6 +1285,15 @@
 "sv-" = "瑞典语";
 "th-" = "泰语";
 "tr-" = "土耳其语";
+
+"ca-" = "拉丁语";
+"bg-" = "保加利亚语";
+"hr-" = "克罗地亚语";
+"ms-" = "马来语";
+"nb-" = "挪威语";
+"uk-" = "乌克兰语";
+"vi-" = "越南语";
+
 "Fade" = "淡化";
 "Edit" = "剪辑";
 "Delete" = "删除";
@@ -1296,3 +1305,97 @@
 "输入自定义分辨率" = "输入自定义分辨率";
 "请输入分辨率（例如：1280:720）" = "请输入分辨率（如：1280:720）";
 "素材预览" = "素材预览";
+"Local Drafts" = "本地草稿";
+
+"Adjust parameters" = "调整参数";
+"adjustSpeed" = "速度";
+"speed" = "速度";
+"rateintensity" = "速率";
+
+"alphaFactor" = "透明度";
+"minAlpha" = "透明度";
+"alpha" = "透明度";
+
+"param_3d_color_offset" = "颜色偏移";
+"colorOffset" = "颜色偏移";
+"colOffset" = "颜色偏移";
+"colorV" = "颜色";
+"chromaticIntensity" = "色度";
+"adjustColor" = "颜色";
+
+"adjustSize" = "大小";
+"size" = "大小";
+"sizeIntensity" = "大小";
+"blendAdjustSize" = "大小";
+
+"adjustRange" = "范围";
+"range" = "范围";
+"scopeintensity" = "范围";
+"rangeIntensity" = "范围";
+
+"adjustIntensity" = "强度";
+"intensity" = "强度";
+
+"adjustRotate" = "旋转";
+"rotateIntensity" = "旋转";
+
+"adjustFilter" = "滤镜";
+"filterIntensity" = "滤镜";
+"soft" = "柔软";
+"blurSize" = "模糊";
+"distortion" = "失真";
+
+"adjustShake" = "抖动";
+"CameraScale" = "相机";
+"filterAlpha" = "过滤";
+"strength" = "力量";
+"scale" = "缩放";
+"region" = "区域";
+"edgeIntensity" = "边缘";
+"numberIntensity" = "数量";
+
+"shiftH" = "水平位移";
+"shiftV" = "垂直位移";
+"fRadius" = "半径";
+"radius" = "半径";
+
+"texelWidthOffset" = "对焦速度";
+"texelHeightOffset" = "模糊强度";
+"Single duration" = "单次时长";
+"blurStep0" = "水平模糊";
+"blurStep1" = "垂直模糊";
+"adjustShift0" = "水平位移";
+"adjustShift1" = "垂直位移";
+"fullBlendTexSize0" = "水平扭曲";
+"fullBlendTexSize1" = "垂直扭曲";
+"blendTexSize0" = "水平扭曲";
+"blendTexSize1" = "垂直扭曲";
+"offset0" = "水平位移";
+"offset1" = "垂直位移";
+"size0" = "水平大小";
+"size1" = "垂直大小";
+"sharp" = "锐度";
+"contrast" = "对比度";
+"enables0" = "亮度1";
+"enables1" = "亮度2";
+"enables2" = "亮度3";
+"enables3" = "亮度4";
+"enables4" = "亮度5";
+"filterAdjust" = "滤镜";
+"colhow" = "黑白滤镜";
+"texhow" = "漫画纹理";
+"uniAlpha" = "整体透明度";
+"split0" = "分屏1";
+"split1" = "分屏2";
+
+"Record" = "录制";
+"Tap/long press to start recording" = "点击/长按开始录制";
+"" = "";
+"" = "";
+"" = "";
+"" = "";
+"" = "";
+"" = "";
+"" = "";
+"" = "";
+"" = "";

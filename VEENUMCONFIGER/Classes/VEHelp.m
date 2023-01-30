@@ -929,6 +929,79 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return str;
 }
 
++(UIImage *)imageWithContentOfFile:(NSString *)path atBundleName:(NSString *)bundleName
+{
+    return [VEHelp imageWithContentOfFile:path atBundle:[VEHelp getBundleName:bundleName atViewController:[VEHelp getCurrentViewController]]];;
+}
+
+//获取当前屏幕显示的viewcontroller
++ (UIViewController *)getCurrentVC
+{
+   ///下文中有分析
+    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    UIViewController *currentVC = [self getCurrentVCFrom:rootViewController];
+    return currentVC;
+}
+
++ (UIViewController *)getCurrentVCFrom:(UIViewController *)rootVC
+{
+    UIViewController *currentVC;
+    if ([rootVC presentedViewController]) {
+        // 视图是被presented出来的
+        rootVC = [rootVC presentedViewController];
+    }
+
+    if ([rootVC isKindOfClass:[UITabBarController class]]) {
+        // 根视图为UITabBarController
+        currentVC = [self getCurrentVCFrom:[(UITabBarController *)rootVC selectedViewController]];
+    } else if ([rootVC isKindOfClass:[UINavigationController class]]){
+        // 根视图为UINavigationController
+        currentVC = [self getCurrentVCFrom:[(UINavigationController *)rootVC visibleViewController]];
+    } else {
+        // 根视图为非导航类
+        currentVC = rootVC;
+    }
+
+    return currentVC;
+}
+
++( UIViewController * )getCurrentViewController
+{
+    return  [VEHelp getCurrentVC];
+    UIViewController *result = nil;
+    
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    if( window.windowLevel != UIWindowLevelNormal )
+    {
+        NSArray *window = [[UIApplication sharedApplication] windows];
+        for ( UIWindow * tmpWin in window ) {
+            if( tmpWin.windowLevel == UIWindowLevelNormal )
+            {
+                window = tmpWin;
+                break;
+            }
+        }
+    }
+    result = window.rootViewController;
+    
+    if( result == nil )
+    {
+        return nil;
+    }
+    while (result.presentedViewController) {
+        result = result.presentingViewController;
+    }
+    if( [result isKindOfClass:[UITabBarController class]] )
+    {
+        result = [((UITabBarController*)result) selectedViewController];
+    }
+    if( [result isKindOfClass:[UINavigationController class]] )
+    {
+        result = [((UINavigationController*)result) visibleViewController];
+    }
+    return result;
+}
+
 +(UIImage *)imageWithContentOfFile:(NSString *)path atBundle:( NSBundle * ) bundle
 {
     NSString *imagePath = nil;
@@ -1311,6 +1384,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (NSBundle *)getBundleName:( NSString * ) name
 {
     NSString * bundlePath = [[NSBundle bundleForClass:self.class] pathForResource: name  ofType :@"bundle"];
+    NSBundle *resourceBundle = [NSBundle bundleWithPath:bundlePath];
+    return  resourceBundle;
+}
+
++ (NSBundle *)getBundleName:( NSString * ) name atViewController:( UIViewController * ) viewController
+{
+    NSString * bundlePath = [[NSBundle bundleForClass:viewController.class] pathForResource: name  ofType :@"bundle"];
     NSBundle *resourceBundle = [NSBundle bundleWithPath:bundlePath];
     return  resourceBundle;
 }
@@ -2916,13 +2996,38 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return mask;
 }
 
++ (NSString *)getConfigPathWithFolderPath:(NSString *)folderPath {
+    NSString *configPath;
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSMutableArray *files = [NSMutableArray arrayWithArray:[fm contentsOfDirectoryAtPath:folderPath error:nil]];
+    if ([files containsObject:@"__MACOSX"]) {
+        [files removeObject:@"__MACOSX"];
+    }
+    while (files.count == 1) {
+        NSString *fileName = files.firstObject;
+        if (fileName.pathExtension.length > 0) {
+            break;
+        }else {
+            folderPath = [folderPath stringByAppendingPathComponent:fileName];
+            files = [NSMutableArray arrayWithArray:[fm contentsOfDirectoryAtPath:folderPath error:nil]];
+            if ([files containsObject:@"__MACOSX"]) {
+                [files removeObject:@"__MACOSX"];
+            }
+        }
+    }
+    configPath = [folderPath stringByAppendingPathComponent:@"config.json"];
+    
+    return configPath;
+}
+
 #pragma mark- 多脚本json加载
 + (CustomMultipleFilter *)getCustomMultipleFilerWithFolderPath:(NSString *) folderPath currentFrameImagePath:(NSString *)currentFrameImagePath
 {
     CustomMultipleFilter *customMultipleFilter = nil;
     NSMutableArray<CustomFilter*>* filterArray = [[NSMutableArray alloc] init];
     
-    NSString *configPath = [folderPath stringByAppendingPathComponent:@"config.json"]; // ok
+    NSString *configPath = [self getConfigPathWithFolderPath:folderPath];
+    folderPath = [configPath stringByDeletingLastPathComponent];
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
     NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
     jsonData = nil;
@@ -5788,6 +5893,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     float width;
     float height;
     switch (mediaType) {
+        case VEAdvanceEditType_Camera://摄像头
+        {
+            width = syncContainerSize.width;
+            height = width / (size.width / size.height);
+        }
+            break;
         case VEAdvanceEditType_Collage://画中画
         {
             if (syncContainerSize.width >= syncContainerSize.height) {
@@ -6132,6 +6243,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }else {
             transition.type = TransitionTypeCustom;
             if ([configDic objectForKey:@"effect"]) {
+                transition.customTransition = nil;
                 transition.customMultipleFilter = [VEHelp getCustomMultipleFilerWithFolderPath:configPath.stringByDeletingLastPathComponent currentFrameImagePath:nil];
             }else {
                 transition.customMultipleFilter = nil;
@@ -6141,6 +6253,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     else {
         transition.type = TransitionTypeNone;
+        transition.customTransition = nil;
+        transition.customMultipleFilter = nil;
     }
     transition.maskURL = file.transitionMask;
     transition.duration = file.transitionDuration;
@@ -8676,7 +8790,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (![[NSFileManager defaultManager] fileExistsAtPath:currentFrameTexturePath]) {
         currentFrameTexturePath = [currentFrameTexturePath.stringByDeletingPathExtension stringByAppendingPathExtension:@"png"];
     }
-    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"]; // ok
+    NSString *configPath = [self getConfigPathWithFolderPath:path];
+    path = [path stringByDeletingLastPathComponent];
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
     NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
     jsonData = nil;

@@ -742,7 +742,7 @@
 
     _editVideoSize = [VEHelp getEditOrginSizeWithFile:_selectFile];
 
-    self.editVideoSize = self.videoCropView.bounds.size;
+//    self.editVideoSize = self.videoCropView.bounds.size;
     
     if (_videoCoreSDK == nil) {
         _videoCoreSDK = [[VECore alloc] initWithAPPKey:[VEConfigManager sharedManager].appKey

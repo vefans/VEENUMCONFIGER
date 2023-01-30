@@ -193,6 +193,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_BlurBackground    = 67,   //背景虚化
     VEAdvanceEditType_MaskDoodlePen         = 68,   //马赛克涂鸦笔
     VEAdvanceEditType_TemplatedTheme        = 69, //主题
+    VEAdvanceEditType_Camera                       = 70, //摄像头
 };
 
 /*
@@ -326,14 +327,14 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_NOISE              = 41,//降噪
     KPIP_MONGOLIANKEYFRAME  = 42,//蒙板关键帧
     KPIP_SOUNDORGINAL       = 43,//原声
-    KPIP_MUTEVOLUME             = 44,//静音
+    KPIP_MUTEVOLUME         = 44,//静音
     
-    kPIP_DEFORMED                   =45,    //变形
-    KPIP_EQUALIZER                  = 46,   //均衡器
-    KPIP_BLURRY                  = 47,   //模糊
-    KPIP_AUDIOSEPAR           = 48, //aduio Sepateted
+    kPIP_DEFORMED           = 45,//变形
+    KPIP_EQUALIZER          = 46,//均衡器
+    KPIP_BLURRY             = 47,//模糊
+    KPIP_AUDIOSEPAR         = 48,//aduio Sepateted
     kPIP_REVERSEVIDEO       = 49,//倒放
-    KPIP_ANTI_SHAKE          = 50, // 防抖
+    KPIP_ANTI_SHAKE         = 50,// 防抖
     
     KPIP_CUTLEFT            =60, //截掉左边部分
     KPIP_CUTRIGHT           =61, //截掉右边部分
@@ -344,7 +345,8 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_MORPH              =66,//边角定位
     KPIP_MORPH_DELETE       =67,//删除边角定位
     KPIP_VR                 =70,//全景
-    KPIP_Bind                 =71,//绑定
+    KPIP_Bind               =71,//绑定
+    KPIP_Record             =72,//record
 };
 
 /*
@@ -685,6 +687,10 @@ isPhoneX;\
 #define kTextTemplatePlistPath [kTextTemplateFolder stringByAppendingPathComponent:@"TextTemplatePlistList.plist"]
 #define kTextTemplateIconFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"TextTemplateIconFolder"]
 
+#define KAudioEffectTypesFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/AudioEffectTypes"]
+#define KAudioEffectTypesPath [KAudioEffectTypesFolder stringByAppendingPathComponent:@"TypePlistList.plist"]
+
+
 #define kFontFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"Font"]
 #define kFontIconPath [kFontFolder stringByAppendingPathComponent:@"icon"]
 #define kFontPlistPath [kFontFolder stringByAppendingPathComponent:@"fontList2020.plist"]
@@ -788,6 +794,7 @@ isPhoneX;\
 #pragma mark- 相册网络素材库
 #define KCloudVideoFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/CloudVideo"]
 #define kCloudVideoPath [KCloudVideoFolder stringByAppendingPathComponent:@"CloudVideoPath.plist"]
+#define kNewCloudVideoCategoryPlistPath [KCloudVideoFolder stringByAppendingPathComponent:@"CloudVideoCategoryPlistList.plist"]
 
 #define kVERecordSet @"VERecordSet"
 #define kVEProportionIndex  @"VEProportionIndex"    //视频比例

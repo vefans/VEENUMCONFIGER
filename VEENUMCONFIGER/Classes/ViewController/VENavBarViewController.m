@@ -134,7 +134,7 @@
     if (_backBtn == nil) {
         _backBtn = [VENavBarButton buttonWithType:UIButtonTypeCustom];
         if (_navBar) {
-            [_backBtn setImage:[VEHelp imageWithContentOfFile:@"/jianji/剪辑_返回默认_"] forState:UIControlStateNormal];
+            [_backBtn setImage:[VEHelp imageWithContentOfFile:@"/New_EditVideo/剪辑_返回默认_"] forState:UIControlStateNormal];
         }else {
             [_backBtn setImage:[VEHelp imageWithContentOfFile:@"剪辑_叉_"] forState:UIControlStateNormal];
         }

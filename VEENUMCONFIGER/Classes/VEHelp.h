@@ -197,10 +197,12 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(void)fileImage_Save:(NSMutableArray<VEMediaInfo *> * ) fileArray atProgress:(void(^)(float progress))completedBlock atReturn:(void(^)(bool isSuccess))completedReturn;
 +(void)save_Image:(int) currentIndex atURL:(NSURL * ) url atPatch:(NSString * ) fileImagePatch atTimes:(NSMutableArray *) times atProgressCurrent:(int) progressIndex  atCount:(int) count atProgress:(void(^)(float progress))completedBlock;
 
++ (NSBundle *)getBundleName:( NSString * ) name atViewController:( UIViewController * ) viewController;
 + (NSBundle *)getBundleName:( NSString * ) name;
 +( UIImage * )imageNamed:(NSString *)name atBundle:( NSBundle * ) bundle;
 +(UIImage *)imageWithContentOfFile:(NSString *)path atBundle:( NSBundle * ) bundle;
-
++(UIImage *)imageWithContentOfFile:(NSString *)path atBundleName:(NSString *)bundleName;
++( UIViewController * )getCurrentViewController;
 /**加载图片
  */
 
@@ -597,4 +599,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSString *)getAnitionSubtitlePenConfigFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 + (NSString *)getAnitionStickerPenConfigFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 + (NSString *)getTemplateThemeFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
+
++ (NSString *)getConfigPathWithFolderPath:(NSString *)folderPath;
+
 @end
