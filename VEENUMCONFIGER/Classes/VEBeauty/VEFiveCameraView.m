@@ -559,7 +559,7 @@
     sender.selected = YES;
     _currentBtn = sender;
     
-    if ([sender.superview isKindOfClass:[UIScrollView class]]) {
+    if ([sender.superview isKindOfClass:[UIScrollView class]] && ![VEConfigManager sharedManager].iPad_HD) {
         UIScrollView *scrollView = (UIScrollView *)sender.superview;
         float margin = scrollView.frame.origin.x / 2.0;
         CGFloat offSetX = sender.center.x - scrollView.bounds.size.width * 0.5 + margin;

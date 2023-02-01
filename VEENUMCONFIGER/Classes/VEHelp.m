@@ -6330,7 +6330,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         data = nil;
                     }
                 }
-                overlay.identifier = [NSString stringWithFormat:@"overlay%lu", (unsigned long)idx];
+                if (overlay.identifier.length == 0) {
+                    overlay.identifier = [NSString stringWithFormat:@"overlay%lu", (unsigned long)idx];
+                }
                 overlay.media.fillType = ImageMediaFillTypeFit;
                 if (templateInfo.ver < 4.0) {
                     overlay.media.adjustments.sharpness = (overlay.media.adjustments.sharpness + 4)/8.0;//old:-4~4 new:0~1
@@ -7329,7 +7331,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         data = nil;
                     }
                 }
-                asset.identifier = [NSString stringWithFormat:@"media%lu", (unsigned long)idx];
+                if (asset.identifier.length == 0) {
+                    asset.identifier = [NSString stringWithFormat:@"media%lu", (unsigned long)idx];
+                }
                 if (templateInfo.ver < 4.0) {
                     asset.adjustments.sharpness = (asset.adjustments.sharpness + 4)/8.0;//old:-4~4 new:0~1
                     asset.adjustments.highlight = (asset.adjustments.highlight + 1)/2.0;//old:-1~1 new:0~1
