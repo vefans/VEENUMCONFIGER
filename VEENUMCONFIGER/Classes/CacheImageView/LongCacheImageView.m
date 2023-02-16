@@ -59,7 +59,8 @@
     CGImageRef imageRef = CGImageSourceCreateImageAtIndex(self.imageSourceRef, index, NULL);
     self.image = [UIImage imageWithCGImage:imageRef];
 //    [self.layer setNeedsDisplay];
-    CFRelease(imageRef);
+    if( imageRef )
+        CFRelease(imageRef);
     [self setLongIndex:@(++index)];
 }
 

@@ -30,20 +30,21 @@
     fxItemBtn.label.textAlignment = NSTextAlignmentCenter;
     fxItemBtn.label.textColor = TEXT_COLOR;
     fxItemBtn.label.font = [UIFont systemFontOfSize:10];
-    [fxItemBtn addSubview:fxItemBtn.label];
     
     UILabel * label1 = [[UILabel alloc] initWithFrame:fxItemBtn.label.frame];
     fxItemBtn.moveTitleLabel = label1;
     fxItemBtn.moveTitleLabel.backgroundColor = [UIColor clearColor];
-    fxItemBtn.moveTitleLabel.font = [UIFont systemFontOfSize:20];
+    fxItemBtn.moveTitleLabel.font = [UIFont systemFontOfSize:10];
     fxItemBtn.moveTitleLabel.textAlignment = NSTextAlignmentCenter;
     fxItemBtn.moveTitleLabel.hidden = YES;
-    [fxItemBtn addSubview:fxItemBtn.moveTitleLabel];
     
     LongCacheImageView * imageView = [[LongCacheImageView alloc] initWithFrame:CGRectMake(0, 0, fxItemBtn.frame.size.width, fxItemBtn.frame.size.width)];
     imageView.backgroundColor = UIColorFromRGB(0x1f1f1f);
     fxItemBtn.thumbnailIV = imageView;
     [fxItemBtn addSubview:fxItemBtn.thumbnailIV];
+    [fxItemBtn addSubview:fxItemBtn.label];
+    [fxItemBtn addSubview:fxItemBtn.moveTitleLabel];
+    
     fxItemBtn.thumbnailIV.layer.cornerRadius = 3;
     fxItemBtn.thumbnailIV.layer.masksToBounds = YES;
     fxItemBtn.thumbnailIV.layer.borderWidth = 1.0;
@@ -127,7 +128,6 @@
     _isReStart = NO;
     _moveTitleLabel.hidden = YES;
     _isStartMove = NO;
-    [UIView setAnimationsEnabled:NO];
     [_label.layer removeAllAnimations];
     [_moveTitleLabel.layer removeAllAnimations];
     _label.frame = CGRectMake(0, _label.frame.origin.y, self.frame.size.width, _label.frame.size.height);

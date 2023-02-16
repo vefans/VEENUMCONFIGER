@@ -282,8 +282,36 @@
     }
     [_adjustmentViews addObject:view];
     
+    float ItemBtnWidth = [VEHelp widthForString:VELocalizedString(str, nil) andHeight:14 fontSize:12] + 40 + 10;
+    ItemBtnWidth = MAX(ItemBtnWidth, 64);
+    UIButton *toolItemBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [view addSubview:toolItemBtn];
+    toolItemBtn.frame = CGRectMake(0, (view.frame.size.height - 40)/2.0, ItemBtnWidth, 40);
+    toolItemBtn.tag = 1000;
+    if([str isEqualToString:@"脸宽"]){
+        [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@默认",@"脸型"]] forState:UIControlStateNormal];
+        [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@选中",@"脸型"]] forState:UIControlStateSelected];
+    }else{
+        if(_adjustmentNumberBtns.count <6){
+            [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@默认",str]] forState:UIControlStateNormal];
+            [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@选中",str]] forState:UIControlStateSelected];
+        }else{
+            [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@默认",str]] forState:UIControlStateNormal];
+            [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@选中",str]] forState:UIControlStateSelected];
+        }
+    }
+    [toolItemBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
+    [toolItemBtn setTitleColor:TEXT_COLOR forState:UIControlStateSelected];
+    [toolItemBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, (ItemBtnWidth - 40))];
+    toolItemBtn.adjustsImageWhenHighlighted = NO;
+    toolItemBtn.userInteractionEnabled = NO;
+    [toolItemBtn setTitle:VELocalizedString(str, nil) forState:UIControlStateNormal];
+    toolItemBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+    toolItemBtn.titleLabel.font = [UIFont systemFontOfSize:12];
     
-        UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake([VEConfigManager sharedManager].iPad_HD ? 90 : 63, (CGRectGetHeight(rect) - 35)/2.0, view.frame.size.width - 140, 35)];
+    [_adjustmentNumberBtns addObject:toolItemBtn];
+    
+        UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake(CGRectGetMaxX(toolItemBtn.frame) + 10, (CGRectGetHeight(rect) - 35)/2.0, view.frame.size.width - (CGRectGetMaxX(toolItemBtn.frame) + 10) - 50, 35)];
         [slider setMinimumValue:-1.0];
         [slider setMaximumValue:1.0];
         [slider setValue:0];
@@ -316,41 +344,6 @@
                 [slider setMinimumTrackImage: [VEHelp imageWithColor:Main_Color size:CGSizeMake(slider.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
             }
         }
-       
-   
-       {
-           float ItemBtnWidth = [VEHelp widthForString:VELocalizedString(str, nil) andHeight:14 fontSize:12] + 40 ;
-           ItemBtnWidth = MAX(ItemBtnWidth, 64);
-           UIButton *toolItemBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-           [view addSubview:toolItemBtn];
-           toolItemBtn.frame = CGRectMake(0, (view.frame.size.height - 40)/2.0, ItemBtnWidth, 40);
-           toolItemBtn.tag = 1000;
-           if([str isEqualToString:@"脸宽"]){
-               [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@默认",@"脸型"]] forState:UIControlStateNormal];
-               [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@选中",@"脸型"]] forState:UIControlStateSelected];
-           }else{
-               if(_adjustmentNumberBtns.count <6){
-                   [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@默认",str]] forState:UIControlStateNormal];
-                   [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@选中",str]] forState:UIControlStateSelected];
-               }else{
-                   [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@默认",str]] forState:UIControlStateNormal];
-                   [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@选中",str]] forState:UIControlStateSelected];
-               }
-           }
-           [toolItemBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
-           [toolItemBtn setTitleColor:TEXT_COLOR forState:UIControlStateSelected];
-           [toolItemBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, (ItemBtnWidth - 40))];
-           toolItemBtn.adjustsImageWhenHighlighted = NO;
-           toolItemBtn.userInteractionEnabled = NO;
-           [toolItemBtn setTitle:VELocalizedString(str, nil) forState:UIControlStateNormal];
-           toolItemBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-           toolItemBtn.titleLabel.font = [UIFont systemFontOfSize:12];
-           
-           [_adjustmentNumberBtns addObject:toolItemBtn];
-           
-           
-           
-       }
     
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(view.frame.size.width - 40, 0, 40, CGRectGetHeight(rect))];
     label.text  = @"0";

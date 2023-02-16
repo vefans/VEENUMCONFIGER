@@ -22,6 +22,13 @@
     
     CGFloat labelWidth = self.titleLabel.intrinsicContentSize.width;
     CGFloat labelHeight = self.titleLabel.intrinsicContentSize.height;
+    if (labelWidth > self.frame.size.width && self.titleLabel.numberOfLines == 0) {
+        NSMutableDictionary *attrDict = [NSMutableDictionary dictionary];
+        attrDict[NSFontAttributeName] = self.titleLabel.font;
+        CGSize size = [self.titleLabel.text boundingRectWithSize:CGSizeMake(self.frame.size.width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:attrDict context:nil].size;
+        labelWidth = size.width;
+        labelHeight = size.height;
+    }
     
     UIEdgeInsets imageEdgeInsets = UIEdgeInsetsZero;
     UIEdgeInsets labelEdgeInsets = UIEdgeInsetsZero;

@@ -88,6 +88,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (UIEdgeInsets) safeAreaInsets;
 +(NSString *)pathFontForURL:(NSURL *)aURL;
 
++ (CGSize)getEditOrginSizeCropWithFile:(VEMediaInfo *)file;
+
 + (void)getCurrentImage:(BOOL)screenshot callBack:(void (^)(UIImage *))imageBlock;
 
 //获取最长的一段

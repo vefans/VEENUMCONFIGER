@@ -1717,6 +1717,9 @@
                         rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - 180 - kToolbarHeight);
                 }
             }
+            else if( kCropTypeFixedRatio == _cutMmodeType ){
+                rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - kToolbarHeight);
+            }
         }
         if([VEConfigManager sharedManager].iPad_HD){
             if( _isCropTypeViewHidden )

@@ -4,6 +4,8 @@
 //
 //
 
+//#define VEHierarchy
+
 #import <sys/utsname.h>
 #import <sys/mount.h>
 #import <CommonCrypto/CommonDigest.h>
@@ -3694,7 +3696,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 + (void)setApngCaptionFrameArrayWithImagePath:(NSString *)path jsonDic:(NSMutableDictionary *)jsonDic {
     NSString *apngPath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", jsonDic[@"name"]]];
-    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:apngPath]) {
+        apngPath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@0.gif", jsonDic[@"name"]]];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:apngPath]) {
+            apngPath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@0.GIF", jsonDic[@"name"]]];
+        }
+    }
     NSData *apngData = [NSData dataWithContentsOfFile:apngPath];
     UIImage *apngImage = [UIImage ve_animatedGIFWithData:apngData];
     
@@ -3726,7 +3733,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             [frameArray addObject:dic];
         }
     }
-    if (![jsonDic.allKeys containsObject:@"frameArray"] || [jsonDic[@"frameArray"] count] == 0) {
+    if (![jsonDic.allKeys containsObject:@"frameArray"] || [jsonDic[@"frameArray"] count] <= 1) {
         if (frameArray.count > 0) {
             [jsonDic setObject:frameArray forKey:@"frameArray"];
         }
@@ -4127,6 +4134,84 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     return editSize;
 }
+
++ (CGSize)getEditOrginSizeCropWithFile:(VEMediaInfo *)file {
+    CGSize editSize;
+    if (file.fileType == kFILEIMAGE || file.fileType == kFILETEXT) {
+        UIImage *image = [VEHelp getFullScreenImageWithUrl:file.contentURL];
+        if(file.isHorizontalMirror && file.isVerticalMirror){
+            float rotate = 0;
+            if(file.rotate == 0){
+                rotate = -180;
+            }else if(file.rotate == -90){
+                rotate = -270;
+            }else if(file.rotate == -180){
+                rotate = -0;
+            }else if(file.rotate == -270){
+                rotate = -90;
+            }
+            image = [VEHelp imageRotatedByDegrees:image rotation:rotate];
+        }else{
+            image = [VEHelp imageRotatedByDegrees:image rotation:file.rotate];
+        }
+        editSize = CGSizeMake(image.size.width, image.size.height);
+        CGSize size = CGSizeMake(fabs(editSize.width), fabs(editSize.height));
+        
+        CGSize newSize = editSize;
+//        AVURLAsset *asset = [AVURLAsset assetWithURL:file.contentURL];
+//        BOOL isportrait = [self isVideoPortrait:asset];
+//        if(size.height == size.width){
+//            newSize = size;
+//        }else if(isportrait){
+//            newSize = size;
+//            if(size.height < size.width){
+//                newSize  = CGSizeMake(MIN(size.width, size.height), MAX(size.width, size.height));
+//            }
+//            if(file.rotate == -90 || file.rotate == -270 || file.rotate == 90 || file.rotate == 270){
+//                newSize  = CGSizeMake(MAX(size.width, size.height), MIN(size.width, size.height));
+//            }
+//        }else{
+//            if(file.rotate == -90 || file.rotate == -270 || file.rotate == 90 || file.rotate == 270){
+//                newSize  = CGSizeMake(MIN(size.width, size.height), MAX(size.width, size.height));
+//            }else{
+//                newSize  = CGSizeMake(MAX(size.width, size.height), MIN(size.width, size.height));
+//            }
+//        }
+        if(!isnan(file.crop.size.width) && !isnan(file.crop.size.height)){
+            newSize = CGSizeMake(newSize.width * file.crop.size.width, newSize.height * file.crop.size.height);
+        }
+//        if(newSize.width>newSize.height){
+//            CGSize tmpsize = newSize;
+//            newSize.width  = kVIDEOWIDTH;
+//            newSize.height = kVIDEOWIDTH * tmpsize.height/tmpsize.width;
+//        }else{
+//            CGSize tmpsize = newSize;
+//            newSize.height  = kVIDEOWIDTH;
+//            newSize.width = kVIDEOWIDTH * tmpsize.width/tmpsize.height;
+//        }
+        editSize = newSize;
+        image = nil;
+    }else {
+        if(file.isReverse){
+            editSize = [VEHelp trackSize:file.reverseVideoURL rotate:file.rotate crop:CGRectMake(0, 0, 1, 1)];
+        }else{
+            editSize = [VEHelp trackSize:file.contentURL rotate:file.rotate crop:CGRectMake(0, 0, 1, 1)];
+        }
+    }
+    if (editSize.width > kVIDEOWIDTH || editSize.height > kVIDEOWIDTH) {
+        if(editSize.width > editSize.height){
+            CGSize tmpsize = editSize;
+            editSize.width  = kVIDEOWIDTH;
+            editSize.height = kVIDEOWIDTH * tmpsize.height/tmpsize.width;
+        }else{
+            CGSize tmpsize = editSize;
+            editSize.height  = kVIDEOWIDTH;
+            editSize.width = kVIDEOWIDTH * tmpsize.width/tmpsize.height;
+        }
+    }
+    return editSize;
+}
+
 + (CGSize)getEditOrginSizeWithFile:(VEMediaInfo *)file {
     CGSize editSize;
     if (file.fileType == kFILEIMAGE || file.fileType == kFILETEXT) {

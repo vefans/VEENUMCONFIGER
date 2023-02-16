@@ -347,6 +347,7 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_VR                 =70,//全景
     KPIP_Bind               =71,//绑定
     KPIP_Record             =72,//record
+    KPIP_TextImage            =73,//文字
 };
 
 /*
@@ -361,6 +362,7 @@ typedef NS_ENUM(NSInteger, VEMaterialEditType){
     VEMaterialEditType_Split       = 5,//分割
     VEMaterialEditType_Rect        = 6,//调整位置
     VEMaterialEditType_Keyframe    = 7,//关键帧
+    VEMaterialEditType_Hierarchy    = 8,//层级
 };
 
 //去水印类型
@@ -640,6 +642,7 @@ isPhoneX;\
 
 #define kCutoutFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/CutoutFloatder"]
 #define kErasePenFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ErasePenFloatder"]
+#define kTextImageFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/TextImage"]
 #define kCoverFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/cover"]
 #define kCanvasFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Canvas"]
 
