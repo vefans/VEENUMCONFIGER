@@ -4,8 +4,6 @@
 //
 //
 
-//#define VEHierarchy
-
 #import <sys/utsname.h>
 #import <sys/mount.h>
 #import <CommonCrypto/CommonDigest.h>
@@ -67,15 +65,15 @@ float const VEAdjust_MinValue_WhiteBalance = -1.0;
 float const VEAdjust_MaxValue_WhiteBalance = 1.0;
 float const VEAdjust_DefaultValue_WhiteBalance = 0.0;
 //暗角
-float const VEAdjust_MinValue_Vignette = 0.0;
-float const VEAdjust_MaxValue_Vignette = 1.0;
+float const VEAdjust_MinValue_Vignette = -0.9;
+float const VEAdjust_MaxValue_Vignette = 0.9;
 float const VEAdjust_DefaultValue_Vignette = 0.0;
 //高光
 float const VEAdjust_MinValue_Highlight = -1.0;
 float const VEAdjust_MaxValue_Highlight = 1.0;
 float const VEAdjust_DefaultValue_Highlight = 0.0;
 //阴影
-float const VEAdjust_MinValue_Shadow = 0.0;
+float const VEAdjust_MinValue_Shadow = -1.0;
 float const VEAdjust_MaxValue_Shadow = 1.0;
 float const VEAdjust_DefaultValue_Shadow = 0.0;
 //颗粒
@@ -3263,13 +3261,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 #pragma mark- 单脚本json加载
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath atMedia:(id) mediaOrFile{
-    NSString *configPath = [folderPath stringByAppendingPathComponent:@"config.json"];
-    CustomFilter *customFilter = [[CustomFilter alloc] init];
+    NSString *configPath = [self getConfigPathWithFolderPath:folderPath];
     
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
+    if (!jsonData) {
+        return nil;
+    }
     NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
     jsonData = nil;
     NSError * error = nil;
+    CustomFilter *customFilter = [[CustomFilter alloc] init];
     customFilter.folderPath = folderPath;
     customFilter.name = effectDic[@"name"];
     if(!customFilter.name) //必须设置名字，多脚本滤镜根据名字确定绘制顺序
@@ -6422,6 +6423,26 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 if (templateInfo.ver < 4.0) {
                     overlay.media.adjustments.sharpness = (overlay.media.adjustments.sharpness + 4)/8.0;//old:-4~4 new:0~1
                     overlay.media.adjustments.highlight = (overlay.media.adjustments.highlight + 1)/2.0;//old:-1~1 new:0~1
+                    [overlay.media.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull face, NSUInteger idx, BOOL * _Nonnull stop) {
+                        face.faceWidth = face.faceWidth * 2.0 - 1;
+                        face.forehead = face.forehead * 2.0 - 1;
+                        face.chinWidth = face.chinWidth * 2.0 - 1;
+                        face.chinHeight = face.chinHeight * 2.0 - 1;
+                        face.eyeWidth = face.eyeWidth * 2.0 - 1;
+                        face.eyeSlant = face.eyeSlant * 2.0 - 1;
+                        face.eyeDistance = face.eyeDistance * 2.0 - 1;
+                        face.noseWidth = face.noseWidth * 2.0 - 1;
+                        face.noseHeight = face.noseHeight * 2.0 - 1;
+                        face.mouthWidth = face.mouthWidth * 2.0 - 1;
+                        face.lipUpper = face.lipUpper * 2.0 - 1;
+                        face.lipLower = face.lipLower * 2.0 - 1;
+                        face.smile = face.smile * 2.0 - 1;
+                        face.beautyThinFaceIntensity = face.beautyThinFaceIntensity * 2.0 - 1;
+                        face.beautyBigEyeIntensity = face.beautyBigEyeIntensity * 2.0 - 1;
+                    }];
+                }
+                if (templateInfo.ver <= 4.0) {//20230223 调色-暗角的效果优化，UI范围值从-1～1改为-0.9～0.9；优化前的模板范围值需要从-1～1改为-0.7～0.7
+                    overlay.media.adjustments.vignette *= 0.7;
                     [overlay.media.animate enumerateObjectsUsingBlock:^(MediaAssetAnimatePosition * _Nonnull obj1, NSUInteger idx, BOOL * _Nonnull stop) {
                         obj1.adjustments = [overlay.media.adjustments copy];
                     }];
@@ -7321,6 +7342,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     toning.sharpness = (toning.sharpness + 4)/8.0;//old:-4~4 new:0~1
                     toning.highlight = (toning.highlight + 1)/2.0;//old:-1~1 new:0~1
                 }
+                if (templateInfo.ver <= 4.0) {//20230223 调色-暗角的效果优化，UI范围值从-1～1改为-0.9～0.9；优化前的模板范围值需要从-1～1改为-0.7～0.7
+                    toning.vignette *= 0.7;
+                }
                 [tonings addObject:toning];
             }
         }];
@@ -7422,6 +7446,26 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 if (templateInfo.ver < 4.0) {
                     asset.adjustments.sharpness = (asset.adjustments.sharpness + 4)/8.0;//old:-4~4 new:0~1
                     asset.adjustments.highlight = (asset.adjustments.highlight + 1)/2.0;//old:-1~1 new:0~1
+                    [asset.multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull face, NSUInteger idx, BOOL * _Nonnull stop) {
+                        face.faceWidth = face.faceWidth * 2.0 - 1;
+                        face.forehead = face.forehead * 2.0 - 1;
+                        face.chinWidth = face.chinWidth * 2.0 - 1;
+                        face.chinHeight = face.chinHeight * 2.0 - 1;
+                        face.eyeWidth = face.eyeWidth * 2.0 - 1;
+                        face.eyeSlant = face.eyeSlant * 2.0 - 1;
+                        face.eyeDistance = face.eyeDistance * 2.0 - 1;
+                        face.noseWidth = face.noseWidth * 2.0 - 1;
+                        face.noseHeight = face.noseHeight * 2.0 - 1;
+                        face.mouthWidth = face.mouthWidth * 2.0 - 1;
+                        face.lipUpper = face.lipUpper * 2.0 - 1;
+                        face.lipLower = face.lipLower * 2.0 - 1;
+                        face.smile = face.smile * 2.0 - 1;
+                        face.beautyThinFaceIntensity = face.beautyThinFaceIntensity * 2.0 - 1;
+                        face.beautyBigEyeIntensity = face.beautyBigEyeIntensity * 2.0 - 1;
+                    }];
+                }
+                if (templateInfo.ver <= 4.0) {//20230223 调色-暗角的效果优化，UI范围值从-1～1改为-0.9～0.9；优化前的模板范围值需要从-1～1改为-0.7～0.7
+                    asset.adjustments.vignette *= 0.7;
                     [asset.animate enumerateObjectsUsingBlock:^(MediaAssetAnimatePosition * _Nonnull obj2, NSUInteger idx, BOOL * _Nonnull stop) {
                         obj2.adjustments = [asset.adjustments copy];
                     }];
@@ -12667,5 +12711,196 @@ static OSType help_inputPixelFormat(){
         cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
     }
     return cachedFilePath;
+}
+
++(void)getTextAndPhotoWithFile:( VEMediaInfo * ) file atTextList:( NSMutableArray * ) textList atGettingImage:(void(^)(UIImage *image))gettingImage
+{
+    file.rotate = 0;
+    CGSize exportVideoSize = [VEHelp getEditOrginSizeCropWithFile:file];
+    __block VECore * videoCoreSDK = [[VECore alloc] initWithAPPKey:[VEConfigManager sharedManager].appKey
+                                           APPSecret:[VEConfigManager sharedManager].appSecret
+                                          LicenceKey:[VEConfigManager sharedManager].licenceKey
+                                           videoSize:exportVideoSize
+                                                 fps:kEXPORTFPS
+                                          resultFail:^(NSError *error) {
+                                              NSLog(@"initSDKError:%@", error.localizedDescription);
+                                          }];
+    {
+        Scene *scene = [[Scene alloc] init];
+        MediaAsset * vvasset = [[MediaAsset alloc] init];
+        vvasset.url = file.contentURL;
+        vvasset.localIdentifier = file.localIdentifier;
+        vvasset.identifier = @"Image";
+        NSLog(@"图片");
+        vvasset.type         = MediaAssetTypeImage;
+        
+        vvasset.timeRange    = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(3, TIMESCALE));//_selectFile.imageDurationTime
+        vvasset.speed        = file.speed;
+        vvasset.volume       = file.videoVolume;
+        scene.transition.type   = TransitionTypeNone;
+        scene.transition.duration = 0.0;
+        vvasset.rotate = file.rotate;
+        vvasset.isVerticalMirror = file.isVerticalMirror;
+        vvasset.isHorizontalMirror = file.isHorizontalMirror;
+        vvasset.rectInVideo = CGRectMake(0, 0, 1, 1);
+        vvasset.crop = file.crop;
+        vvasset.adjustments = file.adjustments;
+        [scene.media addObject:vvasset];
+        NSMutableArray *sceneArray = [NSMutableArray array];
+        [sceneArray addObject:scene];
+        [videoCoreSDK setScenes:sceneArray];
+    }
+    if( textList && (textList.count > 0) )
+    {
+        [videoCoreSDK setCaptionExs:textList];
+    }
+    [videoCoreSDK build];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        while ( videoCoreSDK.status != kVECoreStatusReadyToPlay ) {
+            sleep(0.2);
+        }
+        CGImageRef cgImage = [videoCoreSDK copyCurrentCGImage];
+        UIImage *image = [UIImage imageWithCGImage:cgImage];
+        BOOL isNOimage = true;
+        int count = 3;
+        while ( !cgImage && count ) {
+            sleep(0.2);
+            cgImage = [videoCoreSDK copyCurrentCGImage];
+            image = [UIImage imageWithCGImage:cgImage];
+            if( image )
+            {
+                isNOimage = false;
+                break;
+            }
+            count--;
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [videoCoreSDK stop];
+            videoCoreSDK = nil;
+        });
+        
+        if( gettingImage )
+        {
+            gettingImage( image );
+        }
+    });
+}
+
+
++(void)getTextAndPhotoWith:( MediaAsset * ) asset atTextList:( NSMutableArray * ) textList atGettingImage:(void(^)(UIImage *image))gettingImage
+{
+    VEMediaInfo * file = [VEHelp vassetToFile:asset];
+    if( asset.addTextOriginalImageUrl )
+    {
+        file.contentURL = asset.addTextOriginalImageUrl;
+        file.crop = asset.addTextCrop;
+    }
+    file.rotate = 0;
+    
+    CGSize exportVideoSize = [VEHelp getEditOrginSizeCropWithFile:file];
+    __block VECore * videoCoreSDK = [[VECore alloc] initWithAPPKey:[VEConfigManager sharedManager].appKey
+                                           APPSecret:[VEConfigManager sharedManager].appSecret
+                                          LicenceKey:[VEConfigManager sharedManager].licenceKey
+                                           videoSize:exportVideoSize
+                                                 fps:kEXPORTFPS
+                                          resultFail:^(NSError *error) {
+                                              NSLog(@"initSDKError:%@", error.localizedDescription);
+                                          }];
+    {
+        Scene *scene = [[Scene alloc] init];
+        MediaAsset * vvasset = [[MediaAsset alloc] init];
+        vvasset.url = file.contentURL;
+        vvasset.localIdentifier = file.localIdentifier;
+        vvasset.identifier = @"Image";
+        NSLog(@"图片");
+        vvasset.type         = MediaAssetTypeImage;
+        
+        vvasset.timeRange    = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(3, TIMESCALE));//_selectFile.imageDurationTime
+        vvasset.speed        = file.speed;
+        vvasset.volume       = file.videoVolume;
+        scene.transition.type   = TransitionTypeNone;
+        scene.transition.duration = 0.0;
+        vvasset.rotate = file.rotate;
+        vvasset.isVerticalMirror = file.isVerticalMirror;
+        vvasset.isHorizontalMirror = file.isHorizontalMirror;
+        vvasset.rectInVideo = CGRectMake(0, 0, 1, 1);
+        vvasset.crop = file.crop;
+        vvasset.adjustments = file.adjustments;
+        [scene.media addObject:vvasset];
+        NSMutableArray *sceneArray = [NSMutableArray array];
+        [sceneArray addObject:scene];
+        [videoCoreSDK setScenes:sceneArray];
+    }
+    if( textList && (textList.count > 0) )
+    {
+        [videoCoreSDK setCaptionExs:textList];
+    }
+    [videoCoreSDK build];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        while ( videoCoreSDK.status != kVECoreStatusReadyToPlay ) {
+            sleep(0.1);
+        }
+        CGImageRef cgImage = [videoCoreSDK copyCurrentCGImage];
+        UIImage *image = [UIImage imageWithCGImage:cgImage];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [videoCoreSDK stop];
+            videoCoreSDK = nil;
+        });
+        
+        if( gettingImage )
+        {
+            gettingImage( image );
+        }
+    });
+}
+
++(void)drawTextAndPhotoWith:(void(^)(NSMutableArray * textLists))gettingImage
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        __block BOOL isWhile = true;
+        __block BOOL isGetWhile = true;
+        __block UIImage *image = nil;
+        while ( isWhile ) {
+            NSMutableArray * array = [NSMutableArray new];
+            if( isGetWhile )
+            {
+                isGetWhile = false;
+                if( gettingImage )
+                {
+                    gettingImage(array);
+                }
+                if( array.count == 0 )
+                {
+                    isWhile = false;
+                    gettingImage(nil);
+                    return;
+                }
+                else{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        VEMediaInfo *file = array[0];
+                        NSURL *textImageURL = [VEHelp getFileUrlWithFolderPath:kTextImageFolder fileName:@"textImage.png"];
+                        file.addTextOriginalImageUrl = textImageURL;
+                        NSURL *originalImageUrl = file.contentURL;
+                        
+                        [VEHelp getTextAndPhotoWithFile:file atTextList:file.addTextList atGettingImage:^(UIImage *image) {
+                            NSData* imageData =  UIImagePNGRepresentation(image);
+                            NSURL *textImageURL = file.addTextOriginalImageUrl;
+                            unlink([textImageURL.path UTF8String]);
+                            [imageData writeToFile:textImageURL.path atomically:YES];
+                            file.contentURL = originalImageUrl;
+                            file.thumbImage = image;
+                            isGetWhile = true;
+                        }];
+                    });
+                }
+            }
+            else
+                sleep(0.2);
+        }
+    });
 }
 @end

@@ -1116,7 +1116,11 @@
     
     if(_editVideoForOnce_timeFinishAction){
         _selectFile.contentURL = oldselectFile.contentURL;
-        [self removeFromParentViewController];
+        if (self.presentingViewController && self.navigationController.viewControllers.count == 1) {
+            [self dismissViewControllerAnimated:NO completion:nil];
+        } else {
+            [self.navigationController popViewControllerAnimated:NO];
+        }
         _editVideoForOnce_timeFinishAction(NO,
                                            CGRectMake(point.x/imageSize.width, point.y/imageSize.height, size.width/imageSize.width, size.height/imageSize.height),
                                            _videoCropView.cropView.cropRectView.frame,

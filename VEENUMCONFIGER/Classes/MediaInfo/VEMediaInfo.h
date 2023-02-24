@@ -94,6 +94,11 @@ typedef NS_ENUM(NSInteger, VECropType){
 
 @interface VEMediaInfo : NSObject<NSCopying, NSMutableCopying>
 
+@property(nonatomic, strong)NSMutableArray * addTextList;
+@property(nonatomic, strong)NSURL   * addTextOriginalImageUrl;
+@property(nonatomic, assign)CGRect  addTextCrop;
+@property (nonatomic, assign) BOOL addTextReplaceType;
+
 @property (nonatomic, assign)BOOL       isFixedSize;
 @property (nonatomic, assign)BOOL       isFixedAngle;
 

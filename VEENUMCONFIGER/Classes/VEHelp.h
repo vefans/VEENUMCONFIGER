@@ -604,4 +604,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 + (NSString *)getConfigPathWithFolderPath:(NSString *)folderPath;
 
++(void)getTextAndPhotoWith:( MediaAsset * ) asset atTextList:( NSMutableArray * ) textList atGettingImage:(void(^)(UIImage *image))gettingImage;
++(void)getTextAndPhotoWithFile:( VEMediaInfo * ) file atTextList:( NSMutableArray * ) textList atGettingImage:(void(^)(UIImage *image))gettingImage;
++(void)drawTextAndPhotoWith:(void(^)(NSMutableArray * textLists))gettingImage;
 @end
