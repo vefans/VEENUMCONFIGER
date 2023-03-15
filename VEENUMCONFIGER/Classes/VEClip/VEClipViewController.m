@@ -88,7 +88,7 @@
     [super viewDidLoad];
     if( [VEConfigManager sharedManager].isPictureEditing )
     {
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = UIColorFromRGB(0x111111);//[UIColor whiteColor];
     }
     if([VEConfigManager sharedManager].iPad_HD && !CGRectEqualToRect(_frameRect, CGRectZero)){
         
@@ -106,7 +106,7 @@
         _bgView = [[UIView alloc] initWithFrame:_frameRect];//
         _bgView.layer.cornerRadius = 10;
         _bgView.layer.masksToBounds = YES;
-        _bgView.backgroundColor = VIEW_IPAD_COLOR;//[UIColor colorWithWhite:0.7 alpha:1.0];
+        _bgView.backgroundColor = [UIColor colorWithWhite:0.7 alpha:1.0];
     }else{
         _bgView = [[UIView alloc] initWithFrame:self.view.bounds];
     }
@@ -210,7 +210,10 @@
         self.toolBar.hidden = NO;
         self.titlelab.text = @"";
     }else{
+        self.titlelab.textColor = UIColorFromRGB(0xffffff);
+        self.barline.backgroundColor = UIColorFromRGB(0x1a1a1a);
         self.titlelab.text = VELocalizedString(@"裁切", nil);
+        self.titlelab.backgroundColor = UIColorFromRGB(0x1a1a1a);
     }
 }
 
@@ -368,6 +371,7 @@
         [array addObject:[NSNumber numberWithInteger:6]];
         [array addObject:[NSNumber numberWithInteger:7]];
         
+        float asp = 1.0;
         float contWidth = 15;
         for( int i = 0; i < 12; i++ )
         {
@@ -384,13 +388,15 @@
                 {
                     type = VE_VECROPTYPE_ORIGINAL;
                     str = VELocalizedString(@"原始", nil);
-                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_自由默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
-                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_自由选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    asp = 1.0;
+//                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_自由默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+//                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_自由选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
                 }
                     break;
                 case 1://1:1
                 {
                     type = VE_VECROPTYPE_1TO1;
+                    asp = 1.0;
                     namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_1-1默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
                     selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_1-1选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
                 }
@@ -426,29 +432,37 @@
                 case 6://5:8
                 {
                     type = VE_VECROPTYPE_5TO8;
-                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_1-2默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
-                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_1-2选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    str = VELocalizedString(@"5:8", nil);
+                    asp = 5.0/8.0;
+//                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_1-2默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+//                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_1-2选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
                 }
                     break;
                 case 7://2:1
                 {
                     type = VE_VECROPTYPE_2TO1;
-                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_2-1默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
-                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_2-1选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    str = VELocalizedString(@"2:1", nil);
+//                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_2-1默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+//                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_2-1选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    asp = 2.0;
                 }
                     break;
                 case 8://2:3
                 {
                     type = VE_VECROPTYPE_2TO3;
-                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_2-3默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
-                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_2-3选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    str = VELocalizedString(@"2:3", nil);
+//                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_2-3默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+//                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_2-3选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    asp = 2.0/3.0;
                 }
                     break;
                 case 9://3:2
                 {
                     type = VE_VECROPTYPE_3TO2;
-                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_3-2默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
-                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_3-2选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    str = VELocalizedString(@"3:2", nil);
+//                    namedImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_3-2默认@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+//                    selectImage = [VEHelp imageNamed:@"/PESDKImage/PESDKCrop/PESDKCrop_3-2选中@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]];
+                    asp = 3.0/2.0;
                 }
                     break;
                 case 10://4:3
@@ -469,18 +483,35 @@
                 default:
                     break;
             }
+            if(namedImage){
+                asp = (namedImage.size.width/namedImage.size.height);
+                sender.frame = CGRectMake(contWidth, 5, asp*cropTypeHeight, cropTypeHeight);
+                contWidth += asp *cropTypeHeight + 5;
+            }else{
+                if(asp == 1.0){
+                    sender.frame = CGRectMake(contWidth, cropTypeHeight * 0.35 + 5, cropTypeHeight * 0.65, cropTypeHeight * 0.65);
+                    contWidth += cropTypeHeight * 0.65 + 5;
+                }else{
+                    sender.frame = CGRectMake(contWidth, 5, MIN(asp, 1.0)*cropTypeHeight, cropTypeHeight);
+                    contWidth += MIN(asp, 1.0) *cropTypeHeight + 5;
+                }
+            }
             
-            sender.frame = CGRectMake(contWidth, 5, (namedImage.size.width/namedImage.size.height)*cropTypeHeight, cropTypeHeight);
-            contWidth += (namedImage.size.width/namedImage.size.height)*cropTypeHeight + 5;
-
-            
-            if( str )
+            if( str.length > 0 )
             {
-                UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, sender.frame.size.height - 11 - ( 20/2.0 + (sender.frame.size.width - 16)/2.0 ), sender.frame.size.width, 20)];
+                UILabel * label = [[UILabel alloc] init];
+                if(asp <1.0){
+                    label.frame = CGRectMake((sender.frame.size.width - ((sender.frame.size.height - 10) * asp))/2.0, 5, (sender.frame.size.height - 10) * asp, (sender.frame.size.height - 10));
+                }else{
+                    label.frame = CGRectMake(5, (sender.frame.size.height - 5 - ((sender.frame.size.width - 10)/ asp)), (sender.frame.size.width - 10), (sender.frame.size.width - 10) / asp);
+                }
                 label.tag = 22222;
-                label.textColor = PESDKTEXT_COLOR;
+                label.textColor = UIColorFromRGB(0xffffff);
+                label.backgroundColor = UIColorFromRGB(0x272727);
                 label.textAlignment = NSTextAlignmentCenter;
                 label.font = [UIFont systemFontOfSize:12];
+                label.layer.cornerRadius = 5.0;
+                label.layer.masksToBounds = YES;
                 label.text = str;
                 [sender addSubview:label];
             }
@@ -502,7 +533,7 @@
                 _cropType = sender.tag;
                 [sender setSelected:YES];
                 if( VE_VECROPTYPE_ORIGINAL == sender.tag )
-                    ((UILabel*)[sender viewWithTag:22222]).textColor = PESDKMain_Color;
+                    ((UILabel*)[sender viewWithTag:22222]).textColor = Main_Color;
                 self.cropTypeSelectBtn = sender;
                 _cropType = VE_VECROPTYPE_ORIGINAL;
             }
@@ -516,39 +547,41 @@
         {
             
             UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - (self.cropTypeScrollView.frame.size.height + self.toolBar.frame.size.height+kBottomSafeHeight + 3), self.view.frame.size.width, self.cropTypeScrollView.frame.size.height + self.toolBar.frame.size.height+kBottomSafeHeight + 3)];
+            view.backgroundColor = UIColorFromRGB(0x1a1a1a);
             [VEHelp addShadowToView:view withColor:UIColorFromRGB(0x000000)];
-            {
-                UIView *gsView = [[UIView alloc] init];
-                gsView.backgroundColor = [UIColor clearColor];
-                gsView.frame = CGRectMake(0, 0, view.frame.size.width, 15);
-                [gsView addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(view_GSAction:)]];
-                {
-                    UIView *lineView = [UIView new];
-                    lineView.backgroundColor = [UIColor colorWithRed:218/255.0 green:218/255.0 blue:218/255.0 alpha:1.0];
-                    lineView.frame = CGRectMake( (gsView.frame.size.width - 28)/2.0 , (gsView.frame.size.height - 5)/2.0 + 3, 28, 5);
-                    lineView.layer.cornerRadius = 2;
-                    lineView.layer.masksToBounds = YES;
-                    [gsView addSubview:lineView];
-                }
-                [view addSubview:gsView];
-            }
+//            {
+//                UIView *gsView = [[UIView alloc] init];
+//                gsView.backgroundColor = [UIColor clearColor];
+//                gsView.frame = CGRectMake(0, 0, view.frame.size.width, 15);
+//                [gsView addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(view_GSAction:)]];
+//                {
+//                    UIView *lineView = [UIView new];
+//                    lineView.backgroundColor = UIColorFromRGB(0x272727);
+//                    lineView.frame = CGRectMake( (gsView.frame.size.width - 28)/2.0 , (gsView.frame.size.height - 5)/2.0 + 3, 28, 5);
+//                    lineView.layer.cornerRadius = 2;
+//                    lineView.layer.masksToBounds = YES;
+//                    [gsView addSubview:lineView];
+//                }
+//                [view addSubview:gsView];
+//            }
             
             {
-                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 39.5 + 20, view.frame.size.width, 0.5)];
-                label.backgroundColor = UIColorFromRGB(0xe1e1e1);
+                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 39.5, view.frame.size.width, 0.5)];
+                label.backgroundColor = UIColorFromRGB(0x272727);
                 [view addSubview:label];
             }
             
             self.ribbtonView = view;
             [self.view addSubview:view];
-            self.cropTypeScrollView.frame = CGRectMake(0, 20 + 40, self.cropTypeScrollView.frame.size.width, self.cropTypeScrollView.frame.size.height);
+            self.cropTypeScrollView.frame = CGRectMake(0, 5 + 40, self.cropTypeScrollView.frame.size.width, self.cropTypeScrollView.frame.size.height);
             self.toolBar.frame = CGRectMake(0,  15, self.toolBar.frame.size.width, 40);
             self.titlelab.frame = CGRectMake(50, 0, kWIDTH-100, 40);
             [view addSubview:self.cropTypeScrollView];
             [view addSubview:self.toolBar];
         }
     }
-    else{
+    else
+    {
         for (int i = 0; i< 9; i++) {
             VECropTypeModel * cropTypeModel = [[VECropTypeModel alloc] init];
             cropTypeModel.height = _cropTypeView.frame.size.height;
@@ -766,8 +799,8 @@
     
     if( [VEConfigManager sharedManager].isPictureEditing )
     {
-        _videoCoreSDK.view.backgroundColor = [UIColor whiteColor];
-        _videoCropView.backgroundColor = [UIColor whiteColor];
+        _videoCoreSDK.view.backgroundColor = UIColorFromRGB(0x111111);////[UIColor whiteColor];
+        _videoCropView.backgroundColor = UIColorFromRGB(0x111111);//[UIColor whiteColor];
 //        _videoCropView.videoView.backgroundColor = [UIColor whiteColor];
 //        _videoCropView.maskView.backgroundColor = [UIColor whiteColor];
 //        _videoCropView.cropView.backgroundColor = [UIColor whiteColor];
@@ -1558,16 +1591,16 @@
     if( self.cropTypeSelectBtn )
     {
         self.cropTypeSelectBtn.selected = NO;
-        if( self.cropTypeSelectBtn.tag == VE_VECROPTYPE_ORIGINAL )
-            ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = PESDKTEXT_COLOR;
+        if([self.cropTypeSelectBtn viewWithTag:22222])
+            ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = UIColorFromRGB(0xffffff);
     }
     
     [_videoCropView.cropView setCropRectViewFrame:sender.tag];
     self.cropType = sender.tag;
     self.cropTypeSelectBtn = sender;
     self.cropTypeSelectBtn.selected = YES;
-    if( self.cropTypeSelectBtn.tag == VE_VECROPTYPE_ORIGINAL )
-        ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = PESDKMain_Color;
+    if([self.cropTypeSelectBtn viewWithTag:22222])
+        ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = Main_Color;
     
     CGPoint point = self.videoCropView.cropView.cropRectView.frame.origin;
     point = [self.videoCropView.cropView convertPoint:point toView:self.syncContainerView];
@@ -1851,7 +1884,7 @@
 
 -(UIView *)lineView{
     if (_lineView == nil) {
-        _lineView = [[UIView alloc] initWithFrame:CGRectMake(86, 73,1, 2)];
+        _lineView = [[UIView alloc] initWithFrame:CGRectMake(86, 63,1, 2)];
         [_lineView setBackgroundColor:UIColorFromRGB(0x27262C)];
         
         
@@ -1930,7 +1963,7 @@
         }
         if( [VEConfigManager sharedManager].isPictureEditing )
         {
-            _cropTypeView.backgroundColor = [UIColor whiteColor];
+            _cropTypeView.backgroundColor = UIColorFromRGB(0x111111);//[UIColor whiteColor];
             _cropTypeView.frame = CGRectMake(0, _photoView.frame.size.height - 100, CGRectGetWidth(self.bgView.frame), 100);
         }
         _cropTypeView.delegate = self;
@@ -1982,12 +2015,12 @@
         [self.bgView addSubview:view];
         if( [VEConfigManager sharedManager].isPictureEditing )
         {
-            view.backgroundColor = [UIColor whiteColor];
+            view.backgroundColor = UIColorFromRGB(0x111111);//[UIColor whiteColor];
         }
         _photoView = view;
         if( [VEConfigManager sharedManager].isPictureEditing )
         {
-            view.backgroundColor = [UIColor whiteColor];
+            view.backgroundColor = UIColorFromRGB(0x111111);//[UIColor whiteColor];
         }
         if( _isCropTypeViewHidden )
         {

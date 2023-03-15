@@ -94,6 +94,9 @@ typedef NS_ENUM(NSInteger, VECropType){
 
 @interface VEMediaInfo : NSObject<NSCopying, NSMutableCopying>
 
+@property(nonatomic, strong)NSMutableArray *occlusions;
+@property(nonatomic, strong)NSMutableArray *occlusionImages;
+
 @property(nonatomic, strong)NSMutableArray * addTextList;
 @property(nonatomic, strong)NSURL   * addTextOriginalImageUrl;
 @property(nonatomic, assign)CGRect  addTextCrop;

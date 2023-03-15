@@ -67,7 +67,6 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     
     CGPoint beganLocation;
     
-    BOOL _isShowingEditingHandles;
     
     CGRect originRect;
     
@@ -103,7 +102,6 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 }
 @end
 @implementation VEPasterTextView
-
 
 -(void)remove_Recognizer
 {
@@ -515,7 +513,12 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     //initialBounds   = self.bounds;
     return self;
 }
-
+- (void)addContentTappedGestureRecognizer{
+    UITapGestureRecognizer *singleTapShowHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(contentTapped:)];
+    singleTapShowHide.delegate = self;
+    singleTapShowHide.numberOfTapsRequired = 1;
+    [self addGestureRecognizer:singleTapShowHide];
+}
 -(void)addCopyBtn
 {
     _alignBtn = [[UIButton alloc] initWithFrame:CGRectMake(-rotateViewWidth/2.0 + globalInset, self.bounds.size.height - rotateViewWidth/2.0 - globalInset, rotateViewWidth, rotateViewWidth)];
@@ -2379,6 +2382,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 static VEPasterTextView *lastTouchedView;
 
 - (void) showEditingHandles{
+    if(lastTouchedView && lastTouchedView != self)
     [lastTouchedView hideEditingHandles];
     _isShowingEditingHandles = YES;
     lastTouchedView = self;
@@ -2650,7 +2654,8 @@ static VEPasterTextView *lastTouchedView;
     _textEditBtn.transform = CGAffineTransformMakeScale(1, 1);
     _textEditBtn.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
     [_textEditBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑_文字编辑_"] forState:UIControlStateNormal];
-    [_textEditBtn addTarget:self action:@selector(text_Edit) forControlEvents:UIControlEventTouchUpInside];
+    _editTextAction = @selector(text_Edit);
+    [_textEditBtn addTarget:self action:_editTextAction forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_textEditBtn];
 }
 
@@ -2658,11 +2663,13 @@ static VEPasterTextView *lastTouchedView;
 {
     if( _isViewHidden_GestureRecognizer && _syncContainer.currentPasterTextView != self )
         return;
-    
-    if( _delegate && [_delegate respondsToSelector:@selector(DoubleClick_pasterViewShowText:)] )
-    {
-        [_delegate DoubleClick_pasterViewShowText:self];
-    }
+    __block typeof(self) bself = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if(bself->_delegate && [bself->_delegate respondsToSelector:@selector(DoubleClick_pasterViewShowText:)] )
+        {
+            [bself->_delegate DoubleClick_pasterViewShowText:bself];
+        }
+    });
 }
 
 #pragma mark- 双击 文字编辑

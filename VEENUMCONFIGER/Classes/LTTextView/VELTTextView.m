@@ -72,7 +72,7 @@
 }
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
-    if (text.length == 0 && range.location == 0) {
+    if (textView.text.length == 0 && range.location == 0) {
         self.placeholderTextView.hidden = NO;
     }else{
         self.placeholderTextView.hidden =YES;

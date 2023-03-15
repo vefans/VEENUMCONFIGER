@@ -44,4 +44,5 @@
 -(void)Cancel_selectePasterTextView;
 -(CGRect)getFrame;
 @property(nonatomic, assign)BOOL isMask;
+@property(nonatomic, assign)BOOL               isSplice;
 @end

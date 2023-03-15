@@ -2619,7 +2619,7 @@
 "导出为GIF" = "Export as GIF";
 
 "分屏排版" = "Collage";
-"视频排版" = "Video typography";
+"视频排版" = "Collage";
 "请至少选择2个素材" = "Please select at least 2 assets";
 "请删减素材至9个以内" = "Please cut the material to no more than 9";
 
@@ -2742,3 +2742,4 @@
 "添加音乐" = "Add audio";
 "tip:剪同款在使用时，“未锁定”会被替换" = "Tips: Unlocked material will be replaceable";
 "tip:第一个连续锁定代表片头，后面锁定后放到片尾，画中画全部循环添加" = "Tip: The first continuous lock will be used as the title of the video, and the last lock will be used as the end of the video, and all overlays will be added circularly";
+"融合度" = "Fusion";

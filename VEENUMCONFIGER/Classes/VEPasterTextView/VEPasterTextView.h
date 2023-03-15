@@ -64,7 +64,7 @@
 
 @property (nonatomic, weak) UIButton * _Nullable textEditBtn;
 @property (nonatomic, strong) UIButton * _Nullable closeBtn;
-
+@property (nonatomic) SEL _Nullable editTextAction;
 @property (nonatomic, strong)UIButton * _Nullable alignBtn;
 -(void)addCopyBtn;
 
@@ -236,6 +236,8 @@
 @property (nonatomic, strong)NSDictionary  * _Nullable info;
 @property (nonatomic, strong)NSDictionary  * _Nullable old_info;
 @property (nonatomic, strong)NSString  * _Nullable old_cover;
+
+- (void)addContentTappedGestureRecognizer;
 @end
 
 

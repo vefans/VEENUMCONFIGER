@@ -17,6 +17,8 @@ typedef NS_ENUM(NSUInteger, VEButtonEdgeInsetsStyle) {
 
 @interface UIButton (VECustomLayout)
 
+@property (nonatomic, assign) NSTimeInterval custom_acceptEventInterval; // 可以用这个给重复点击加间隔
+
 - (void)layoutButtonWithEdgeInsetsStyle:(VEButtonEdgeInsetsStyle)style
                         imageTitleSpace:(CGFloat)space;
 

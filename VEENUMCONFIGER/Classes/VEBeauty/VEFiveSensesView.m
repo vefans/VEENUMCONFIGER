@@ -8,6 +8,8 @@
 #import "VEFiveSensesView.h"
 #import <VEENUMCONFIGER/VEHelp.h>
 #import <VEENUMCONFIGER/VEPlaySlider.h>
+#import "VESlider.h"
+
 @interface VEFiveSensesView()<UIScrollViewDelegate>
 @property(nonatomic, weak)UILabel * sliderValueLabel;
 @end
@@ -159,15 +161,12 @@
                 
                 VEPlaySlider * slider = [[VEPlaySlider alloc] initWithFrame:CGRectMake(63, (CGRectGetHeight(sliderSupView.frame) - 35)/2.0,sliderSupView.frame.size.width - 63*2 , 35)];
                 slider.tag = [list[i][@"id"] integerValue];
+                UIImage *trackImage = [VEHelp imageWithColor:SliderMaximumTrackTintColor size:CGSizeMake(10, 2.0) cornerRadius:1];
+                [slider setMinimumTrackImage:trackImage forState:UIControlStateNormal];
                 [slider setMinimumValue:-1.0];
                 [slider setMaximumValue:1.0];
                 [slider setValue:0];
                 slider.hidden = YES;
-                
-                UIImage *trackImage = [VEHelp imageWithColor:SliderMaximumTrackTintColor size:CGSizeMake(10, 2.0) cornerRadius:1];
-                [slider setMinimumTrackImage:trackImage forState:UIControlStateNormal];
-                [slider setMaximumTrackImage: trackImage forState:UIControlStateNormal];
-                [slider setThumbImage:[VEHelp imageWithContentOfFile:@"New_EditVideo/LiteBeauty/拖动球"] forState:UIControlStateNormal];
                 [slider addTarget:self action:@selector(beginScrub:) forControlEvents:UIControlEventTouchDown];
                 [slider addTarget:self action:@selector(scrub:) forControlEvents:UIControlEventValueChanged];
                 [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchCancel | UIControlEventTouchUpOutside];
@@ -175,7 +174,7 @@
                 [_adjustmentSliders addObject:slider];
                 
                 UIView *trackView = [[UIView alloc] initWithFrame:CGRectMake(slider.frame.size.width/2.0 ,CGRectGetMidY(slider.frame), 0, 2)];
-                trackView.backgroundColor = Main_Color;
+                trackView.backgroundColor = SliderMinimumTrackTintColor;
                 trackView.tag = 100 + slider.tag;
                 trackView.hidden = YES;
                 [sliderSupView addSubview:trackView];
@@ -311,7 +310,7 @@
     
     [_adjustmentNumberBtns addObject:toolItemBtn];
     
-        UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake(CGRectGetMaxX(toolItemBtn.frame) + 10, (CGRectGetHeight(rect) - 35)/2.0, view.frame.size.width - (CGRectGetMaxX(toolItemBtn.frame) + 10) - 50, 35)];
+    VESlider * slider = [[VESlider alloc] initWithFrame:CGRectMake(CGRectGetMaxX(toolItemBtn.frame) + 10, (CGRectGetHeight(rect) - 35)/2.0, view.frame.size.width - (CGRectGetMaxX(toolItemBtn.frame) + 10) - 50, 35)];
         [slider setMinimumValue:-1.0];
         [slider setMaximumValue:1.0];
         [slider setValue:0];
@@ -319,12 +318,6 @@
         [slider addTarget:self action:@selector(beginScrub:) forControlEvents:UIControlEventTouchDown];
         [slider addTarget:self action:@selector(scrub:) forControlEvents:UIControlEventValueChanged];
         [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchCancel | UIControlEventTouchUpOutside];
-
-        UIImage * theImage = [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"New_EditVideo/LiteBeauty/拖动球@3x" Type:@"png"]];
-        [slider setThumbImage:theImage forState:UIControlStateNormal];
-
-        [slider setMaximumTrackImage:[VEHelp imageWithColor:UIColorFromRGB(0x2F302F) size:CGSizeMake(slider.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
-        [slider setMinimumTrackImage: [VEHelp imageWithColor:UIColorFromRGB(0x2F302F) size:CGSizeMake(slider.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
        [_adjustmentSliders addObject:slider];
            [view addSubview:slider];
         
@@ -336,12 +329,12 @@
            ![str isEqualToString:@"瘦脸"]) || ![VEConfigManager sharedManager].iPad_HD){
             
             UIView *trackView = [[UIView alloc] initWithFrame:CGRectMake(slider.frame.size.width/2.0 ,CGRectGetMidY(slider.frame), 0, 1)];
-            trackView.backgroundColor = Main_Color;
+            trackView.backgroundColor = SliderMinimumTrackTintColor;
             trackView.tag = 100 + slider.tag;
             [view addSubview:trackView];
         }else{
             if([VEConfigManager sharedManager].iPad_HD){
-                [slider setMinimumTrackImage: [VEHelp imageWithColor:Main_Color size:CGSizeMake(slider.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
+                [slider setMinimumTrackImage: [VEHelp imageWithColor:SliderMinimumTrackTintColor size:CGSizeMake(slider.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
             }
         }
     
@@ -579,7 +572,7 @@
             
             float trackImageHeight = slider.currentMinimumTrackImage.size.height;
             float thumbImageWidth = slider.currentThumbImage.size.width;
-            if( slider.value < slider.maximumValue /2.0)
+            if( slider.value < 0)
             {
                 float with = slider.frame.size.width/2.0 - (slider.frame.size.width  - thumbImageWidth )*( (slider.value - slider.minimumValue )/(slider.maximumValue - slider.minimumValue))  - thumbImageWidth  ;
                 if( with >= 0 )
@@ -1016,7 +1009,7 @@
     if([VEConfigManager sharedManager].iPad_HD){
         trackView = [slider.superview viewWithTag:100];
     }
-    if( slider.value < slider.maximumValue /2.0)
+    if( slider.value < 0)
     {
         float with = slider.frame.size.width/2.0 - (slider.frame.size.width  - thumbImageWidth )*( (slider.value - slider.minimumValue )/(slider.maximumValue - slider.minimumValue))  - thumbImageWidth  ;
         if( with >= 0 )

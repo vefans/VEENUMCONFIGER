@@ -340,6 +340,11 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (UIImage *)imageWithContentOfPath:(NSString *)path;
 + (UIImage *)imageWithContentOfPathFull:(NSString *)path;
 + (UIImage *)imageWithWebP:(NSString *)filePath error:(NSError **)error;
+
+//日期转字符串
++(NSString *)dateToTimeString:(NSDate *)date;
+//获取当前时间戳（毫秒级）
++(long)getNowTimeTimestamp;
 ///获取当前时间戳作为文件名
 + (NSString *)getFileNameForNowTime;
 + (NSString *)getNowTimeToString;
@@ -430,6 +435,9 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (void)setVeCoreSDKSecens:(VECore *)veCoreSDK
           withTemplateInfo:(VECoreTemplateInfo *)templateInfo
                 folderPath:(NSString *)folderPath;
+
+//处理封面作为媒体（改变虚拟视频的总时长）
++ (void)refreshVECore:(VECore *)videoCoreSDK isExport:(BOOL)isExport coverFile:(VEMediaInfo *)coverFile fps:(int)fps;
 
 //替换媒体
 + (void)replaceMedia:(MediaAsset *)media withVEMediaInfo:(VEMediaInfo *)file videoSize:(CGSize)videoSize;

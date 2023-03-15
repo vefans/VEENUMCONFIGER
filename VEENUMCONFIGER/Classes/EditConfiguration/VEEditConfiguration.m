@@ -23,6 +23,7 @@
         _defaultSelectAlbum                     = VEDEFAULTSELECTALBUM_VIDEO;
         _mediaCountLimit                         = 0;
         _minVideoDuration = 0;
+        _enableOcclusion = true;
         _enableTextTitle                 = true;
         //片段编辑预设
         _enableParticle = true;
@@ -123,6 +124,7 @@
 }
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEEditConfiguration *copy   = [[[self class] allocWithZone:zone] init];
+    copy.enableOcclusion = _enableOcclusion;
     copy.enableParticle = _enableParticle;
     copy.enableSmear = _enableSmear;
     copy.enableTon = _enableTon;

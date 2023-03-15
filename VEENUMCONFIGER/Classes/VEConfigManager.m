@@ -18,6 +18,17 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
     dispatch_once(&onceToken, ^{
         singleOjbect = [[self alloc] init];
     });
+    
+    NSString *style = [[NSUserDefaults standardUserDefaults] objectForKey:kVEInterfaceStyle];
+    if( [style isEqualToString:@"Pro"] )
+    {
+        if( singleOjbect.editConfiguration.isSingletrack == NO )
+            singleOjbect.editConfiguration.isSingletrack = YES;
+        if( singleOjbect.peEditConfiguration.isSingletrack == NO )
+            singleOjbect.peEditConfiguration.isSingletrack = YES;
+        singleOjbect.iPad_HD = NO;
+    }
+    
     return singleOjbect;
 }
 

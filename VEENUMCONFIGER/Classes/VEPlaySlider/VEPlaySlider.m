@@ -47,10 +47,10 @@
         [self setMinimumTrackImage:[VEHelp imageWithColor:Main_Color size:CGSizeMake(self.frame.size.width, 2) cornerRadius:1] forState:UIControlStateNormal];
         [self setMaximumTrackImage:[VEHelp imageWithColor:Color(255,255,255,0.32) size:CGSizeMake(self.frame.size.width, 2) cornerRadius:1] forState:UIControlStateNormal];
     }else{
-        // minimumTrackTintColor : 小于滑块当前值滑块条的颜色，默认为蓝色
-        self.minimumTrackTintColor = Main_Color;
-        // maximumTrackTintColor: 大于滑块当前值滑块条的颜色，默认为白色
-        self.maximumTrackTintColor = Color(255,255,255,0.32);
+        UIImage *trackImage = [VEHelp imageWithColor:SliderMinimumTrackTintColor size:CGSizeMake(10, 2.0) cornerRadius:1];
+        [self setMinimumTrackImage:trackImage forState:UIControlStateNormal];
+        trackImage = [VEHelp imageWithColor:SliderMaximumTrackTintColor size:CGSizeMake(10, 2.0) cornerRadius:1];
+        [self setMaximumTrackImage:trackImage forState:UIControlStateNormal];
     }
     // thumbTintColor : 当前滑块的颜色，默认为白色
 //    [self setThumbImage:[VEHelp imageWithContentOfFile:@"play_slider_thumb"] forState:UIControlStateNormal];

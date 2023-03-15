@@ -55,13 +55,13 @@
     _percent = 0.0;
     _clockwise = 0;
     self.backgroundColor = [UIColor clearColor];
-
 }
 
 #pragma mark -- 画进度条
 
 - (void)drawRect:(CGRect)rect
 {
+    [super drawRect:rect];
     self.backgroundColor = [UIColor clearColor];
     //获取当前画布
     CGContextRef context = UIGraphicsGetCurrentContext();

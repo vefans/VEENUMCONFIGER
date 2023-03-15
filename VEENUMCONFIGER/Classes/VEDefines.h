@@ -194,6 +194,7 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_MaskDoodlePen         = 68,   //马赛克涂鸦笔
     VEAdvanceEditType_TemplatedTheme        = 69, //主题
     VEAdvanceEditType_Camera                       = 70, //摄像头
+    VEAdvanceEditType_ImageOcclusion          = 71,   //画面遮挡
 };
 
 /*
@@ -504,10 +505,13 @@ isPhoneX;\
 #define VE_NAV_TITLE_COLOR [VEConfigManager sharedManager].navigationBarTitleColor
 #define NAVIBGCOLOR [VEConfigManager sharedManager].navigationBackgroundColor
 #define NAVIBARTITLEFONT [VEConfigManager sharedManager].navigationBarTitleFont
-#define SliderMaximumTrackTintColor UIColorFromRGB(0x3c3d3d)
+#define SliderMinimumTrackTintColor [UIColor whiteColor]
+#define SliderMaximumTrackTintColor UIColorFromRGB(0x434343)
 #pragma mark-PESDK颜色配比
-#define PESDKMain_Color UIColorFromRGB(0x9600ff)
-#define PESDKTEXT_COLOR UIColorFromRGB(0x3a3a3a)
+#define PEDrawMain_Color UIColorFromRGB(0x9600ff)
+#define PEDrawTEXT_COLOR UIColorFromRGB(0x3a3a3a)
+#define PESDKMain_Color Main_Color //
+#define PESDKTEXT_COLOR UIColorFromRGB(0xcccccc)//
 #define VIEW_COLOR UIColorFromRGB(0x111111)
 #define VIEW_IPAD_COLOR UIColorFromRGB(0x1a1a1a)
 #define SCREEN_IPAD_BACKGROUND_COLOR UIColorFromRGB(0x070709)
@@ -733,6 +737,13 @@ isPhoneX;\
 #define kFilterCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"filterCategory.plist"]
 #define kNewFilterPlistPath [kFilterFolder stringByAppendingPathComponent:@"filterTypeList.plist"]
 
+#define kImageOcclusionIconPath [kImageOcclusionFolder stringByAppendingPathComponent:@"ImageOcclusionIcon"]
+#define kImageOcclusionPlistPath [kImageOcclusionFolder stringByAppendingPathComponent:@"ImageOcclusionList.plist"]
+#define kImageOcclusionFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"ImageOcclusion"]
+#define kImageOcclusionTypesPath [kImageOcclusionFolder stringByAppendingPathComponent:@"ImageOcclusionTypesList.plist"]
+#define kNewImageOcclusionPlistPath [kImageOcclusionFolder stringByAppendingPathComponent:@"ImageOcclusionPlistList.plist"]
+#define kNewImageOcclusionCategoryPlistPath [kStickerFolder stringByAppendingPathComponent:@"ImageOcclusionCategoryPlistList.plist"]
+
 //粒子目录
 #define kParticlesFolder [kVEDirectory stringByAppendingPathComponent:@"particles"]
 #define kParticlesCategoryPlist [kParticlesFolder stringByAppendingPathComponent:@"particlesCategory.plist"]
@@ -813,5 +824,12 @@ isPhoneX;\
 #define kTemplateThemeCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"TemplateThemeCategory.plist"]
 #define kTemplateThemeTypeListPath [kFilterFolder stringByAppendingPathComponent:@"TemplateThemeTypeList.plist"]
 #define kTemplateThemeIconFolder [kVEDirectory stringByAppendingPathComponent:@"TemplateThemeIconFolder"]
-
+#define kVEInterfaceStyle @"kVEInterfaceStyle"//界面风格
 #define kNewMask
+
+#define SliderMaximumTrackTintColor UIColorFromRGB(0x434343)
+#define SliderMinimumTrackTintColor UIColorFromRGB(0xffffff)
+
+#define kOcclusionImageFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/OcclusionImages"]
+#define kFaceImagesFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/FaceImages"]
+

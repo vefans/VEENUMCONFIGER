@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**滤镜
  */
-@property (nonatomic, strong) NSMutableArray  *globalFilters;
+@property (nonatomic, strong,nullable) NSMutableArray  *globalFilters;
 /**视频预览尺寸
  */
 @property (nonatomic, assign ) CGSize        editVideoSize;

@@ -454,6 +454,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** 粒子 (default true)
  */
+@property (nonatomic,assign) bool enableOcclusion;
+
+/** 粒子 (default true)
+ */
 @property (nonatomic,assign) bool enableParticle;
 
 /** 进入SDK界面是否需要动画 (default true)
@@ -496,6 +500,9 @@ NS_ASSUME_NONNULL_BEGIN
 //不截取缩略图
 @property (assign, nonatomic)bool isSingletrack;
 @property (assign, nonatomic)bool enableTemplateTheme;
+
+#pragma mark- 拍同款界面设置
+@property (nonatomic, assign) BOOL  enableShowReturnBtn;
 @end
 
 NS_ASSUME_NONNULL_END

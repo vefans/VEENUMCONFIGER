@@ -60,7 +60,7 @@
         [_navBar addSubview:_exportNavBarBtn];
         
         self.barline = [[UIView alloc] initWithFrame:CGRectMake(0, kNavgationBar_Height - 0.5, kWIDTH, 0.5)];
-        self.barline.backgroundColor = _navBar.backgroundColor;
+        self.barline.backgroundColor = UIColorFromRGB(0x272727);//_navBar.backgroundColor;
         [_navBar addSubview:self.barline];
     }
     return _navBar;
@@ -99,7 +99,7 @@
         
         if( [VEConfigManager sharedManager].isPictureEditing )
         {
-            _toolBar.backgroundColor = [UIColor whiteColor];
+            _toolBar.backgroundColor = UIColorFromRGB(0x1a1a1a);//[UIColor whiteColor];
             self.titlelab.textColor = PESDKTEXT_COLOR;
             [_finishToolBarBtn setImage:[VEHelp imageNamed:@"/PESDKImage/PESDK_勾@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]] forState:UIControlStateNormal];
         }

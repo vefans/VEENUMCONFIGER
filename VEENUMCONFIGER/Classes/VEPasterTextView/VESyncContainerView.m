@@ -20,9 +20,15 @@
 
 -(void)setCurrentPasterTextView:(UIView *)currentPasterTextView
 {
+    if(currentPasterTextView == nil){
+        
+    }else{
+        
+    }
     if( !_isMask )
     {
         _currentPasterTextView = currentPasterTextView;
+        [self bringSubviewToFront:_currentPasterTextView];
         if( currentPasterTextView )
         {
             if( _delegate && [_delegate respondsToSelector:@selector(oldSelectePasterTextView:)] )

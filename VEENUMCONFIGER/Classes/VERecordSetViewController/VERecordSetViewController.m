@@ -12,6 +12,7 @@
 #import "VERecordSetViewController.h"
 #import <VEENUMCONFIGER/VEDefines.h>
 #import <VEENUMCONFIGER/VEHelp.h>
+#import <VEENUMCONFIGER/VESlider.h>
 
 @interface VERecordSetViewController ()<UITableViewDelegate, UITableViewDataSource>
 {
@@ -21,7 +22,7 @@
     UIImageView         *bitrateBackIV;
     int                  setBitrate;
     NSUInteger           setResolutionIndex;
-    UISlider            *slider;
+    VESlider            *slider;
 }
 
 @end
@@ -185,11 +186,8 @@
     }
     if (indexPath.section == 0) {
         float value = (setBitrate/1000 - kMinBitrate)/(float)(kMaxBitrate - kMinBitrate);
-        slider = [[UISlider alloc] initWithFrame:CGRectMake(35, (100 - 30)/2.0, tableView.frame.size.width - 70, 30)];
+        slider = [[VESlider alloc] initWithFrame:CGRectMake(35, (100 - 30)/2.0, tableView.frame.size.width - 70, 30)];
         slider.backgroundColor = [UIColor clearColor];
-        slider.minimumTrackTintColor = Main_Color;
-        slider.maximumTrackTintColor = TOOLBAR_COLOR;
-        [slider setThumbImage:[VEHelp getBundleImagePNG:@"拍摄_轨道球_@3x"] forState:UIControlStateNormal];
         [slider setMaximumValue:1];
         [slider setMinimumValue:0];
         [slider setValue:value];

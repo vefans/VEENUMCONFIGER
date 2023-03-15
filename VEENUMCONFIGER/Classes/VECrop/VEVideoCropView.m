@@ -18,7 +18,7 @@
         [self setupViews];
         if( [VEConfigManager sharedManager].isPictureEditing )
         {
-            self.backgroundColor = [UIColor whiteColor];
+            self.backgroundColor = [UIColor blackColor];
         }
     }
     return self;

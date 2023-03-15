@@ -46,7 +46,7 @@
             @autoreleasepool {
                 [_colorArray enumerateObjectsUsingBlock:^(UIColor * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                     UIButton *colorBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-                    colorBtn.frame = CGRectMake(width * idx + 2, 2, width, self.frame.size.height - 4);
+                    colorBtn.frame = CGRectMake(width * idx + 15, 2, width, self.frame.size.height - 4);
                     colorBtn.backgroundColor = obj;
                     if (idx == 0 || idx == _colorArray.count - 1) {
                         UIRectCorner corners;

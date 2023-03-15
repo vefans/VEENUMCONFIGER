@@ -626,7 +626,7 @@
 + (NSArray *)modelPropertyBlacklist {
     return @[@"contentURL", @"thumbImage"];
 }
-
+#if 0
 //返回一个 Dict，将 Model 属性名对映射到 JSON 的 Key。
 + (NSDictionary *)modelCustomPropertyMapper {
     return @{@"fileType" : @"type",
@@ -637,7 +637,7 @@
 //             @"autoSegmentType" : @"autoSegmentType"
     };
 }
-
+#endif
 + (NSDictionary *)modelContainerPropertyGenericClass {
     return @{@"curvedSpeedPointArray" : [CurvedSpeedPoint class],
              @"animate" : [MediaAssetAnimatePosition class],

@@ -7,6 +7,7 @@
 
 #import "VESkinView.h"
 #import "VEHelp.h"
+#import "VESlider.h"
 
 @implementation VESkinView
 
@@ -88,7 +89,7 @@
     [compareBtn addTarget:self action:@selector(compareBtnUp:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
     [adjustmentView addSubview:compareBtn];
 
-    UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake(40, (adjustmentView.frame.size.height-35)/2.0 -  ([VEConfigManager sharedManager].peEditConfiguration.isSingletrack ? 20 : 0), self.frame.size.width - 40*2, 35)];
+    VESlider * slider = [[VESlider alloc] initWithFrame:CGRectMake(40, (adjustmentView.frame.size.height-35)/2.0 -  ([VEConfigManager sharedManager].peEditConfiguration.isSingletrack ? 20 : 0), self.frame.size.width - 40*2, 35)];
     _adjustmentSlider = slider;
     
     [slider setMinimumValue:0];
@@ -98,14 +99,6 @@
     [slider addTarget:self action:@selector(scrub:) forControlEvents:UIControlEventValueChanged];
     [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpInside];
     [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchCancel];
-    
-    UIImage * theImage = [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_球1@3x" Type:@"png"]];
-    [slider setThumbImage:theImage forState:UIControlStateNormal];
-    [slider setMinimumTrackImage: [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_轨道2@1x" Type:@"png"]] forState:UIControlStateNormal];
-    if([VEConfigManager sharedManager].peEditConfiguration.isSingletrack){
-        [slider setMinimumTrackImage:[VEHelp veImageWithColor:Main_Color size:CGSizeMake(slider.frame.size.width, 2) cornerRadius:1] forState:UIControlStateNormal];
-    }
-    [slider setMaximumTrackImage: [UIImage imageNamed:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"/jianji/Adjust/剪辑-调色_轨道1@1x" Type:@"png"]] forState:UIControlStateNormal];
     [adjustmentView addSubview:slider];
 
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(_adjustmentSlider.frame.size.width + _adjustmentSlider.frame.origin.x + 10, (adjustmentView.frame.size.height-25)/2.0, 30, 25)];

@@ -143,7 +143,6 @@
     _collectionView.backgroundColor = [UIColor clearColor];
     _collectionView.showsHorizontalScrollIndicator = NO;
     _collectionView.showsVerticalScrollIndicator = NO;
-//    _collectionView.contentInset = UIEdgeInsetsMake(50, 0, 50, 0);
     [self addSubview:_collectionView];
     if( _isVertical_Cell  )
     {
