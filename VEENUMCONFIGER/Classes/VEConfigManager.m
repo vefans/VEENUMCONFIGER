@@ -26,7 +26,6 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
             singleOjbect.editConfiguration.isSingletrack = YES;
         if( singleOjbect.peEditConfiguration.isSingletrack == NO )
             singleOjbect.peEditConfiguration.isSingletrack = YES;
-        singleOjbect.iPad_HD = NO;
     }
     
     return singleOjbect;

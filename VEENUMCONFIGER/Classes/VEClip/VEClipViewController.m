@@ -213,7 +213,7 @@
         self.titlelab.textColor = UIColorFromRGB(0xffffff);
         self.barline.backgroundColor = UIColorFromRGB(0x1a1a1a);
         self.titlelab.text = VELocalizedString(@"裁切", nil);
-        self.titlelab.backgroundColor = UIColorFromRGB(0x1a1a1a);
+//        self.titlelab.backgroundColor = UIColorFromRGB(0x1a1a1a);
     }
 }
 

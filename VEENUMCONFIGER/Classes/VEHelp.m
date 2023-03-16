@@ -412,8 +412,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                             .height, view.frame.size.width, view.frame.size.height);
     }
     [UIView setAnimationsEnabled:YES];
-    [UIView animateWithDuration:0.2 animations:^{
+    [UIView animateWithDuration:0.15 animations:^{
         view.frame = rect;
+    } completion:^(BOOL finished) {
+        [view setUserInteractionEnabled:TRUE];
     }];
 }
 
