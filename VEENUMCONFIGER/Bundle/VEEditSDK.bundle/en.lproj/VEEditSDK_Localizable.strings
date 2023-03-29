@@ -240,7 +240,8 @@
 "无配乐" = "None";
 "本地" = "Local";
 "云音乐" = "Cloud";
-"本地草稿" = "Local";
+"本地草稿" = "Local Drafts";
+"本地稿箱" = "Local Drafts";
 "副本" = "copy";
 "画布颜色" = "Color";
 "画布样式" = "Background";
@@ -2743,3 +2744,4 @@
 "tip:剪同款在使用时，“未锁定”会被替换" = "Tips: Unlocked material will be replaceable";
 "tip:第一个连续锁定代表片头，后面锁定后放到片尾，画中画全部循环添加" = "Tip: The first continuous lock will be used as the title of the video, and the last lock will be used as the end of the video, and all overlays will be added circularly";
 "融合度" = "Fusion";
+"云备份" = "Cloud";

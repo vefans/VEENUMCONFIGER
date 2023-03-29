@@ -492,6 +492,11 @@
 -(void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     _collectionView.frame = CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame));
+    _flowLayout.itemSize = CGSizeMake(_collectionView.frame.size.width,_collectionView.frame.size.height);
+    [_collectionView.visibleCells enumerateObjectsUsingBlock:^(__kindof VENetworkMaterialCollectionViewCell * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        obj.collectionView.frame = CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame));
+//        obj.flow.itemSize = CGSizeMake(CGRectGetWidth(frame),CGRectGetHeight(frame));
+    }];
     if([VEConfigManager sharedManager].iPad_HD){
         _topLayer.frame = CGRectMake(0, CGRectGetMinY(_collectionView.frame), _collectionView.frame.size.width, 15);
         _bottomLayer.frame = CGRectMake(0, CGRectGetMaxY(_collectionView.frame) - 20, _collectionView.frame.size.width, 20);

@@ -137,7 +137,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 -(void)initSelectImageView
 {
-    selectImageViewBorderWidth = 2.0;
+    selectImageViewBorderWidth = 1.0;
     selectImageViewShadowRadius = 2.0;
     selectImageView = [[UIImageView alloc] init];
     selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);

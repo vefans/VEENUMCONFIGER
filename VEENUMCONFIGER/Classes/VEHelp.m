@@ -1271,6 +1271,15 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }];
     NSArray *textureParams = effectDic[@"textureParams"];
     NSMutableDictionary *extPaint= effectDic[@"extPaint"];
+    if(!extPaint)
+        extPaint= [NSMutableDictionary new];
+    {
+        [extPaint setObject:@[@(0),@"-1"] forKey:@"nibOffset"];
+        [extPaint setObject:@"1.28" forKey:@"penAspectRatio"];
+        [extPaint setObject:@"0.25" forKey:@"penScale"];
+        [extPaint setObject:@(0) forKey:@"writingMode"];
+    }
+    [effectDic setObject:extPaint forKey:@"extPaint"];
     if (extPaint) {
         if([[extPaint allKeys] containsObject:@"writingMode"]){
             ((CaptionEx*)caption).captionImage.otherAnimates.writingMode = [extPaint[@"writingMode"] intValue];
@@ -3408,6 +3417,15 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }
     }
     NSMutableDictionary *extPaint= effectDic[@"extPaint"];
+    if(!extPaint)
+        extPaint= [NSMutableDictionary new];
+    {
+        [extPaint setObject:@[@(0),@"-1"] forKey:@"nibOffset"];
+        [extPaint setObject:@"1.28" forKey:@"penAspectRatio"];
+        [extPaint setObject:@"0.25" forKey:@"penScale"];
+        [extPaint setObject:@(0) forKey:@"writingMode"];
+    }
+    [effectDic setObject:extPaint forKey:@"extPaint"];
     if (extPaint && [[extPaint allKeys] containsObject:@"penScale"]) {
         //20221226 手写笔太大，将画笔的缩放系数设置为：0.25
         [extPaint setValue:[NSNumber numberWithFloat:0.25] forKey:@"penScale"];
@@ -5928,7 +5946,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 + (UIImage *)geScreenShotImageFromVideoURL:(NSURL *)fileURL atTime:(CMTime)time  atSearchDirection:(bool) isForward{
-    
+    if(!fileURL){
+        return nil;
+    }
     if( isForward )
     {
         return  [VEHelp getLastScreenShotImageFromVideoURL:fileURL atTime:time];
@@ -7676,6 +7696,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         scene.backgroundAsset.type = MediaAssetTypeImage;
                     }
                 }
+                if (scene.backgroundAsset) {
+                    scene.backgroundAsset.crop = [self getBackgroundAssetCropWithUrl:scene.backgroundAsset.url crop:asset.crop rotate:asset.rotate videoSize:templateInfo.size];
+                }
                 if ([VEHelp isSystemPhotoUrl:asset.url]) {
                     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
                     option.synchronous = YES;
@@ -7725,25 +7748,25 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         asset.mask.maskImagePath = mask.maskImagePath;
                     }
                 }
-                if( obj.media[idx].maskCaption )
+                if( obj.media[idx1].maskCaption )
                 {
                     if( !templateInfo.subtitleExs )
                     {
                         templateInfo.subtitleExs = [NSMutableArray array];
                     }
-                    obj.media[idx].maskCaption.identifier = asset.identifier;
-                    VECoreTemplateSubtitleEx *maskCaptionEx = obj.media[idx].maskCaption;
+                    obj.media[idx1].maskCaption.identifier = asset.identifier;
+                    VECoreTemplateSubtitleEx *maskCaptionEx = obj.media[idx1].maskCaption;
                     if( ([VEConfigManager sharedManager].isAndroidTemplate) )
                     {
                         CGRect rect = maskCaptionEx.showRectF;
                         CGPoint center = CGPointMake(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
-                        rect.size.width = rect.size.width/obj.media[idx].showRectF.size.width;
-                        rect.size.height = rect.size.height/obj.media[idx].showRectF.size.height;
-                        rect.origin.x = (center.x - obj.media[idx].showRectF.origin.x)/obj.media[idx].showRectF.size.width - rect.size.width;
-                        rect.origin.y = (center.y - obj.media[idx].showRectF.origin.y)/obj.media[idx].showRectF.size.height - rect.size.height;
+                        rect.size.width = rect.size.width/obj.media[idx1].showRectF.size.width;
+                        rect.size.height = rect.size.height/obj.media[idx1].showRectF.size.height;
+                        rect.origin.x = (center.x - obj.media[idx1].showRectF.origin.x)/obj.media[idx1].showRectF.size.width - rect.size.width;
+                        rect.origin.y = (center.y - obj.media[idx1].showRectF.origin.y)/obj.media[idx1].showRectF.size.height - rect.size.height;
                         maskCaptionEx.showRectF = rect;
                     }
-                    [templateInfo.subtitleExs addObject:obj.media[idx].maskCaption];
+                    [templateInfo.subtitleExs addObject:obj.media[idx1].maskCaption];
                 }
                 if (asset.customAnimate) {
                     if (!folderPath) {
@@ -7802,6 +7825,51 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [scenes addObject:scene];
     }
     [veCoreSDK setScenes:scenes];
+}
+
++ (CGRect)getBackgroundAssetCropWithUrl:(NSURL *)url crop:(CGRect)crop rotate:(float)rotate videoSize:(CGSize)videoSize
+{
+    CGSize fileVideoSize;
+    if([self isSystemPhotoUrl:url])
+        fileVideoSize = [self getFullScreenImageWithUrl:url].size;
+    else {
+        fileVideoSize = [self getVideoSizeForTrack:[AVURLAsset assetWithURL:url]];
+    }
+    if( ( ( ((int)(rotate))/90)%2) != 0 )
+    {
+        fileVideoSize = CGSizeMake(fileVideoSize.height, fileVideoSize.width);
+    }
+    CGSize originalSize = fileVideoSize;
+    if (CGRectEqualToRect(crop, CGRectZero)) {
+        crop = CGRectMake(0, 0, 1, 1);
+    }
+    fileVideoSize = CGSizeMake(fileVideoSize.width * crop.size.width, fileVideoSize.height * crop.size.height);
+    
+    float editRatio = videoSize.width / videoSize.height;
+    float w,h;
+    if (videoSize.width == videoSize.height) {
+        w = MIN(fileVideoSize.width, fileVideoSize.height);
+        h = w;
+    }else if (videoSize.width > videoSize.height) {
+        w = fileVideoSize.width;
+        h = w/(editRatio);
+        if (h > fileVideoSize.height) {
+            h = fileVideoSize.height;
+            w = h*editRatio;
+        }
+    }else {
+        h = fileVideoSize.height;
+        w = h*editRatio;
+        if (w > fileVideoSize.width) {
+            w = fileVideoSize.width;
+            h = w / editRatio;
+        }
+    }
+    float x = fabs(originalSize.width - w)/2.0;
+    float y = fabs(originalSize.height - h)/2.0;
+    CGRect returnCrop = CGRectMake(x/originalSize.width, y/originalSize.height, w/originalSize.width, h/originalSize.height);
+    
+    return returnCrop;
 }
 
 + (CaptionEx *)getCaptionExWithTemplateSubtitleEx:(VECoreTemplateSubtitleEx *)obj folderPath:(NSString *)folderPath videoSize:(CGSize)videoSize {
@@ -9881,8 +9949,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                  @"Image buffer must have 32BGRA pixel format type");
         size_t width = CVPixelBufferGetWidth(grayscaleImage);
         size_t height = CVPixelBufferGetHeight(grayscaleImage);
-        NSAssert(CVPixelBufferGetWidth(originaImage) == width, @"Height must match");
-        NSAssert(CVPixelBufferGetHeight(originaImage) == height, @"Width must match");
+        size_t original_width = CVPixelBufferGetWidth(originaImage);
+        size_t original_height = CVPixelBufferGetHeight(originaImage);
+        if(original_width != width || original_height != height){
+            return;
+        }
+        NSAssert(original_width == width, @"Height must match");
+        NSAssert(original_height == height, @"Width must match");
         
         CVPixelBufferLockBaseAddress(originaImage, 0);
         CVPixelBufferLockBaseAddress(grayscaleImage, 0);
@@ -10507,6 +10580,17 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
     NSMutableDictionary *effectDic = [self objectForData:jsonData];
     jsonData = nil;
+    NSMutableDictionary *extPaint= effectDic[@"extPaint"];
+    if(!extPaint)
+        extPaint= [NSMutableDictionary new];
+    {
+        [extPaint setObject:@[@(0),@"-1"] forKey:@"nibOffset"];
+        [extPaint setObject:@"1.28" forKey:@"penAspectRatio"];
+        [extPaint setObject:@"0.25" forKey:@"penScale"];
+        [extPaint setObject:@(0) forKey:@"writingMode"];
+    }
+    [effectDic setObject:extPaint forKey:@"extPaint"];
+    
     NSError * error = nil;
     customFilter.name = effectDic[@"name"];
     if( effectDic[@"repeatMode"] )
@@ -10629,6 +10713,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             else
             {
                 overlay.media.customOtherAnimate = [VEHelp getAnmationDic:(NSMutableDictionary*)effectDic[@"other"] atPath:path];
+            }
+            if (effectDic[@"extPaint"]) {
+                NSMutableDictionary *extPaint = [effectDic[@"extPaint"] mutableCopy];
+                [extPaint setObject:@(overlay.media.customOtherAnimate.writingMode) forKey:@"writingMode"];
+                overlay.media.customOtherAnimate.configure = extPaint;
+                overlay.media.customAnimate.configure =extPaint;
             }
         }
         else{
@@ -10683,9 +10773,20 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     customFilter.folderPath = path;
 
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
-    NSMutableDictionary *effectDic = [self objectForData:jsonData];
+    NSMutableDictionary *effectDic = [[self objectForData:jsonData] mutableCopy];
     jsonData = nil;
     NSError * error = nil;
+    NSMutableDictionary *extPaint= effectDic[@"extPaint"];
+    if(!extPaint)
+        extPaint= [NSMutableDictionary new];
+    {
+        [extPaint setObject:@[@(0),@"-1"] forKey:@"nibOffset"];
+        [extPaint setObject:@"1.28" forKey:@"penAspectRatio"];
+        [extPaint setObject:@"0.25" forKey:@"penScale"];
+        [extPaint setObject:@(0) forKey:@"writingMode"];
+    }
+    [effectDic setObject:extPaint forKey:@"extPaint"];
+    
     customFilter.name = effectDic[@"name"];
     if( effectDic[@"repeatMode"] )
         customFilter.repeatMode = effectDic[@"repeatMode"];
@@ -10807,6 +10908,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             else
             {
                 overlay.media.customOtherAnimate = [VEHelp getAnmationDic:(NSMutableDictionary*)effectDic[@"other"] atPath:path];
+            }
+            if (effectDic[@"extPaint"]) {
+                NSMutableDictionary *extPaint = [effectDic[@"extPaint"] mutableCopy];
+                [extPaint setObject:@(overlay.media.customOtherAnimate.writingMode) forKey:@"writingMode"];
+                overlay.media.customOtherAnimate.configure = extPaint;
+                overlay.media.customAnimate.configure =extPaint;
             }
         }
         else{
@@ -11244,7 +11351,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
     }
     
-    NSDictionary *extPaint= effectDic[@"extPaint"];
+    NSMutableDictionary *extPaint= effectDic[@"extPaint"];
+    if(!extPaint)
+        extPaint= [NSMutableDictionary new];
+    {
+        [extPaint setObject:@[@(0),@"-1"] forKey:@"nibOffset"];
+        [extPaint setObject:@"1.28" forKey:@"penAspectRatio"];
+        [extPaint setObject:@"0.25" forKey:@"penScale"];
+        [extPaint setObject:@(0) forKey:@"writingMode"];
+    }
+    [effectDic setObject:extPaint forKey:@"extPaint"];
     if(extPaint && [[extPaint allKeys] containsObject:@"penScale"]){
         //20221226 手写笔太大，将画笔的缩放系数设置为：0.25
         [extPaint setValue:[NSNumber numberWithFloat:0.25] forKey:@"penScale"];
@@ -12065,9 +12181,13 @@ static OSType help_inputPixelFormat(){
     Particle * particle = [Particle new];
     
     
-    NSString *jsonPath = [NSString stringWithFormat:@"%@/file/config.json", path];
+    NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
     
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
+    if(!jsonData){
+        jsonPath = [NSString stringWithFormat:@"%@/file/config.json", path];
+        jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
+    }
     NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
     jsonData = nil;
     if(!effectDic){
@@ -12238,7 +12358,7 @@ static OSType help_inputPixelFormat(){
     }
     else{
         NSString * textureFileName = effectDic[@"textureFileName"];
-        NSString *maskPath = [NSString stringWithFormat:@"%@/file/%@", path,textureFileName];
+        NSString *maskPath = [NSString stringWithFormat:@"%@/%@", path,textureFileName];
         particle.textureFileName = maskPath;
     }
     
@@ -12395,7 +12515,7 @@ static OSType help_inputPixelFormat(){
 
 + (UIColor *)getCategoryFilterBgColorWithDic:(NSDictionary *)dic categoryIndex:(NSInteger)categoryIndex {
     UIColor *backgroundColor;
-    if (dic && dic[@"extra"] && [dic[@"extra"] count] > 0 && [dic[@"extra"][@"bg"] length] > 0) {
+    if (dic && dic[@"extra"] && [dic[@"extra"] isKindOfClass:[NSDictionary class]] && [dic[@"extra"] count] > 0 && [dic[@"extra"][@"bg"] length] > 0) {
         backgroundColor = [self colorWithHexString:[NSString stringWithFormat:@"0x%@", dic[@"extra"][@"bg"]]];
     }
     if (!backgroundColor) {
@@ -13240,5 +13360,59 @@ static OSType help_inputPixelFormat(){
                 sleep(0.2);
         }
     });
+}
+
++ (CGFloat)getAlphaPixelPercent:(UIImage *)image {
+
+    
+
+    const int imageWidth = image.size.width;
+
+    const int imageHeight = image.size.height;
+
+    size_t bytesPerRow = imageWidth * 4;
+
+    uint32_t *rgbImageBuf = (uint32_t *)malloc(bytesPerRow * imageHeight);
+
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+
+    CGContextRef context = CGBitmapContextCreate(rgbImageBuf, imageWidth, imageHeight, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipLast);
+
+    CGContextDrawImage(context, CGRectMake(0, 0, imageWidth, imageHeight), image.CGImage);
+
+    
+
+    int pixelNum = imageWidth * imageHeight;
+
+    uint32_t* pCurPtr = rgbImageBuf;
+
+    
+
+    int alphaPixelCount = 0;
+
+    for (int i = 0; i < pixelNum; i++, pCurPtr++){
+
+        uint8_t *ptr = (uint8_t *)pCurPtr;
+
+        int a = ptr[3];
+
+        if (a == 0) {
+
+            alphaPixelCount += 1;
+
+        }
+
+    }
+
+    CGContextRelease(context);
+
+    CGColorSpaceRelease(colorSpace);
+
+    free(rgbImageBuf);
+
+ 
+
+    return (float)alphaPixelCount / (float)pixelNum;
+
 }
 @end

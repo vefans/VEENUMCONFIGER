@@ -198,6 +198,12 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
  */
 @property(nonatomic, copy) void(^showCameraControllerHandler) (UIViewController *superViewController, BOOL isTakePhoto);
 
+/** 显示音乐界面回调
+ *  Display music interface callback.
+ *  defaultType: 0(cloud) 1(local)
+ */
+@property(nonatomic, copy) void(^showMusicControllerHandler) (UIViewController *superViewController, NSInteger defaultType);
+
 @property (nonatomic, assign) BOOL  isFilmCamera;//是否为方弗相机
 @property (nonatomic, copy) void (^filmCameraBlock)(UIViewController *viewController);
 

@@ -64,7 +64,7 @@
 
 @property (nonatomic, weak) UIButton * _Nullable textEditBtn;
 @property (nonatomic, strong) UIButton * _Nullable closeBtn;
-@property (nonatomic) SEL _Nullable editTextAction;
+@property (nonatomic,nonnull) SEL editTextAction;
 @property (nonatomic, strong)UIButton * _Nullable alignBtn;
 -(void)addCopyBtn;
 

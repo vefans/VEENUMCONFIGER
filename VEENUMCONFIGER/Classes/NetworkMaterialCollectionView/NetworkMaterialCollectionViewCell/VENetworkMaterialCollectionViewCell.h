@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign)BOOL                 isDragToChange;
 
 @property(nonatomic, weak) VECell_CollectionView *collectionView;
+@property(nonatomic, weak) UICollectionViewFlowLayout * flow;
 @property(nonatomic, assign) NSInteger       index;
 @property(nonatomic, assign) NSInteger       indexCount;
 

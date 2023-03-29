@@ -195,6 +195,38 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_TemplatedTheme        = 69, //主题
     VEAdvanceEditType_Camera                       = 70, //摄像头
     VEAdvanceEditType_ImageOcclusion          = 71,   //画面遮挡
+    
+    
+};
+
+/*
+ *文字素材二级菜单编辑功能
+ */
+typedef NS_ENUM(NSInteger, PESubtitleEditType){
+    PESubtitleEditType_Add         = 10000,//添加
+    PESubtitleEditType_Edit        = 10001,//编辑文字
+    PESubtitleEditType_Copy        = 10002,//复制
+    PESubtitleEditType_Hierarchy   = 10003,//层级
+    PESubtitleEditType_Style       = 10004,//样式
+    PESubtitleEditType_Delete      = 10005,//删除
+    PESubtitleEditType_Material    = 10006,//气泡
+    PESubtitleEditType_FancyWord   = 10007,//花字
+    PESubtitleEditType_Font        = 10008,//字体
+    PESubtitleEditType_FineTun     = 10009,//微调
+};
+
+/*
+ *贴纸素材二级菜单编辑功能
+ */
+typedef NS_ENUM(NSInteger, PEStickerEditType){
+    PEStickerEditType_Add          = 20000,//添加
+    PEStickerEditType_Edit         = 20001,//编辑文字
+    PEStickerEditType_Copy         = 20002,//复制
+    PEStickerEditType_Hierarchy    = 20003,//层级
+    PEStickerEditType_TRANSPARENCY = 20004,//透明度
+    PEStickerEditType_Flip         = 20005,//镜像
+    PEStickerEditType_Delete       = 20006,//删除
+    PEStickerEditType_FineTun      = 20007,//微调
 };
 
 /*
@@ -833,3 +865,5 @@ isPhoneX;\
 #define kOcclusionImageFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/OcclusionImages"]
 #define kFaceImagesFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/FaceImages"]
 
+
+#define kSkyISHorizontal 1

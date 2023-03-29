@@ -88,7 +88,7 @@
     
     flow_Video.minimumInteritemSpacing = minimumInteritemSpacing;
     flow_Video.minimumLineSpacing = minimumLineSpacing;
-        
+    _flow = flow_Video;
     VECell_CollectionView * videoCollectionView =  [[VECell_CollectionView alloc] initWithFrame:self.bounds collectionViewLayout:flow_Video];
     videoCollectionView.backgroundColor = [UIColor clearColor];
     ((UIScrollView*)videoCollectionView).delegate = self;

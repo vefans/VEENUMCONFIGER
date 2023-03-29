@@ -503,6 +503,10 @@
     NSDictionary *dic = [asset veCore_yy_modelToJSONObject];
     if (dic) {
         self = [VEMediaInfo veCore_yy_modelWithDictionary:dic];
+        _videoVolume = asset.volume;
+        _backgroundAlpha = asset.alpha;
+        _backgroundBlurIntensity = asset.blurIntensity;
+        _rectInScene = asset.rectInVideo;
         if (asset.identifier.length > 0) {
             _mediaIdentifier = asset.identifier;
         }

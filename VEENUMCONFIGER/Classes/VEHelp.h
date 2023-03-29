@@ -615,4 +615,5 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(void)getTextAndPhotoWith:( MediaAsset * ) asset atTextList:( NSMutableArray * ) textList atGettingImage:(void(^)(UIImage *image))gettingImage;
 +(void)getTextAndPhotoWithFile:( VEMediaInfo * ) file atTextList:( NSMutableArray * ) textList atGettingImage:(void(^)(UIImage *image))gettingImage;
 +(void)drawTextAndPhotoWith:(void(^)(NSMutableArray * textLists))gettingImage;
++ (CGFloat)getAlphaPixelPercent:(UIImage *)image;
 @end

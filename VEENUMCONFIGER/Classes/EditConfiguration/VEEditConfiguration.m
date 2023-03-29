@@ -230,6 +230,7 @@
     copy.canvasVideosURL                = _canvasVideosURL;
     copy.enableShowBackTipView          = _enableShowBackTipView;
     copy.enableShowRepeatView           = _enableShowRepeatView;
+    copy.templateCategoryPath           = _templateCategoryPath;
     copy.templatePath                   = _templatePath;
     copy.stickerResourceMinVersion      = _stickerResourceMinVersion;
     copy.netMaterialURL = _netMaterialURL;
@@ -346,6 +347,7 @@
     copy.canvasVideosURL                = _canvasVideosURL;
     copy.enableShowBackTipView          = _enableShowBackTipView;
     copy.enableShowRepeatView           = _enableShowRepeatView;
+    copy.templateCategoryPath           = _templateCategoryPath;
     copy.templatePath                   = _templatePath;
     copy.stickerResourceMinVersion      = _stickerResourceMinVersion;
     copy.netMaterialURL = _netMaterialURL;

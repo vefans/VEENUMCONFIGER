@@ -361,6 +361,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 背景视频网络资源地址
  */
 @property (nonatomic,copy)NSString    *canvasVideosURL;
+/** 模板网络资源分类地址
+ */
+@property (nonatomic,copy,nullable)NSString    *templateCategoryPath;
 /** 模板网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *templatePath;
