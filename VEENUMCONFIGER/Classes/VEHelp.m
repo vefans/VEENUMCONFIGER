@@ -5477,122 +5477,120 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 +(Caption *)getCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atType:(NSInteger) captionType
 {
-    @try {
-        NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
-        NSFileManager *manager = [[NSFileManager alloc] init];
-        if([manager fileExistsAtPath:path]){
-            NSLog(@"have");
-        }else{
-            NSLog(@"nohave");
-        }
-        NSData *data = [[NSData alloc] initWithContentsOfFile:path];
-        data = [[NSData alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path]];
+    NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+    NSFileManager *manager = [[NSFileManager alloc] init];
+    if([manager fileExistsAtPath:path]){
+        NSLog(@"have");
+    }else{
+        NSLog(@"nohave");
+    }
+    NSData *data = [[NSData alloc] initWithContentsOfFile:path];
+    data = [[NSData alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path]];
+    
+    NSError *err;
+    if(data){
+        NSDictionary *subtitleEffectConfig = [NSJSONSerialization JSONObjectWithData:data
+                                                                                    options:NSJSONReadingMutableContainers
+                                                                                      error:&err];
+        (*config) = subtitleEffectConfig;
         
-        NSError *err;
-        if(data){
-            NSDictionary *subtitleEffectConfig = [NSJSONSerialization JSONObjectWithData:data
-                                                                                        options:NSJSONReadingMutableContainers
-                                                                                          error:&err];
-            (*config) = subtitleEffectConfig;
-            
-            if(err) {
-                NSLog(@"json解析失败：%@",err);
-            }
-            
-            float   x = [subtitleEffectConfig[@"centerX"] floatValue];
-            float   y = [subtitleEffectConfig[@"centerY"] floatValue];
-            int     w = [subtitleEffectConfig[@"width"] intValue];
-            int     h = [subtitleEffectConfig[@"height"] intValue];
-            
-            int fx = 0,fy = 0,fw = 0,fh = 0;
-            NSArray *textPadding = subtitleEffectConfig[@"textPadding"];
-            fx =  [textPadding[0] intValue];
-            fy =  [textPadding[1] intValue]+3;
-            fw =  [subtitleEffectConfig[@"textWidth"] intValue];
-            fh =  [subtitleEffectConfig[@"textHeight"] intValue];
-            
-            Caption *ppCaption = [[Caption alloc]init];
-            ppCaption.isVerticalText = [subtitleEffectConfig[@"vertical"] boolValue];
-            ppCaption.imageFolderPath = configPath;
-            
-            // [[NSBundle mainBundle].bundlePath  stringByAppendingString:@"/"];
-            ppCaption.type = (CaptionType)[[subtitleEffectConfig objectForKey:@"type"] integerValue];
-            ppCaption.angle = 0;
-            ppCaption.position= CGPointMake(x, y);
-            ppCaption.size = CGSizeMake(w, h);
-            ppCaption.duration = [subtitleEffectConfig[@"duration"] floatValue];
-            if( ppCaption.duration == 0 )
-            {
-                ppCaption.duration = 1.0;
-            }
-            ppCaption.imageName = subtitleEffectConfig[@"name"];
-            
+        if(err) {
+            NSLog(@"json解析失败：%@",err);
+        }
+        
+        float   x = [subtitleEffectConfig[@"centerX"] floatValue];
+        float   y = [subtitleEffectConfig[@"centerY"] floatValue];
+        int     w = [subtitleEffectConfig[@"width"] intValue];
+        int     h = [subtitleEffectConfig[@"height"] intValue];
+        
+        int fx = 0,fy = 0,fw = 0,fh = 0;
+        NSArray *textPadding = subtitleEffectConfig[@"textPadding"];
+        fx =  [textPadding[0] intValue];
+        fy =  [textPadding[1] intValue]+3;
+        fw =  [subtitleEffectConfig[@"textWidth"] intValue];
+        fh =  [subtitleEffectConfig[@"textHeight"] intValue];
+        
+        Caption *ppCaption = [[Caption alloc]init];
+        ppCaption.isVerticalText = [subtitleEffectConfig[@"vertical"] boolValue];
+        ppCaption.imageFolderPath = configPath;
+        
+        // [[NSBundle mainBundle].bundlePath  stringByAppendingString:@"/"];
+        ppCaption.type = (CaptionType)[[subtitleEffectConfig objectForKey:@"type"] integerValue];
+        ppCaption.angle = 0;
+        ppCaption.position= CGPointMake(x, y);
+        ppCaption.size = CGSizeMake(w, h);
+        ppCaption.duration = [subtitleEffectConfig[@"duration"] floatValue];
+        if( ppCaption.duration == 0 )
+        {
+            ppCaption.duration = 1.0;
+        }
+        ppCaption.imageName = subtitleEffectConfig[@"name"];
+        
 //            ppCaption.tFontSize = 10;
-            
-            ppCaption.scale = 1;
-            ppCaption.angle = 0;
+        
+        ppCaption.scale = 1;
+        ppCaption.angle = 0;
 //            if([subtitleEffectConfig[@"music"] isKindOfClass:[NSMutableDictionary class]]){
 //                ppCaption.music.name = subtitleEffectConfig[@"music"][@"src"];
 //            }else{
 //                ppCaption.music.name = nil;
 //            }
-            if(ppCaption.type == CaptionTypeHasText){
-                if( captionType == 2 ){
+        if(ppCaption.type == CaptionTypeHasText){
+            if( captionType == 2 ){
 //                    [self.stickerScrollview setContentTextFieldText:subtitleEffectConfig[@"textContent"]];
-                }else{
+            }else{
 //                    if( ![self.subtitleView isFieldChanged] ){
 //                        ppCaption.pText = VELocalizedString(@"", nil);
 ////                        [self.subtitleView setContentTextFieldText:ppCaption.pText];
 //                    }else{
-                        ppCaption.pText = VELocalizedString(@"点击输入文字", nil);
+                    ppCaption.pText = VELocalizedString(@"点击输入文字", nil);
 //                        [self.subtitleView setContentTextFieldText:ppCaption.pText];
 //                    }
-                }
-                
-                ppCaption.tFontName = subtitleEffectConfig[@"textFont"];//@"Helvetica-Bold";//
-                
-                ppCaption.tFontName = [[UIFont systemFontOfSize:10] fontName];
-                ppCaption.tFrame = CGRectMake(fx, fy, fw, fh);
-                NSArray *textColors = subtitleEffectConfig[@"textColor"];
-                float r = [(textColors[0]) floatValue]/255.0;
-                float g = [(textColors[1]) floatValue]/255.0;
-                float b = [(textColors[2]) floatValue]/255.0;
-                
-                ppCaption.tColor = [UIColor colorWithRed:r green:g blue:b alpha:1];
-                
-                NSArray *strokeColors = subtitleEffectConfig[@"strokeColor"];
-                
-                ppCaption.strokeColor =  [UIColor colorWithRed:[(strokeColors[0]) floatValue]/255.0
-                                                         green:[(strokeColors[0]) floatValue]/255.0
-                                                          blue:[(strokeColors[0]) floatValue]/255.0
-                                                         alpha:1];
-                
-                
-                if([subtitleEffectConfig objectForKey:@"tAngle"])
-                    ppCaption.tAngle = [[subtitleEffectConfig objectForKey:@"tAngle"] floatValue];
-                
-                ppCaption.strokeWidth = [[subtitleEffectConfig objectForKey:@"strokeWidth"] floatValue]/2;
-                
-            }
-            ppCaption.frameArray = subtitleEffectConfig[@"frameArray"];
-            ppCaption.timeArray = subtitleEffectConfig[@"timeArray"];
-            if( (ppCaption.frameArray == nil) || ( ppCaption.frameArray.count == 0 ) )
-            {
-                ppCaption.captionImagePath = [configPath stringByAppendingString:[NSString stringWithFormat:@"/%@.png",ppCaption.imageName]];
             }
             
-            ppCaption.timeRange = CMTimeRangeMake(CMTimeMakeWithSeconds(startTime/*+0.1*/, TIMESCALE), CMTimeMakeWithSeconds(ppCaption.duration, TIMESCALE));
+            ppCaption.tFontName = subtitleEffectConfig[@"textFont"];//@"Helvetica-Bold";//
             
-            ppCaption.textAnimate = nil;
-            ppCaption.imageAnimate = nil;
-            ppCaption.customAnimate = nil;
+            ppCaption.tFontName = [[UIFont systemFontOfSize:10] fontName];
+            ppCaption.tFrame = CGRectMake(fx, fy, fw, fh);
+            NSArray *textColors = subtitleEffectConfig[@"textColor"];
+            float r = [(textColors[0]) floatValue]/255.0;
+            float g = [(textColors[1]) floatValue]/255.0;
+            float b = [(textColors[2]) floatValue]/255.0;
             
-            ppCaption.customOutAnimate = nil;
-            return ppCaption;
+            ppCaption.tColor = [UIColor colorWithRed:r green:g blue:b alpha:1];
+            
+            NSArray *strokeColors = subtitleEffectConfig[@"strokeColor"];
+            
+            ppCaption.strokeColor =  [UIColor colorWithRed:[(strokeColors[0]) floatValue]/255.0
+                                                     green:[(strokeColors[0]) floatValue]/255.0
+                                                      blue:[(strokeColors[0]) floatValue]/255.0
+                                                     alpha:1];
+            
+            
+            if([subtitleEffectConfig objectForKey:@"tAngle"])
+                ppCaption.tAngle = [[subtitleEffectConfig objectForKey:@"tAngle"] floatValue];
+            
+            ppCaption.strokeWidth = [[subtitleEffectConfig objectForKey:@"strokeWidth"] floatValue]/2;
+            
         }
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
+        ppCaption.frameArray = subtitleEffectConfig[@"frameArray"];
+        ppCaption.timeArray = subtitleEffectConfig[@"timeArray"];
+        if( (ppCaption.frameArray == nil) || ( ppCaption.frameArray.count == 0 ) )
+        {
+            ppCaption.captionImagePath = [configPath stringByAppendingString:[NSString stringWithFormat:@"/%@.png",ppCaption.imageName]];
+        }
+        
+        ppCaption.timeRange = CMTimeRangeMake(CMTimeMakeWithSeconds(startTime/*+0.1*/, TIMESCALE), CMTimeMakeWithSeconds(ppCaption.duration, TIMESCALE));
+        
+        ppCaption.textAnimate = nil;
+        ppCaption.imageAnimate = nil;
+        ppCaption.customAnimate = nil;
+        
+        ppCaption.customOutAnimate = nil;
+        return ppCaption;
     }
+
+    return nil;
 }
 
 + (id)getNetworkMaterialWithType:(NSString *)type
@@ -6031,6 +6029,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     float height;
     switch (mediaType) {
         case VEAdvanceEditType_Camera://摄像头
+        case VEAdvanceEditType_DoodlePen://涂鸦笔
         {
             width = syncContainerSize.width;
             height = width / (size.width / size.height);

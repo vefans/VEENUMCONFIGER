@@ -94,6 +94,7 @@ typedef NS_ENUM(NSInteger, VECropType){
 
 @interface VEMediaInfo : NSObject<NSCopying, NSMutableCopying>
 
+@property (nonatomic, strong)NSMutableArray *occlusionStickers;
 @property(nonatomic, strong)NSMutableArray *occlusions;
 @property(nonatomic, strong)NSMutableArray *occlusionImages;
 

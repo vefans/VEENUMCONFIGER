@@ -1851,7 +1851,7 @@
 "该草稿已下载到本地，你可以到草稿箱中进行编辑" = "The draft has been downloaded, you can edit it in the draft box";
 "前往编辑" = "Go to edit";
 "立即备份" = "Backup Now";
-"你还没有备份的草稿哦" = "You haven't backed up the draft yet";
+"暂未有内容备份到云草稿" = "You haven't backed up the draft yet";
 "标记" = "Mark";
 "添加标记" = "Add Mark";
 "草稿不存在" = "The draft does not exist";

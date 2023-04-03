@@ -75,6 +75,8 @@
 
 @property (nonatomic, strong)NSString   * _Nullable captionExCover;
 @property (nonatomic, strong)CaptionEx * _Nullable captionSubtitle;
+@property (nonatomic, strong)DoodleEx  * _Nullable doodlePen;
+@property (nonatomic, strong)DoodleEx  * _Nullable doodle;
 @property (nonatomic, assign)NSInteger   captionTextIndex;
 @property (nonatomic, assign)CGRect  tOutRect;
 

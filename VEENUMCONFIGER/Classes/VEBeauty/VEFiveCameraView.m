@@ -151,8 +151,8 @@
                 [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@选中",title]] forState:UIControlStateSelected];
                 [toolItemBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
                 [toolItemBtn setTitleColor:Main_Color forState:UIControlStateSelected];
-                [toolItemBtn setImageEdgeInsets:UIEdgeInsetsMake(0, (ItemBtnWidth - 40)/2.0, 20, (ItemBtnWidth - 40)/2.0)];
-                [toolItemBtn setTitleEdgeInsets:UIEdgeInsetsMake(40, -40, 0, 0)];
+                [toolItemBtn setImageEdgeInsets:UIEdgeInsetsMake(0, (ItemBtnWidth - 40)/2.0, 15, (ItemBtnWidth - 40)/2.0)];
+                [toolItemBtn setTitleEdgeInsets:UIEdgeInsetsMake(35, -40, 0, 0)];
                 
                 
                 [toolItemBtn setTitle:VELocalizedString(title, nil) forState:UIControlStateNormal];
