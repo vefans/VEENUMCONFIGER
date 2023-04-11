@@ -3723,11 +3723,15 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 + (void)setApngCaptionFrameArrayWithImagePath:(NSString *)path jsonDic:(NSMutableDictionary *)jsonDic {
-    NSString *apngPath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", jsonDic[@"name"]]];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:apngPath]) {
-        apngPath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@0.gif", jsonDic[@"name"]]];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:apngPath]) {
-            apngPath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@0.GIF", jsonDic[@"name"]]];
+    if ([jsonDic.allKeys containsObject:@"frameArray"] && [jsonDic[@"frameArray"] count] > 1) {
+        return;
+    }
+    NSArray *files = [[NSFileManager defaultManager] enumeratorAtPath:path].allObjects;
+    NSString *apngPath;
+    for (NSString *fileName in files) {
+        apngPath = [path stringByAppendingPathComponent:fileName];
+        if ([VEHelp isImageUrl:[NSURL fileURLWithPath:apngPath]]) {
+            break;
         }
     }
     NSData *apngData = [NSData dataWithContentsOfFile:apngPath];

@@ -506,6 +506,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark- 拍同款界面设置
 @property (nonatomic, assign) BOOL  enableShowReturnBtn;
+
+/**点击相册界面相机按钮回调
+ */
+@property (nonatomic,copy,nullable) void(^clickAlbumShareBlackBlock)(id obj, bool isSavePhoto);
+@property (nonatomic, strong)NSURL   *imagePath;
+@property (nonatomic, assign)BOOL      isJPG;
 @end
 
 NS_ASSUME_NONNULL_END

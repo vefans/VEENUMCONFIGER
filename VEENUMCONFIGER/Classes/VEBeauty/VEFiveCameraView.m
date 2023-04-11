@@ -190,6 +190,7 @@
                     label.textColor = [UIColor whiteColor];
                     label.font = [UIFont systemFontOfSize:12];
                     label.textAlignment = NSTextAlignmentCenter;
+                    label.hidden = YES;
                     _sliderValueLabel = label;
                     [sliderSupView addSubview:_sliderValueLabel];
                     
@@ -580,6 +581,7 @@
 #pragma mark-滑动进度条
 - (void)beginScrub:(VESlider *)slider{
     [self sliderValueChanged:slider];
+    _sliderValueLabel.hidden = NO;
 }
 
 - (void)scrub:(VESlider *)slider{
@@ -592,6 +594,7 @@
         _currentType = slider.tag;
     }
     [self sliderValueChanged:slider];
+    _sliderValueLabel.hidden = YES;
 }
 
 -(void)sliderValueChanged:(VESlider *) slider

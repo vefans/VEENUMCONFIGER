@@ -63,9 +63,9 @@
     if (self.custom_acceptEventInterval > 0) {
         self.custom_acceptEventTime = NSDate.date.timeIntervalSince1970;
     }
-    
     // 两次点击的时间间隔小于设定的时间间隔时，才执行响应事件
-    if (needSendAction) {
+    if (needSendAction
+        || action == @selector(flash:forEvent:)) {//20230407 修复iOS16.0以下，系统“粘贴”、“全选”等操作无效的bug
         [self custom_sendAction:action to:target forEvent:event];
     }
 }

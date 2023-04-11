@@ -1404,3 +1404,5 @@
 "Language Settings" = "语言设置";
 "Out of safe zone" = "超出安全区域";
 "No drafts backup to cloud" = "暂未有内容备份到云草稿";
+"Auto HDR" = "智能HDR";
+"Enable the function, it will intelligently convert into HDR videos based on the materials." = "开启功能后，会根据素材内容智能转化为HDR视频。";
