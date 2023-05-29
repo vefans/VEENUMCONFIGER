@@ -1121,6 +1121,8 @@
 "照片电影" = "Picture movie";
 "AE模板详情" = "AE Template info";
 "视频制作需提供如下资源:" = "The video template needs:";
+"%d个素材" = "Material(%d)";
+"%d段文字" = "Text(%d)";
 "%d. %d个文字" = "%d. %d text(s)";
 "%d. %d张图片" = "%d. %d picture(s)";
 "%d. %d个视频/图片" = "%d. %d video(s)/picture(s)";

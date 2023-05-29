@@ -425,6 +425,9 @@ typedef NS_ENUM(NSInteger, VESubtitleContentType) {
 */
 typedef NS_ENUM(NSInteger,AdjustType){
     Adjust_Brightness,      //亮度
+    Adjust_Separation,      //色调分离
+    Adjust_HSL,
+    Adjust_Curve,           //曲线
     Adjust_Contrast,        //对比度
     Adjust_Saturation,      //饱和度
     Adjust_Sharpness,       //锐度
@@ -729,6 +732,7 @@ isPhoneX;\
 #define KAudioEffectTypesFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/AudioEffectTypes"]
 #define KAudioEffectTypesPath [KAudioEffectTypesFolder stringByAppendingPathComponent:@"TypePlistList.plist"]
 
+#define kSubtitleTTSPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleTTSListType.plist"]
 
 #define kFontFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"Font"]
 #define kFontIconPath [kFontFolder stringByAppendingPathComponent:@"icon"]
@@ -738,6 +742,10 @@ isPhoneX;\
 #define kFontType @"font_family_2"
 #define kPESDKFontType @"font"
 #define kDefaultFontPath [VEEditResourceBundle pathForResource:@"New_EditVideo/text_sample/PingFang-SC-Regular" ofType:@"otf"]
+
+#define kWebmFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"webm"]
+#define kWebmIconPath [kWebmFolder stringByAppendingPathComponent:@"icon"]
+#define kWebmPlistPath [kWebmFolder stringByAppendingPathComponent:@"WebmList.plist"]
 
 #define kStickerFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"Effect"]
 #define kStickerIconPath [kStickerFolder stringByAppendingPathComponent:@"icon"]
@@ -836,6 +844,7 @@ isPhoneX;\
 
 #define kTextToSpeechFolder [kVEDirectory stringByAppendingPathComponent:@"TextToSpeech"]
 #define kAutoSegmentImageFolder [kVEDirectory stringByAppendingPathComponent:@"AutoSegmentImage"]
+#define kSpeechRecordFolder [kVEDirectory stringByAppendingPathComponent:@"SpeechRecord"]
 
 #pragma mark- 相册网络素材库
 #define KCloudVideoFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/CloudVideo"]
@@ -852,6 +861,13 @@ isPhoneX;\
 
 #define kThumbnailFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/thumbnailFolder"]
 
+#define kTTSAudioMp3Folder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/TTSAudioMp3"]
+
+#define kWebmMp3Folder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/webmMp3"]
+#define kWebmICON @"webm"
+
+#define kWhisperModelFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/whisperModel"]
+
 #define kTemplateThemeFolder [kVEDirectory stringByAppendingPathComponent:@"TemplateThemes"]
 #define kTemplateThemeCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"TemplateThemeCategory.plist"]
 #define kTemplateThemeTypeListPath [kFilterFolder stringByAppendingPathComponent:@"TemplateThemeTypeList.plist"]
@@ -865,5 +881,18 @@ isPhoneX;\
 #define kOcclusionImageFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/OcclusionImages"]
 #define kFaceImagesFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/FaceImages"]
 
+#define kTTSURL @"http://120.55.82.68:1233/api/ra"
+#define kTTS_ServiceURL @"http://vesystem.effectlib.com/api/v1/service/list"
+
+
+#define kTextMaretrialFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VETextMaretrial/"]
+#define kTextMaretrialPlistPath [kTextMaretrialFolder stringByAppendingPathComponent:@"veTextMaretrials.plist"]
+
+#define kTTSMaretrialFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VETTSMaretrial/"]
+#define kTTSMaretrialPlistPath [kTTSMaretrialFolder stringByAppendingPathComponent:@"veTTSMaretrials.plist"]
+
+#define kPictureTextToVideoFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VEPictureTextToVideo"]
+#define kPictureTextToVideoDraftPListPath [kPictureTextToVideoFolder stringByAppendingPathComponent:@"VEPictureTextToVideo.plist"]
+#define kPictureTextToVideoAudioFolder [kPictureTextToVideoFolder stringByAppendingPathComponent:@"Audio"]
 
 #define kSkyISHorizontal 1

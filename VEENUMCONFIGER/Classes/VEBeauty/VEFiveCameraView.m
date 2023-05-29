@@ -280,9 +280,7 @@
 
         [slider addTarget:self action:@selector(beginScrub:) forControlEvents:UIControlEventTouchDown];
         [slider addTarget:self action:@selector(scrub:) forControlEvents:UIControlEventValueChanged];
-        [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpInside];
-        [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchCancel];
-        [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpOutside];
+        [slider addTarget:self action:@selector(endScrub:) forControlEvents:(UIControlEventTouchUpInside | UIControlEventTouchCancel | UIControlEventTouchUpOutside)];
        [_adjustmentSliders addObject:slider];
            [view addSubview:slider];
         

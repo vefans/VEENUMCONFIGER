@@ -190,11 +190,16 @@ extern float const VEAdjust_DefaultValue_Exposure;
 /**Gif 时长
  */
 + (float)isGifWithData:(NSData * )imageData;
+
++(NSString *)getMaterialTTSAudioPath:( NSString * ) fileName;
 /**从URL获取缩率图照片
  */
 + (UIImage * )getThumbImageWithUrl:(NSURL * )url;
 + (UIImage * )getThumbImageWithPath:(NSString *)path;
 +(NSString * )getMaterialThumbnail:(NSURL * ) fileUrl;
++(NSString *)getMaterialWebmMp3:(NSURL *) fileUrl;
++(BOOL)getWebmAudioWithMp3:( NSURL * ) webmURL;
++(NSString *)getWhisperModelPath:(NSString *) name;
 //多线程保存缩略图
 +(void)fileImage_Save:(NSMutableArray<VEMediaInfo *> * ) fileArray atProgress:(void(^)(float progress))completedBlock atReturn:(void(^)(bool isSuccess))completedReturn;
 +(void)save_Image:(int) currentIndex atURL:(NSURL * ) url atPatch:(NSString * ) fileImagePatch atTimes:(NSMutableArray *) times atProgressCurrent:(int) progressIndex  atCount:(int) count atProgress:(void(^)(float progress))completedBlock;
@@ -259,6 +264,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(NSMutableArray *)getColorArray;
 + (NSInteger)getColorIndex:(UIColor *)color;
 +(NSMutableArray *)getGroupColorArray;
++ (NSString *)HexStrWithcolor:(UIColor *)color;
 + (UIColor *)colorWithHexStr:(NSString *)hexString;
 + (NSMutableArray *)getDoodlePenColors;
 + (BOOL)colorIsEqual:(UIColor *)color1 color2:(UIColor *)color2;
@@ -336,6 +342,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(UIView *)initAgainTrackView:(  UIViewController * ) viewController atTitle:( NSString * ) title atConfirm:(SEL) confirm atCancel:(SEL) cancel;
 +(UIView *)initReversevideoProgress:(  UIViewController * ) viewController atLabelTag:(int *) labelTag atCancel:(SEL)cancel;
 +(UIView *)initReversevideoProgressView:(  UIView * ) reverseView atLabelTag:(int *) labelTag atCancel:(SEL)cancel;
++(UIView *)initSpeechRecognitionProgress:(  UIViewController * ) viewController atLabelTag:(int *) labelTag atCancel:(SEL)cancel;
 + (NSString *) getResourceFromBundle : (NSString *) bundleName resourceName:(NSString *)name Type : (NSString *) type;
 + (UIImage *)imageWithContentOfPath:(NSString *)path;
 + (UIImage *)imageWithContentOfPathFull:(NSString *)path;
@@ -385,7 +392,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(NSString *)objectToJson:(id)obj;
 
 #pragma mark - 多脚本json加载 特效
-+ (CustomMultipleFilter *)getCustomMultipleFilerWithFxId:(int)fxId
++ (CustomMultipleFilter *)getCustomMultipleFilerWithFxId:(NSString *)fxId
                              filterFxArray:(NSArray *)filterFxArray
                                  timeRange:(CMTimeRange)timeRange
                                  currentFrameTexturePath:(NSString *)currentFrameTexturePath
@@ -393,6 +400,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(CaptionEffectColorParam *)getShadowStrokes:( NSDictionary * ) obj;
 +(NSDictionary *)getConfig_Dic:( NSString * ) configPath;
 +(NSDictionary *)getCaptionConfig_Dic:( NSString * ) configPath;
++(NSMutableDictionary *)jsonToObject:( NSString * ) jsonStr;
 +(Caption *)getCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atType:(NSInteger) captionType;
 
 //字体
@@ -616,4 +624,36 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(void)getTextAndPhotoWithFile:( VEMediaInfo * ) file atTextList:( NSMutableArray * ) textList atGettingImage:(void(^)(UIImage *image))gettingImage;
 +(void)drawTextAndPhotoWith:(void(^)(NSMutableArray * textLists))gettingImage;
 + (CGFloat)getAlphaPixelPercent:(UIImage *)image;
+/**左右渐变的背景
+ * view : 需要添加渐变的控件
+ * colors：渐变色
+ */
++ (void) insertColorGradient:(UIView *)view colors:(NSMutableArray <UIColor *>*)colors;
+/**获取新的颜色列表
+ */
++(NSMutableArray *)getColorList;
+
+#pragma mark- webm测试
++(VEMediaInfo *)testWebmWidthMediaInfo;
+
++ (NSArray *)getToningHSLColorArray;
++ (NSArray *)getToningSeparationColorArray;
++ (NSArray *)getToningCurveColorArray;
+
++ (BOOL)isHSLInitialValue:(NSArray *)array;
++ (BOOL)isRGBCurveInitialValue:(NSMutableArray *)array;
+
+/**  文本转语音
+ *  @abstract text-to-speech
+ *
+ *  @param uploadUrl        网络接口
+ *  @param locale       语言
+ *  @param text        文字
+ *  @param format     音频编码格式
+ *  @param ttsName     语音名称
+ *
+ * 获取MP3文件（ 后缀 .mp3）
+ */
++ (NSString *)updateInfomation_TTS:( NSString * ) uploadUrl atLocale:( NSString * ) locale atShortName:( NSString * ) ShortName atText:( NSString * ) text atFormat:( NSString * ) format atTTSName:( NSString * ) ttsName;
+
 @end

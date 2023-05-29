@@ -16,6 +16,9 @@
 
 @interface VESyncContainerView : UIView
 
+@property(nonatomic,strong)UIPanGestureRecognizer* moveGesture;
+@property(nonatomic,strong)UIPinchGestureRecognizer *gestureRecognizer;
+@property(nonatomic,strong)UIRotationGestureRecognizer *rotationGesture;
 @property(nonatomic, weak)UIImageView      *picturePreImageView;
 -(CGRect)getPreImageViewFrame;
 -(CGRect)getPreImageViewBounds;

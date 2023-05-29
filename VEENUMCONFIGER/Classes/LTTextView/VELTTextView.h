@@ -19,6 +19,9 @@
 
 @interface VELTTextView : UIView
 
+//默认0，无限制
+@property (nonatomic, assign) int maxNum;
+
 @property (weak, nonatomic) id<VELTTextViewDelegate>  delegate;
 
 /**  */

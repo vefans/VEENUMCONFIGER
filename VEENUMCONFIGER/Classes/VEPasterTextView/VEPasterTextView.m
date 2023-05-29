@@ -109,6 +109,23 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     [self removeGestureRecognizer:_moveGesture];
 }
 
+- (void)setIsPuzzle:(BOOL)isPuzzle{
+    _isPuzzle = isPuzzle;
+    if(_isPuzzle){
+        selectImageView.layer.borderColor = Main_Color.CGColor;
+        selectImageView.layer.borderWidth = selectImageViewBorderWidth*2.0/_selfScale;
+        [self.getRotateView removeFromSuperview];
+        [self.closeBtn removeFromSuperview];
+        [self.gestureRecognizers enumerateObjectsUsingBlock:^(__kindof UIGestureRecognizer * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if(![obj isKindOfClass:[UITapGestureRecognizer class]]){
+                [self removeGestureRecognizer:obj];
+            }
+        }];
+    }else{
+        selectImageView.layer.borderWidth = selectImageViewBorderWidth*1.0/_selfScale;
+        selectImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    }
+}
 -(UIImageView *)getselectImageView
 {
     return  selectImageView;
@@ -116,7 +133,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 -(void)initCloseRotate
 {
-    rotateViewWidth = globalInset*3.0 + globalInset/4.0;
+    rotateViewWidth = 20;
     _closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(-rotateViewWidth/2.0 + globalInset, -rotateViewWidth/2.0 + globalInset, rotateViewWidth, rotateViewWidth)];
     _closeBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin ;
     _closeBtn.backgroundColor = [UIColor clearColor];
@@ -150,6 +167,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     selectImageView.layer.shadowRadius = selectImageViewShadowRadius;
     selectImageView.layer.masksToBounds = true;
     selectImageView.clipsToBounds = NO;
+    selectImageView.userInteractionEnabled = YES;
     selectImageView.layer.allowsEdgeAntialiasing = YES;
     [self addSubview:selectImageView];
 }
@@ -236,7 +254,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         _syncContainerRect = syncContainerRect;
         originRect = frame;
         globalInset = 8;
-        rotateViewWidth = globalInset*3.0 + globalInset/4.0;
+        rotateViewWidth = 20;
         _selfScale = 1.0;
         _alignment = NSTextAlignmentCenter;
         self.backgroundColor = [UIColor clearColor];
@@ -335,7 +353,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     _isSizePrompt = false;
     _isDrag_Upated = false;
     globalInset = 8;
-    rotateViewWidth = globalInset*3.0 + globalInset/4.0;
+    rotateViewWidth = 20;
     _syncContainerRect = syncContainerRect;
     _needStretching = needStretching;
     _tsize = tsize;
@@ -995,7 +1013,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 - (void)pinchGestureRecognizer:(UIPinchGestureRecognizer *)recognizer {
 
-    if( self.isMainPicture )
+    if( self.isMainPicture || _isPuzzle)
         return;
     
     if( _isViewHidden_GestureRecognizer && _syncContainer.currentPasterTextView != self )
@@ -1181,7 +1199,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 }
 
 - (void) moveGesture:(UIGestureRecognizer *) recognizer{
-    if( self.isMainPicture )
+    if( self.isMainPicture || self.isPuzzle)
         return;
     
     if( recognizer.numberOfTouches == 2 )
@@ -2702,7 +2720,7 @@ static VEPasterTextView *lastTouchedView;
     _hairScale = 1.0;
     _captionTextIndex = 0;
     globalInset = 8;
-    rotateViewWidth = globalInset*3.0 + globalInset/4.0;
+    rotateViewWidth = 20;
     _syncContainerRect = syncContainerRect;
     if( !isREstroe )
     {

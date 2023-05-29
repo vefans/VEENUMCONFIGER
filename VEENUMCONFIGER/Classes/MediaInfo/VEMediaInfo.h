@@ -296,7 +296,7 @@ typedef NS_ENUM(NSInteger, VECropType){
 /** 自定义滤镜特效
  */
 @property (nonatomic, assign) NSInteger customFilterIndex;
-@property (nonatomic, assign) int customFilterId;
+@property (nonatomic, strong) NSString *customFilterId;
 
 /** 自定义时间特效
  */
@@ -361,7 +361,7 @@ typedef NS_ENUM(NSInteger, VECropType){
 
 /**特效
  */
-@property (nonatomic, assign) int filterId;
+@property (nonatomic, strong) NSString *filterId;
 @property (nonatomic, assign) CMTimeRange fxEffectTimeRange;
 @property(nonatomic,strong)CustomMultipleFilter *fxEffect;
 @property (nonatomic, assign) int fxFileId;

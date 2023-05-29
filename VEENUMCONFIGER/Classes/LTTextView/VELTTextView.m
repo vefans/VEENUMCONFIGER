@@ -8,6 +8,7 @@
 
 #import "VELTTextView.h"
 #import "VEHelp.h"
+#import "VEWindow.h"
 
 //这里是限制字数
 #define MAX_WOVEDeluxe_LIMIT 200
@@ -96,6 +97,17 @@
  */
 - (void)textViewDidChange:(UITextView *)textView
 {
+    UITextRange *selectedRange = [textView markedTextRange];
+    UITextPosition *pos = [textView positionFromPosition:selectedRange.start offset:0];
+    
+    if (selectedRange && pos) {
+        return;
+    }
+    if (_maxNum > 0 && textView.text.length > _maxNum) {
+        [VEWindow showMessage:[NSString stringWithFormat:VELocalizedString(@"提示：字数最多%d个", nil), _maxNum] duration:2.0];
+        NSString *s = [textView.text substringToIndex:_maxNum];
+        [textView setText:s];
+    }
     if( _delegate && [_delegate respondsToSelector:@selector(textViewDidChange:)] )
     {
         return [_delegate textViewDidChange:textView];
@@ -133,7 +145,7 @@
         _placeholderTextView = [[UITextView alloc]init];
         _placeholderTextView.backgroundColor = [UIColor clearColor];
         _placeholderTextView.font = [UIFont systemFontOfSize:13];
-        _placeholderTextView.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
+        _placeholderTextView.textColor = UIColorFromRGB(0x727272);
         _placeholderTextView.text = VELocalizedString(@"点击输入文字", nil);
     }
     return _placeholderTextView;

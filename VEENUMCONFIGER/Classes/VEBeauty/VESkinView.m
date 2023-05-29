@@ -97,8 +97,7 @@
     [slider setValue:0.5];
     [slider addTarget:self action:@selector(beginScrub:) forControlEvents:UIControlEventTouchDown];
     [slider addTarget:self action:@selector(scrub:) forControlEvents:UIControlEventValueChanged];
-    [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchUpInside];
-    [slider addTarget:self action:@selector(endScrub:) forControlEvents:UIControlEventTouchCancel];
+    [slider addTarget:self action:@selector(endScrub:) forControlEvents:(UIControlEventTouchUpInside | UIControlEventTouchCancel | UIControlEventTouchUpOutside)];
     [adjustmentView addSubview:slider];
 
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(_adjustmentSlider.frame.size.width + _adjustmentSlider.frame.origin.x + 10, (adjustmentView.frame.size.height-25)/2.0, 30, 25)];

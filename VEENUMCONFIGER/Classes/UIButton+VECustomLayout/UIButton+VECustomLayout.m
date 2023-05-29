@@ -9,6 +9,12 @@
 #import "UIButton+VECustomLayout.h"
 #import <objc/runtime.h>
 
+@interface UIButton (VECustomLayout)
+
+@property (nonatomic, strong) NSString *prevAction;
+
+@end
+
 @implementation UIButton (VECustomLayout)
 
 + (void)load{
@@ -47,6 +53,18 @@
     objc_setAssociatedObject(self, "UIControl_acceptEventTime", @(custom_acceptEventTime), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (void)setPrevAction:(NSString *)prevAction
+{
+    objc_setAssociatedObject(self, "UIControl_prevAction", prevAction, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+
+- (NSString *)prevAction
+{
+    NSString *error = objc_getAssociatedObject(self, "UIControl_prevAction");
+    return error;
+}
+
 - (void)custom_sendAction:(SEL)action to:(id)target forEvent:(UIEvent *)event{
     
     // 如果想要设置统一的间隔时间，可以在此处加上以下几句
@@ -65,8 +83,9 @@
     }
     // 两次点击的时间间隔小于设定的时间间隔时，才执行响应事件
     if (needSendAction
-        || action == @selector(flash:forEvent:)) {//20230407 修复iOS16.0以下，系统“粘贴”、“全选”等操作无效的bug
+         || ![NSStringFromSelector(action) isEqualToString:self.prevAction]) {//20230413 修复bug：一个按钮有多个事件，两个事件间隔时间段，后面的事件会无效
         [self custom_sendAction:action to:target forEvent:event];
+        self.prevAction = NSStringFromSelector(action);
     }
 }
 

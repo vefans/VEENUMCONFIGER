@@ -565,17 +565,17 @@
 //                [view addSubview:gsView];
 //            }
             
+            self.toolBar.frame = CGRectMake(0,  5, self.toolBar.frame.size.width, 40);
+            self.titlelab.frame = CGRectMake(50, 0, kWIDTH-100, 40);
             {
-                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 39.5, view.frame.size.width, 0.5)];
+                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.toolBar.frame) + 5, view.frame.size.width, 1)];
                 label.backgroundColor = UIColorFromRGB(0x272727);
                 [view addSubview:label];
             }
             
             self.ribbtonView = view;
             [self.view addSubview:view];
-            self.cropTypeScrollView.frame = CGRectMake(0, 5 + 40, self.cropTypeScrollView.frame.size.width, self.cropTypeScrollView.frame.size.height);
-            self.toolBar.frame = CGRectMake(0,  15, self.toolBar.frame.size.width, 40);
-            self.titlelab.frame = CGRectMake(50, 0, kWIDTH-100, 40);
+            self.cropTypeScrollView.frame = CGRectMake(0, CGRectGetMaxY(self.toolBar.frame) + (view.frame.size.height - CGRectGetMaxY(self.toolBar.frame) - self.cropTypeScrollView.frame.size.height) / 2.0, self.cropTypeScrollView.frame.size.width, self.cropTypeScrollView.frame.size.height);
             [view addSubview:self.cropTypeScrollView];
             [view addSubview:self.toolBar];
         }
@@ -1127,9 +1127,10 @@
     CGSize imageSize = CGSizeMake(self.pasterTextView.contentImage.bounds.size.width*self.pasterTextView.selfscale, self.pasterTextView.contentImage.bounds.size.height*self.pasterTextView.selfscale);
     
     if(_editVideoForOnceFinishAction){
+        CGRect rect = CGRectMake(point.x/imageSize.width, point.y/imageSize.height, size.width/imageSize.width, size.height/imageSize.height);
         _selectFile.contentURL = oldselectFile.contentURL;
         _editVideoForOnceFinishAction(NO,
-                                      CGRectMake(point.x/imageSize.width, point.y/imageSize.height, size.width/imageSize.width, size.height/imageSize.height),
+                                      rect,
                                       _videoCropView.cropView.cropRectView.frame,
                                       oldselectFile.isVerticalMirror,
                                       oldselectFile.isHorizontalMirror,
@@ -2509,9 +2510,9 @@
 //    point = CGPointMake(point.x*self.syncContainerView.frame.size.width, point.y*self.syncContainerView.frame.size.height);
     
     fileScale = [VEHelp getMediaAssetScale_File:thumbImage.size atRect:rectInScene atCorp:CGRectMake(0, 0, 1, 1) atSyncContainerHeihgt:self.syncContainerView.bounds.size mediaType:VEAdvanceEditType_None];
-    file.fileScale = fileScale;
+//    file.fileScale = fileScale;
     CGAffineTransform transform2 = CGAffineTransformMakeRotation( -rotate/(180.0/M_PI) );
-    self.pasterTextView.transform = CGAffineTransformScale(transform2, fileScale, fileScale);
+    self.pasterTextView.transform = CGAffineTransformScale(transform2, file.fileScale, file.fileScale);
     [self.pasterTextView setFramescale:file.fileScale];
     
 //    self.pasterTextView.center = point;
@@ -2551,6 +2552,7 @@
         [sticker showEditingHandles];
         [self.videoCoreSDK refreshCurrentFrame];
     }
+    _zoomScale = sticker.selfscale;
 }
 
 - (void)pasterViewSizeScale:(VEPasterTextView *_Nullable)sticker atValue:( float ) value

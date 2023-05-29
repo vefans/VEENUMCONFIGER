@@ -256,19 +256,16 @@
     if( !isRecognizer )
     {
         isRecognizer = true;
+        _gestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGestureRecognizer:)];
+        _gestureRecognizer.delegate = self;
+        _moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
+        [self addGestureRecognizer:_moveGesture];
+        [self addGestureRecognizer:_gestureRecognizer];
         
-        UIPinchGestureRecognizer *GestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGestureRecognizer:)];
-        GestureRecognizer.delegate = self;
-        
-        UIPanGestureRecognizer* moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveGesture:)];
-        [self addGestureRecognizer:moveGesture];
-        
-        [self addGestureRecognizer:GestureRecognizer];
-        
-        UIRotationGestureRecognizer *rotation = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewroRotation:)];
-        rotation.delegate = self;
+        _rotationGesture = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewroRotation:)];
+        _rotationGesture.delegate = self;
         //手势View 对象 添加给UIImageView
-        [self addGestureRecognizer:rotation];
+        [self addGestureRecognizer:_rotationGesture];
         
         UITapGestureRecognizer *singleTapShowHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(contentTapped:)];
         [self addGestureRecognizer:singleTapShowHide];

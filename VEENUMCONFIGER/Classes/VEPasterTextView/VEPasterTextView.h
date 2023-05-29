@@ -33,6 +33,8 @@
 
 @interface VEPasterTextView : UIView
 
+@property(nonatomic, assign) BOOL    isPuzzle;
+@property( nonatomic, strong)UIScrollView *scroll;
 -(CGPoint)getPictureCenter;
 
 @property(nonatomic, assign) float    hairScale;
@@ -239,6 +241,8 @@
 @property (nonatomic, strong)NSDictionary  * _Nullable old_info;
 @property (nonatomic, strong)NSString  * _Nullable old_cover;
 
+
+@property (nonatomic, strong) UIButton * _Nullable puzzleAddBtn;
 - (void)addContentTappedGestureRecognizer;
 @end
 

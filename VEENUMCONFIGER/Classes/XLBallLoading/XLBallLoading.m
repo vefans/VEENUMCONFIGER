@@ -24,6 +24,9 @@ static CGFloat ballScale = 1.5f;
     CAAnimationGroup *_animationGroup2;
     
     BOOL _stopAnimationByUser;
+    
+    UIColor *_ball1Color;
+    UIColor *_ball3Color;
 }
 @end
 
@@ -31,6 +34,17 @@ static CGFloat ballScale = 1.5f;
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
+        _ball1Color = UIColorFromRGB(0xa4a4a4);
+        _ball3Color = UIColorFromRGB(0x727272);
+        [self initUI];
+    }
+    return self;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame atBall1Color:( UIColor * ) ball1Color atBall3Color:( UIColor * ) ball3Color {
+    if (self = [super initWithFrame:frame]) {
+        _ball1Color = ball1Color;
+        _ball3Color = ball3Color;
         [self initUI];
     }
     return self;
@@ -50,13 +64,13 @@ static CGFloat ballScale = 1.5f;
     _ball1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ballWidth, ballWidth)];
     _ball1.center = CGPointMake(_ballContainer.bounds.size.width/2.0f - ballWidth/2.0, _ballContainer.bounds.size.height/2.0f);
     _ball1.layer.cornerRadius = ballWidth/2.0f;
-    _ball1.backgroundColor = UIColorFromRGB(0xa4a4a4);
+    _ball1.backgroundColor = _ball1Color;
     [_ballContainer addSubview:_ball1];
     
     _ball3 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ballWidth, ballWidth)];
     _ball3.center = CGPointMake(_ballContainer.bounds.size.width/2.0f + ballWidth/2.0, _ballContainer.bounds.size.height/2.0f);
     _ball3.layer.cornerRadius = ballWidth/2.0f;
-    _ball3.backgroundColor = UIColorFromRGB(0x727272);
+    _ball3.backgroundColor = _ball3Color;
     [_ballContainer addSubview:_ball3];
     
     _ball2 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ballWidth/2.0f, ballWidth/2.0f)];

@@ -53,7 +53,7 @@
     
     SDAnimatedImageView * animatedImageView = [[SDAnimatedImageView alloc] initWithFrame:fxItemBtn.thumbnailIV.bounds];
     animatedImageView.contentMode = UIViewContentModeScaleAspectFill;
-    imageView.backgroundColor = [UIColor clearColor];
+    animatedImageView.backgroundColor = [UIColor clearColor];
     fxItemBtn.animatedImageView = animatedImageView;
     [fxItemBtn.thumbnailIV addSubview:fxItemBtn.animatedImageView];
     fxItemBtn.animatedImageView.tag = kFxIconTag+ 10000;

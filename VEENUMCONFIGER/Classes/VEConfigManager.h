@@ -215,6 +215,7 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
  */
 @property (nonatomic,assign) SUPPORTLANGUAGE language;
 
+@property (nonatomic, strong) NSString *  model;
 
 /** APP的主色调
  *  默认为：0xffd500

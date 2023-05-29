@@ -46,6 +46,7 @@ typedef NS_ENUM(NSUInteger, CameraType) {
     CameraType_Video             = 2,//录制
     CameraType_Photo            = 3,//拍照
     CameraType_CreativeVideo    = 4,//模板拍摄
+    CameraType_IDPhoto   = 5,//证件照拍摄
 };
 
 typedef NS_ENUM(NSUInteger, CameraModelType) {

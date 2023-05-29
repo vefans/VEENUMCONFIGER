@@ -10,12 +10,7 @@
 #import <LibVECore/VECoreYYModel.h>
 
 @implementation VEMediaInfo
-- (void)setTransition:(Transition *)transition{
-    _transition = transition;
-}
-- (void)setBackgroundType:(CanvasType)backgroundType{
-    _backgroundType = backgroundType;
-}
+
 - (instancetype)init{
     self = [super init];
     if(self){
@@ -980,9 +975,9 @@
     }else if (_customAnimate) {
         if (_animationArray.count > 0 && _customAnimate.networkCategoryId.length > 0 && _customAnimate.networkResourceId.length > 0) {
             [_animationArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
-                if ([obj1[@"typeId"] isEqual:_customAnimate.networkCategoryId]) {
+                if ([obj1[@"typeId"] isEqualToString:_customAnimate.networkCategoryId]) {
                     [obj1[@"data"] enumerateObjectsUsingBlock:^(id  _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
-                        if ([obj2[@"id"] isEqual:_customAnimate.networkResourceId]) {
+                        if ([obj2[@"id"] isEqualToString:_customAnimate.networkResourceId]) {
                             _animationIndex = idx2 + 2;
                             *stop2 = YES;
                         }
@@ -1003,9 +998,9 @@
     else if (_customOutAnimate) {
         if (_animationArray.count > 0 && _customOutAnimate.networkCategoryId.length > 0 && _customOutAnimate.networkResourceId.length > 0) {
             [_animationArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
-                if ([obj1[@"typeId"] isEqual:_customOutAnimate.networkCategoryId]) {
+                if ([obj1[@"typeId"] isEqualToString:_customOutAnimate.networkCategoryId]) {
                     [obj1[@"data"] enumerateObjectsUsingBlock:^(id  _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
-                        if ([obj2[@"id"] isEqual:_customOutAnimate.networkResourceId]) {
+                        if ([obj2[@"id"] isEqualToString:_customOutAnimate.networkResourceId]) {
                             _animationOutIndex = idx2 + 2;
                             *stop2 = YES;
                         }

@@ -10,6 +10,8 @@
 
 @interface XLBallLoading : UIView
 
+- (instancetype)initWithFrame:(CGRect)frame atBall1Color:( UIColor * ) ball1Color atBall3Color:( UIColor * ) ball3Color;
+
 -(void)start;
 
 -(void)stop;
