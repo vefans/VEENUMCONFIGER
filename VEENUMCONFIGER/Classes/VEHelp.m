@@ -2533,7 +2533,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 +(VEMediaInfo *)vassetToFile:(MediaAsset *) vvasset
 {
     VEMediaInfo * file = [VEMediaInfo new];
-    
+    file.videoActualTimeRange = vvasset.videoActualTimeRange;
     file.contentURL = vvasset.url;
     file.speed = vvasset.speed;
     file.crop = vvasset.crop;
@@ -2543,7 +2543,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     if( vvasset.type == MediaAssetTypeVideo )
     {
-        file.videoTimeRange = [VECore getActualTimeRange:file.contentURL];
         file.fileType = kFILEVIDEO;
         file.videoTrimTimeRange = vvasset.timeRange;
     }
@@ -2854,6 +2853,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [[NSFileManager defaultManager] createDirectoryAtPath:scaleFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    
+    if( [pathExtension containsString:@"?"] )
+    {
+        NSRange range = [pathExtension rangeOfString:@"?"];
+        pathExtension =  [pathExtension substringWithRange:NSMakeRange(0, range.location)];
+    }
+    
     NSString *itemPath = [[scaleFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[itemDic[@"file"] hash]]] stringByAppendingPathExtension:pathExtension];
     return itemPath;
 }
@@ -2864,6 +2870,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [[NSFileManager defaultManager] createDirectoryAtPath:filterFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    
+    if( [pathExtension containsString:@"?"] )
+    {
+        NSRange range = [pathExtension rangeOfString:@"?"];
+        pathExtension =  [pathExtension substringWithRange:NSMakeRange(0, range.location)];
+    }
+    
     NSString *itemPath = [[filterFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[itemDic[@"file"] hash]]] stringByAppendingPathExtension:pathExtension];
     
     return itemPath;
@@ -2875,6 +2888,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [[NSFileManager defaultManager] createDirectoryAtPath:filterFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    
+    if( [pathExtension containsString:@"?"] )
+    {
+        NSRange range = [pathExtension rangeOfString:@"?"];
+        pathExtension =  [pathExtension substringWithRange:NSMakeRange(0, range.location)];
+    }
+    
     NSString *itemPath = [[filterFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[itemDic[@"file"] hash]]] stringByAppendingPathExtension:pathExtension];
     
     return itemPath;
@@ -2888,6 +2908,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     NSString *file = itemDic[@"file"];
     NSString *pathExtension = [[[file pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    
+    if( [pathExtension containsString:@"?"] )
+    {
+        NSRange range = [pathExtension rangeOfString:@"?"];
+        pathExtension =  [pathExtension substringWithRange:NSMakeRange(0, range.location)];
+    }
+    
     NSString *itemPath = [[filterFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[file hash]]] stringByAppendingPathExtension:pathExtension];
     if ([file.pathExtension isEqualToString:@"zip"]) {
         itemPath = [itemPath stringByDeletingPathExtension];
@@ -2913,6 +2940,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    
+    if( [pathExtension containsString:@"?"] )
+    {
+        NSRange range = [pathExtension rangeOfString:@"?"];
+        pathExtension =  [pathExtension substringWithRange:NSMakeRange(0, range.location)];
+    }
+    
     NSString *itemPath = [[folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu",(unsigned long)[itemDic[@"file"] hash]]] stringByAppendingPathExtension:pathExtension];
     
     return itemPath;
@@ -2924,6 +2958,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     NSString *pathExtension = [[[itemDic[@"file"] pathExtension] componentsSeparatedByString:@"&ufid"] firstObject];
+    
+    if( [pathExtension containsString:@"?"] )
+    {
+        NSRange range = [pathExtension rangeOfString:@"?"];
+        pathExtension =  [pathExtension substringWithRange:NSMakeRange(0, range.location)];
+    }
+    
     NSString *itemPath = [[[folderPath stringByAppendingString:@"/"] stringByAppendingString:itemDic[@"name"]] stringByAppendingPathExtension:pathExtension];
     
     return itemPath;
@@ -4194,16 +4235,34 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     //检查是否为webm文件
     if([fileExtension caseInsensitiveCompare:@"webm"] == NSOrderedSame)
     {
+        CMTime time = CMTimeMakeWithSeconds(0.1, TIMESCALE);
         WebmMediaInfo *mediaInfo = [VECore getWebmInfo:url.path];
         float scale = 1.0;
-        if( (mediaInfo.videoTrack.width > 2048) || ( mediaInfo.videoTrack.height > 2048 ) )
+        if( (mediaInfo.videoTrack.width > 480) || ( mediaInfo.videoTrack.height > 480 ) )
         {
             if( mediaInfo.videoTrack.width > mediaInfo.videoTrack.height )
-                scale = 2048/mediaInfo.videoTrack.width;
+                scale = 480.0/(float)mediaInfo.videoTrack.width;
             else
-                scale = 2048/mediaInfo.videoTrack.height;
+                scale = 480.0/(float)mediaInfo.videoTrack.height;
         }
-        return [VECore getImageFromWebmFilePath:url.path time:0.1 scale:1.0];
+        int iTime  = (int)CMTimeGetSeconds(time);
+        if( (CMTimeGetSeconds(time) - ((float)iTime)) >= 0.5 )
+        {
+            iTime++;
+        }
+        NSString *patch = [VEHelp getMaterialThumbnail:url];
+        if( ![[NSFileManager defaultManager] fileExistsAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"]] )
+        {
+            [[NSFileManager defaultManager] createDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"] withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+        NSString * str = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.png",iTime]];
+        {
+            UIImage *image = [VECore getImageFromWebmFilePath:url.path time:CMTimeGetSeconds(time) scale:1.0];
+            [UIImagePNGRepresentation(image) writeToFile:str atomically:YES];
+        }
+        UIImage *image =  [VEHelp imageWithContentOfPathFull:str];
+        [[NSFileManager defaultManager] removeItemAtPath:str error:nil];
+        return image;
     }
     else if([self isSystemPhotoUrl:url]){//
         UIImage * image = [VEHelp getSystemPhotoImage:url];
@@ -4224,16 +4283,35 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     //检查是否为webm文件
     if([fileExtension caseInsensitiveCompare:@"webm"] == NSOrderedSame)
     {
+        CMTime time = CMTimeMakeWithSeconds(0.1, TIMESCALE);
         WebmMediaInfo *mediaInfo = [VECore getWebmInfo:url.path];
         float scale = 1.0;
-        if( (mediaInfo.videoTrack.width > 2048) || ( mediaInfo.videoTrack.height > 2048 ) )
+        if( (mediaInfo.videoTrack.width > 480) || ( mediaInfo.videoTrack.height > 480 ) )
         {
             if( mediaInfo.videoTrack.width > mediaInfo.videoTrack.height )
-                scale = 2048/mediaInfo.videoTrack.width;
+                scale = 480.0/(float)mediaInfo.videoTrack.width;
             else
-                scale = 2048/mediaInfo.videoTrack.height;
+                scale = 480.0/(float)mediaInfo.videoTrack.height;
         }
-        return [VECore getImageFromWebmFilePath:url.path time:0.1 scale:1.0];
+        int iTime  = (int)CMTimeGetSeconds(time);
+        if( (CMTimeGetSeconds(time) - ((float)iTime)) >= 0.5 )
+        {
+            iTime++;
+        }
+        NSString *patch = [VEHelp getMaterialThumbnail:url];
+        
+        if( ![[NSFileManager defaultManager] fileExistsAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"]] )
+        {
+            [[NSFileManager defaultManager] createDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"] withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+        NSString * str = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.png",iTime]];
+        {
+            UIImage *image = [VECore getImageFromWebmFilePath:url.path time:CMTimeGetSeconds(time) scale:1.0];
+            [UIImagePNGRepresentation(image) writeToFile:str atomically:YES];
+        }
+        UIImage *image =  [VEHelp imageWithContentOfPathFull:str];
+        [[NSFileManager defaultManager] removeItemAtPath:str error:nil];
+        return image;
     }
     else if([self isSystemPhotoUrl:url]){//
         __block UIImage *image;
@@ -4954,11 +5032,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     [imageView sd_setImageWithURL:[NSURL fileURLWithPath:[[VEHelp getEditBundle] pathForResource:@"/New_EditVideo/animatSchedule_@3x" ofType:@"png"]]];
     [reverseVideoView addSubview:imageView];
 
-    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0 , imageView.frame.size.height + imageView.frame.origin.y, reverseVideoView.frame.size.width, 20)];
+    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(imageView.frame), reverseVideoView.frame.size.width - 20, reverseVideoView.frame.size.height - CGRectGetMaxY(imageView.frame) - 10)];
     label.textAlignment = NSTextAlignmentCenter;
     label.font = [UIFont systemFontOfSize:12];
     label.text = [NSString stringWithFormat:VELocalizedString(@"倒放中%0.1f%%", nil),0];
     label.textColor = [UIColor whiteColor];
+    label.numberOfLines = 0;
     label.tag = 30121;
     *labelTag = 30121;
     [reverseVideoView addSubview:label];
@@ -4976,6 +5055,17 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         btn.hidden = YES;
     }
     return view ;
+}
+//日期转字符串
++(NSString *)dateToTimeString1:(NSDate *)date{
+     NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+     [formatter setDateStyle:NSDateFormatterMediumStyle];
+     [formatter setTimeStyle:NSDateFormatterShortStyle];
+     [formatter setDateFormat:@"YYYY/MM/dd HH:mm"]; // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
+     //设置时区,这个对于时间的处理有时很重要
+     NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
+     [formatter setTimeZone:timeZone];
+     return [formatter stringFromDate:date];
 }
 //日期转字符串
 +(NSString *)dateToTimeString:(NSDate *)date{
@@ -9504,7 +9594,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 int     w = [subtitleEffectConfig[@"width"] intValue];
                 int     h = [subtitleEffectConfig[@"height"] intValue];
                 captionItem.isVertical =  [subtitleEffectConfig[@"vertical"] boolValue];
-                
+                captionEx.maskColor = [UIColor colorWithWhite:0.0 alpha:0.0];
                 captionEx.imageFolderPath =[configPath stringByAppendingString:@"/"];
                 captionEx.position= CGPointMake(x, y);
                 captionEx.originalSize = CGSizeMake(w, h);
@@ -12434,6 +12524,77 @@ static OSType help_inputPixelFormat(){
     }
     return crop;
 }
++ (NSString *)getAutoSegmentImagePath_Time:(NSURL *)url atUUID:( NSString * ) uuid{
+    if (![[NSFileManager defaultManager] fileExistsAtPath:kAutoSegmentImageFolder]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:kAutoSegmentImageFolder withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *fileName = @"";
+    if ([url.scheme.lowercaseString isEqualToString:@"ipod-library"]
+        || [url.scheme.lowercaseString isEqualToString:@"assets-library"])
+    {
+        NSRange range = [url.absoluteString rangeOfString:@"?id="];
+        if (range.location != NSNotFound) {
+            fileName = [url.absoluteString substringFromIndex:range.length + range.location];
+            range = [fileName rangeOfString:@"&ext"];
+            fileName = [fileName substringToIndex:range.location];
+        }
+    }else {
+        fileName = [NSString stringWithFormat:@"%ld",[url.path hash]];
+    }
+    NSString *autoSegmentImagePath = [NSString stringWithFormat:@"%@%@_%@",kAutoSegmentImageFolder,fileName,uuid];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:autoSegmentImagePath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:autoSegmentImagePath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    fileName = [NSString stringWithFormat:@"%@-%@",fileName,[VEHelp getFileNameForNowTime]];
+    autoSegmentImagePath = [[autoSegmentImagePath stringByAppendingPathComponent:fileName] stringByAppendingPathExtension:@"png"];
+    return autoSegmentImagePath;
+}
+
++ (NSString *)getAutoSegmentImageFolder_Time:(NSURL *)url  atUUID:( NSString * ) uuid{
+    if (![[NSFileManager defaultManager] fileExistsAtPath:kAutoSegmentImageFolder]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:kAutoSegmentImageFolder withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *fileName = @"";
+    if ([url.scheme.lowercaseString isEqualToString:@"ipod-library"]
+        || [url.scheme.lowercaseString isEqualToString:@"assets-library"])
+    {
+        NSRange range = [url.absoluteString rangeOfString:@"?id="];
+        if (range.location != NSNotFound) {
+            fileName = [url.absoluteString substringFromIndex:range.length + range.location];
+            range = [fileName rangeOfString:@"&ext"];
+            fileName = [fileName substringToIndex:range.location];
+        }
+    }else {
+        fileName = [NSString stringWithFormat:@"%ld",[url.path hash]];
+    }
+    NSString *autoSegmentImagePath = [NSString stringWithFormat:@"%@%@_%@",kAutoSegmentImageFolder,fileName,uuid];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:autoSegmentImagePath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:autoSegmentImagePath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return autoSegmentImagePath;
+}
+
++ (NSString *)getAutoSegmentImagePath_Sky:(NSURL *)url {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:kAutoSegmentImageFolder]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:kAutoSegmentImageFolder withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *fileName = @"";
+    if ([url.scheme.lowercaseString isEqualToString:@"ipod-library"]
+        || [url.scheme.lowercaseString isEqualToString:@"assets-library"])
+    {
+        NSRange range = [url.absoluteString rangeOfString:@"?id="];
+        if (range.location != NSNotFound) {
+            fileName = [url.absoluteString substringFromIndex:range.length + range.location];
+            range = [fileName rangeOfString:@"&ext"];
+            fileName = [fileName substringToIndex:range.location];
+        }
+    }else {
+        fileName = [NSString stringWithFormat:@"%ld",[url.path hash]];
+    }
+    fileName = [NSString stringWithFormat:@"%@_Sky",fileName];
+    NSString *autoSegmentImagePath = [[kAutoSegmentImageFolder stringByAppendingPathComponent:fileName] stringByAppendingPathExtension:@"png"];
+    return autoSegmentImagePath;
+}
 
 + (NSString *)getAutoSegmentImagePath:(NSURL *)url {
     if (![[NSFileManager defaultManager] fileExistsAtPath:kAutoSegmentImageFolder]) {
@@ -14035,6 +14196,7 @@ static OSType help_inputPixelFormat(){
 }
 
 + (NSString *)updateInfomation_TTS:( NSString * ) uploadUrl atLocale:( NSString * ) locale atShortName:( NSString * ) ShortName atText:( NSString * ) text atFormat:( NSString * ) format atTTSName:( NSString * ) ttsName{
+    
     if(!uploadUrl){
         return nil;
     }
@@ -14048,6 +14210,7 @@ static OSType help_inputPixelFormat(){
         [request setHTTPMethod:@"POST"];
         [request setValue:@"application/xml" forHTTPHeaderField:@"Content-Type"];
         [request setValue:format forHTTPHeaderField:@"Format"];
+        [request setTimeoutInterval:1800];
         //XML 组装
         NSMutableData * postData = [[NSMutableData alloc] initWithData:[@"<speak xmlns=\"http://www.w3.org/2001/10/synthesis\" xmlns:mstts=\"http://www.w3.org/2001/mstts\" xmlns:emo=\"http://www.w3.org/2009/10/emotionml\" version=\"1.0\" xml:lang=\""dataUsingEncoding:NSUTF8StringEncoding]];
         {
@@ -14105,4 +14268,34 @@ static OSType help_inputPixelFormat(){
     }
 }
 
+
++(float)volumeForData:(NSData *)pcmData
+{
+    if (pcmData == nil)
+    {
+        return 0;
+    }
+    
+    long long pcmAllLenght = 0;
+    
+    short butterByte[pcmData.length/2];
+    memcpy(butterByte, pcmData.bytes, pcmData.length);//frame_size * sizeof(short)
+    
+    // 将 buffer 内容取出，进行平方和运算
+    for (int i = 0; i < pcmData.length/2; i++)
+    {
+        pcmAllLenght += butterByte[i] * butterByte[i];
+    }
+    // 平方和除以数据总长度，得到音量大小。
+    double mean = pcmAllLenght / (double)pcmData.length;
+    double volume =10*log10(mean);//volume为分贝数大小
+    
+    if (volume >= 45) //45分贝
+    {
+        //在说话
+        
+    }
+    
+    return volume;
+}
 @end

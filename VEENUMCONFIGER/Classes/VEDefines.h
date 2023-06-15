@@ -894,5 +894,6 @@ isPhoneX;\
 #define kPictureTextToVideoFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VEPictureTextToVideo"]
 #define kPictureTextToVideoDraftPListPath [kPictureTextToVideoFolder stringByAppendingPathComponent:@"VEPictureTextToVideo.plist"]
 #define kPictureTextToVideoAudioFolder [kPictureTextToVideoFolder stringByAppendingPathComponent:@"Audio"]
+#define kPictureTextToVideoMaterialsFolder [kPictureTextToVideoFolder stringByAppendingPathComponent:@"AIMatchMaterials"]
 
 #define kSkyISHorizontal 1

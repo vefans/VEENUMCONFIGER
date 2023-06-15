@@ -522,6 +522,7 @@
         }
         self.antiShakeUrl = asset.antiShakeUrl;
         self.antiShakeType = asset.antiShakeType;
+        _videoActualTimeRange = asset.videoActualTimeRange;
         self.contentURL = asset.url;
         _thumbImage = [VEHelp getThumbImageWithUrl:_contentURL];
         if ([VEHelp isImageUrl:_contentURL]) {

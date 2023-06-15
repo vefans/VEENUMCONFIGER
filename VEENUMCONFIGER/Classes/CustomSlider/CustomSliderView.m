@@ -209,9 +209,9 @@
             cycleView.backgroundColor = _selectedBgColor;
         }
     }
-    if(_selectedIndexCallback){
-        _selectedIndexCallback(_currentIndex,self.baifenbiArr[_currentIndex]);
-    }
+//    if(_selectedIndexCallback){
+//        _selectedIndexCallback(_currentIndex,self.baifenbiArr[_currentIndex]);
+//    }
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{

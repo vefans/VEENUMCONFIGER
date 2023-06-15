@@ -237,6 +237,7 @@
     copy.onlineAlbumPath = _onlineAlbumPath;
     copy.doodlePenResourcePath = _doodlePenResourcePath;
     copy.maskResourcePath = _maskResourcePath;
+    copy.searchMediaFromTextPath = _searchMediaFromTextPath;
 
     return copy;
 }
@@ -354,6 +355,7 @@
     copy.onlineAlbumPath = _onlineAlbumPath;
     copy.doodlePenResourcePath = _doodlePenResourcePath;
     copy.maskResourcePath = _maskResourcePath;
+    copy.searchMediaFromTextPath = _searchMediaFromTextPath;
 
     return copy;
 }

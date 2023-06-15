@@ -379,6 +379,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 蒙版资源地址
  */
 @property (nonatomic, copy, nullable) NSString *maskResourcePath;
+/** 由文字搜索图片/视频地址
+ */
+@property (nonatomic, copy, nullable) NSString *searchMediaFromTextPath;
 
 /** MV (default false)
  */

@@ -258,7 +258,7 @@
         if(_type == VEScrollItemType_VoiceFX || _type == VEScrollItemType_Tone)
         {
             _itemTitleLabel.textColor = [UIColor whiteColor];
-            _itemIconView.backgroundColor = SCREEN_BACKGROUND_COLOR;
+            _itemIconView.backgroundColor = UIColorFromRGB(0x272727);
         }
         else if(_type == VEScrollItemType_Music)
         {
@@ -281,7 +281,7 @@
         if(_type == VEScrollItemType_VoiceFX || _type == VEScrollItemType_Tone)
         {
             _itemTitleLabel.textColor = [UIColor whiteColor];
-            _itemIconView.backgroundColor = UIColorFromRGB(0x333333);
+            _itemIconView.backgroundColor = UIColorFromRGB(0x272727);
         }
         else if(_type == VEScrollItemType_Music)
         {

@@ -145,6 +145,8 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property (nonatomic, assign) BOOL  isNewFont;
 @property (nonatomic, assign) BOOL isPictureEditing;
 
+@property (nonatomic, assign) BOOL  isPEPhoto;
+
 @property (nonatomic,strong) NSMutableArray          *edit_functionLists;
 @property (nonatomic,strong) VEExportConfiguration   *exportConfiguration;
 @property (nonatomic,strong) VEEditConfiguration     *editConfiguration;

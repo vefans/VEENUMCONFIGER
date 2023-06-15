@@ -510,7 +510,7 @@ static const CGFloat kLabelsFontSize = 12.0f;
     }else{
         _isLeft = NO;
         _isRight = NO;
-        _isMiddle = YES;
+//        _isMiddle = YES;
         if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
             [_delegate touchesBegan:self isLeft:NO isRight:NO];
         }

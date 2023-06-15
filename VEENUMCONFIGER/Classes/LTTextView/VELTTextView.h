@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "VECustomTextView.h"
 
 @class VELTTextView;
 
@@ -25,10 +26,13 @@
 @property (weak, nonatomic) id<VELTTextViewDelegate>  delegate;
 
 /**  */
-@property (nonatomic, strong) UITextView  *textView;
+@property (nonatomic, strong) VECustomTextView  *textView;
 
 /** 占位*/
 @property (nonatomic, strong) UITextView  *placeholderTextView;
+
+/** Default is NSTextAlignmentCenter .*/
+@property (nonatomic, assign) NSTextAlignment textAlignment;
 
 + (instancetype)placeholderTextView;
 @end

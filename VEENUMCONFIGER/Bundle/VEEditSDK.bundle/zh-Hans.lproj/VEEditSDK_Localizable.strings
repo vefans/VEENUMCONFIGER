@@ -1460,13 +1460,7 @@
 "Exit Editing" = "退出编辑";
 "Exit editing at this time, and the entered text content will not be saved" = "此时退出编辑，已输入的文本内容将不会保存";
 "Confirm exit" = "确认退出";
-"" = "";
-"" = "";
-"" = "";
-"" = "";
-"" = "";
-"" = "";
-"" = "";
-"" = "";
-"" = "";
-"" = "";
+"Import Edit" = "导入剪辑";
+"Select Tone" = "选择音色";
+"Want to create a video but only have text? Tired of searching for the perfect image? Now you can combine graphics and text together. Our AI recognizes your text and matches it with relevant images, while also adding voiceovers to your text. With just one click, you can generate your own illustrated video! Come and Start creating now!" = "想做视频却只有文案？费尽心思找图却一直找不到合适的？现在图文成片可以
+智能识别文字并配上相关的图片，同时为文字配音，一键自动生成视频！快来制作你的图文成片视频吧！";

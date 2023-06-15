@@ -9,6 +9,7 @@
 #import "VELTTextView.h"
 #import "VEHelp.h"
 #import "VEWindow.h"
+#import "VECustomTextView.h"
 
 //这里是限制字数
 #define MAX_WOVEDeluxe_LIMIT 200
@@ -32,6 +33,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = UIColorFromRGB(0x272727);
+        _textAlignment = NSTextAlignmentCenter;
         [self setupUI];
 
     }
@@ -51,11 +53,13 @@
  */
 - (void)layoutSubviews{
     [super layoutSubviews];
-
-    CGFloat textViewW = self.frame.size.width;
-    CGFloat textViewH = self.frame.size.height;
-    self.textView.frame = CGRectMake(0, 0, textViewW, textViewH );
-    self.placeholderTextView.frame  = CGRectMake(0, 0, textViewW, textViewH );
+    
+    self.textView.frame = self.bounds;
+    self.placeholderTextView.frame = self.bounds;
+    if (_textAlignment == NSTextAlignmentCenter) {
+        _textView.contentInset = UIEdgeInsetsMake((_textView.frame.size.height - _textView.contentSize.height) / 2, 0, 0, 0);
+        _placeholderTextView.contentInset = UIEdgeInsetsMake((_placeholderTextView.frame.size.height - _placeholderTextView.contentSize.height) / 2, 0, 0, 0);
+    }
 
 }
 //点击return 按钮 去掉
@@ -73,7 +77,7 @@
 }
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
-    if (textView.text.length == 1 && text.length == 0 && range.location == 0) {
+    if (textView.text.length <= 1 && text.length == 0 && range.location == 0) {
         self.placeholderTextView.hidden = NO;
     }else{
         self.placeholderTextView.hidden =YES;
@@ -128,13 +132,21 @@
 //    }
 }
 
-- (UITextView *)textView{
+
+- (VECustomTextView *)textView{
     if (!_textView) {
-        _textView = [[UITextView alloc]init];
+        _textView = [[VECustomTextView alloc] initWithFrame:self.bounds];
         _textView.backgroundColor = [UIColor clearColor];
         _textView.font = [UIFont systemFontOfSize:13];
         _textView.textColor = [UIColor whiteColor];
         _textView.textAlignment = NSTextAlignmentLeft;
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.alignment = NSTextAlignmentLeft;
+        paragraphStyle.lineSpacing = 5; // 行间距
+        NSDictionary *attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:13],
+                                     NSForegroundColorAttributeName:_textView.textColor,
+                                     NSParagraphStyleAttributeName:paragraphStyle};
+        _textView.typingAttributes = attributes;
         _textView.delegate = self;
     }
 
@@ -142,11 +154,18 @@
 }
 - (UITextView *)placeholderTextView{
     if (!_placeholderTextView) {
-        _placeholderTextView = [[UITextView alloc]init];
+        _placeholderTextView = [[UITextView alloc] initWithFrame:self.bounds];
         _placeholderTextView.backgroundColor = [UIColor clearColor];
         _placeholderTextView.font = [UIFont systemFontOfSize:13];
         _placeholderTextView.textColor = UIColorFromRGB(0x727272);
         _placeholderTextView.text = VELocalizedString(@"点击输入文字", nil);
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.alignment = NSTextAlignmentLeft;
+        paragraphStyle.lineSpacing = 5; // 行间距
+        NSDictionary *attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:13],
+                                     NSForegroundColorAttributeName:_placeholderTextView.textColor,
+                                     NSParagraphStyleAttributeName:paragraphStyle};
+        _placeholderTextView.typingAttributes = attributes;
     }
     return _placeholderTextView;
 }

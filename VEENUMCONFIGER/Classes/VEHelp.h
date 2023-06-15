@@ -348,8 +348,10 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (UIImage *)imageWithContentOfPathFull:(NSString *)path;
 + (UIImage *)imageWithWebP:(NSString *)filePath error:(NSError **)error;
 
+
 //日期转字符串
 +(NSString *)dateToTimeString:(NSDate *)date;
++(NSString *)dateToTimeString1:(NSDate *)date;
 //获取当前时间戳（毫秒级）
 +(long)getNowTimeTimestamp;
 ///获取当前时间戳作为文件名
@@ -571,7 +573,10 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (CGSize)trackSize:(NSURL *)contentURL rotate:(float)rotate;
 + (CGSize)trackSize:(NSURL *)contentURL rotate:(float)rotate crop:(CGRect)crop;
 
++ (NSString *)getAutoSegmentImagePath_Sky:(NSURL *)url;
 + (NSString *)getAutoSegmentImagePath:(NSURL *)url;
++ (NSString *)getAutoSegmentImagePath_Time:(NSURL *)url atUUID:( NSString * ) uuid;
++ (NSString *)getAutoSegmentImageFolder_Time:(NSURL *)url atUUID:( NSString * ) uuid;
 + (NSString *)getErasePenImagePath:(NSURL *)url;
 
 + (NSString *)getMaterialCachedFilePath:(VECustomizationFunctionType)materialType netFilePath:(NSString *)netFilePath updatetime:(NSString *)updatetime;
@@ -656,4 +661,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
  */
 + (NSString *)updateInfomation_TTS:( NSString * ) uploadUrl atLocale:( NSString * ) locale atShortName:( NSString * ) ShortName atText:( NSString * ) text atFormat:( NSString * ) format atTTSName:( NSString * ) ttsName;
 
+/**录制音频时候根据当前数据返回音量大小
+ */
++(float)volumeForData:(NSData *)pcmData;
 @end
