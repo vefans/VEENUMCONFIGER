@@ -11,6 +11,8 @@
 IB_DESIGNABLE
 @interface VETTRangeSlider : UIControl <UIGestureRecognizerDelegate>
 
+@property (nonatomic, assign) BOOL  isSet;
+
 @property ( nonatomic, assign ) BOOL isSetSelected;
 @property (nonatomic, assign) BOOL      isStartMove;
 @property (nonatomic, assign) BOOL      isStartDrag;

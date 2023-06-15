@@ -254,6 +254,15 @@ static const CGFloat kLabelsFontSize = 12.0f;
 
     [self updateHandlePositions];
     [self updateLabelPositions];
+    
+    if( self.isSet )
+    {
+        
+        //update the delegate
+        if (_delegate ){
+            [_delegate touchesEnded:self];
+        }
+    }
 }
 
 - (id)initWithCoder:(NSCoder *)aCoder
