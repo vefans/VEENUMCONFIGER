@@ -208,6 +208,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**启用相册焦距 (default true)
  */
 @property (nonatomic,assign) bool enableFocalLength;
+
+/** 是否显示相册按钮(default true)
+ */
+@property (nonatomic, assign) bool isShowAlbumButton;
+
 @end
 
 NS_ASSUME_NONNULL_END

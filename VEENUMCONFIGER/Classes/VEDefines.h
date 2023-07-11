@@ -446,13 +446,6 @@ typedef NS_ENUM(NSInteger,AdjustType){
     Adjust_SoftLight,        //柔光
 };
 
-/**相册返回数据类型
- */
-typedef NS_ENUM(NSInteger, SELECTALBUMFILETYPE){
-    ALBUMFILETYPE_URL,    //单纯的返回URL
-    ALBUMFILETYPE_MediaInfo  //返回带有视频信息数据的一个MediaInfo对象
-};
-
 //字幕对齐方式
 typedef NS_ENUM(NSInteger, UICaptionTextAlignment) {
     UICaptionTextAlignmentLeft = 0,
@@ -880,10 +873,6 @@ isPhoneX;\
 
 #define kOcclusionImageFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/OcclusionImages"]
 #define kFaceImagesFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/FaceImages"]
-
-#define kTTSURL @"http://120.55.82.68:1233/api/ra"
-#define kTTS_ServiceURL @"http://vesystem.effectlib.com/api/v1/service/list"
-
 
 #define kTextMaretrialFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VETextMaretrial/"]
 #define kTextMaretrialPlistPath [kTextMaretrialFolder stringByAppendingPathComponent:@"veTextMaretrials.plist"]

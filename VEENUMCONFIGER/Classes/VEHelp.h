@@ -659,9 +659,12 @@ extern float const VEAdjust_DefaultValue_Exposure;
  *
  * 获取MP3文件（ 后缀 .mp3）
  */
-+ (NSString *)updateInfomation_TTS:( NSString * ) uploadUrl atLocale:( NSString * ) locale atShortName:( NSString * ) ShortName atText:( NSString * ) text atFormat:( NSString * ) format atTTSName:( NSString * ) ttsName;
++ (id)updateInfomation_TTSAtLocale:( NSString * ) locale atShortName:( NSString * ) ShortName atText:( NSString * ) text atFormat:( NSString * ) format atTTSName:( NSString * ) ttsName isOnlyReturnAudioPath:(BOOL)isOnlyReturnAudioPath;
 
 /**录制音频时候根据当前数据返回音量大小
  */
 +(float)volumeForData:(NSData *)pcmData;
+
++(NSString *)getChineseFirstLetter:(NSString *)text;
+
 @end

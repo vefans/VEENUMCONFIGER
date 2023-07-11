@@ -45,6 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *) UIColorToHexString:(UIColor *)uiColor;
 - (UIColor *) RedoColorWithHexString:(NSString *)strColor;
 - (void)setSelectDragColor:(UIColor *)color;
+- (void)setSelectColor:(UIColor *) color;
 @end
 
 NS_ASSUME_NONNULL_END

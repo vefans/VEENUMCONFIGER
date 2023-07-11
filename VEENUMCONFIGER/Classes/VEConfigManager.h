@@ -26,6 +26,13 @@ typedef NS_ENUM(NSInteger, SUPPORTLANGUAGE){
     OtherLanguages,// 其他语言
 };
 
+typedef NS_ENUM(NSInteger, AUDIO_SPEECH_Type){
+    AUDIO_SPEECH_Type_System,                    //系统
+    AUDIO_SPEECH_Type_TencentCloud,          //腾讯云
+    AUDIO_SPEECH_Type_PrivateCloud,            //私有云
+    AUDIO_SPEECH_Type_OfflineModel,            //离线模型
+};
+
 //导出前回调
 typedef void(^VEPrepareExportHandler) (UIViewController *viewController);
 
@@ -112,6 +119,14 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
                                           file:(VECustomTextPhotoFile *)file
                                videoProportion:(float)videoProportion
                              completionHandler:(void (^)(NSString *textImagePath, VECustomTextPhotoFile *file))completionHandler;
+
+/** 显示相册界面回调
+ *  Display album interface callback.
+ */
+- (void)veShowAlbumControllerWithSuperView:(UIViewController *)superViewController
+                            dismissHandler:(void(^)(void))dismissHandler
+                         completionHandler:(void (^)(NSMutableArray <id >*filelist))completionHandler
+                             cancelHandler:(void(^)(void))cancelHandler;
 
 /** 开始直播推流
  */
@@ -217,6 +232,7 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
  */
 @property (nonatomic,assign) SUPPORTLANGUAGE language;
 
+@property (nonatomic, assign) AUDIO_SPEECH_Type audioSpeechType;
 @property (nonatomic, strong) NSString *  model;
 
 /** APP的主色调
@@ -249,10 +265,24 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
  */
 @property (nonatomic, strong) UIFont *navigationBarTitleFont;
 
+/** APP中工具栏文字颜色
+ *  默认为：[UIFont boldSystemFontOfSize:20]
+ */
+@property (nonatomic, strong) UIColor *toolsTitleColor;
+
+/** APP中工具栏文字字体
+ *  默认为：[UIFont boldSystemFontOfSize:12]
+ */
+@property (nonatomic, strong) UIFont *toolsTitleFont;
+/** APP中自定义Tool图标位置
+ */
+@property (nonatomic, strong) NSString *customToolImageFolder;
+
 /** 后台返回的“定格”特效分类id
  *  默认为：57685258
  */
 @property (nonatomic, assign) int freezeFXCategoryId;
+
 
 /** 开始导出
  @param minWH 视频分辨率宽高的最小值；例导出720P视频，则设置为720

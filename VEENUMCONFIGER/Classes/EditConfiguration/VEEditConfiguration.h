@@ -86,6 +86,14 @@ typedef NS_ENUM(NSInteger, ALBUMTYPE){
     kONLYALBUMVIDEO,
     kONLYALBUMIMAGE
 };
+
+/**相册返回数据类型
+ */
+typedef NS_ENUM(NSInteger, SELECTALBUMFILETYPE){
+    ALBUMFILETYPE_URL,    //单纯的返回URL
+    ALBUMFILETYPE_MediaInfo  //返回带有视频信息数据的一个MediaInfo对象
+};
+
 typedef NS_ENUM(NSInteger, BackGroundColorType) {
     BackGroundColorTypeLight,        //亮色
     BackGroundColorTypeDark, //深色
@@ -97,13 +105,13 @@ NS_ASSUME_NONNULL_BEGIN
 @interface VEEditConfiguration : NSObject<NSMutableCopying,NSCopying>
 
 @property(nonatomic, assign)BOOL    isMultiGridVideo;
+
+/** 分屏排版(default true)
+ */
 @property(nonatomic, assign)BOOL    isShowSplitScreen;
 @property(nonatomic, assign)BOOL    isSplitScreenTypography;
 @property(nonatomic, assign)CGSize  SplitScreenSize;
 
-/** 相册选中媒体后，是否禁止生成缩略图(default false)
- */
-@property (assign, nonatomic)bool thumbDisable;
 /** 向导模式 如果需要自己删除一些功能 则需启用此参数  default false
  */
 @property (assign, nonatomic)bool enableWizard DEPRECATED_ATTRIBUTE;
@@ -144,6 +152,19 @@ NS_ASSUME_NONNULL_BEGIN
 /** 选取素材进入GIF制作
  */
 @property (nonatomic, assign) bool isGIFAlbum;
+
+/** 是否隐藏网络素材(default false)
+ */
+@property (nonatomic, assign) bool isHiddenNetworkMaterial;
+
+/** 返回媒体类型，默认为ALBUMFILETYPE_MediaInfo
+ */
+@property (nonatomic,assign) SELECTALBUMFILETYPE resultFileType;
+
+/** 相册选中媒体后，是否禁止生成缩略图(default false)
+ */
+@property (assign, nonatomic)bool thumbDisable;
+
 #pragma mark- 设置截取界面
 /** 截取时间模式
  */
@@ -382,6 +403,15 @@ NS_ASSUME_NONNULL_BEGIN
 /** 由文字搜索图片/视频地址
  */
 @property (nonatomic, copy, nullable) NSString *searchMediaFromTextPath;
+/** 解析网络文章文字信息的地址
+ */
+@property (nonatomic, copy, nullable) NSString *getTextContentFromLinkPath;
+/** 骏证功能是否可用的地址
+ */
+@property (nonatomic, copy, nullable) NSString *functionEnablePath;
+/** 文字转语音地址
+ */
+@property (nonatomic, copy, nullable) NSString *textToSpeechPath;
 
 /** MV (default false)
  */
@@ -405,13 +435,15 @@ NS_ASSUME_NONNULL_BEGIN
  *  该功能是以阿里云智能语音为例，须设置nuiSDKConfig
  */
 @property (nonatomic,assign) bool enableSubtitleToSpeech;
+/** enableAIRecogSubtitle为true时，才生效
+ */
+@property (nonatomic,assign) bool enableAIRecogSubtitle;
+
 /** 字幕AI识别 (default true),enableSubtitle为true时，才生效
  *  该功能是以腾讯云为例，须设置tencentAIRecogConfig
  */
-@property (nonatomic,assign) bool enableAIRecogSubtitle;
-/** enableAIRecogSubtitle为true时，才生效
- */
 @property (nonatomic,strong,nullable) TencentCloudAIRecogConfig *tencentAIRecogConfig;
+
 /** 百度云AI账号配置
 */
 @property (nonatomic,strong,nullable) BaiDuCloudAIConfig *baiDuCloudAIConfig;
@@ -451,6 +483,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 背景 (default true)
  */
 @property (nonatomic,assign) bool enableBackgroundEdit;
+/** 单帧导出 (default true)
+ */
+@property (nonatomic,assign) bool enableSnapshort;
 /** 封面 (default true)
  */
 @property (nonatomic,assign) bool enableCover;

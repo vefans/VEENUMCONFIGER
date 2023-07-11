@@ -49,10 +49,14 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
         _navigationBarTitleColor = [UIColor whiteColor];
         _navigationBarTitleFont = [UIFont boldSystemFontOfSize:20];
         _freezeFXCategoryId = 57685258;
+        _toolsTitleFont = [UIFont systemFontOfSize:10];
+        _toolsTitleColor = UIColorFromRGB(0xcccccc);
     }
     return self;
 }
-
+- (UIColor *)viewBackgroundColor{
+    return _viewBackgroundColor;
+}
 - (void)setLanguage:(SUPPORTLANGUAGE)language {
     _language = language;
     switch (language) {

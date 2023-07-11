@@ -1120,6 +1120,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             fileName = [fileUrl.absoluteString substringFromIndex:range.length + range.location];
             range = [fileName rangeOfString:@"&ext"];
             fileName = [fileName substringToIndex:range.location];
+        }else {
+            fileName = [fileUrl.lastPathComponent stringByDeletingPathExtension];
         }
     }else {
         NSString *str = [VEHelp getStrPath:fileUrl.pathComponents];
@@ -4041,7 +4043,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 + (void)setApngCaptionFrameArrayWithImagePath:(NSString *)path jsonDic:(NSMutableDictionary *)jsonDic {
     if ([jsonDic.allKeys containsObject:@"frameArray"] && [jsonDic[@"frameArray"] count] > 1) {
-        return;
+        NSString *imagePath = [path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@0.png", jsonDic[@"name"]]];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:imagePath]) {
+            return;
+        }
     }
     NSArray *files = [[NSFileManager defaultManager] enumeratorAtPath:path].allObjects;
     NSString *apngPath;
@@ -4251,17 +4256,19 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             iTime++;
         }
         NSString *patch = [VEHelp getMaterialThumbnail:url];
-        if( ![[NSFileManager defaultManager] fileExistsAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"]] )
-        {
-            [[NSFileManager defaultManager] createDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"] withIntermediateDirectories:YES attributes:nil error:nil];
-        }
-        NSString * str = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.png",iTime]];
-        {
-            UIImage *image = [VECore getImageFromWebmFilePath:url.path time:CMTimeGetSeconds(time) scale:1.0];
-            [UIImagePNGRepresentation(image) writeToFile:str atomically:YES];
-        }
-        UIImage *image =  [VEHelp imageWithContentOfPathFull:str];
-        [[NSFileManager defaultManager] removeItemAtPath:str error:nil];
+        patch = [NSString stringWithFormat:@"%@/%d.png", patch, iTime];
+//        if( ![[NSFileManager defaultManager] fileExistsAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"]] )
+//        {
+//            [[NSFileManager defaultManager] createDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"] withIntermediateDirectories:YES attributes:nil error:nil];
+//        }
+//        NSString * str = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.png",iTime]];
+//        {
+//            UIImage *image = [VECore getImageFromWebmFilePath:url.path time:CMTimeGetSeconds(time) scale:1.0];
+//            [UIImagePNGRepresentation(image) writeToFile:str atomically:YES];
+//        }
+        UIImage *image =  [VEHelp imageWithContentOfPathFull:patch];
+//        UIImage *image =  [VEHelp imageWithContentOfPathFull:str];
+//        [[NSFileManager defaultManager] removeItemAtPath:str error:nil];
         return image;
     }
     else if([self isSystemPhotoUrl:url]){//
@@ -4687,28 +4694,42 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 + (CGSize)trackSize:(NSURL *)contentURL rotate:(float)rotate crop:(CGRect)crop{
     CGSize size = CGSizeZero;
-    AVURLAsset *asset = [AVURLAsset assetWithURL:contentURL];
+    NSString* filePath = [contentURL path];
+    NSString *fileExtension = [filePath pathExtension];
     
-    NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
-    if([tracks count] > 0) {
-        AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
-        size = CGSizeApplyAffineTransform(videoTrack.naturalSize, videoTrack.preferredTransform);
-        if (CGSizeEqualToSize(size, CGSizeZero) || size.width == 0.0 || size.height == 0.0) {
-            NSArray * formatDescriptions = [videoTrack formatDescriptions];
-            CMFormatDescriptionRef formatDescription = NULL;
-            if ([formatDescriptions count] > 0) {
-                formatDescription = (__bridge CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
-                if (formatDescription) {
-                    size = CMVideoFormatDescriptionGetPresentationDimensions(formatDescription, false, false);
+    BOOL isportrait = false;
+    if([fileExtension caseInsensitiveCompare:@"webm"] == NSOrderedSame)
+    {
+        isportrait = true;
+        WebmMediaInfo *mediaInfo = [VECore getWebmInfo:contentURL.path];
+        size = CGSizeMake(mediaInfo.videoTrack.width, mediaInfo.videoTrack.height);
+    }
+    else
+    {
+        AVURLAsset *asset = [AVURLAsset assetWithURL:contentURL];
+        NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+        if([tracks count] > 0) {
+            AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
+            size = CGSizeApplyAffineTransform(videoTrack.naturalSize, videoTrack.preferredTransform);
+            if (CGSizeEqualToSize(size, CGSizeZero) || size.width == 0.0 || size.height == 0.0) {
+                NSArray * formatDescriptions = [videoTrack formatDescriptions];
+                CMFormatDescriptionRef formatDescription = NULL;
+                if ([formatDescriptions count] > 0) {
+                    formatDescription = (__bridge CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
+                    if (formatDescription) {
+                        size = CMVideoFormatDescriptionGetPresentationDimensions(formatDescription, false, false);
+                    }
                 }
             }
         }
+        
+        isportrait = [self isVideoPortrait:asset];
     }
     size = CGSizeMake(fabs(size.width), fabs(size.height));
     
     CGSize newSize;
     
-    BOOL isportrait = [self isVideoPortrait:asset];
+     
     
     if(size.height == size.width){
         
@@ -14195,13 +14216,14 @@ static OSType help_inputPixelFormat(){
     return isInitialValue;
 }
 
-+ (NSString *)updateInfomation_TTS:( NSString * ) uploadUrl atLocale:( NSString * ) locale atShortName:( NSString * ) ShortName atText:( NSString * ) text atFormat:( NSString * ) format atTTSName:( NSString * ) ttsName{
++ (id)updateInfomation_TTSAtLocale:( NSString * ) locale atShortName:( NSString * ) ShortName atText:( NSString * ) text atFormat:( NSString * ) format atTTSName:( NSString * ) ttsName isOnlyReturnAudioPath:(BOOL)isOnlyReturnAudioPath {
     
-    if(!uploadUrl){
+    if([VEConfigManager sharedManager].editConfiguration.textToSpeechPath.length == 0){
         return nil;
     }
     format = @"audio-24khz-48kbitrate-mono-mp3";
     @autoreleasepool {
+        NSString *uploadUrl = [VEConfigManager sharedManager].editConfiguration.textToSpeechPath;
         uploadUrl=[NSString stringWithString:[uploadUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
         NSURL *url=[NSURL URLWithString:uploadUrl];
         //http post 参数设置 header
@@ -14245,29 +14267,66 @@ static OSType help_inputPixelFormat(){
         NSHTTPURLResponse* urlResponse = nil;
         NSError *error;
         NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
-        //判断 是否获取音频文件成功 result有字符为成功
-        NSString *result = nil;
-        if( responseData )
-            result = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-        NSLog(@"Response Code: %d", [urlResponse statusCode]);
-        if( result == nil )
-        {
-            NSString *mp3 = [VEHelp getMaterialTTSAudioPath:ttsName];
-            BOOL isSave = false;
-            if( responseData )
-                isSave = [responseData writeToFile:mp3 atomically:false];
-            if( !isSave )
-                return nil;
-            else
-                return mp3;
-        }
-        else
-        {
+        if (!responseData) {
             return nil;
         }
+        
+        NSString *result = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+        
+        if( result)
+        {
+            NSMutableDictionary *dic = [VEHelp jsonToObject:result];
+            if ([dic isKindOfClass:[NSDictionary class]]) {
+                
+                if( [dic[@"code"] integerValue] == 200 )
+                {
+                    NSMutableDictionary * objDic = dic[@"data"];
+                    //音频数据
+                    NSData *audioData = [[NSData alloc] initWithBase64EncodedString:objDic[@"AudioData"][@"data"] options:NSDataBase64DecodingIgnoreUnknownCharacters];
+                    
+                    NSString *mp3;
+                    if( audioData ) {
+                        mp3 = [VEHelp getMaterialTTSAudioPath:ttsName];
+                        BOOL isSave = [audioData writeToFile:mp3 atomically:false];
+                        if( !isSave ) {
+                            return nil;
+                        }
+                    }else {
+                        return nil;
+                    }
+                    if (isOnlyReturnAudioPath) {
+                        return mp3;
+                    }
+                    NSMutableArray * audioMetas = objDic[@"AudioMeta"];
+                    NSMutableArray * textMetas = [NSMutableArray new];
+                    
+                    [audioMetas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        NSMutableArray *objArray = [NSMutableArray new];
+                        id objDic = obj[@"Metadata"][0][@"Data"];
+                        id objText = objDic[@"text"];
+                        [objArray addObject:[NSNumber numberWithFloat:[objDic[@"Offset"] floatValue]/10000000.0]];
+                        [objArray addObject:[NSNumber numberWithInteger:[objText[@"Length"] integerValue]]];
+                        [objArray addObject:objText[@"Text"]];
+                        [objArray addObject:[NSNumber numberWithFloat:[objDic[@"Duration"] floatValue]/10000000.0]];
+                        [textMetas addObject:objArray];
+                    }];
+                    
+                    NSMutableArray *array = [NSMutableArray new];
+                    [array addObject:textMetas];
+                    [array addObject:mp3];
+                    return array;
+                    
+                    NSLog(@"%@", dictionary);
+                } else {
+                    NSLog(@"Invalid JSON string");
+                }
+            }else if ([result isKindOfClass:[NSString class]]) {
+                NSLog(@"%@", result);
+            }
+        }
+        return nil;
     }
 }
-
 
 +(float)volumeForData:(NSData *)pcmData
 {
@@ -14298,4 +14357,24 @@ static OSType help_inputPixelFormat(){
     
     return volume;
 }
+
++ (NSString *)getChineseFirstLetter:(NSString *)text {
+    @autoreleasepool {
+        NSString *hanziText = @"汉字";
+        CFMutableStringRef firstLetter = (__bridge_retained CFMutableStringRef)[NSMutableString stringWithString:text];
+        CFStringTransform(firstLetter, NULL, kCFStringTransformToLatin, false);
+        CFStringTransform(firstLetter, NULL, kCFStringTransformStripCombiningMarks, false);
+            
+        NSString *firstLetterString;
+        if (CFStringGetLength(firstLetter) > 0) {
+            UniChar character = CFStringGetCharacterAtIndex(firstLetter, 0);
+            firstLetterString = [[NSString stringWithCharacters:&character length:1] uppercaseString];
+        }
+        
+        CFRelease(firstLetter);
+        
+        return firstLetterString;
+    }
+}
+
 @end

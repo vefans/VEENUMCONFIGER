@@ -18,6 +18,9 @@
 }
 - (instancetype)init{
     if(self = [super init]){
+        //相册界面
+        _resultFileType = ALBUMFILETYPE_MediaInfo;
+        _isShowSplitScreen = YES;
         _enableTemplateTheme = true;
         _supportFileType                        = SUPPORT_ALL;
         _defaultSelectAlbum                     = VEDEFAULTSELECTALBUM_VIDEO;
@@ -59,7 +62,7 @@
         _enableAlbumCamera = true;
         _enableAnimation = true;
         _enableBeauty = true;
-        
+        _enableSnapshort = true;
         _enableAuidoCurveSpeed = true;
         _enableMediaCurveSpeed = true;
         _enableCaptionKeyframe = true;
@@ -124,6 +127,12 @@
 }
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEEditConfiguration *copy   = [[[self class] allocWithZone:zone] init];
+    //相册界面
+    copy.isHiddenNetworkMaterial = _isHiddenNetworkMaterial;
+    copy.resultFileType = _resultFileType;
+    copy.thumbDisable = _thumbDisable;
+    copy.isShowSplitScreen = _isShowSplitScreen;
+    
     copy.enableOcclusion = _enableOcclusion;
     copy.enableParticle = _enableParticle;
     copy.enableSmear = _enableSmear;
@@ -131,6 +140,7 @@
     copy.enableAperture = _enableAperture;
     copy.enableHDR = _enableHDR;
     copy.enableHoly = _enableHoly;
+    copy.enableSnapshort = _enableSnapshort;
     copy.enableSpirit = _enableSpirit;
     copy.enableSharpen = _enableSharpen;
     copy.enableBlurry = _enableBlurry;
@@ -238,12 +248,21 @@
     copy.doodlePenResourcePath = _doodlePenResourcePath;
     copy.maskResourcePath = _maskResourcePath;
     copy.searchMediaFromTextPath = _searchMediaFromTextPath;
+    copy.getTextContentFromLinkPath = _getTextContentFromLinkPath;
+    copy.functionEnablePath = _functionEnablePath;
+    copy.textToSpeechPath = _textToSpeechPath;
 
     return copy;
 }
 
 - (id)copyWithZone:(NSZone *)zone{
     VEEditConfiguration *copy   = [[[self class] allocWithZone:zone] init];
+    //相册界面
+    copy.isHiddenNetworkMaterial = _isHiddenNetworkMaterial;
+    copy.resultFileType = _resultFileType;
+    copy.thumbDisable = _thumbDisable;
+    copy.isShowSplitScreen = _isShowSplitScreen;
+    
     copy.netMaterialTypeURL                     = _netMaterialTypeURL;
     copy.enableTon = _enableTon;
     copy.enableParticle = _enableParticle;
@@ -356,6 +375,9 @@
     copy.doodlePenResourcePath = _doodlePenResourcePath;
     copy.maskResourcePath = _maskResourcePath;
     copy.searchMediaFromTextPath = _searchMediaFromTextPath;
+    copy.getTextContentFromLinkPath = _getTextContentFromLinkPath;
+    copy.functionEnablePath = _functionEnablePath;
+    copy.textToSpeechPath = _textToSpeechPath;
 
     return copy;
 }

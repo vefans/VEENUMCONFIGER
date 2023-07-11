@@ -53,6 +53,7 @@
         _enableProportion = true;
         _enableFile = true;
         _enableFocalLength = true;
+        _isShowAlbumButton = true;
     }
     
     return self;
@@ -117,6 +118,8 @@
     copy.cameraWaterMarkHeaderDuration          = _cameraWaterMarkHeaderDuration;
     copy.cameraWaterMarkEndDuration          = _cameraWaterMarkEndDuration;
     copy.cameraWaterProcessingCompletionBlock   = _cameraWaterProcessingCompletionBlock;
+    copy.isShowAlbumButton = _isShowAlbumButton;
+    
     return copy;
 }
 
@@ -170,6 +173,7 @@
     copy.cameraWaterMarkHeaderDuration          = _cameraWaterMarkHeaderDuration;
     copy.cameraWaterMarkEndDuration          = _cameraWaterMarkEndDuration;
     copy.cameraWaterProcessingCompletionBlock   = _cameraWaterProcessingCompletionBlock;
+    copy.isShowAlbumButton = _isShowAlbumButton;
     
     return copy;
 }

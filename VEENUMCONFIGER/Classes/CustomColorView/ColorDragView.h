@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,weak)id<ColorDragViewDelegate>   delegate;
 - (void)setdefaultColor:(UIEvent *)event;
 - (void)resetColor;
+-(void)setFocusViewCenter:( CGPoint ) point;
 @end
 
 NS_ASSUME_NONNULL_END

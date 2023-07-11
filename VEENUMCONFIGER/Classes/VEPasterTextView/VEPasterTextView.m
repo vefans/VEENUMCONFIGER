@@ -1618,6 +1618,48 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     return _selfScale;
 }
 
+- (void)refreshFrame:(CGRect)frame {
+    if (frame.size.width < 16 || isnan(frame.size.width) || isinf(frame.size.width)) {
+        frame.size.width = 16;
+    }
+    if (frame.size.height < 16 || isnan(frame.size.height) || isinf(frame.size.height)) {
+        frame.size.height = 16;
+    }
+    self.frame = frame;
+    _contentImage.frame = CGRectInset(self.bounds, globalInset, globalInset);
+    selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
+    if( !iswatermark )
+    {
+        if( _closeBtn )
+        {
+            _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+        }
+        if( _textEditBtn )
+        {
+            _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+        }
+        if (_alignBtn) {
+            _alignBtn.frame = CGRectMake(-globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3);
+        }
+        rotateView.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3);
+        _mirrorBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);        
+    }
+    
+    _selfScale = self.transform.a;
+    
+    [_contentLabel setNeedsLayout];
+    [_shadowLbl setNeedsLayout];
+    
+     [self setFramescale:_selfScale];
+    
+    if( iswatermark )
+    {
+        float size = (_selfScale - 1.0)/1.2f;
+        if([_delegate respondsToSelector:@selector(pasterViewSizeScale: atValue:)]){
+            [_delegate pasterViewSizeScale:self atValue:size];
+        }
+    }
+}
 
 -(float)Angle
 {

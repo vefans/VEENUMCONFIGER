@@ -14,7 +14,7 @@ static char _tapKey;
         [NSThread sleepForTimeInterval:0.5f];
     }
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    CGFloat maxWidth = window.frame.size.width - 60;
+    CGFloat maxWidth = window.frame.size.width - 100;
     CGFloat maxHeight = window.frame.size.height - 200;
     
     UIFont  *font = [UIFont systemFontOfSize:12];
@@ -36,11 +36,11 @@ static char _tapKey;
     tips.scrollEnabled = NO;
     tips.textAlignment = NSTextAlignmentCenter;
     [tips sizeToFit];
+    
     CGRect r = tips.frame;
-    r.origin.y = CGRectGetMidY(r) - r.size.height/2.0;
-    r.size.height = r.size.height;
+    r.origin.y = (window.frame.size.height - r.size.height)/2.0;
     r.size.width = r.size.width + 20;
-    r.origin.x = CGRectGetMidX(r) - r.size.width/2.0;
+    r.origin.x = (window.frame.size.width - r.size.width)/2.0;
     tips.frame = r;
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handlerGuesture:)];

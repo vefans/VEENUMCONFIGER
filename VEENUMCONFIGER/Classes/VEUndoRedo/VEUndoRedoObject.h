@@ -192,6 +192,7 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
 //图层 画笔(涂鸦) 字幕
 @property (nonatomic, strong) NSObject *orOverlay;
 @property (nonatomic, strong) NSObject *dstOverlay;
+@property (nonatomic, strong) NSObject *dstBackgroundOverlay;
 
 @property (nonatomic, strong) CaptionEx *orSubtitle;
 @property (nonatomic, strong) CaptionEx *dstSubtitle;

@@ -48,15 +48,13 @@
         [_navBar addSubview:self.backBtn];
         
         _exportNavBarBtn = [VENavBarButton buttonWithType:UIButtonTypeCustom];
-        _exportNavBarBtn.frame = CGRectMake(kWIDTH - (56+10), kStatusBarHeight + ((kNavgationBar_Height-kStatusBarHeight -25)/2), 56, 25);
+        _exportNavBarBtn.frame = CGRectMake(kWIDTH - ([VEConfigManager sharedManager].iPad_HD ? 74 : 54 + 12), kStatusBarHeight + ((kNavgationBar_Height-kStatusBarHeight -26)/2), ([VEConfigManager sharedManager].iPad_HD ? 64 : 54), 26);
         [_exportNavBarBtn setTitle:VELocalizedString(@"导出", nil) forState:UIControlStateNormal];
-        [_exportNavBarBtn.titleLabel setFont:[UIFont systemFontOfSize:13]];
-        CGSize maximumLabelSize = CGSizeMake(100, 25);
-        [_exportNavBarBtn sizeThatFits:maximumLabelSize];
-        [_exportNavBarBtn setTitleColor:VE_EXPORTBTN_TITLE_COLOR forState:UIControlStateNormal];
-        _exportNavBarBtn.layer.cornerRadius = 4;
+        [_exportNavBarBtn.titleLabel setFont:[UIFont boldSystemFontOfSize:([VEConfigManager sharedManager].iPad_HD ? 14 : 13)]];
+        [_exportNavBarBtn setTitleColor:([VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : [UIColor blackColor]) forState:UIControlStateNormal];
+        _exportNavBarBtn.layer.cornerRadius = 2.0;
         _exportNavBarBtn.layer.masksToBounds = YES;
-        _exportNavBarBtn.backgroundColor = Main_Color;
+        _exportNavBarBtn.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? UIColorFromRGB(0x3c3d3d) : [UIColor whiteColor];
         [_navBar addSubview:_exportNavBarBtn];
         
         self.barline = [[UIView alloc] initWithFrame:CGRectMake(0, kNavgationBar_Height - 0.5, kWIDTH, 0.5)];

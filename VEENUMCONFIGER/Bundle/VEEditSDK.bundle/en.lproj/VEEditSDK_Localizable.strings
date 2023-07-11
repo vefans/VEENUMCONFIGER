@@ -65,6 +65,7 @@
 "截取视频中,请耐心等待..." = "Trimming video, please wait...";
 "视频导出中，请稍候..." = "Video is exporting, please wait...";
 "视频合并中，请稍候..." = "Video being combined, please wait...";
+"视频生成中 %.0f%%" = "Video is generating %.0f%%";
 "导出错误，请重试" = "Export error, please try again";
 "确定取消导出" = "Confirm to quit export";
 "是否放弃编辑？" = "Discard edition?";
@@ -2105,7 +2106,7 @@
 "天空" = "Sky";
 "加图" = "Add";
 "素材" = "Material";
-"景深" = "Scene depth";
+"景深" = "Depth of Field";
 
 "光圈" = "Aperture";
 "圣光" = "Holy light";
@@ -2219,7 +2220,6 @@
 "箭头" = "Arrow";
 "自由画笔" = "Brush";
 "图库" = "Gallery";
-"景深" = "Scene deepth";
 
 
 "删除" = "Delete";
@@ -2791,3 +2791,6 @@
 "请偏头" = "Tilt your head, please";
 "并正对镜头" = "And straight into the camera";
 "导出完成，请到相册查看" = "Saved to album";
+
+"选择语言" = "Select language";
+"识别类型" = "Recognition type";

@@ -7,6 +7,7 @@
 
 #import "ColorDragView.h"
 #import "VEHelp.h"
+#import "CustomColorView.h"
 @interface ColorDragView(){
 }
 @end
@@ -109,7 +110,12 @@
 }
 - (void)resetColor{
     UIImage *image = [self imageFromLayer:self.headerLayer];
-    UIColor *color = [VEHelp colorAtPixel:CGPointMake(_focusView.center.x, _focusView.center.y) source:image];
+//    UIColor *color = [VEHelp colorAtPixel:CGPointMake(_focusView.center.x, _focusView.center.y) source:image];
+    float saturation = (_focusView.center.x/self.frame.size.width - 0.1)/0.9;
+    float brightness = (1.0 - _focusView.center.y/self.frame.size.height)/0.9;
+    float hue = 1.0 - ((CustomColorView*)_delegate).moreColorSlider.value;
+    UIColor *color = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1.0];
+    
     _strawLayer.backgroundColor = color.CGColor;
     if([_delegate respondsToSelector:@selector(changeDragViewColor: isDragEnd:)]){
         [_delegate changeDragViewColor:color isDragEnd:NO];
@@ -146,4 +152,20 @@
 
 }
 
+
+-(void)setFocusViewCenter:( CGPoint ) point
+{
+    _focusView.center = point;
+    UIWindow * window=[[[UIApplication sharedApplication] delegate] window];
+    CGRect rect=[_focusView convertRect:_focusView.bounds toView:window];
+    CGPoint position = CGPointMake(CGRectGetMidX(rect) + 15 - _strawLayer.frame.size.width/2.0, rect.origin.y - _strawLayer.frame.size.height/2.0);
+    CGRect frame = _strawLayer.frame;
+    frame.origin.x = position.x - frame.size.width/2.0;
+    frame.origin.y = position.y - frame.size.height/2.0;
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    _strawLayer.frame = frame;
+    [CATransaction commit];
+    [self resetColor];
+}
 @end
