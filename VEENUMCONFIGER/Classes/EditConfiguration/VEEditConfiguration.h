@@ -103,7 +103,45 @@ typedef NS_ENUM(NSInteger, BackGroundColorType) {
 NS_ASSUME_NONNULL_BEGIN
 
 @interface VEEditConfiguration : NSObject<NSMutableCopying,NSCopying>
+/** 字幕样式加入工具栏-音量(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSubtitleStyleInTool;
 
+/** 配乐-音量(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSoundVolume;
+/** 配乐-淡化(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSoundFade;
+/** 配乐-均衡器(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSoundEqualizer;
+/** 配乐-踩点(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSoundPlanting;
+/** 配乐-分割(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSoundSplit;
+/** 配乐-变声(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSoundVoice;
+/** 配乐-变声(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSoundSpeed;
+/** 配乐-删除(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSoundDelete;
+/** 配乐-复制(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSoundCopy;
+
+
+/** 原声(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSoundorginal;
+/** 音频分离(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSingleAudioSepar;
 @property(nonatomic, assign)BOOL    isMultiGridVideo;
 
 /** 分屏排版(default true)
@@ -241,6 +279,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,assign) bool enableTon;
 
+
+
+
+
+
 /** 光圈 (default true)
  */
 @property (nonatomic,assign) bool enableAperture;
@@ -285,11 +328,24 @@ NS_ASSUME_NONNULL_BEGIN
 /** 倒放 (default true)
  */
 @property (nonatomic,assign) bool enableReverseVideo;
+/** 蒙版 (default true)
+ */
+@property (nonatomic,assign) bool enableMask;
+/** 防抖 (default true)
+ */
+@property (nonatomic,assign) bool enableAntiShake;
+/** VR (default true)
+ */
+@property (nonatomic,assign) bool enableVR;
 
 #pragma mark- 设置高级编辑界面
 /** 草稿 (default false)
  */
 @property (nonatomic,assign) bool enableDraft;
+/** 云草稿 (default true)
+ */
+@property (nonatomic,assign) bool enableCloudDraft;
+
 /** 不显示草稿按钮 (default false)
  */
 @property (nonatomic,assign) bool disableShowDraftButton;
@@ -428,6 +484,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 配音类型 (default 方式一(配音不放在配乐里面))
  */
 @property (nonatomic,assign) VEDUBBINGTYPE dubbingType;
+/** 文字模板(default true)
+ */
+@property(nonatomic, assign)BOOL    enableSubtitleTemplate;
 /** 字幕 (default true)
  */
 @property (nonatomic,assign) bool enableSubtitle;
@@ -540,7 +599,27 @@ NS_ASSUME_NONNULL_BEGIN
 
 //不截取缩略图
 @property (assign, nonatomic)bool isSingletrack;
+/** 主题 (default true)
+ */
 @property (assign, nonatomic)bool enableTemplateTheme;
+/** 扣图 (default true)
+ */
+@property (assign, nonatomic)bool enableCutout;
+/** 切画中画 (default true)
+ */
+@property (assign, nonatomic)bool enableCut_PIP;
+/** 降噪 (default true)
+ */
+@property (assign, nonatomic)bool enableNoise;
+/** 边角定位 (default true)
+ */
+@property (assign, nonatomic)bool enableMorph;
+/** 变形 (default true)
+ */
+@property (assign, nonatomic)bool enableDeformed;
+/** 均衡器 (default true)
+ */
+@property (assign, nonatomic)bool enableEqualizer;
 
 #pragma mark- 拍同款界面设置
 @property (nonatomic, assign) BOOL  enableShowReturnBtn;

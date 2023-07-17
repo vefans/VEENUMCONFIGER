@@ -335,7 +335,6 @@
 "完成" = "完成";
 "存草稿" = "存草稿";
 "确定" = "确定";
-"下一步" = "下一步";
 "取消" = "取消";
 "请选择媒体!" = "请选择媒体!";
 "暂时无法预览，请重试！" = "暂时无法预览，请重试！";
@@ -1466,6 +1465,8 @@
 "Recognition of this link is currently not supported. It is recommended to use 'custom input' to copy the article content and generate a video" = "暂不支持识别该链接，建议使用「自定义输入」复制文章内容生成视频";
 "Identifying links will clear existing content. Do you want to clear it?" = "识别链接将清空现有内容，是否清空？";
 "Clear and identify links"= "清空并识别链接";
+"Identify Link" = "识别到链接";
+"Identify and apply" = "识别并应用";
 "Want to create a video but only have text? Tired of searching for the perfect image? Now you can combine graphics and text together. Our AI recognizes your text and matches it with relevant images, while also adding voiceovers to your text. With just one click, you can generate your own illustrated video! Come and Start creating now!" = "想做视频却只有文案？费尽心思找图却一直找不到合适的？现在图文成片可以
 智能识别文字并配上相关的图片，同时为文字配音，一键自动生成视频！快来制作你的图文成片视频吧！";
 "Switch speaker" = "切换发音人";
@@ -1475,3 +1476,14 @@
 "Max shooting duration (seconds)" = "最大拍摄时长（秒)";
 "Resolution" = "分辨率";
 "Bitrate (kbps)" = "码率 (kbps)";
+"Prompter" = "提词面板";
+"Library" = "题词库";
+"15s" = "15秒";
+"30s" = "30秒";
+"60s" = "60秒";
+"300s" = "300秒";
+"Please enter or paste the text to enable the prompter feature.(Click on the blank area keyboard to disappear)" = "将想说的话提前输入或粘贴在这里，方便录音(点击空白区键盘消失)";
+"Anchor:" = "主播：";
+"Next" = "下一步";
+"TTS" = "字说";
+"Are you sure to delete the last recording?" = "确定删除上一段录音吗？";

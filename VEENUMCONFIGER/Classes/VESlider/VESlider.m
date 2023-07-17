@@ -19,6 +19,9 @@
             [self setMaximumTrackImage:[VEHelp imageWithColor:UIColorFromRGB(0x2F302F) size:CGSizeMake(self.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
         }else{
             UIImage *trackImage = [VEHelp imageWithColor:SliderMinimumTrackTintColor size:CGSizeMake(10, 2.0) cornerRadius:1];
+            if([VEConfigManager sharedManager].toolsTitleColor){
+                trackImage = [VEHelp imageWithColor:Main_Color size:CGSizeMake(10, 2.0) cornerRadius:1];
+            }
             [self setMinimumTrackImage:trackImage forState:UIControlStateNormal];
             trackImage = [VEHelp imageWithColor:SliderMaximumTrackTintColor size:CGSizeMake(10, 2.0) cornerRadius:1];
             [self setMaximumTrackImage:trackImage forState:UIControlStateNormal];

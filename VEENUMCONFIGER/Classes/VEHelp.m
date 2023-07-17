@@ -1828,7 +1828,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 {
     float totalSize;
     NSError * error;
-    NSDictionary * infoDic = [[NSFileManager defaultManager] attributesOfFileSystemForPath: NSHomeDirectory() error: &error];
+    NSDictionary * infoDic = [[NSFileManager defaultManager] attributesOfFileSystemForPath: [VEConfigManager sharedManager].directory error: &error];
     if (infoDic) {
         NSNumber * fileSystemSizeInBytes = [infoDic objectForKey: NSFileSystemSize];
         totalSize = [fileSystemSizeInBytes floatValue]/1000.0f/1000.0f/1000.0f;
@@ -2100,7 +2100,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 filePah = [absolutePath substringFromIndex:range.length + range.location];
                 range = [filePah rangeOfString:@"/"];
                 filePah = [filePah substringFromIndex:range.length + range.location - 1];
-                filePah = [NSHomeDirectory() stringByAppendingString:filePah];
+                filePah = [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:filePah];
                 fileURL = [NSURL fileURLWithPath:filePah];
             }else {
                 fileURL = [NSURL URLWithString:absolutePath];
@@ -2139,8 +2139,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 filePah = [absolutePath substringFromIndex:range.length + range.location];
                 range = [filePah rangeOfString:@"/"];
                 filePah = [filePah substringFromIndex:range.length + range.location - 1];
-                filePah = [NSHomeDirectory() stringByAppendingString:filePah];
+                filePah = [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:filePah];
                 fileURL = filePah;
+                
             }else {
                 fileURL = absolutePath;
             }
@@ -2614,7 +2615,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         failedHandler:(void (^)(NSError *error))failedHandler {
     if(!params){
         params = [NSMutableDictionary dictionary];
-        [params setObject:@"1" forKey:@"os"];
     }
     if(![[params allKeys] containsObject:@"os"]){
         [params setObject:@"ios" forKey:@"os"];
@@ -4257,11 +4257,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }
         NSString *patch = [VEHelp getMaterialThumbnail:url];
         patch = [NSString stringWithFormat:@"%@/%d.png", patch, iTime];
-//        if( ![[NSFileManager defaultManager] fileExistsAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"]] )
+//        if( ![[NSFileManager defaultManager] fileExistsAtPath:[[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/temp/"]] )
 //        {
-//            [[NSFileManager defaultManager] createDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"] withIntermediateDirectories:YES attributes:nil error:nil];
+//            [[NSFileManager defaultManager] createDirectoryAtPath:[[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/temp/"] withIntermediateDirectories:YES attributes:nil error:nil];
 //        }
-//        NSString * str = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.png",iTime]];
+//        NSString * str = [[[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/temp/"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.png",iTime]];
 //        {
 //            UIImage *image = [VECore getImageFromWebmFilePath:url.path time:CMTimeGetSeconds(time) scale:1.0];
 //            [UIImagePNGRepresentation(image) writeToFile:str atomically:YES];
@@ -4307,11 +4307,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }
         NSString *patch = [VEHelp getMaterialThumbnail:url];
         
-        if( ![[NSFileManager defaultManager] fileExistsAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"]] )
+        if( ![[NSFileManager defaultManager] fileExistsAtPath:[[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/temp/"]] )
         {
-            [[NSFileManager defaultManager] createDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"] withIntermediateDirectories:YES attributes:nil error:nil];
+            [[NSFileManager defaultManager] createDirectoryAtPath:[[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/temp/"] withIntermediateDirectories:YES attributes:nil error:nil];
         }
-        NSString * str = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/temp/"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.png",iTime]];
+        NSString * str = [[[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/temp/"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.png",iTime]];
         {
             UIImage *image = [VECore getImageFromWebmFilePath:url.path time:CMTimeGetSeconds(time) scale:1.0];
             [UIImagePNGRepresentation(image) writeToFile:str atomically:YES];
@@ -5179,8 +5179,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 {
     NSString *folder;
     if(!folder){
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        folder =[[paths objectAtIndex:0] stringByAppendingPathComponent:@"Documents/PEImage"];
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        folder =[kVEDirectory stringByAppendingPathComponent:@"PEImage"];
     }
     
     if(![[NSFileManager defaultManager] fileExistsAtPath:[folder stringByDeletingLastPathComponent]]){
@@ -5662,8 +5662,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     @autoreleasepool {
         if(!params){
             params  = [[NSMutableDictionary alloc] init];
-            [params setObject:@"1" forKey:@"os"];
-            [params setObject:@"2" forKey:@"product"];
             
         }
         if(![[params allKeys] containsObject:@"os"]){
@@ -5709,10 +5707,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
         [request setHTTPBody:postData];
         
-//        NSHTTPURLResponse* urlResponse = nil;
-//        NSError *error;
-//
-//        NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+        NSString *str = [[NSString alloc] initWithData:postData encoding:NSUTF8StringEncoding];
         
         __block NSHTTPURLResponse* urlResponse = nil;
         __block NSError *error;
@@ -14225,13 +14220,14 @@ static OSType help_inputPixelFormat(){
     @autoreleasepool {
         NSString *uploadUrl = [VEConfigManager sharedManager].editConfiguration.textToSpeechPath;
         uploadUrl=[NSString stringWithString:[uploadUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
-        NSURL *url=[NSURL URLWithString:uploadUrl];
+        NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"%@?appkey=%@",uploadUrl,[VEConfigManager sharedManager].appKey] ];
         //http post 参数设置 header
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
         [request setURL:url];
         [request setHTTPMethod:@"POST"];
         [request setValue:@"application/xml" forHTTPHeaderField:@"Content-Type"];
         [request setValue:format forHTTPHeaderField:@"Format"];
+        [request setValue:[VECore getToken_AI:[VEConfigManager sharedManager].appKey] forHTTPHeaderField:@"token"];
         [request setTimeoutInterval:1800];
         //XML 组装
         NSMutableData * postData = [[NSMutableData alloc] initWithData:[@"<speak xmlns=\"http://www.w3.org/2001/10/synthesis\" xmlns:mstts=\"http://www.w3.org/2001/mstts\" xmlns:emo=\"http://www.w3.org/2009/10/emotionml\" version=\"1.0\" xml:lang=\""dataUsingEncoding:NSUTF8StringEncoding]];
@@ -14299,18 +14295,19 @@ static OSType help_inputPixelFormat(){
                     }
                     NSMutableArray * audioMetas = objDic[@"AudioMeta"];
                     NSMutableArray * textMetas = [NSMutableArray new];
-                    
-                    [audioMetas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                        NSMutableArray *objArray = [NSMutableArray new];
-                        id objDic = obj[@"Metadata"][0][@"Data"];
-                        id objText = objDic[@"text"];
-                        [objArray addObject:[NSNumber numberWithFloat:[objDic[@"Offset"] floatValue]/10000000.0]];
-                        [objArray addObject:[NSNumber numberWithInteger:[objText[@"Length"] integerValue]]];
-                        [objArray addObject:objText[@"Text"]];
-                        [objArray addObject:[NSNumber numberWithFloat:[objDic[@"Duration"] floatValue]/10000000.0]];
-                        [textMetas addObject:objArray];
-                    }];
-                    
+                    if( audioMetas && !((![audioMetas isKindOfClass:[NSArray class]]) && ( ![audioMetas isKindOfClass:[NSMutableArray class]])) )
+                    {
+                        [audioMetas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                            NSMutableArray *objArray = [NSMutableArray new];
+                            id objDic = obj[@"Metadata"][0][@"Data"];
+                            id objText = objDic[@"text"];
+                            [objArray addObject:[NSNumber numberWithFloat:[objDic[@"Offset"] floatValue]/10000000.0]];
+                            [objArray addObject:[NSNumber numberWithInteger:[objText[@"Length"] integerValue]]];
+                            [objArray addObject:objText[@"Text"]];
+                            [objArray addObject:[NSNumber numberWithFloat:[objDic[@"Duration"] floatValue]/10000000.0]];
+                            [textMetas addObject:objArray];
+                        }];
+                    }
                     NSMutableArray *array = [NSMutableArray new];
                     [array addObject:textMetas];
                     [array addObject:mp3];
@@ -14360,7 +14357,6 @@ static OSType help_inputPixelFormat(){
 
 + (NSString *)getChineseFirstLetter:(NSString *)text {
     @autoreleasepool {
-        NSString *hanziText = @"汉字";
         CFMutableStringRef firstLetter = (__bridge_retained CFMutableStringRef)[NSMutableString stringWithString:text];
         CFStringTransform(firstLetter, NULL, kCFStringTransformToLatin, false);
         CFStringTransform(firstLetter, NULL, kCFStringTransformStripCombiningMarks, false);
@@ -14377,4 +14373,98 @@ static OSType help_inputPixelFormat(){
     }
 }
 
+//获取音频文件所有数据
++ (NSMutableData *)getAudioDataWithAssetReader:( NSURL * ) url atTimeRange:( CMTimeRange ) timeRange atSampleRate:( int ) sampleRate
+{
+    AVAssetReader *audioReader = [self getAudioAssetReader:url atTimeRange:timeRange atSampleRate:sampleRate];
+    if( audioReader == nil )
+        return nil;
+    
+    NSMutableData *audioData = nil;
+    BOOL isGET = true;
+    for (;isGET;) {
+        //判断是否开启解码
+        if (audioReader && audioReader.status == AVAssetReaderStatusUnknown) {
+            [audioReader startReading];
+        }
+        //判断是否解码完成
+        if(audioReader && (audioReader.status == AVAssetReaderStatusCompleted || audioReader.status == AVAssetReaderStatusFailed))
+        {
+            if(audioReader)
+            {
+                [audioReader cancelReading];
+                audioReader = nil;
+            }
+            isGET = false;
+        }
+        //判断是否正在解码
+        if (audioReader && audioReader.status == AVAssetReaderStatusReading) {
+
+            CMSampleBufferRef sampleBuffer = [audioReader.outputs.firstObject copyNextSampleBuffer];
+            if(!sampleBuffer && audioReader.status == AVAssetReaderStatusReading)
+            {
+                if(audioReader)
+                {
+                    [audioReader cancelReading];
+                    audioReader = nil;
+                }
+                isGET = false;
+//                NSValue *audioTimeValue = [NSValue valueWithCMTimeRange:timeRange];
+//                [audioReader.outputs.firstObject resetForReadingTimeRanges:@[audioTimeValue]];
+//                 sampleBuffer = [audioReader.outputs.firstObject copyNextSampleBuffer];
+            }
+            //保存音频数据
+            if( sampleBuffer )
+            {
+                size_t lengthAtOffsetOutput, totalLengthOutput;
+                char *dataPointer;
+                CMBlockBufferRef blockBUfferRef = CMSampleBufferGetDataBuffer(sampleBuffer);//取出数据
+                CMBlockBufferGetDataPointer(blockBUfferRef, 0, &lengthAtOffsetOutput, &totalLengthOutput, &dataPointer);
+                if( audioData == nil )
+                {
+                    audioData  = [NSMutableData new];
+                }
+                [audioData appendBytes:dataPointer length:totalLengthOutput];
+            }
+        }
+    }
+    
+    return audioData;
+}
+
+//创建音频解码器
++ (AVAssetReader *)getAudioAssetReader:( NSURL * ) url atTimeRange:( CMTimeRange ) timeRange atSampleRate:( int ) sampleRate
+{
+    AVAssetReader *reader = nil;
+    AVURLAsset* urlAsset = [AVURLAsset assetWithURL:url];
+    NSArray* audioTracks = [urlAsset tracksWithMediaType:AVMediaTypeAudio];
+    if ([audioTracks count] > 0) {
+        AVAssetTrack *audioTrack = [audioTracks firstObject];
+        NSError *error = nil;
+        reader = [[AVAssetReader alloc] initWithAsset:(AVAsset *)urlAsset error:&error];
+        if (reader) {
+            NSDictionary *dic   = @{ AVFormatIDKey :@(kAudioFormatLinearPCM),    // 音频格式
+                                     AVSampleRateKey : @(sampleRate),    // 采样率
+                                     AVNumberOfChannelsKey : @(1),    // 通道数 1 || 2
+                                     AVLinearPCMBitDepthKey : @(32),  // 音频的每个样点的位数
+                                     AVLinearPCMIsNonInterleaved : @NO,  // 音频采样是否非交错
+                                     AVLinearPCMIsFloatKey : @YES,    // 采样信号是否浮点数
+                                     AVLinearPCMIsBigEndianKey : @NO // 音频采用高位优先的记录格式
+            };
+            //读取输出，在相应的轨道和输出对应格式的数据
+            AVAssetReaderTrackOutput *audioOutput = [[AVAssetReaderTrackOutput alloc]initWithTrack:audioTrack outputSettings:dic];
+//                audioOutput.alwaysCopiesSampleData = NO;
+            audioOutput.supportsRandomAccess = YES;
+            if ([reader canAddOutput:audioOutput]) {
+                [reader addOutput:audioOutput];
+                if (CMTimeRangeEqual(timeRange, kCMTimeRangeInvalid)) {
+                    reader.timeRange = CMTimeRangeMake(kCMTimeZero, urlAsset.duration);
+                }else {
+                    reader.timeRange = timeRange;
+                }
+            }
+        }
+    }
+    return reader;
+}
 @end

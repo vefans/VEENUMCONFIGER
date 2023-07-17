@@ -528,6 +528,7 @@ isPhoneX;\
 #define Color(r,g,b,a)   [UIColor colorWithRed:(r/(float)255) green:(g/(float)255) blue:(b/(float)255) alpha:a]
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 #define VE_EXPORTBTN_TITLE_COLOR [VEConfigManager sharedManager].exportButtonTitleColor
+#define VE_EXPORTBTN_BG_COLOR [VEConfigManager sharedManager].exportButtonBackgroundColor
 #define Main_Color [VEConfigManager sharedManager].mainColor
 #define kFreezeFrameFxId [VEConfigManager sharedManager].freezeFXCategoryId
 #define VE_NAV_TITLE_COLOR [VEConfigManager sharedManager].navigationBarTitleColor
@@ -557,6 +558,7 @@ isPhoneX;\
 #define MATERIALMASKCOLOR ADDEDMATERIALCOLOR//[ADDEDMATERIALCOLOR colorWithAlphaComponent:0.9]
 #define ipadToolBarHeight (iPad?20:0)
 #define kSplitLineColor UIColorFromRGB(0x1f1f1f)//分割线颜色
+#define kTtitleSplitLineColor UIColorFromRGB(0x272727)//标题分割线颜色
 //视频导出帧率
 #define kEXPORTFPS 24
 //视频导出分辨率
@@ -617,7 +619,7 @@ isPhoneX;\
 
 #define kLocalTransitionFolder [VEEditBundlePath stringByAppendingPathComponent:@"transitions"]
 
-#define kVEDirectory [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject]
+#define kVEDirectory [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents"]//[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject]
 
 #define kMusicFolder_old [NSTemporaryDirectory() stringByAppendingString:@"music/"]
 #define kMusicIconPath_old [NSTemporaryDirectory() stringByAppendingString:@"music/musicIcon/"]
@@ -635,29 +637,29 @@ isPhoneX;\
 #define kThemeMVIconPath [kThemeMVPath stringByAppendingPathComponent:@"MVIcon"]
 #define kThemeMVEffectPath [kThemeMVPath stringByAppendingPathComponent:@"MVEffects"]
 
-#define kMVAnimateFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/MVAnimate/"]
+#define kMVAnimateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/MVAnimate/"]
 #define kMVAnimatePlistPath [kMVAnimateFolder stringByAppendingPathComponent:@"animationlist_videoae.plist"]
 #define kMusicAnimatePlistPath [kMVAnimateFolder stringByAppendingPathComponent:@"musicAnimation.plist"]
-#define kTextAnimateFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/TextAnimate/"]
+#define kTextAnimateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/TextAnimate/"]
 #define kTempTextAnimateFolder [NSTemporaryDirectory() stringByAppendingPathComponent:@"TextAnimate/"]
 
-#define kAPITemplateFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VENetworkAPITemplate/"]
+#define kAPITemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkAPITemplate/"]
 #define kAPITemplatePlistPath [kAPITemplateFolder stringByAppendingPathComponent:@"veNetworkApiTemplates.plist"]
 #define kFragmentAPITemplatePlistPath [kAPITemplateFolder stringByAppendingPathComponent:@"veNetworkFragmentApiTemplates.plist"]//test
 
-#define kCoverTemplateFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VENetworkCoverTemplate/"]
+#define kCoverTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkCoverTemplate/"]
 #define kCoverTemplatePlistPath [kCoverTemplateFolder stringByAppendingPathComponent:@"veNetworkCoverTemplates.plist"]
 
-#define kSpecialEffectFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SpecialEffect"]
+#define kSpecialEffectFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/SpecialEffect"]
 #define kNewSpecialEffectPlistPath [kSpecialEffectFolder stringByAppendingPathComponent:@"SpecialEffectList_New.plist"]
 
-#define kBoxEffectFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/BoxEffect"]
+#define kBoxEffectFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/BoxEffect"]
 #define kNewBoxEffectPlistPath [kBoxEffectFolder stringByAppendingPathComponent:@"BoxEffectList_New.plist"]
 
-#define kSuperposiEffectFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SuperposiEffect"]
+#define kSuperposiEffectFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/SuperposiEffect"]
 #define kNewSuperposiEffectPlistPath [kSuperposiEffectFolder stringByAppendingPathComponent:@"SuperposiEffectList_New.plist"]
 
-#define kFlowerEffectFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/FlowerEffect"]
+#define kFlowerEffectFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/FlowerEffect"]
 #define kNewFlowerEffectPlistPath [kFlowerEffectFolder stringByAppendingPathComponent:@"FlowerEffectList_New.plist"]
 
 #define kTransitionFolder [kVEDirectory stringByAppendingPathComponent:@"transitionFiles"]
@@ -670,17 +672,17 @@ isPhoneX;\
 
 #define kWatermarkFolder [NSTemporaryDirectory() stringByAppendingString:@"watermark/"]
 
-#define kMergeLayersFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/MergeLayersFloatder"]
+#define kMergeLayersFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/MergeLayersFloatder"]
 
-#define kCutoutFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/CutoutFloatder"]
-#define kErasePenFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ErasePenFloatder"]
-#define kTextImageFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/TextImage"]
-#define kCoverFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/cover"]
-#define kCanvasFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Canvas"]
+#define kCutoutFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/CutoutFloatder"]
+#define kErasePenFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/ErasePenFloatder"]
+#define kTextImageFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/TextImage"]
+#define kCoverFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/cover"]
+#define kCanvasFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/Canvas"]
 
-#define kDoodleFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/doodle"]
-#define kTextboardFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/textboard"]
-#define kCurrentFrameTextureFolder  [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/currentFrameTexture"]
+#define kDoodleFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/doodle"]
+#define kTextboardFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/textboard"]
+#define kCurrentFrameTextureFolder  [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/currentFrameTexture"]
 
 #define kAEJsonMVEffectPath [NSTemporaryDirectory() stringByAppendingString:@"AEJsonAnimation/"]
 #define kAEPreProgressFolder [kAEJsonMVEffectPath stringByAppendingPathComponent:@"AEPreProgress"]
@@ -699,30 +701,30 @@ isPhoneX;\
 #define kSubtitleCategoryPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleCategoryListType.plist"]
 
 #pragma mark- 换背景
-#define KChangeBackgroundFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeBackground"]
+#define KChangeBackgroundFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/ChangeBackground"]
 #define kChangeBackgroundPath [KChangeBackgroundFolder stringByAppendingPathComponent:@"ChangeBackgroundPath.plist"]
 
 #pragma mark- 天空
 #pragma mark- 换背景
-#define KChangeSkyFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeSky"]
+#define KChangeSkyFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/ChangeSky"]
 #define kChangeSkyPath [KChangeSkyFolder stringByAppendingPathComponent:@"ChangeSkyPath.plist"]
 
-#define KChangeMaskFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeMask"]
+#define KChangeMaskFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/ChangeMask"]
 #define kChangeMaskPath [KChangeMaskFolder stringByAppendingPathComponent:@"ChangeMaskPath.plist"]
 
 #pragma mark- 图片流动换天空背景
-#define KChangeSkyVideoFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ChangeSkyVideo"]
+#define KChangeSkyVideoFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/ChangeSkyVideo"]
 #define kChangeSkyVideoPath [KChangeSkyFolder stringByAppendingPathComponent:@"ChangeSkyPath.plist"]
 
 #pragma mark- 字幕动画
-#define KSubtitleAnimationFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/SubtitleAnimation"]
+#define KSubtitleAnimationFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/SubtitleAnimation"]
 #define kSubtitleAnimationPath [KSubtitleAnimationFolder stringByAppendingPathComponent:@"SubtitleAnimationPath.plist"]
 
 #define kTextTemplateFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"textTemplate"]
 #define kTextTemplatePlistPath [kTextTemplateFolder stringByAppendingPathComponent:@"TextTemplatePlistList.plist"]
 #define kTextTemplateIconFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"TextTemplateIconFolder"]
 
-#define KAudioEffectTypesFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/AudioEffectTypes"]
+#define KAudioEffectTypesFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/AudioEffectTypes"]
 #define KAudioEffectTypesPath [KAudioEffectTypesFolder stringByAppendingPathComponent:@"TypePlistList.plist"]
 
 #define kSubtitleTTSPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleTTSListType.plist"]
@@ -824,15 +826,15 @@ isPhoneX;\
 #define kNewMusicPlistPath [kFlowMusicFolder stringByAppendingPathComponent:@"MusicTypeList.plist"]
 
 
-#define kTemplateRecordFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/TemplateRecord"]
+#define kTemplateRecordFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/TemplateRecord"]
 #define kTemplateRecordPlist [kTemplateRecordFolder stringByAppendingPathComponent:@"TemplateRecord.plist"]
 
 #pragma mark-媒体动画
-#define KAnimationFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Animation"]
+#define KAnimationFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/Animation"]
 #define kAnimationPath [KAnimationFolder stringByAppendingPathComponent:@"AnimationPath.plist"]
 
 #pragma mark- 贴纸动画
-#define KStickerAnimationFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/StickerAnimation"]
+#define KStickerAnimationFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/StickerAnimation"]
 #define kStickerAnimationPath [KStickerAnimationFolder stringByAppendingPathComponent:@"StickerAnimationPath.plist"]
 
 #define kTextToSpeechFolder [kVEDirectory stringByAppendingPathComponent:@"TextToSpeech"]
@@ -840,7 +842,7 @@ isPhoneX;\
 #define kSpeechRecordFolder [kVEDirectory stringByAppendingPathComponent:@"SpeechRecord"]
 
 #pragma mark- 相册网络素材库
-#define KCloudVideoFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/CloudVideo"]
+#define KCloudVideoFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/CloudVideo"]
 #define kCloudVideoPath [KCloudVideoFolder stringByAppendingPathComponent:@"CloudVideoPath.plist"]
 #define kNewCloudVideoCategoryPlistPath [KCloudVideoFolder stringByAppendingPathComponent:@"CloudVideoCategoryPlistList.plist"]
 
@@ -852,14 +854,14 @@ isPhoneX;\
 #define kVEAVCaptureDevicePosition @"VEAVCaptureDevicePosition"
 #define VECustomErrorDomain @"com.VESDK.ErrorDomain"
 
-#define kThumbnailFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/thumbnailFolder"]
+#define kThumbnailFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/thumbnailFolder"]
 
-#define kTTSAudioMp3Folder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/TTSAudioMp3"]
+#define kTTSAudioMp3Folder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/TTSAudioMp3"]
 
-#define kWebmMp3Folder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/webmMp3"]
+#define kWebmMp3Folder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/webmMp3"]
 #define kWebmICON @"webm"
 
-#define kWhisperModelFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/whisperModel"]
+#define kWhisperModelFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/whisperModel"]
 
 #define kTemplateThemeFolder [kVEDirectory stringByAppendingPathComponent:@"TemplateThemes"]
 #define kTemplateThemeCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"TemplateThemeCategory.plist"]
@@ -871,16 +873,16 @@ isPhoneX;\
 #define SliderMaximumTrackTintColor UIColorFromRGB(0x434343)
 #define SliderMinimumTrackTintColor UIColorFromRGB(0xffffff)
 
-#define kOcclusionImageFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/OcclusionImages"]
-#define kFaceImagesFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/FaceImages"]
+#define kOcclusionImageFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/OcclusionImages"]
+#define kFaceImagesFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/FaceImages"]
 
-#define kTextMaretrialFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VETextMaretrial/"]
+#define kTextMaretrialFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VETextMaretrial/"]
 #define kTextMaretrialPlistPath [kTextMaretrialFolder stringByAppendingPathComponent:@"veTextMaretrials.plist"]
 
-#define kTTSMaretrialFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VETTSMaretrial/"]
+#define kTTSMaretrialFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VETTSMaretrial/"]
 #define kTTSMaretrialPlistPath [kTTSMaretrialFolder stringByAppendingPathComponent:@"veTTSMaretrials.plist"]
 
-#define kPictureTextToVideoFolder [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VEPictureTextToVideo"]
+#define kPictureTextToVideoFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VEPictureTextToVideo"]
 #define kPictureTextToVideoDraftPListPath [kPictureTextToVideoFolder stringByAppendingPathComponent:@"VEPictureTextToVideo.plist"]
 #define kPictureTextToVideoAudioFolder [kPictureTextToVideoFolder stringByAppendingPathComponent:@"Audio"]
 #define kPictureTextToVideoMaterialsFolder [kPictureTextToVideoFolder stringByAppendingPathComponent:@"AIMatchMaterials"]

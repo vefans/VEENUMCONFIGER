@@ -10,6 +10,10 @@
 #import <VEENUMCONFIGER/VEEditConfiguration.h>
 #import <VEENUMCONFIGER/VEExportConfiguration.h>
 #import "VEMediaInfo.h"
+typedef NS_ENUM(NSInteger, UIBgStyle) {
+    UIBgStyleLightContent = 0, // Light content, for use on dark backgrounds
+    UIBgStyleDarkContent  =1, // Dark content, for use on light backgrounds
+} API_UNAVAILABLE(tvos);
 
 /**支持的语言
  */
@@ -150,6 +154,14 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @end
 
 @interface VEConfigManager : NSObject
+/**文件存放根目录
+ */
+@property (nonatomic, strong) NSString *directory;
+
+
+/** 主题样式 默认 亮色字，深色背景 (default  UIBgStyleLightContent ：)
+ */
+@property (nonatomic, assign) UIBgStyle backgroundStyle;
 /**  设置是否为 图片编辑
  */
 @property (nonatomic, assign) BOOL isPEPhotoAlbum;
@@ -217,7 +229,7 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 
 /** 显示音乐界面回调
  *  Display music interface callback.
- *  defaultType: 0(cloud) 1(local)
+ *  defaultType: 0(cloud) 1(iTunes)  2(local)
  */
 @property(nonatomic, copy) void(^showMusicControllerHandler) (UIViewController *superViewController, NSInteger defaultType);
 
@@ -245,6 +257,11 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
  */
 @property (nonatomic, strong) UIColor *exportButtonTitleColor;
 
+/** APP中导出按钮的背景颜色
+ *  默认为：[UIColor whiteColor]
+ */
+@property (nonatomic, strong) UIColor *exportButtonBackgroundColor;
+
 /** APP中界面的背景色
  *  默认为：[UIColor blackColor]
  */
@@ -270,6 +287,17 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
  */
 @property (nonatomic, strong) UIColor *toolsTitleColor;
 
+/** 素材显示控件的背景色
+ */
+@property (nonatomic, strong) UIColor *timelineItemColor;
+/** 素材显示控件的背景色
+ */
+@property (nonatomic, strong) UIColor *timelineItemTitleColor;
+
+/** 工具栏的分割线颜色
+ */
+@property (nonatomic, strong) UIColor * toolLineColor;
+
 /** APP中工具栏文字字体
  *  默认为：[UIFont boldSystemFontOfSize:12]
  */
@@ -277,13 +305,14 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 /** APP中自定义Tool图标位置
  */
 @property (nonatomic, strong) NSString *customToolImageFolder;
+/** APP中自定义导出按钮
+ */
+@property (nonatomic, strong) NSArray *exportBtnBgColors;
 
 /** 后台返回的“定格”特效分类id
  *  默认为：57685258
  */
 @property (nonatomic, assign) int freezeFXCategoryId;
-
-
 /** 开始导出
  @param minWH 视频分辨率宽高的最小值；例导出720P视频，则设置为720
  */

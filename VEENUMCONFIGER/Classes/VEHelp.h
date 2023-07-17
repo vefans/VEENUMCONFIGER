@@ -667,4 +667,6 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 +(NSString *)getChineseFirstLetter:(NSString *)text;
 
+//获取音频文件所有数据
++ (NSMutableData *)getAudioDataWithAssetReader:( NSURL * ) url atTimeRange:( CMTimeRange ) timeRange atSampleRate:( int ) sampleRate;
 @end

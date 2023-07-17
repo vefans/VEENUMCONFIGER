@@ -655,7 +655,7 @@ static dispatch_once_t onceToken;
         AVAssetExportSession *session = [[AVAssetExportSession alloc] initWithAsset:videoAsset presetName:presetName];
         NSDateFormatter *formater = [[NSDateFormatter alloc] init];
         [formater setDateFormat:@"yyyy-MM-dd-HH:mm:ss-SSS"];
-        NSString *outputPath = [NSHomeDirectory() stringByAppendingFormat:@"/tmp/video-%@.mp4", [formater stringFromDate:[NSDate date]]];
+        NSString *outputPath = [[VEConfigManager sharedManager].directory stringByAppendingFormat:@"/tmp/video-%@.mp4", [formater stringFromDate:[NSDate date]]];
         if (videoAsset.URL && videoAsset.URL.lastPathComponent) {
             outputPath = [outputPath stringByReplacingOccurrencesOfString:@".mp4" withString:[NSString stringWithFormat:@"-%@", videoAsset.URL.lastPathComponent]];
         }
@@ -678,8 +678,8 @@ static dispatch_once_t onceToken;
             session.outputFileType = [supportedTypeArray objectAtIndex:0];
         }
         
-        if (![[NSFileManager defaultManager] fileExistsAtPath:[NSHomeDirectory() stringByAppendingFormat:@"/tmp"]]) {
-            [[NSFileManager defaultManager] createDirectoryAtPath:[NSHomeDirectory() stringByAppendingFormat:@"/tmp"] withIntermediateDirectories:YES attributes:nil error:nil];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:[[VEConfigManager sharedManager].directory stringByAppendingFormat:@"/tmp"]]) {
+            [[NSFileManager defaultManager] createDirectoryAtPath:[[VEConfigManager sharedManager].directory stringByAppendingFormat:@"/tmp"] withIntermediateDirectories:YES attributes:nil error:nil];
         }
         
         AVMutableVideoComposition *videoComposition = [self fixedCompositionWithAsset:videoAsset];

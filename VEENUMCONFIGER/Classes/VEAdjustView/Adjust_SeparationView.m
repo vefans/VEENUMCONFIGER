@@ -27,7 +27,7 @@
 - (instancetype)initWithFrame:(CGRect)frame highLight_shadow:(HighLightShadow *)highLight_shadow
 {
     if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : VIEW_COLOR;
+        self.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : [VEConfigManager sharedManager].viewBackgroundColor;
         _highLight_shadow = highLight_shadow;
         
         UIView *toolbarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 44)];
@@ -36,6 +36,9 @@
         UILabel *titleLbl = [[UILabel alloc] initWithFrame:toolbarView.bounds];
         titleLbl.text = VELocalizedString(@"色调分离", nil);
         titleLbl.textColor = SUBTITLETEXT_COLOR;
+        if([VEConfigManager sharedManager].toolsTitleColor){
+            titleLbl.textColor = [VEConfigManager sharedManager].toolsTitleColor;
+        }
         titleLbl.font = [UIFont boldSystemFontOfSize:[VEConfigManager sharedManager].iPad_HD ? 17 : 14];
         titleLbl.textAlignment = NSTextAlignmentCenter;
         [toolbarView addSubview:titleLbl];
@@ -44,6 +47,9 @@
         [resetBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
         resetBtn.titleLabel.font = [UIFont systemFontOfSize:12.0];
         [resetBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
+        if([VEConfigManager sharedManager].toolsTitleColor){
+            [resetBtn setTitleColor:[VEConfigManager sharedManager].toolsTitleColor forState:UIControlStateNormal];
+        }
         [resetBtn setTitleColor:DISABLED_COLOR forState:UIControlStateDisabled];
         [resetBtn addTarget:self action:@selector(resetBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         if([VEConfigManager sharedManager].iPad_HD){
@@ -118,12 +124,20 @@
             [toolItemBtn setImage:[VEHelp imageNamed:imagePath] forState:UIControlStateNormal];
             imagePath = [NSString stringWithFormat:@"/jianji/Adjust/剪辑-调色_%@选中", title];
             UIImage *selectedImage = [VEHelp imageNamed:imagePath];
-            selectedImage = [selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-            [toolItemBtn setImage:selectedImage forState:UIControlStateSelected];
-            toolItemBtn.imageView.tintColor = Main_Color;
+            if([VEConfigManager sharedManager].toolsTitleColor){
+                [toolItemBtn setImage:selectedImage forState:UIControlStateSelected];
+            }else{
+                selectedImage = [selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                [toolItemBtn setImage:selectedImage forState:UIControlStateSelected];
+                if(![VEConfigManager sharedManager].iPad_HD)
+                toolItemBtn.imageView.tintColor = Main_Color;
+            }
             [toolItemBtn setTitle:VELocalizedString(title, nil) forState:UIControlStateNormal];
             [toolItemBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
             [toolItemBtn setTitleColor:Main_Color forState:UIControlStateSelected];
+            if([VEConfigManager sharedManager].toolsTitleColor){
+                [toolItemBtn setTitleColor:[VEConfigManager sharedManager].toolsTitleColor forState:UIControlStateNormal];
+            }
             toolItemBtn.titleLabel.font = [UIFont systemFontOfSize:10];
             [toolItemBtn layoutButtonWithEdgeInsetsStyle:VEButtonEdgeInsetsStyleTop imageTitleSpace:0];
             toolItemBtn.tag = i + 1;

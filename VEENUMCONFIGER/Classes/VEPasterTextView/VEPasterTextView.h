@@ -182,6 +182,7 @@
 - (float)getFramescale;
 - (NSInteger)getTextAlign;
 - (void)refreshBounds:(CGRect)bounds;
+- (void)refreshFrame:(CGRect)frame;
 - (void)setContentImageTransform:(CGAffineTransform)transform;
 
 //+(CGRect)solveUIWidgetFuzzy:(CGRect) oldFrame;

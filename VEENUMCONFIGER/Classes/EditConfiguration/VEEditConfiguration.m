@@ -20,6 +20,7 @@
     if(self = [super init]){
         //相册界面
         _resultFileType = ALBUMFILETYPE_MediaInfo;
+        _enableCloudDraft = true;
         _isShowSplitScreen = YES;
         _enableTemplateTheme = true;
         _supportFileType                        = SUPPORT_ALL;
@@ -35,8 +36,12 @@
         _enableHDR = true;
         _enableHoly = true;
         _enableSharpen = true;
-        _enableSmear = true;
         _enableTon = true;
+        _enableMask = true;
+        _enableAntiShake = true;
+        _enableVR = true;
+        _disableShowDraftButton = false;
+        _enableAutoSaveDraft = false;
         _enableSpirit = true;
         _enableBlurry = true;
         _enableSingleMediaAdjust = true;
@@ -74,6 +79,7 @@
         //编辑导出预设
         _enableMV           = false;
         _enableSubtitle     = true;
+        _enableSubtitleTemplate = true;
         _enableSubtitleToSpeech = false;
         _enableAIRecogSubtitle = true;
         _tencentAIRecogConfig = [[TencentCloudAIRecogConfig alloc] init];
@@ -97,6 +103,11 @@
         _enableCollage      = true;
         _enableCover        = true;
         _enableDoodle       = true;
+        _enableDraft = false;
+        _enableShowBackTipView = true;
+        _enableShowRepeatView = true;
+        _enableSubtitleStyleInTool = true;
+        _enableSubtitleTemplate = true;//文字模板
         _dubbingType    = VEDUBBINGTYPE_FIRST;
         //截取视频预设
         _defaultSelectMinOrMax          = kVEDefaultSelectCutMin;
@@ -118,9 +129,19 @@
         _specialEffectResourceURL = nil;
         _fontResourceURL = nil;
         _transitionURL  = nil;
-        _enableDraft = false;
-        _enableShowBackTipView = true;
-        _enableShowRepeatView = true;
+        
+        
+        _enableSoundVolume = true;
+        _enableSoundFade = true;
+        _enableSoundEqualizer = true;
+        _enableSoundPlanting = true;
+        _enableSoundSplit = true;
+        _enableSoundVoice = true;
+        _enableSoundSpeed = true;
+        _enableSoundDelete = true;
+        _enableSoundCopy = true;
+        _enableSoundorginal = true;
+        _enableSingleAudioSepar = true;
     }
     
     return self;
@@ -128,6 +149,7 @@
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEEditConfiguration *copy   = [[[self class] allocWithZone:zone] init];
     //相册界面
+    copy.enableCloudDraft = _enableCloudDraft;
     copy.isHiddenNetworkMaterial = _isHiddenNetworkMaterial;
     copy.resultFileType = _resultFileType;
     copy.thumbDisable = _thumbDisable;
@@ -248,16 +270,31 @@
     copy.doodlePenResourcePath = _doodlePenResourcePath;
     copy.maskResourcePath = _maskResourcePath;
     copy.searchMediaFromTextPath = _searchMediaFromTextPath;
+    copy.enableSubtitleStyleInTool = _enableSubtitleStyleInTool;
     copy.getTextContentFromLinkPath = _getTextContentFromLinkPath;
     copy.functionEnablePath = _functionEnablePath;
     copy.textToSpeechPath = _textToSpeechPath;
-
+    
+    
+    copy.enableSoundVolume = _enableSoundVolume;
+    copy.enableSoundFade = _enableSoundFade;
+    copy.enableSoundEqualizer = _enableSoundEqualizer;
+    copy.enableSoundPlanting = _enableSoundPlanting;
+    copy.enableSoundSplit = _enableSoundSplit;
+    copy.enableSoundVoice = _enableSoundVoice;
+    copy.enableSoundSpeed = _enableSoundSpeed;
+    copy.enableSoundDelete = _enableSoundDelete;
+    copy.enableSoundCopy = _enableSoundCopy;
+    copy.enableSoundorginal = _enableSoundorginal;
+    copy.enableSingleAudioSepar = _enableSingleAudioSepar;
+    
     return copy;
 }
 
 - (id)copyWithZone:(NSZone *)zone{
     VEEditConfiguration *copy   = [[[self class] allocWithZone:zone] init];
     //相册界面
+    copy.enableCloudDraft = _enableCloudDraft;
     copy.isHiddenNetworkMaterial = _isHiddenNetworkMaterial;
     copy.resultFileType = _resultFileType;
     copy.thumbDisable = _thumbDisable;
@@ -375,10 +412,22 @@
     copy.doodlePenResourcePath = _doodlePenResourcePath;
     copy.maskResourcePath = _maskResourcePath;
     copy.searchMediaFromTextPath = _searchMediaFromTextPath;
+    copy.enableSubtitleStyleInTool = _enableSubtitleStyleInTool;
     copy.getTextContentFromLinkPath = _getTextContentFromLinkPath;
     copy.functionEnablePath = _functionEnablePath;
     copy.textToSpeechPath = _textToSpeechPath;
-
+    
+    copy.enableSoundVolume = _enableSoundVolume;
+    copy.enableSoundFade = _enableSoundFade;
+    copy.enableSoundEqualizer = _enableSoundEqualizer;
+    copy.enableSoundPlanting = _enableSoundPlanting;
+    copy.enableSoundSplit = _enableSoundSplit;
+    copy.enableSoundVoice = _enableSoundVoice;
+    copy.enableSoundSpeed = _enableSoundSpeed;
+    copy.enableSoundDelete = _enableSoundDelete;
+    copy.enableSoundCopy = _enableSoundCopy;
+    copy.enableSoundorginal = _enableSoundorginal;
+    copy.enableSingleAudioSepar = _enableSingleAudioSepar;
     return copy;
 }
 

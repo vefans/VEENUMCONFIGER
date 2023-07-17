@@ -194,7 +194,7 @@
 - (instancetype)initWithFrame:(CGRect)frame points:(NSMutableArray *)points
 {
     if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : VIEW_COLOR;
+        self.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : [VEConfigManager sharedManager].viewBackgroundColor;
         _points = points;
         
         UIView *toolbarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 44)];
@@ -203,6 +203,9 @@
         UILabel *titleLbl = [[UILabel alloc] initWithFrame:toolbarView.bounds];
         titleLbl.text = VELocalizedString(@"曲线", nil);
         titleLbl.textColor = SUBTITLETEXT_COLOR;
+        if([VEConfigManager sharedManager].toolsTitleColor){
+            titleLbl.textColor = [VEConfigManager sharedManager].toolsTitleColor;
+        }
         titleLbl.font = [UIFont boldSystemFontOfSize:[VEConfigManager sharedManager].iPad_HD ? 17 : 14];
         titleLbl.textAlignment = NSTextAlignmentCenter;
         [toolbarView addSubview:titleLbl];
@@ -211,6 +214,9 @@
         [resetBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
         resetBtn.titleLabel.font = [UIFont systemFontOfSize:12.0];
         [resetBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
+        if([VEConfigManager sharedManager].toolsTitleColor){
+            [resetBtn setTitleColor:[VEConfigManager sharedManager].toolsTitleColor forState:UIControlStateNormal];
+        }
         [resetBtn setTitleColor:DISABLED_COLOR forState:UIControlStateDisabled];
         [resetBtn addTarget:self action:@selector(resetBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         if([VEConfigManager sharedManager].iPad_HD){
@@ -245,6 +251,9 @@
         _rectInset = 8.0;
         _pointLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(curveView.frame), curveView.frame.size.width, 15)];
         _pointLbl.textColor = TEXT_COLOR;
+        if([VEConfigManager sharedManager].toolsTitleColor){
+            _pointLbl.textColor = [VEConfigManager sharedManager].toolsTitleColor;
+        }
         _pointLbl.font = [UIFont systemFontOfSize:12];
         _pointLbl.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_pointLbl];
@@ -293,7 +302,7 @@
             itemView.tag = i + 1;
             [curveGraphView insertSubview:itemView atIndex:0];
             
-            Adjust_CurveGraphView *graphView = [[Adjust_CurveGraphView alloc] initWithFrame:CGRectInset(itemView.bounds, _rectInset, _rectInset) points:_points[i] lineColor:itemBtn.backgroundColor];
+            Adjust_CurveGraphView *graphView = [[Adjust_CurveGraphView alloc] initWithFrame:CGRectInset(itemView.bounds, _rectInset, _rectInset) points:_points[i] lineColor:(i == 0 ? Main_Color : itemBtn.backgroundColor)];
             graphView.delegate = self;
             [itemView addSubview:graphView];
             [_graphViews addObject:graphView];
@@ -324,7 +333,7 @@
         VECustomButton * btn = [[VECustomButton alloc] initWithFrame:CGRectMake(0, 0, 16, 16)];
         btn.center = CGPointMake(graphView.frame.origin.x + point.x * graphView.frame.size.width, graphView.frame.origin.y + graphView.frame.size.height - point.y * graphView.frame.size.height);
         if ([VEHelp colorIsEqual:graphView.lineColor color2:_colorArray.firstObject]) {
-            btn.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : VIEW_COLOR;
+            btn.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : [VEConfigManager sharedManager].viewBackgroundColor;
         }else {
             btn.backgroundColor = [UIColor whiteColor];
         }
@@ -410,7 +419,11 @@
         
         CAGradientLayer *gradient = [CAGradientLayer layer];
         gradient.frame = graphView.superview.bounds;
-        gradient.colors = @[(id)[sender.backgroundColor colorWithAlphaComponent:0.3].CGColor, (id)[UIColor clearColor].CGColor];
+        if(_colorIndex == 1){
+            gradient.colors = @[(id)[Main_Color colorWithAlphaComponent:0.3].CGColor, (id)[UIColor clearColor].CGColor];
+        }else{
+            gradient.colors = @[(id)[sender.backgroundColor colorWithAlphaComponent:0.3].CGColor, (id)[UIColor clearColor].CGColor];
+        }
         gradient.startPoint = CGPointMake(0, 0);
         gradient.endPoint = CGPointMake(1, 1);
         [graphView.superview.layer insertSublayer:gradient atIndex:0];

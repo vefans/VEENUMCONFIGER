@@ -6,7 +6,7 @@
 //
 
 #import "VEConfigManager.h"
-
+#import <LibVECore/Common.h>
 NSString *const VEStartExportNotification = @"VEStartExportNotification";
 
 @implementation VEConfigManager
@@ -36,6 +36,7 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
 - (instancetype)init
 {
     if (self = [super init]) {
+        _directory = NSHomeDirectory();//[NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) firstObject];//
         _editConfiguration = [[VEEditConfiguration alloc] init];
         _cameraConfiguration = [[VECameraConfiguration alloc] init];
         _exportConfiguration = [[VEExportConfiguration alloc] init];
@@ -43,16 +44,22 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
         _peCameraConfiguration = [[VECameraConfiguration alloc] init];
         _peExportConfiguration = [[VEExportConfiguration alloc] init];
         _mainColor = UIColorFromRGB(0xffd500);
-        _exportButtonTitleColor = UIColorFromRGB(0x27262c);
-        _viewBackgroundColor = [UIColor blackColor];
+        _exportButtonTitleColor = _iPad_HD ? VIEW_IPAD_COLOR : [UIColor blackColor];
+        _exportButtonBackgroundColor = _iPad_HD ? UIColorFromRGB(0x3c3d3d) : [UIColor whiteColor];
+        _viewBackgroundColor = UIColorFromRGB(0x111111);//[UIColor blackColor];
         _navigationBackgroundColor = [UIColor blackColor];
-        _navigationBarTitleColor = [UIColor whiteColor];
-        _navigationBarTitleFont = [UIFont boldSystemFontOfSize:20];
+        _navigationBarTitleColor = UIColorFromRGB(0xcccccc);
+        _navigationBarTitleFont = [UIFont boldSystemFontOfSize:16];
         _freezeFXCategoryId = 57685258;
         _toolsTitleFont = [UIFont systemFontOfSize:10];
-        _toolsTitleColor = UIColorFromRGB(0xcccccc);
+        //_toolsTitleColor = UIColorFromRGB(0xcccccc);
+        _backgroundStyle = UIBgStyleLightContent;
     }
     return self;
+}
+- (void)setDirectory:(NSString *)directory{
+    _directory = directory;
+    [DirectoryManager sharedManager].directory = _directory;
 }
 - (UIColor *)viewBackgroundColor{
     return _viewBackgroundColor;

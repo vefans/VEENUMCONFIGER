@@ -33,7 +33,7 @@
 - (instancetype)initWithFrame:(CGRect)frame hsl:(HSL *)hsl
 {
     if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : VIEW_COLOR;
+        self.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : [VEConfigManager sharedManager].viewBackgroundColor;
         _hsl = hsl;
         
         UIView *toolbarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 44)];
@@ -42,6 +42,9 @@
         UILabel *titleLbl = [[UILabel alloc] initWithFrame:toolbarView.bounds];
         titleLbl.text = @"HSL";
         titleLbl.textColor = SUBTITLETEXT_COLOR;
+        if([VEConfigManager sharedManager].toolsTitleColor){
+            titleLbl.textColor = [VEConfigManager sharedManager].toolsTitleColor;
+        }
         titleLbl.font = [UIFont boldSystemFontOfSize:[VEConfigManager sharedManager].iPad_HD ? 17 : 14];
         titleLbl.textAlignment = NSTextAlignmentCenter;
         [toolbarView addSubview:titleLbl];
@@ -50,6 +53,9 @@
         [resetBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
         resetBtn.titleLabel.font = [UIFont systemFontOfSize:12.0];
         [resetBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
+        if([VEConfigManager sharedManager].toolsTitleColor){
+            [resetBtn setTitleColor:[VEConfigManager sharedManager].toolsTitleColor forState:UIControlStateNormal];
+        }
         [resetBtn setTitleColor:DISABLED_COLOR forState:UIControlStateDisabled];
         [resetBtn addTarget:self action:@selector(resetBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         if([VEConfigManager sharedManager].iPad_HD){
@@ -94,6 +100,9 @@
         _valueLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 40, 20)];
         _valueLbl.font = [UIFont systemFontOfSize:12];
         _valueLbl.textColor = [UIColor whiteColor];
+        if([VEConfigManager sharedManager].toolsTitleColor){
+            _valueLbl.textColor = [VEConfigManager sharedManager].toolsTitleColor;
+        }
         _valueLbl.textAlignment = NSTextAlignmentCenter;
         _valueLbl.hidden = YES;
         [self addSubview:_valueLbl];
@@ -112,6 +121,9 @@
             UILabel *nameLbl = [[UILabel alloc] initWithFrame:CGRectMake(20, y + height * i, 88 - 20, height)];
             nameLbl.text = VELocalizedString(array[i], nil);
             nameLbl.textColor = SUBTITLETEXT_COLOR;
+            if([VEConfigManager sharedManager].toolsTitleColor){
+                nameLbl.textColor = [VEConfigManager sharedManager].toolsTitleColor;
+            }
             nameLbl.textAlignment = NSTextAlignmentLeft;
             nameLbl.font = [UIFont systemFontOfSize:12];
             [self addSubview:nameLbl];
