@@ -10,9 +10,7 @@
 NSString *const VEStartExportNotification = @"VEStartExportNotification";
 
 @implementation VEConfigManager
-- (void)setIPad_HD:(BOOL)iPad_HD{
-    _iPad_HD = iPad_HD;
-}
+
 + (instancetype)sharedManager
 {
     static VEConfigManager *singleOjbect = nil;

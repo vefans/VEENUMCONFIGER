@@ -2095,15 +2095,22 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
             fileURL = [NSURL fileURLWithPath:filePah];
         }else{
-            range = [absolutePath rangeOfString:@"Data/Application/"];
-            if (range.location != NSNotFound) {
-                filePah = [absolutePath substringFromIndex:range.length + range.location];
-                range = [filePah rangeOfString:@"/"];
-                filePah = [filePah substringFromIndex:range.length + range.location - 1];
+            if(![[VEConfigManager sharedManager].directory isEqualToString:NSHomeDirectory()]){
+                absolutePath = [absolutePath stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                filePah = [[absolutePath componentsSeparatedByString:[[VEConfigManager sharedManager].directory lastPathComponent]] lastObject];
                 filePah = [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:filePah];
                 fileURL = [NSURL fileURLWithPath:filePah];
-            }else {
-                fileURL = [NSURL URLWithString:absolutePath];
+            }else{
+                range = [absolutePath rangeOfString:@"Data/Application/"];
+                if (range.location != NSNotFound) {
+                    filePah = [absolutePath substringFromIndex:range.length + range.location];
+                    range = [filePah rangeOfString:@"/"];
+                    filePah = [filePah substringFromIndex:range.length + range.location - 1];
+                    filePah = [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:filePah];
+                    fileURL = [NSURL fileURLWithPath:filePah];
+                }else {
+                    fileURL = [NSURL URLWithString:absolutePath];
+                }
             }
         }
     }
@@ -2134,16 +2141,25 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
             fileURL = filePah;
         }else{
-            range = [absolutePath rangeOfString:@"Data/Application/"];
-            if (range.location != NSNotFound) {
-                filePah = [absolutePath substringFromIndex:range.length + range.location];
-                range = [filePah rangeOfString:@"/"];
-                filePah = [filePah substringFromIndex:range.length + range.location - 1];
+            if(![[VEConfigManager sharedManager].directory isEqualToString:NSHomeDirectory()]){
+                absolutePath = [absolutePath stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                filePah = [[absolutePath componentsSeparatedByString:[[VEConfigManager sharedManager].directory lastPathComponent]] lastObject];
                 filePah = [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:filePah];
                 fileURL = filePah;
-                
-            }else {
-                fileURL = absolutePath;
+            }
+            else
+            {
+                range = [absolutePath rangeOfString:@"Data/Application/"];
+                if (range.location != NSNotFound) {
+                    filePah = [absolutePath substringFromIndex:range.length + range.location];
+                    range = [filePah rangeOfString:@"/"];
+                    filePah = [filePah substringFromIndex:range.length + range.location - 1];
+                    filePah = [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:filePah];
+                    fileURL = filePah;
+                    
+                }else {
+                    fileURL = absolutePath;
+                }
             }
         }
     }
@@ -5707,7 +5723,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
         [request setHTTPBody:postData];
         
-        NSString *str = [[NSString alloc] initWithData:postData encoding:NSUTF8StringEncoding];
+//        NSString *str = [[NSString alloc] initWithData:postData encoding:NSUTF8StringEncoding];
         
         __block NSHTTPURLResponse* urlResponse = nil;
         __block NSError *error;
@@ -13776,25 +13792,40 @@ static OSType help_inputPixelFormat(){
     if(view.backgroundColor){
         colorRef = view.backgroundColor.CGColor;
     }
-   if( theColor )
+   if( theColor == [UIColor clearColor] || !theColor)
    {
+       colorRef = UIColorFromRGB(0xefefef).CGColor;
+       CALayer *layer = [[CALayer alloc] init];
+       layer.masksToBounds = YES;
+       layer.frame = CGRectMake(0, 0, view.frame.size.width, 8);
+       [view.layer addSublayer:layer];
+       CALayer *bordlayer = [[CALayer alloc] init];
+       bordlayer.borderColor = colorRef;
+       bordlayer.borderWidth = 1;
+       bordlayer.cornerRadius = 8;
+       bordlayer.masksToBounds = YES;
+       bordlayer.frame = CGRectMake(0, 0, view.frame.size.width, 16);
+       [layer addSublayer:bordlayer];
+   }
+   else{
        view.backgroundColor = nil;
        view.layer.shadowColor = theColor.CGColor;
        view.layer.shadowOpacity = 0.3;
-       view.layer.shadowRadius = 8.0;
+       view.layer.shadowRadius = shadowRadius;
        view.layer.shadowOffset = CGSizeMake(0,0);
        view.layer.masksToBounds = NO;
+       //圆角
+       UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:view.bounds byRoundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight cornerRadii:CGSizeMake(15, 15)];
+       CALayer *maskLayer = [[CAShapeLayer alloc] init];
+       maskLayer.backgroundColor = colorRef;
+       maskLayer.frame = view.bounds;
+       CAShapeLayer *lay = [CAShapeLayer layer];
+       lay.path = maskPath.CGPath;
+       maskLayer.mask = lay;
+       [view.layer insertSublayer:maskLayer atIndex:0];
    }
 
-   //圆角
-   UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:view.bounds byRoundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight cornerRadii:CGSizeMake(15, 15)];
-   CALayer *maskLayer = [[CAShapeLayer alloc] init];
-   maskLayer.backgroundColor = colorRef;
-   maskLayer.frame = view.bounds;
-   CAShapeLayer *lay = [CAShapeLayer layer];
-   lay.path = maskPath.CGPath;
-   maskLayer.mask = lay;
-   [view.layer insertSublayer:maskLayer atIndex:0];
+   
 }
 
 + (UIImage *)getScreenshotWithView:(UIView *)view {
@@ -14211,118 +14242,9 @@ static OSType help_inputPixelFormat(){
     return isInitialValue;
 }
 
-+ (id)updateInfomation_TTSAtLocale:( NSString * ) locale atShortName:( NSString * ) ShortName atText:( NSString * ) text atFormat:( NSString * ) format atTTSName:( NSString * ) ttsName isOnlyReturnAudioPath:(BOOL)isOnlyReturnAudioPath {
-    
-    if([VEConfigManager sharedManager].editConfiguration.textToSpeechPath.length == 0){
-        return nil;
-    }
-    format = @"audio-24khz-48kbitrate-mono-mp3";
-    @autoreleasepool {
-        NSString *uploadUrl = [VEConfigManager sharedManager].editConfiguration.textToSpeechPath;
-        uploadUrl=[NSString stringWithString:[uploadUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
-        NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"%@?appkey=%@",uploadUrl,[VEConfigManager sharedManager].appKey] ];
-        //http post 参数设置 header
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-        [request setURL:url];
-        [request setHTTPMethod:@"POST"];
-        [request setValue:@"application/xml" forHTTPHeaderField:@"Content-Type"];
-        [request setValue:format forHTTPHeaderField:@"Format"];
-        [request setValue:[VECore getToken_AI:[VEConfigManager sharedManager].appKey] forHTTPHeaderField:@"token"];
-        [request setTimeoutInterval:1800];
-        //XML 组装
-        NSMutableData * postData = [[NSMutableData alloc] initWithData:[@"<speak xmlns=\"http://www.w3.org/2001/10/synthesis\" xmlns:mstts=\"http://www.w3.org/2001/mstts\" xmlns:emo=\"http://www.w3.org/2009/10/emotionml\" version=\"1.0\" xml:lang=\""dataUsingEncoding:NSUTF8StringEncoding]];
-        {
-            {
-                NSMutableData *appendPostData =  [[NSMutableData alloc] initWithData:[locale dataUsingEncoding:NSUTF8StringEncoding]];
-                [postData appendData:appendPostData];
-            }
-//            en-US
-            {
-                NSMutableData *appendPostData =  [[NSMutableData alloc] initWithData:[@"\">          <voice name=\""                dataUsingEncoding:NSUTF8StringEncoding]];
-                [postData appendData:appendPostData];
-            }
-            {
-                NSMutableData *appendPostData =  [[NSMutableData alloc] initWithData:[ShortName dataUsingEncoding:NSUTF8StringEncoding]];
-                [postData appendData:appendPostData];
-            }
-            {
-                NSMutableData *appendPostData = [[NSMutableData alloc] initWithData:[@"\" >              <prosody rate=\"0%\" pitch=\"0%\">"dataUsingEncoding:NSUTF8StringEncoding]];
-                [postData appendData:appendPostData];
-            }
-            {
-                NSMutableData *appendPostData =  [[NSMutableData alloc] initWithData:[text dataUsingEncoding:NSUTF8StringEncoding]];
-                [postData appendData:appendPostData];
-            }
-            {
-                NSMutableData *appendPostData = [[NSMutableData alloc] initWithData:[@ "</prosody >          </voice >        </speak >" dataUsingEncoding:NSUTF8StringEncoding]];
-                [postData appendData:appendPostData];
-            }
-            [request setHTTPBody:postData];
-        }
-        
-        NSHTTPURLResponse* urlResponse = nil;
-        NSError *error;
-        NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
-        if (!responseData) {
-            return nil;
-        }
-        
-        NSString *result = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-        
-        if( result)
-        {
-            NSMutableDictionary *dic = [VEHelp jsonToObject:result];
-            if ([dic isKindOfClass:[NSDictionary class]]) {
-                
-                if( [dic[@"code"] integerValue] == 200 )
-                {
-                    NSMutableDictionary * objDic = dic[@"data"];
-                    //音频数据
-                    NSData *audioData = [[NSData alloc] initWithBase64EncodedString:objDic[@"AudioData"][@"data"] options:NSDataBase64DecodingIgnoreUnknownCharacters];
-                    
-                    NSString *mp3;
-                    if( audioData ) {
-                        mp3 = [VEHelp getMaterialTTSAudioPath:ttsName];
-                        BOOL isSave = [audioData writeToFile:mp3 atomically:false];
-                        if( !isSave ) {
-                            return nil;
-                        }
-                    }else {
-                        return nil;
-                    }
-                    if (isOnlyReturnAudioPath) {
-                        return mp3;
-                    }
-                    NSMutableArray * audioMetas = objDic[@"AudioMeta"];
-                    NSMutableArray * textMetas = [NSMutableArray new];
-                    if( audioMetas && !((![audioMetas isKindOfClass:[NSArray class]]) && ( ![audioMetas isKindOfClass:[NSMutableArray class]])) )
-                    {
-                        [audioMetas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                            NSMutableArray *objArray = [NSMutableArray new];
-                            id objDic = obj[@"Metadata"][0][@"Data"];
-                            id objText = objDic[@"text"];
-                            [objArray addObject:[NSNumber numberWithFloat:[objDic[@"Offset"] floatValue]/10000000.0]];
-                            [objArray addObject:[NSNumber numberWithInteger:[objText[@"Length"] integerValue]]];
-                            [objArray addObject:objText[@"Text"]];
-                            [objArray addObject:[NSNumber numberWithFloat:[objDic[@"Duration"] floatValue]/10000000.0]];
-                            [textMetas addObject:objArray];
-                        }];
-                    }
-                    NSMutableArray *array = [NSMutableArray new];
-                    [array addObject:textMetas];
-                    [array addObject:mp3];
-                    return array;
-                    
-                    NSLog(@"%@", dictionary);
-                } else {
-                    NSLog(@"Invalid JSON string");
-                }
-            }else if ([result isKindOfClass:[NSString class]]) {
-                NSLog(@"%@", result);
-            }
-        }
-        return nil;
-    }
++ (id)updateInfomation_TTSAtLocale:(NSString *)locale atShortName:(NSString *)ShortName atText:(NSString *)text saveAudioPath:(NSString *)saveAudioPath isOnlyReturnAudioPath:(BOOL)isOnlyReturnAudioPath
+{
+    return [VECore getTTSATWithLocale:locale atShortName:ShortName atText:text atFilePath:saveAudioPath isOnlyReturnAudioPath:isOnlyReturnAudioPath];
 }
 
 +(float)volumeForData:(NSData *)pcmData
@@ -14467,4 +14389,502 @@ static OSType help_inputPixelFormat(){
     }
     return reader;
 }
+
+#pragma mark- PrivateCloud  私有云
++(NSString *)getPrivateCloud_UploadToken:( NSString * ) tokenURL
+{
+    return [VECore getToken_AI:[VEConfigManager sharedManager].appKey];
+}
+
++(NSString *)getPrivateCloud_UploadAudioFile:(NSString *)audioFilePath atToken:( NSString * ) token atURL:( NSString * ) url
+{
+    __block NSString *uploadAudioFileURL = nil;
+    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
+    [headers setObject:token forKey:@"token"];
+    
+    
+    NSMutableArray *params = [NSMutableArray new];
+    {
+        NSMutableDictionary *param = [NSMutableDictionary dictionary];
+        [param setObject:@"file" forKey:@"key"];
+        [param setObject:audioFilePath forKey:@"src"];
+        [param setObject:@"file" forKey:@"type"];
+        [params addObject:param];
+    }
+    {
+        NSMutableDictionary *param = [NSMutableDictionary dictionary];
+        [param setObject:@"appkey" forKey:@"key"];
+        [param setObject:[VEConfigManager sharedManager].appKey forKey:@"value"];
+        [param setObject:@"text" forKey:@"type"];
+        [params addObject:param];
+    }
+
+    __block NSMutableData *body = [NSMutableData data];
+    NSString *BOUNDARY = @"0xKhTmLbOuNdArY";
+    [params enumerateObjectsUsingBlock:^(id  _Nonnull param, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString * paramName = param[@"key"];
+        NSString *temp = [NSString stringWithFormat:@"--\%@\r\n",BOUNDARY];
+        [body appendData:[temp dataUsingEncoding:NSUTF8StringEncoding]];
+        {
+            temp = [NSString stringWithFormat:@"Content-Disposition:form-data; name=\"%@\"",paramName];
+            [body appendData:[temp dataUsingEncoding:NSUTF8StringEncoding]];
+        }
+        NSString * paramType = param[@"type"];
+        if( [paramType isEqualToString:@"text"] ){
+            NSString * paramValue = param[@"value"];
+            {
+                temp = [NSString stringWithFormat:@"\r\n\r\n%@\r\n",paramValue];
+                [body appendData:[temp dataUsingEncoding:NSUTF8StringEncoding]];
+            }
+        } else {
+            NSString * paramSrc = param[@"src"];
+            NSData * fileData = [NSData dataWithContentsOfFile:paramSrc];
+            NSString * fileContent = [[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding];
+            {
+                temp = [NSString stringWithFormat:@"; filename=\"%@\"\r\nContent-Type: \"content-type header\"\r\n\r\n",paramSrc];
+                [body appendData:[temp dataUsingEncoding:NSUTF8StringEncoding]];
+                [body appendData:fileData];
+                [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+            }
+        }
+    }];
+    {
+        NSString *temp = [NSString stringWithFormat:@"--%@--\r\n",BOUNDARY];
+        [body appendData:[temp dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+    
+    dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
+    [request addValue:token forHTTPHeaderField:@"token"];
+    [request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@",BOUNDARY] forHTTPHeaderField:@"Content-Type"];
+    [request setHTTPBody:body];
+    [request setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[body length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPMethod:@"POST"];
+//    {
+//        NSDictionary *headers = @{
+//            @"User-Agent": @"Apifox/1.0.0 (https://apifox.com)"
+//        };
+//        [request setAllHTTPHeaderFields:headers];
+//    }
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request
+    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+       if (error) {
+          NSLog(@"%@", error);
+          dispatch_semaphore_signal(sema);
+       } else {
+          NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+          NSError *parseError = nil;
+          NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+          NSLog(@"%@",responseDictionary);
+           if( [responseDictionary[@"code"] intValue] == 200  )
+               uploadAudioFileURL = responseDictionary[@"data"][@"url"];
+          dispatch_semaphore_signal(sema);
+       }
+    }];
+    [dataTask resume];
+    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    
+    return uploadAudioFileURL;
+}
+
++(NSMutableArray *)getPrivateCloud_StartASR:( NSMutableArray * ) uploadFileURLs atLanguage:( NSString * ) language atIsCancel:( BOOL * ) isCancel  atURL:( NSString * ) url atAppkey:( NSString * ) appkey
+{
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:[NSURL URLWithString:url]];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    
+//    [VEConfigManager sharedManager].appKey
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setValue:appkey forKey:@"appkey"];
+    [params setValue:@"make" forKey:@"cmd"];
+    {
+        NSMutableDictionary *param = [NSMutableDictionary dictionary];
+        [param setValue:@"asr" forKey:@"guid"];
+        [param setObject:uploadFileURLs forKey:@"pics"];
+        {
+            NSMutableDictionary *param1 = [NSMutableDictionary dictionary];
+            [param setValue:@"" forKey:@"callback"];
+            if( [language isEqualToString:@"zh"] )
+                [param1 setObject:@"funasr" forKey:@"method"];
+            else{
+                [param1 setObject:@"srt" forKey:@"format"];
+                [param1 setObject:language forKey:@"language"];
+                [param1 setObject:@"faster-whisper" forKey:@"method"];
+                [param1 setObject:@"medium" forKey:@"model"];
+            }
+            [param setObject:param1 forKey:@"extra"];
+        }
+        [params setObject:param forKey:@"param"];
+    }
+    NSData *data = [NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *jsonParams = [[NSString alloc]initWithData: data encoding: NSUTF8StringEncoding];
+    data = [jsonParams dataUsingEncoding:NSUTF8StringEncoding];
+    
+    [request setHTTPBody:data];
+    [request setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
+    
+    if( (*isCancel) )
+    {
+        return nil;
+    }
+    __block NSHTTPURLResponse* urlResponse = nil;
+    __block NSError *error;
+    __block NSData *responseData = nil;
+    dispatch_semaphore_t disp = dispatch_semaphore_create(0);
+    NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error1) {
+        //处理model
+        urlResponse = (NSHTTPURLResponse*)response;
+        responseData = data;
+        error = error1;
+        dispatch_semaphore_signal(disp);
+    }];
+    [dataTask resume];
+    dispatch_semaphore_wait(disp, DISPATCH_TIME_FOREVER);
+    
+    if(error){
+        NSLog(@"error:%@",[error description]);
+    }
+    if( (*isCancel) )
+    {
+        return nil;
+    }
+    if(!responseData){
+        return nil;
+    }
+    id objc = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
+    if( [objc[@"code"] intValue] == 0 )
+    {
+        NSDictionary *data = objc[@"data"];
+        if( data[@"taskId"] )
+        {
+            NSString * taskId = data[@"taskId"];
+           NSString *asrUrl =  [VEHelp getPrivateCloud_EndASRWith:taskId atIsCancel:isCancel atURL:url atAppkey:appkey];
+            if( (*isCancel) )
+            {
+                return nil;
+            }
+            if( asrUrl )
+            {
+                if( (*isCancel) )
+                {
+                    return nil;
+                }
+                __block NSString *filePath = nil;
+                dispatch_semaphore_t sema1= dispatch_semaphore_create(0);
+                if(![[NSFileManager defaultManager] fileExistsAtPath:kTemplateThemeFolder]){
+                    [[NSFileManager defaultManager] createDirectoryAtPath:kTemplateThemeFolder withIntermediateDirectories:YES attributes:nil error:nil];
+                }
+                VEFileDownloader *downLoader = [[VEFileDownloader alloc] init];
+                [downLoader downloadFileWithURL:asrUrl cachePath:kTemplateThemeFolder HTTPMethod:VEGET progress:^(NSNumber *numProgress) {
+                } finish:^(NSString *fileCachePath) {
+                    filePath = fileCachePath;
+                    dispatch_semaphore_signal(sema1);
+                } fail:^(NSError *error) {
+                    dispatch_semaphore_signal(sema1);
+                } cancel:nil];
+//                [downLoader downloadFileWithURL:asrUrl cachePath:kTemplateThemeFolder httpMethod:GET progress:nil finish:^(NSString *fileCachePath) {
+//                    filePath = fileCachePath;
+//                    dispatch_semaphore_signal(sema1);
+//                } fail:^(NSError *error) {
+//                    dispatch_semaphore_signal(sema1);
+//                } cancel:nil];
+                dispatch_semaphore_wait(sema1, DISPATCH_TIME_FOREVER);
+                
+                NSMutableData *fileData = [[NSMutableData alloc] initWithContentsOfFile:filePath];
+                NSString *mutableDic = [[NSString alloc]initWithData: fileData encoding:NSUTF8StringEncoding];
+                NSString *timeText = [mutableDic stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"];
+                timeText = [timeText stringByReplacingOccurrencesOfString:@"\n\n" withString:@"\n"];
+                timeText = [timeText stringByReplacingOccurrencesOfString:@" --> " withString:@"\n"];
+                NSMutableArray *contentArray = [[NSMutableArray alloc] initWithArray:[timeText componentsSeparatedByString:@"\n"]];
+                if( [((NSString*)contentArray[contentArray.count-1]) isEqualToString:@""] )
+                    [contentArray removeObjectAtIndex:contentArray.count-1];
+                
+                [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+                
+                NSMutableArray *array = [NSMutableArray new];
+                for (int i = 0; (contentArray.count/4) > i ; i++) {
+                    int index = i*4;
+                    NSString *startTimeStr = contentArray[index+1];
+                    NSString *endTimeStr = contentArray[index+2];
+                    NSString *text = contentArray[index+3];
+                    NSMutableArray *objArray = [NSMutableArray new];
+                    [objArray addObject:[NSNumber numberWithFloat:[VEHelp getTimeWidthString:startTimeStr]]];
+                    [objArray addObject:[NSNumber numberWithFloat:[VEHelp getTimeWidthString:endTimeStr]]];
+                    [objArray addObject:text];
+                    [array addObject:objArray];
+                }
+                return array;
+            }
+        }
+    }
+    return nil;
+}
+
++(float)getTimeWidthString:( NSString * ) strTime
+{
+    strTime = [strTime stringByReplacingOccurrencesOfString:@":" withString:@"\n"];
+    strTime = [strTime stringByReplacingOccurrencesOfString:@"," withString:@"\n"];
+    NSMutableArray *contentArray = [[NSMutableArray alloc] initWithArray:[strTime componentsSeparatedByString:@"\n"]];
+    
+    float time = 0;
+    if( contentArray.count > 0 )
+        time +=[contentArray[0] floatValue]*60.0*60.0;
+    if( contentArray.count > 2 )
+        time +=[contentArray[1] floatValue]*60.0;
+    if( contentArray.count > 2 )
+        time +=[contentArray[2] floatValue];
+    if( contentArray.count > 3 )
+        time +=[contentArray[3] floatValue]/1000.0;
+    
+    return time;
+}
+
++(NSString *)getPrivateCloud_EndASRWith:( NSString * ) taskId  atIsCancel:( BOOL * ) isCancel   atURL:( NSString * ) url  atAppkey:( NSString * ) appkey
+{
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:[NSURL URLWithString:url]];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setValue:appkey forKey:@"appkey"];
+    [params setValue:@"quest" forKey:@"cmd"];
+    {
+        NSMutableDictionary *param = [NSMutableDictionary dictionary];
+        //        [param setValue:@"" forKey:@"callback"];
+        [param setObject:taskId forKey:@"taskId"];
+        [params setObject:param forKey:@"param"];
+    }
+    NSData *data = [NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *jsonParams = [[NSString alloc]initWithData: data encoding: NSUTF8StringEncoding];
+    data = [jsonParams dataUsingEncoding:NSUTF8StringEncoding];
+    
+    [request setHTTPBody:data];
+    [request setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
+    if( (*isCancel) )
+    {
+        return nil;
+    }
+    __block NSHTTPURLResponse* urlResponse = nil;
+    __block NSError *error;
+    __block NSData *responseData = nil;
+    dispatch_semaphore_t disp = dispatch_semaphore_create(0);
+    NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error1) {
+        //处理model
+        urlResponse = (NSHTTPURLResponse*)response;
+        responseData = data;
+        error = error1;
+        dispatch_semaphore_signal(disp);
+    }];
+    [dataTask resume];
+    dispatch_semaphore_wait(disp, DISPATCH_TIME_FOREVER);
+    if( (*isCancel) )
+    {
+        return nil;
+    }
+    if(error){
+        NSLog(@"error:%@",[error description]);
+    }
+    if(!responseData){
+        return nil;
+    }
+    id objc = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
+    if( [objc[@"code"] intValue] == 0 )
+    {
+        NSDictionary *dicData = objc[@"data"];
+        int status = -1;
+        if( dicData[@"status"] )
+        {
+            status = [dicData[@"status"] intValue];
+        }
+        if( status == 0 )
+        {
+            sleep(0.1);
+            if( (*isCancel) )
+            {
+                return nil;
+            }
+            return [VEHelp getPrivateCloud_EndASRWith:taskId atIsCancel:isCancel atURL:url atAppkey:appkey];
+        }
+        else{
+            if( (*isCancel) )
+            {
+                return nil;
+            }
+            if(  dicData[@"videoUrl"] )
+                return dicData[@"videoUrl"];
+            else
+                return nil;
+        }
+    }
+    return nil;
+}
+
++ (NSMutableArray *)breakSentenceWithText:(NSString *)sentence lineMaxTextLength:(int)lineMaxTextLength
+{
+    NSMutableArray *array = [NSMutableArray array];
+    NSArray *sentences = [sentence componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\t\n;?!；？！。"]];
+    for (int i = 0; i < sentences.count; i++) {
+        NSString *text = sentences[i];
+        if (![self isEmptyStr:text]) {
+            NSLog(@"text:%@", text);
+            if ([self getTextCount:text] > lineMaxTextLength) {
+                [self splitText:text textArray:array lineMaxTextLength:lineMaxTextLength];
+            }else {
+                text = [text stringByReplacingOccurrencesOfString:@"," withString:@" "];
+                text = [text stringByReplacingOccurrencesOfString:@"，" withString:@" "];
+                text = [text stringByReplacingOccurrencesOfString:@"、" withString:@" "];
+                if (![self isEmptyStr:text]) {
+                    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+                    [dic setObject:text forKey:@"textContent"];
+                    [array addObject:dic];
+                    NSLog(@"%d %@", __LINE__, dic[@"textContent"]);
+                }
+            }
+        }
+    }
+    
+    return array;
+}
+
++ (void)splitText:(NSString *)text textArray:(NSMutableArray *)textArray lineMaxTextLength:(int)lineMaxTextLength
+{
+    NSArray *texts = [text componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@",，、"]];
+    for (int i = 0; i < texts.count; i++) {
+        NSString *str = texts[i];
+        NSLog(@"-----%d %@", __LINE__, str);
+        if ([self getTextCount:str] > lineMaxTextLength) {
+#if 0
+            NSArray *words = [_jiebaManager veJiebaCut:str];
+            if (!words || words.count == 0) {
+                words = [self tokenization:str];
+            }
+            for (int j = 0; j < words.count; j++) {
+                NSString *textContent = words[j];
+                for (int k = j + 1; k < words.count; k++) {
+                    NSString *nextWord = words[k];
+                    NSString *newWord = [textContent stringByAppendingString:nextWord];
+                    if ([self getTextCount:newWord] <= lineMaxTextLength) {
+                        textContent = newWord;
+                        if (k == words.count - 1) {
+                            j = k + 1;
+                        }
+                    }else {
+                        j = k - 1;
+                        break;
+                    }
+                }
+                if (text.length > 0) {
+                    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+                    [dic setObject:textContent forKey:@"textContent"];
+                    [textArray addObject:dic];
+                    NSLog(@"%d %@", __LINE__, dic[@"textContent"]);
+                }
+            }
+#else
+            NSInteger lines = ceilf([self getTextCount:str] / (float)lineMaxTextLength);
+            NSInteger maxTextLength = [self getTextCount:str] / lines;
+            __block NSString *textContent = @"";
+            __block NSInteger count = 0;
+            __block NSString *itemStr = @"";
+            [str enumerateSubstringsInRange:NSMakeRange(0, [str length])
+                                   options:NSStringEnumerationByComposedCharacterSequences
+                                usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+                const char *cString = [substring UTF8String];
+                if (strlen(cString) == 3) {// 中文字符占用3个字节
+                    count += 2;
+                } else {
+                    count += 1;
+                }
+                if ([self getTextCount:[itemStr stringByAppendingString:substring]] <= maxTextLength) {
+                    itemStr = [itemStr stringByAppendingString:substring];
+                    if (substringRange.location + substringRange.length == str.length) {
+                        if (textContent.length == 0) {
+                            textContent = itemStr;
+                        }else {
+                            textContent = [[textContent stringByAppendingString:@"\n"] stringByAppendingString:itemStr];
+                        }
+                    }
+                }else {
+                    if (textContent.length == 0) {
+                        textContent = itemStr;
+                    }else {
+                        textContent = [[textContent stringByAppendingString:@"\n"] stringByAppendingString:itemStr];
+                    }
+                    if (substringRange.location + substringRange.length == str.length) {
+                        textContent = [[textContent stringByAppendingString:@"\n"] stringByAppendingString:substring];
+                    }
+                    itemStr = substring;
+                    count = 0;
+                    if (strlen(cString) == 3) {// 中文字符占用3个字节
+                        count += 2;
+                    } else {
+                        count += 1;
+                    }
+                }
+            }];
+            if (![self isEmptyStr:text]) {
+                NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+                [dic setObject:textContent forKey:@"textContent"];
+                [textArray addObject:dic];
+                NSLog(@"%d %@", __LINE__, dic[@"textContent"]);
+            }
+#endif
+        }else {
+            NSString *textContent = str;
+            for (int j = i + 1; j < texts.count; j++) {
+                NSString *nextStr = texts[j];
+                NSString *newStr = [[textContent stringByAppendingString:@" "] stringByAppendingString:nextStr];
+                if ([self getTextCount:newStr] <= lineMaxTextLength) {
+                    textContent = newStr;
+                    if (j == texts.count - 1) {
+                        i = j + 1;
+                    }
+                }else {
+                    i = j - 1;
+                    break;
+                }
+            }
+            if (![self isEmptyStr:text]) {
+                NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+                [dic setObject:textContent forKey:@"textContent"];
+                [textArray addObject:dic];
+                NSLog(@"%d %@", __LINE__, dic[@"textContent"]);
+            }
+        }
+    }
+}
+
++ (BOOL)isEmptyStr:(NSString *)str {
+    if (str.length == 0) {
+        return YES;
+    }else {
+        NSCharacterSet *set = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+        NSString *trimedString = [str stringByTrimmingCharactersInSet:set];
+        if ([trimedString length] == 0) {
+            return YES;
+        }else {
+            return NO;
+        }
+    }
+}
+
++ (NSInteger)getTextCount:(NSString *)text {
+    __block NSInteger count = 0;
+    [text enumerateSubstringsInRange:NSMakeRange(0, [text length])
+                           options:NSStringEnumerationByComposedCharacterSequences
+                        usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+                            const char *cString = [substring UTF8String];
+                            if (strlen(cString) == 3) {// 中文字符占用3个字节
+                                count += 2;
+                            } else {
+                                count += 1;
+                            }
+                        }];
+    return count;
+}
+
 @end

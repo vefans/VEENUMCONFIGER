@@ -29,6 +29,9 @@
     fxItemBtn.label = label;
     fxItemBtn.label.textAlignment = NSTextAlignmentCenter;
     fxItemBtn.label.textColor = TEXT_COLOR;
+    if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+        fxItemBtn.label.textColor = UIColorFromRGB(0x131313);
+    }
     fxItemBtn.label.font = [UIFont systemFontOfSize:10];
     
     UILabel * label1 = [[UILabel alloc] initWithFrame:fxItemBtn.label.frame];
@@ -40,6 +43,9 @@
     
     LongCacheImageView * imageView = [[LongCacheImageView alloc] initWithFrame:CGRectMake(0, 0, fxItemBtn.frame.size.width, fxItemBtn.frame.size.width)];
     imageView.backgroundColor = UIColorFromRGB(0x1f1f1f);
+    if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+        imageView.backgroundColor = UIColorFromRGB(0xf9f9f9);
+    }
     fxItemBtn.thumbnailIV = imageView;
     [fxItemBtn addSubview:fxItemBtn.thumbnailIV];
     [fxItemBtn addSubview:fxItemBtn.label];
@@ -65,6 +71,9 @@
     {
         UIView * editView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, fxItemBtn.frame.size.width, fxItemBtn.frame.size.width)];
         editView.backgroundColor = [UIColorFromRGB(0x000000) colorWithAlphaComponent:0.3];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            editView.backgroundColor = [UIColorFromRGB(0xFFFFFF) colorWithAlphaComponent:0.3];
+        }
         fxItemBtn.editView = editView;
         [fxItemBtn.thumbnailIV addSubview:editView];
         fxItemBtn.editView.tag = kFxIconTag + 10;
@@ -80,6 +89,9 @@
         editLabel.userInteractionEnabled = YES;
         editLabel.font = [UIFont systemFontOfSize:9];
         editLabel.textColor = [UIColor whiteColor];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            editLabel.textColor = UIColorFromRGB(0x131313);
+        }
         editLabel.text = @"更换画笔";
         editLabel.textAlignment = NSTextAlignmentCenter;
         [fxItemBtn.editView addSubview:editLabel];
@@ -181,9 +193,9 @@
                 if(strongSelf.isStartMove){
                     [strongSelf moveAction];
                 }else{
-                    strongSelf.label.frame = CGRectMake(0, _label.frame.origin.y, strongSelf.frame.size.width, _label.frame.size.height);
+                    strongSelf.label.frame = CGRectMake(0, strongSelf->_label.frame.origin.y, strongSelf.frame.size.width, strongSelf->_label.frame.size.height);
                     
-                    strongSelf->_moveTitleLabel.frame = CGRectMake(strongSelf.frame.size.width, _label.frame.origin.y, strongSelf.frame.size.width, _label.frame.size.height);
+                    strongSelf->_moveTitleLabel.frame = CGRectMake(strongSelf.frame.size.width, strongSelf->_label.frame.origin.y, strongSelf.frame.size.width, strongSelf->_label.frame.size.height);
                     
                 }
             }

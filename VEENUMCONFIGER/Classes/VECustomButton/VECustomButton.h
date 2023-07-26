@@ -31,3 +31,7 @@
 -(void)set_Recognizer;
 
 @end
+
+@interface VETabButton : UIButton
+
+@end

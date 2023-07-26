@@ -51,3 +51,44 @@
 }
 
 @end
+
+
+@implementation VETabButton
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        self.titleLabel.font = [UIFont systemFontOfSize:14.0];
+        [self setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
+        [self setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [self setTitleColor:UIColorFromRGB(0x727272) forState:UIControlStateNormal];
+            [self setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateSelected];
+        }
+    }
+    
+    return self;
+}
+- (instancetype)init {
+    if (self = [super init]) {
+        self.titleLabel.font = [UIFont systemFontOfSize:14.0];
+        [self setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
+        [self setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [self setTitleColor:UIColorFromRGB(0x727272) forState:UIControlStateNormal];
+            [self setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateSelected];
+        }
+    }
+    
+    return self;
+}
+
+- (void)setSelected:(BOOL)selected {
+    [super setSelected:selected];
+    if (selected) {
+        self.titleLabel.font = [UIFont boldSystemFontOfSize:self.titleLabel.font.pointSize];
+    }else {
+        self.titleLabel.font = [UIFont systemFontOfSize:self.titleLabel.font.pointSize];
+    }
+}
+
+@end

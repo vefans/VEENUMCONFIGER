@@ -33,6 +33,11 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = UIColorFromRGB(0x272727);
+        self.layer.cornerRadius = 5;
+        self.layer.masksToBounds = YES;
+        if([VEConfigManager sharedManager].backgroundStyle== UIBgStyleDarkContent){
+            self.backgroundColor = UIColorFromRGB(0xefefef);
+        }
         _textAlignment = NSTextAlignmentCenter;
         [self setupUI];
 
@@ -139,6 +144,9 @@
         _textView.backgroundColor = [UIColor clearColor];
         _textView.font = [UIFont systemFontOfSize:13];
         _textView.textColor = [UIColor whiteColor];
+        if([VEConfigManager sharedManager].backgroundStyle== UIBgStyleDarkContent){
+            _textView.textColor = UIColorFromRGB(0x131313);
+        }
         _textView.textAlignment = NSTextAlignmentLeft;
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.alignment = NSTextAlignmentLeft;
@@ -158,6 +166,9 @@
         _placeholderTextView.backgroundColor = [UIColor clearColor];
         _placeholderTextView.font = [UIFont systemFontOfSize:13];
         _placeholderTextView.textColor = UIColorFromRGB(0x727272);
+        if([VEConfigManager sharedManager].backgroundStyle== UIBgStyleDarkContent){
+            _textView.textColor = UIColorFromRGB(0x131313);
+        }
         _placeholderTextView.text = VELocalizedString(@"点击输入文字", nil);
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.alignment = NSTextAlignmentLeft;

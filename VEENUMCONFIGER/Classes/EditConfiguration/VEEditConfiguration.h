@@ -226,10 +226,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) TRIMEXPORTVIDEOTYPE trimExportVideoType;
 
 #pragma mark- 设置视频编辑界面
-/**单个媒体特效
+/**单个媒体特效(default true)
   */
 @property (nonatomic,assign) bool enableSingleSpecialEffects;
-/** 单个媒体调色
+/** 单个媒体调色(default true)
  */
 @property (nonatomic,assign) bool enableSingleMediaAdjust;
 /** 单个媒体滤镜 (default true)
@@ -278,12 +278,6 @@ NS_ASSUME_NONNULL_BEGIN
 /** 调色 (default true)
  */
 @property (nonatomic,assign) bool enableTon;
-
-
-
-
-
-
 /** 光圈 (default true)
  */
 @property (nonatomic,assign) bool enableAperture;
@@ -309,6 +303,12 @@ NS_ASSUME_NONNULL_BEGIN
 /** 模糊 (default true)
  */
 @property (nonatomic,assign) bool enableBlurry;
+/** 绑定 (default true)
+ */
+@property (nonatomic,assign) bool enablePIPBind;
+/** 混合模式(default true)
+ */
+@property (nonatomic,assign) bool enableMixedMode;
 /** 动画  (default true)
  */
 @property (nonatomic,assign) bool enableAnimation;
@@ -319,7 +319,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,assign) bool enableTransparency;
 
-/** 文字板 (default true)
+/** 文字板 (default false)
  */
 @property (nonatomic,assign) bool enableTextTitle;
 /** 默认视频输出方式（自动，横屏，1 ：1）
@@ -339,6 +339,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) bool enableVR;
 
 #pragma mark- 设置高级编辑界面
+/**层级(default true)
+  */
+@property (nonatomic,assign) bool enableHierarchy;
 /** 草稿 (default false)
  */
 @property (nonatomic,assign) bool enableDraft;
@@ -465,9 +468,6 @@ NS_ASSUME_NONNULL_BEGIN
 /** 骏证功能是否可用的地址
  */
 @property (nonatomic, copy, nullable) NSString *functionEnablePath;
-/** 文字转语音地址
- */
-@property (nonatomic, copy, nullable) NSString *textToSpeechPath;
 
 /** MV (default false)
  */
@@ -497,6 +497,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** enableAIRecogSubtitle为true时，才生效
  */
 @property (nonatomic,assign) bool enableAIRecogSubtitle;
+/** 私有云AI账号配置
+ */
+@property (nonatomic,strong,nullable) PrivateCloudAIRecogConfig *privateCloudAIRecogConfig;
 
 /** 字幕AI识别 (default true),enableSubtitle为true时，才生效
  *  该功能是以腾讯云为例，须设置tencentAIRecogConfig
@@ -519,7 +522,7 @@ NS_ASSUME_NONNULL_BEGIN
 /** 特效 (default true)
  */
 @property (nonatomic,assign) bool enableEffectsVideo;
-/** 是否显示定格特效 (default false)
+/** 是否显示定格特效 (default true)
  *  后台返回的定格特效分类ID接口：freezeFXCategoryId
  */
 @property (nonatomic,assign) bool enableFreezeEffects;

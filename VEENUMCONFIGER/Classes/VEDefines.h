@@ -530,6 +530,7 @@ isPhoneX;\
 #define VE_EXPORTBTN_TITLE_COLOR [VEConfigManager sharedManager].exportButtonTitleColor
 #define VE_EXPORTBTN_BG_COLOR [VEConfigManager sharedManager].exportButtonBackgroundColor
 #define Main_Color [VEConfigManager sharedManager].mainColor
+#define kRedColor UIColorFromRGB(0xef313f)
 #define kFreezeFrameFxId [VEConfigManager sharedManager].freezeFXCategoryId
 #define VE_NAV_TITLE_COLOR [VEConfigManager sharedManager].navigationBarTitleColor
 #define NAVIBGCOLOR [VEConfigManager sharedManager].navigationBackgroundColor

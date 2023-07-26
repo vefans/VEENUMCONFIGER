@@ -651,15 +651,18 @@ extern float const VEAdjust_DefaultValue_Exposure;
 /**  文本转语音
  *  @abstract text-to-speech
  *
- *  @param uploadUrl        网络接口
  *  @param locale       语言
+ *  @param ShortName 人物角色
  *  @param text        文字
- *  @param format     音频编码格式
- *  @param ttsName     语音名称
+ *  @param saveAudioPath     mp3文件地址
+ *  @param isOnlyReturnAudioPath     是否只返回mp3地址
  *
  * 获取MP3文件（ 后缀 .mp3）
  */
-+ (id)updateInfomation_TTSAtLocale:( NSString * ) locale atShortName:( NSString * ) ShortName atText:( NSString * ) text atFormat:( NSString * ) format atTTSName:( NSString * ) ttsName isOnlyReturnAudioPath:(BOOL)isOnlyReturnAudioPath;
++ (id)updateInfomation_TTSAtLocale:(NSString *)locale
+                       atShortName:(NSString *)ShortName
+                            atText:(NSString *)text
+                     saveAudioPath:(NSString *)saveAudioPath isOnlyReturnAudioPath:(BOOL)isOnlyReturnAudioPath;
 
 /**录制音频时候根据当前数据返回音量大小
  */
@@ -669,4 +672,12 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 //获取音频文件所有数据
 + (NSMutableData *)getAudioDataWithAssetReader:( NSURL * ) url atTimeRange:( CMTimeRange ) timeRange atSampleRate:( int ) sampleRate;
+
++(NSString *)getPrivateCloud_UploadToken:( NSString * ) tokenURL;
++(NSString *)getPrivateCloud_UploadAudioFile:(NSString *)audioFilePath atToken:( NSString * ) token   atURL:( NSString * ) url;
++(NSMutableArray *)getPrivateCloud_StartASR:( NSMutableArray * ) uploadFileURLs atLanguage:( NSString * ) language  atIsCancel:( BOOL * ) isCancel   atURL:( NSString * ) url atAppkey:( NSString * ) appkey;
+//分句
++ (NSMutableArray *)breakSentenceWithText:(NSString *)sentence lineMaxTextLength:(int)lineMaxTextLength;
+
++ (BOOL)isEmptyStr:(NSString *)str;
 @end

@@ -10,6 +10,9 @@
 - (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
 }
+- (void)setBackgroundColor:(UIColor *)backgroundColor{
+    [super setBackgroundColor:backgroundColor];
+}
 @end
 @interface VENavBarViewController ()
 
@@ -31,9 +34,10 @@
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.automaticallyAdjustsScrollViewInsets = NO;
         
-        if (@available(iOS 11.0, *)) {
-            [[UIScrollView appearance] setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
-        }
+        //不能统一设置UIScrollView，会导致调用系统文件APP时，搜索框挡住一些文件
+//        if (@available(iOS 11.0, *)) {
+//            [[UIScrollView appearance] setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
+//        }
         
         _navBar = [[UIView alloc] initWithFrame:CGRectMake(0,0,kWIDTH,kNavgationBar_Height)];
         [self.view addSubview:_navBar];
@@ -75,11 +79,18 @@
                 _toolBar = [[VEToolBarView alloc] initWithFrame:CGRectMake(0, kHEIGHT - kToolbarHeight, kWIDTH, kToolbarHeight)];
             }
             _toolBar.backgroundColor = TOOLBAR_COLOR;
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                _toolBar.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
+                [VEHelp addShadowToView:_toolBar withColor:nil];
+            }
             [self.view addSubview:_toolBar];
         }
 
         self.titlelab = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, kWIDTH-100, 44)];
         self.titlelab.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            self.titlelab.textColor = UIColorFromRGB(0x131313);
+        }
         [self.titlelab setFont:[UIFont boldSystemFontOfSize:17.0]];
         self.titlelab.textAlignment = NSTextAlignmentCenter;
         [_toolBar addSubview:self.titlelab];
@@ -90,8 +101,6 @@
         _finishToolBarBtn = [VENavBarButton buttonWithType:UIButtonTypeCustom];
         _finishToolBarBtn.frame = CGRectMake(kWIDTH - 44, 0, 44, 44);
         [_finishToolBarBtn setImage:[VEHelp imageWithContentOfFile:([VEConfigManager sharedManager].iPad_HD ? @"ipad/剪辑_勾_" : @"剪辑_勾_")] forState:UIControlStateNormal];
-        
-        
         
         [_toolBar addSubview:_finishToolBarBtn];
         
@@ -134,7 +143,7 @@
         if (_navBar) {
             [_backBtn setImage:[VEHelp imageWithContentOfFile:@"/New_EditVideo/剪辑_返回默认_"] forState:UIControlStateNormal];
         }else {
-            [_backBtn setImage:[VEHelp imageWithContentOfFile:@"剪辑_叉_"] forState:UIControlStateNormal];
+            [_backBtn setImage:[VEHelp imageWithContentOfFile:@"左上角叉_默认_@3x"] forState:UIControlStateNormal];
         }
         
         if( [VEConfigManager sharedManager].isPictureEditing )

@@ -8,6 +8,9 @@
 #import "VEEditConfiguration.h"
 
 @implementation VEEditConfiguration
+- (void)setIsShowSplitScreen:(BOOL)isShowSplitScreen{
+    _isShowSplitScreen = isShowSplitScreen;
+}
 - (void)setIsSingletrack:(bool)isSingletrack{
     _isSingletrack = isSingletrack;
     if(_isSingletrack){
@@ -28,7 +31,7 @@
         _mediaCountLimit                         = 0;
         _minVideoDuration = 0;
         _enableOcclusion = true;
-        _enableTextTitle                 = true;
+        _enableTextTitle = false;
         //片段编辑预设
         _enableParticle = true;
         _enableSmear = true;
@@ -75,6 +78,12 @@
         _enableMediaKeyframe = true;
         _enableAudioKeyframe = true;
         _enableDoodlePenKeyframe = true;
+        _enableCutout = true;
+        _enableCut_PIP = true;
+        _enableNoise = true;
+        _enableMorph = true;
+        _enableDeformed = true;
+        _enableEqualizer = true;
         
         //编辑导出预设
         _enableMV           = false;
@@ -82,6 +91,7 @@
         _enableSubtitleTemplate = true;
         _enableSubtitleToSpeech = false;
         _enableAIRecogSubtitle = true;
+        _privateCloudAIRecogConfig = [[PrivateCloudAIRecogConfig alloc] init];
         _tencentAIRecogConfig = [[TencentCloudAIRecogConfig alloc] init];
         _baiDuCloudAIConfig = [[BaiDuCloudAIConfig alloc] init];
         _nuiSDKConfig = [[NuiSDKConfig alloc] init];
@@ -91,7 +101,7 @@
         _enableFilter       = true;
         _enableEffect       = false;
         _enableEffectsVideo = true;
-        _enableFreezeEffects= false;
+        _enableFreezeEffects= true;
         _enableDubbing      = true;
         _enableMusic        = true;
         _enableSoundEffect  = true;
@@ -142,6 +152,9 @@
         _enableSoundCopy = true;
         _enableSoundorginal = true;
         _enableSingleAudioSepar = true;
+        _enableHierarchy = true;
+        _enableMixedMode = true;
+        _enablePIPBind = true;
     }
     
     return self;
@@ -273,7 +286,6 @@
     copy.enableSubtitleStyleInTool = _enableSubtitleStyleInTool;
     copy.getTextContentFromLinkPath = _getTextContentFromLinkPath;
     copy.functionEnablePath = _functionEnablePath;
-    copy.textToSpeechPath = _textToSpeechPath;
     
     
     copy.enableSoundVolume = _enableSoundVolume;
@@ -287,7 +299,9 @@
     copy.enableSoundCopy = _enableSoundCopy;
     copy.enableSoundorginal = _enableSoundorginal;
     copy.enableSingleAudioSepar = _enableSingleAudioSepar;
-    
+    copy.enableHierarchy = _enableHierarchy;
+    copy.enableMixedMode = _enableMixedMode;
+    copy.enablePIPBind = _enablePIPBind;
     return copy;
 }
 
@@ -415,7 +429,6 @@
     copy.enableSubtitleStyleInTool = _enableSubtitleStyleInTool;
     copy.getTextContentFromLinkPath = _getTextContentFromLinkPath;
     copy.functionEnablePath = _functionEnablePath;
-    copy.textToSpeechPath = _textToSpeechPath;
     
     copy.enableSoundVolume = _enableSoundVolume;
     copy.enableSoundFade = _enableSoundFade;
@@ -428,6 +441,9 @@
     copy.enableSoundCopy = _enableSoundCopy;
     copy.enableSoundorginal = _enableSoundorginal;
     copy.enableSingleAudioSepar = _enableSingleAudioSepar;
+    copy.enableHierarchy = _enableHierarchy;
+    copy.enableMixedMode = _enableMixedMode;
+    copy.enablePIPBind = _enablePIPBind;
     return copy;
 }
 

@@ -7,6 +7,21 @@
 
 #import "VEThirdpartyConfig.h"
 
+
+@implementation PrivateCloudAIRecogConfig
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _appKey = @"";
+        _tokenURL = @"";
+        _uploadAudioFileURL = @"";
+        _receiveCmdURL = @"";
+    }
+    return self;
+}
+
+@end
+
 @implementation TencentCloudAIRecogConfig
 
 - (instancetype)init {

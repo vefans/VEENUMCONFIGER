@@ -206,6 +206,10 @@
         [self.finishToolBarBtn setImage:nil forState:UIControlStateNormal];
         [self.finishToolBarBtn setTitle:VELocalizedString(@"完成", nil) forState:UIControlStateNormal];
         [self.finishToolBarBtn setTitleColor:UIColorFromRGB(0x31d065) forState:UIControlStateNormal];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [self.backBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+            [self.finishToolBarBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+        }
         self.finishToolBarBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         self.toolBar.hidden = NO;
         self.titlelab.text = @"";
@@ -214,6 +218,10 @@
         self.barline.backgroundColor = UIColorFromRGB(0x1a1a1a);
         self.titlelab.text = VELocalizedString(@"裁切", nil);
 //        self.titlelab.backgroundColor = UIColorFromRGB(0x1a1a1a);
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            self.titlelab.textColor = UIColorFromRGB(0x131313);
+            self.barline.backgroundColor = UIColorFromRGB(0xefefef);
+        }
     }
 }
 
@@ -235,6 +243,9 @@
         }
         else
             label.textColor = [UIColor whiteColor];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            label.textColor = UIColorFromRGB(0x727272);
+        }
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont systemFontOfSize:16];
         [self.bgView addSubview:label];
@@ -508,6 +519,10 @@
                 label.tag = 22222;
                 label.textColor = UIColorFromRGB(0xffffff);
                 label.backgroundColor = UIColorFromRGB(0x272727);
+                if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                    label.textColor = UIColorFromRGB(0x131313);
+                    label.backgroundColor = UIColorFromRGB(0xefefef);
+                }
                 label.textAlignment = NSTextAlignmentCenter;
                 label.font = [UIFont systemFontOfSize:12];
                 label.layer.cornerRadius = 5.0;
@@ -526,14 +541,19 @@
                 if( self.cropTypeSelectBtn )
                 {
                     self.cropTypeSelectBtn.selected = NO;
-                    if( self.cropTypeSelectBtn.tag == VE_VECROPTYPE_ORIGINAL )
+                    if( self.cropTypeSelectBtn.tag == VE_VECROPTYPE_ORIGINAL ){
                         ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = PESDKTEXT_COLOR;
+                        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                            ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = UIColorFromRGB(0x131313);
+                        }
+                    }
                 }
                 
                 _cropType = sender.tag;
                 [sender setSelected:YES];
-                if( VE_VECROPTYPE_ORIGINAL == sender.tag )
+                if( VE_VECROPTYPE_ORIGINAL == sender.tag ){
                     ((UILabel*)[sender viewWithTag:22222]).textColor = Main_Color;
+                }
                 self.cropTypeSelectBtn = sender;
                 _cropType = VE_VECROPTYPE_ORIGINAL;
             }
@@ -548,6 +568,9 @@
             
             UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - (self.cropTypeScrollView.frame.size.height + self.toolBar.frame.size.height+kBottomSafeHeight + 3), self.view.frame.size.width, self.cropTypeScrollView.frame.size.height + self.toolBar.frame.size.height+kBottomSafeHeight + 3)];
             view.backgroundColor = UIColorFromRGB(0x1a1a1a);
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                view.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
+            }
             [VEHelp addShadowToView:view withColor:UIColorFromRGB(0x000000)];
 //            {
 //                UIView *gsView = [[UIView alloc] init];
@@ -568,8 +591,11 @@
             self.toolBar.frame = CGRectMake(0,  5, self.toolBar.frame.size.width, 40);
             self.titlelab.frame = CGRectMake(50, 0, kWIDTH-100, 40);
             {
-                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.toolBar.frame) + 5, view.frame.size.width, 1)];
+                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.toolBar.frame) + 5, view.frame.size.width, 1.0/[UIScreen mainScreen].scale)];
                 label.backgroundColor = UIColorFromRGB(0x272727);
+                if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                    label.backgroundColor = UIColorFromRGB(0xefefef);
+                }
                 [view addSubview:label];
             }
             
@@ -770,7 +796,9 @@
     {
         scene.backgroundColor = UIColorFromRGB(0xffffff);
     }
-    
+    if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+        scene.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
+    }
     [self.scenesArray addObject:scene];
 
     _editVideoSize = [VEHelp getEditOrginSizeWithFile:_selectFile];
@@ -810,6 +838,10 @@
     if([VEConfigManager sharedManager].iPad_HD){
         _videoCoreSDK.view.backgroundColor = VIEW_IPAD_COLOR;
         _videoCropView.backgroundColor = VIEW_IPAD_COLOR;
+    }
+    if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+        _videoCoreSDK.view.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
+        _videoCropView.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
     }
     [_videoCoreSDK setScenes:self.scenesArray];
     
@@ -1024,10 +1056,16 @@
         [self.backButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_back_select"] forState:UIControlStateNormal];
         self.backButton.userInteractionEnabled = YES;
         [self.backButton setTitleColor:UIColorFromRGB(0xB2B2B2) forState:UIControlStateNormal];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [self.backButton setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+        }
     }else{
         
         [_backButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_back_normal"] forState:UIControlStateNormal];
         [self.backButton setTitleColor:UIColorFromRGB(0x808080) forState:UIControlStateNormal];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [self.backButton setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+        }
         self.backButton.userInteractionEnabled = NO;
         [self.cropTypeView didSelectItemAtIndexPathRow:self.cropType];//0
         //self.cropType = VE_VECROPTYPE_FREE;
@@ -1802,6 +1840,9 @@
         {
             _toolView.backgroundColor = [UIColor whiteColor];
         }
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            _toolView.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
+        }
     }
     return _toolView;
 }
@@ -1833,6 +1874,9 @@
         _playTimeLabel.font = [UIFont systemFontOfSize:12];
         _playTimeLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.0];
         _playTimeLabel.textColor = Color(255,255,255,0.64);
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            _playTimeLabel.textColor = UIColorFromRGB(0x131313);
+        }
         _playTimeLabel.textAlignment = NSTextAlignmentLeft;
         _playTimeLabel.text = @"00:00.0";
         _playTimeLabel.layer.cornerRadius = 4;
@@ -1848,6 +1892,9 @@
         _endTimeLabel.font = [UIFont systemFontOfSize:12];
         _endTimeLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.0];
         _endTimeLabel.textColor = Color(255,255,255,0.64);
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            _endTimeLabel.textColor = UIColorFromRGB(0x131313);
+        }
         _endTimeLabel.textAlignment = NSTextAlignmentLeft;
         _endTimeLabel.text = @"00:00.0";
         _endTimeLabel.layer.cornerRadius = 4;
@@ -1876,6 +1923,10 @@
         _backButton.layer.masksToBounds = YES;
         [_backButton setTitleColor:UIColorFromRGB(0x808080) forState:UIControlStateNormal];
         [_backButton setBackgroundColor:UIColorFromRGB(0x27262C)];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [_backButton setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+            [_backButton setBackgroundColor:[UIColor clearColor]];
+        }
         _backButton.userInteractionEnabled = NO;
         [_backButton addTarget:self action:@selector(backButtonClicked) forControlEvents:UIControlEventTouchUpInside];
         
@@ -1887,7 +1938,10 @@
     if (_lineView == nil) {
         _lineView = [[UIView alloc] initWithFrame:CGRectMake(86, 63,1, 2)];
         [_lineView setBackgroundColor:UIColorFromRGB(0x27262C)];
-        
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [_lineView setBackgroundColor:UIColorFromRGB(0xefefef)];
+
+        }
         
     }
     return _lineView;
@@ -1906,6 +1960,11 @@
         _vertButton.layer.masksToBounds = YES;
         [_vertButton setTitleColor:UIColorFromRGB(0xB2B2B2) forState:UIControlStateNormal];
         [_vertButton setBackgroundColor:UIColorFromRGB(0x27262C)];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [_vertButton setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+            [_vertButton setBackgroundColor:UIColorFromRGB(0xefefef)];
+
+        }
         
         [_vertButton addTarget:self action:@selector(vertButtonClicked) forControlEvents:UIControlEventTouchUpInside];
         
@@ -1925,6 +1984,11 @@
         _horizontalButton.layer.masksToBounds = YES;
         [_horizontalButton setTitleColor:UIColorFromRGB(0xB2B2B2) forState:UIControlStateNormal];
         [_horizontalButton setBackgroundColor:UIColorFromRGB(0x27262C)];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [_horizontalButton setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+            [_horizontalButton setBackgroundColor:UIColorFromRGB(0xefefef)];
+
+        }
         
         [_horizontalButton addTarget:self action:@selector(horizontalButtonClicked) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -1942,6 +2006,11 @@
         _whirlButton.layer.masksToBounds = YES;
         [_whirlButton setTitleColor:UIColorFromRGB(0xB2B2B2) forState:UIControlStateNormal];
         [_whirlButton setBackgroundColor:UIColorFromRGB(0x27262C)];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [_whirlButton setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+            [_whirlButton setBackgroundColor:UIColorFromRGB(0xefefef)];
+
+        }
         [_whirlButton addTarget:self action:@selector(whirlButtonClicked) forControlEvents:UIControlEventTouchUpInside];
     }
     return _whirlButton;
@@ -1966,6 +2035,9 @@
         {
             _cropTypeView.backgroundColor = UIColorFromRGB(0x111111);//[UIColor whiteColor];
             _cropTypeView.frame = CGRectMake(0, _photoView.frame.size.height - 100, CGRectGetWidth(self.bgView.frame), 100);
+        }
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            _cropTypeView.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
         }
         _cropTypeView.delegate = self;
     }
@@ -2031,6 +2103,9 @@
         {
             view.frame = CGRectMake(0,CGRectGetHeight(self.bgView.frame) - kToolbarHeight - 65, CGRectGetWidth(self.bgView.frame), 65);
         }
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            view.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
+        }
     }
     
     [_photoView addSubview:self.cropTypeView];
@@ -2054,6 +2129,9 @@
             view.frame = CGRectMake(0,CGRectGetHeight(self.bgView.frame) - ([VEConfigManager sharedManager].iPad_HD ? 0 : kToolbarHeight) - 85, CGRectGetWidth(self.bgView.frame), 85);
         }
         view.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : UIColorFromRGB(0x10100F);
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            view.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
+        }
         [self.bgView addSubview:view];
         _videoView = view;
     }
@@ -2103,6 +2181,9 @@
     label.font = [UIFont systemFontOfSize:14];
     label.textAlignment =NSTextAlignmentCenter;
     label.textColor = [UIColor whiteColor];
+    if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+        label.textColor = UIColorFromRGB(0x131313);
+    }
     [_videoView addSubview:label];
 }
 

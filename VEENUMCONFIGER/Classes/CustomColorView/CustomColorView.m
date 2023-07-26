@@ -12,6 +12,8 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if(self){
+        self.layer.cornerRadius = frame.size.height / 2.0;
+        self.layer.masksToBounds = YES;
         self.selectedView.hidden = YES;
     }
     return self;
@@ -21,6 +23,9 @@
     if(!_selectedView){
         _selectedView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, self.frame.size.width - 4, self.frame.size.height - 4)];
         _selectedView.layer.borderColor = UIColorFromRGB(0x111111).CGColor;
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            _selectedView.layer.borderColor = UIColorFromRGB(0xf9f9f9).CGColor;
+        }
         _selectedView.layer.borderWidth = 3;
         _selectedView.layer.cornerRadius = CGRectGetWidth(_selectedView.frame)/2.0;
         _selectedView.layer.masksToBounds = YES;
@@ -37,7 +42,11 @@
     if([self.backgroundColor isEqual:UIColorFromRGB(0x000000)] || [self.backgroundColor isEqual:UIColorFromRGB(0x111111)]){
         self.selectedView.layer.borderColor = UIColorFromRGB(0x272727).CGColor;
     }else{
-        self.selectedView.layer.borderColor = UIColorFromRGB(0x111111).CGColor;
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            self.selectedView.layer.borderColor = UIColorFromRGB(0xf9f9f9).CGColor;
+        }else{
+            self.selectedView.layer.borderColor = UIColorFromRGB(0x111111).CGColor;
+        }
     }
     if(selected){
         self.selectedView.hidden = NO;
@@ -104,7 +113,6 @@
     {
         {
             _otherColorAddBtn = [[UIButton alloc] initWithFrame:CGRectMake(10, CGRectGetHeight(self.frame)  - 44 - 44 - 12 - kBottomSafeHeight, 28, 28)];
-            _otherColorAddBtn.backgroundColor = [UIColor cyanColor];
             _otherColorAddBtn.layer.cornerRadius = 14;
             _otherColorAddBtn.layer.masksToBounds = YES;
             _otherColorAddBtn.layer.borderWidth = 0;

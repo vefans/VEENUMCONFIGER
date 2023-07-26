@@ -9,6 +9,28 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/** 私有云AI识别账号配置
+ */
+@interface PrivateCloudAIRecogConfig : NSObject
+
+/** 在私有云注册账号的 appKey
+ */
+@property (nonatomic, strong) NSString *appKey;
+
+/** 在私有云中获取token的接口
+ */
+@property (nonatomic, strong) NSString *tokenURL;
+
+/** 在私有云中上传音频文件的接口口
+ */
+@property (nonatomic, strong) NSString *uploadAudioFileURL;
+
+/** 在私有云中获取AI识别的文本相关信息的接口
+ */
+@property (nonatomic, strong) NSString *receiveCmdURL;
+
+@end
+
 /** 腾讯云AI识别账号配置
  */
 @interface TencentCloudAIRecogConfig : NSObject

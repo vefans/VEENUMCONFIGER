@@ -1420,6 +1420,7 @@
 "blurNum" ="模糊";
 "fullBlendTexSize" = "纹理大小";
 
+"Sound Record" = "录音";
 "Record" = "录制";
 "Tap/long press to start recording" = "点击/长按开始录制";
 "Create drafts are automatically saved here, so go ahead and create videos." = "剪辑草稿会自动保存在这里，快去创作吧~";
@@ -1487,3 +1488,4 @@
 "Next" = "下一步";
 "TTS" = "字说";
 "Are you sure to delete the last recording?" = "确定删除上一段录音吗？";
+"Show original video" = "显示原视频";

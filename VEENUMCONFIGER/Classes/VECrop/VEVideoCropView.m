@@ -20,6 +20,9 @@
         {
             self.backgroundColor = [UIColor blackColor];
         }
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            self.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
+        }
     }
     return self;
 }
