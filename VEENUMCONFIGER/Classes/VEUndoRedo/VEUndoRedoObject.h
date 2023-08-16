@@ -169,6 +169,7 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_Hair,//头发
     
     VEUndoRedoEditType_DoodlePen_Add,//涂鸦笔添加
+    VEUndoRedoEditType_DoodlePen_Adds,//涂鸦笔添加
     VEUndoRedoEditType_DoodlePen_Copy,//复制
     VEUndoRedoEditType_DoodlePen_Delete,//删除
     VEUndoRedoEditType_DoodlePen_Trim,//截取
@@ -220,5 +221,17 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
 //涂鸦笔
 @property (nonatomic, strong) NSObject *orDoodlePen;
 @property (nonatomic, strong) NSObject *dstDoodlePen;
+
+@property (nonatomic, strong) NSMutableArray *orDoodlePens;
+@property (nonatomic, strong) NSMutableArray *dstDoodlePens;
+
+@property (nonatomic, strong) NSString  *tempJsonPath;
+@property (nonatomic, strong) NSString  *oldTempJsonPath;
+
+@property (nonatomic,strong) NSMutableDictionary *tempDic;
+@property (nonatomic,strong) NSMutableDictionary *oldTempDic;
+
+@property (nonatomic, assign) NSIndexPath * tempSelectIndexpath;
+@property (nonatomic, assign) NSIndexPath * oldTempSelectIndexpath;
 
 @end

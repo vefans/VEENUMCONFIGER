@@ -9,6 +9,19 @@
 #import <UIKit/UIKit.h>
 typedef void(^CancelExportBlock) (void);
 
+@interface UIRectProgressView:UIView
+@property(nonatomic,strong) UIButton *cancelBtn;
+@property(nonatomic,strong) UIImageView *coverImageView;
+@property(nonatomic,assign) double progress;
+@property (nonatomic, assign) BOOL isHiddenCancelBtn;//是否隐藏取消,默认为NO
+@property (nonatomic, copy) CancelExportBlock cancelExportBlock;
+- (instancetype)initWithFrame:(CGRect)frame coverImage:(UIImage *)coverImage;
+- (void)dismiss;
+@end
+
+
+
+
 @interface VEExportProgressView : UIView
 @property (nonatomic, strong) UILabel *progressTitleLabel;
 @property (nonatomic, strong) UIColor* trackprogressTintColor;

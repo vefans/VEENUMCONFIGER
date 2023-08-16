@@ -57,6 +57,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
+        _normalFontSize = 14;
         self.titleLabel.font = [UIFont systemFontOfSize:14.0];
         [self setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
         [self setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
@@ -85,9 +86,17 @@
 - (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
     if (selected) {
-        self.titleLabel.font = [UIFont boldSystemFontOfSize:self.titleLabel.font.pointSize];
+        if (_selectedFontSize > 0) {
+            self.titleLabel.font = [UIFont boldSystemFontOfSize:_selectedFontSize];
+        }else {
+            self.titleLabel.font = [UIFont boldSystemFontOfSize:self.titleLabel.font.pointSize];
+        }
     }else {
-        self.titleLabel.font = [UIFont systemFontOfSize:self.titleLabel.font.pointSize];
+        if (_selectedFontSize > 0 && _normalFontSize) {
+            self.titleLabel.font = [UIFont systemFontOfSize:_normalFontSize];
+        }else {
+            self.titleLabel.font = [UIFont systemFontOfSize:self.titleLabel.font.pointSize];
+        }
     }
 }
 

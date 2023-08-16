@@ -21,6 +21,10 @@
     if( self )
     {
         self.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : VIEW_COLOR;
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            self.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
+            [VEHelp addShadowToView:self withColor:UIColorFromRGB(0x000000)];
+        }
         // 左上和右上为圆角
         UIBezierPath *cornerRadiusPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds byRoundingCorners:UIRectCornerTopRight | UIRectCornerTopLeft cornerRadii:CGSizeMake(16, 16)];
         CAShapeLayer *cornerRadiusLayer = [ [CAShapeLayer alloc ]  init];
@@ -105,7 +109,7 @@
             _beautyView.contentSize = CGSizeMake(0, list.count * 50);
         }
         else{
-            _beautyView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 14, CGRectGetWidth(self.frame), 60)];
+            _beautyView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 20, CGRectGetWidth(self.frame), 60)];
             _beautyView.backgroundColor = [UIColor clearColor];
             _beautyView.showsHorizontalScrollIndicator = NO;
             _beautyView.showsVerticalScrollIndicator = NO;
@@ -147,6 +151,9 @@
                 [toolItemBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/%@选中",title]] forState:UIControlStateSelected];
                 [toolItemBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
                 [toolItemBtn setTitleColor:Main_Color forState:UIControlStateSelected];
+                if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                    [toolItemBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+                }
                 [toolItemBtn setImageEdgeInsets:UIEdgeInsetsMake(0, (ItemBtnWidth - 40)/2.0, 20, (ItemBtnWidth - 40)/2.0)];
                 [toolItemBtn setTitleEdgeInsets:UIEdgeInsetsMake(40, -40, 0, 0)];
                 
@@ -162,6 +169,9 @@
                 VEPlaySlider * slider = [[VEPlaySlider alloc] initWithFrame:CGRectMake(63, (CGRectGetHeight(sliderSupView.frame) - 35)/2.0,sliderSupView.frame.size.width - 63*2 , 35)];
                 slider.tag = [list[i][@"id"] integerValue];
                 UIImage *trackImage = [VEHelp imageWithColor:SliderMaximumTrackTintColor size:CGSizeMake(10, 2.0) cornerRadius:1];
+                if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                    trackImage = [VEHelp imageWithColor:UIColorFromRGB(0xcccfd6) size:CGSizeMake(10, 2.0) cornerRadius:1];
+                }
                 [slider setMinimumTrackImage:trackImage forState:UIControlStateNormal];
                 [slider setMinimumValue:-1.0];
                 [slider setMaximumValue:1.0];
@@ -175,6 +185,9 @@
                 
                 UIView *trackView = [[UIView alloc] initWithFrame:CGRectMake(slider.frame.size.width/2.0 ,CGRectGetMidY(slider.frame), 0, 2)];
                 trackView.backgroundColor = SliderMinimumTrackTintColor;
+                if([VEConfigManager sharedManager].backgroundStyle ==UIBgStyleDarkContent){
+                    trackView.backgroundColor = UIColorFromRGB(0x131313);
+                }
                 trackView.tag = 100 + slider.tag;
                 trackView.hidden = YES;
                 [sliderSupView addSubview:trackView];
@@ -184,6 +197,9 @@
                     UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(slider.frame.origin.x + (slider.frame.size.width - 30)/2.0, -10, 30, 15)];
                     label.text  = @"0";
                     label.textColor = [UIColor whiteColor];
+                    if([VEConfigManager sharedManager].backgroundStyle ==UIBgStyleDarkContent){
+                        label.textColor = UIColorFromRGB(0x131313);
+                    }
                     label.font = [UIFont systemFontOfSize:12];
                     label.textAlignment = NSTextAlignmentCenter;
                     label.hidden = YES;
@@ -301,6 +317,10 @@
     }
     [toolItemBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
     [toolItemBtn setTitleColor:TEXT_COLOR forState:UIControlStateSelected];
+    if([VEConfigManager sharedManager].backgroundStyle ==UIBgStyleDarkContent){
+        [toolItemBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+        [toolItemBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateSelected];
+    }
     [toolItemBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, (ItemBtnWidth - 40))];
     toolItemBtn.adjustsImageWhenHighlighted = NO;
     toolItemBtn.userInteractionEnabled = NO;
@@ -327,9 +347,11 @@
            ![str isEqualToString:@"红润"] &&
            ![str isEqualToString:@"大眼"] &&
            ![str isEqualToString:@"瘦脸"]) || ![VEConfigManager sharedManager].iPad_HD){
-            
-            UIView *trackView = [[UIView alloc] initWithFrame:CGRectMake(slider.frame.size.width/2.0 ,CGRectGetMidY(slider.frame), 0, 1)];
+            UIView *trackView = [[UIView alloc] initWithFrame:CGRectMake( slider.frame.size.width/2.0 ,CGRectGetMidY(slider.frame)-0.05, 0.1, 0.1)];
             trackView.backgroundColor = SliderMinimumTrackTintColor;
+            if([VEConfigManager sharedManager].backgroundStyle ==UIBgStyleDarkContent){
+                trackView.backgroundColor = UIColorFromRGB(0x131313);
+            }
             trackView.tag = 100 + slider.tag;
             [view addSubview:trackView];
         }else{
@@ -344,6 +366,9 @@
     label.font = [UIFont systemFontOfSize:12];
     label.textAlignment = NSTextAlignmentCenter;
     label.textColor = TEXT_COLOR;
+    if([VEConfigManager sharedManager].backgroundStyle ==UIBgStyleDarkContent){
+        label.textColor = UIColorFromRGB(0x131313);
+    }
     [view addSubview:label];
 }
 - (void) insertColorGradient:(UIView *)view {
@@ -378,6 +403,9 @@
     [self addSubview:view];
     UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 43.5, self.frame.size.width, 0.5)];
     imageView.backgroundColor = UIColorFromRGB(0x2a2a2a);
+    if([VEConfigManager sharedManager].backgroundStyle ==UIBgStyleDarkContent){
+        imageView.backgroundColor = UIColorFromRGB(0xefefef);
+    }
     [_toolbarView addSubview:imageView];
     
     if(![VEConfigManager sharedManager].iPad_HD){
@@ -454,6 +482,10 @@
     
         [toolItemBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
         [toolItemBtn setTitleColor:Main_Color forState:UIControlStateSelected];
+        if([VEConfigManager sharedManager].backgroundStyle ==UIBgStyleDarkContent){
+            [toolItemBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+            [toolItemBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateSelected];
+        }
         if( idx == 0 )
         {
             toolItemBtn.selected = YES;
@@ -570,24 +602,25 @@
             _sliderValueLabel.frame = frame;
             _sliderValueLabel.text = [NSString stringWithFormat:@"%.f",(slider.value * 100)];
             
-            float trackImageHeight = slider.currentMinimumTrackImage.size.height;
+            float trackImageHeight = slider.currentMinimumTrackImage.size.height + 1;
             float thumbImageWidth = slider.currentThumbImage.size.width;
+            float y = CGRectGetMidY(slider.frame) - trackImageHeight/2.0 - 0.5;
             if( slider.value < 0)
             {
                 float with = slider.frame.size.width/2.0 - (slider.frame.size.width  - thumbImageWidth )*( (slider.value - slider.minimumValue )/(slider.maximumValue - slider.minimumValue))  - thumbImageWidth  ;
                 if( with >= 0 )
                 {
-                    [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 - with + slider.frame.origin.x, CGRectGetMidY(slider.frame) - trackImageHeight/2.0, with, trackImageHeight) ];
+                    [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 - with + (3 * slider.value) + slider.frame.origin.x, y, with - (3 * slider.value), trackImageHeight) ];
                 }else {
-                    [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 - with+ slider.frame.origin.x, CGRectGetMidY(slider.frame) - trackImageHeight/2.0,0, trackImageHeight)];
+                    [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 - with + (3 * slider.value) + slider.frame.origin.x, y,0, trackImageHeight)];
                 }
             }else {
                 float with = (slider.frame.size.width  - thumbImageWidth )*((slider.value - slider.minimumValue )/(slider.maximumValue - slider.minimumValue)) - slider.frame.size.width/2.0;
                 if( with >= 0 )
                 {
-                    [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 + slider.frame.origin.x, CGRectGetMidY(slider.frame) - trackImageHeight/2.0, with, trackImageHeight)];
+                    [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 + slider.frame.origin.x, y, with + (3 * slider.value), trackImageHeight)];
                 }else {
-                    [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 + slider.frame.origin.x, CGRectGetMidY(slider.frame) - trackImageHeight/2.0, 0, trackImageHeight)];
+                    [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 + slider.frame.origin.x, y, 0, trackImageHeight)];
                 }
             }
             slider.hidden = NO;
@@ -1003,28 +1036,29 @@
 
 -(void)sliderValueChanged:(VEPlaySlider *) slider
 {
-    float trackImageHeight = slider.currentMinimumTrackImage.size.height;
+    float trackImageHeight = slider.currentMinimumTrackImage.size.height + 1;
     float thumbImageWidth = slider.currentThumbImage.size.width;
     UIView *trackView = [slider.superview viewWithTag:100 + slider.tag];
     if([VEConfigManager sharedManager].iPad_HD){
         trackView = [slider.superview viewWithTag:100];
     }
+    float y = CGRectGetMidY(slider.frame) - trackImageHeight/2.0 - 0.5;
     if( slider.value < 0)
     {
         float with = slider.frame.size.width/2.0 - (slider.frame.size.width  - thumbImageWidth )*( (slider.value - slider.minimumValue )/(slider.maximumValue - slider.minimumValue))  - thumbImageWidth  ;
         if( with >= 0 )
         {
-            [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 - with + slider.frame.origin.x, CGRectGetMidY(slider.frame) - trackImageHeight/2.0, with, trackImageHeight) ];
+            [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 - with + (3 * slider.value) + slider.frame.origin.x, y, with - (3 * slider.value), trackImageHeight) ];
         }else {
-            [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 - with+ slider.frame.origin.x, CGRectGetMidY(slider.frame) - trackImageHeight/2.0,0, trackImageHeight)];
+            [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 - with + (3 * slider.value) + slider.frame.origin.x, y,0, trackImageHeight)];
         }
     }else {
         float with = (slider.frame.size.width  - thumbImageWidth )*((slider.value - slider.minimumValue )/(slider.maximumValue - slider.minimumValue)) - slider.frame.size.width/2.0;
         if( with >= 0 )
         {
-            [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 + slider.frame.origin.x, CGRectGetMidY(slider.frame) - trackImageHeight/2.0, with, trackImageHeight)];
+            [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 + slider.frame.origin.x, y, with + (3 * slider.value), trackImageHeight)];
         }else {
-            [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 + slider.frame.origin.x, CGRectGetMidY(slider.frame) - trackImageHeight/2.0, 0, trackImageHeight)];
+            [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 + slider.frame.origin.x, y, 0, trackImageHeight)];
         }
     }
     if([VEConfigManager sharedManager].iPad_HD){
@@ -1378,7 +1412,5 @@
             obj.selected = (obj.tag == tag);
         }
     }];
-    
-    
 }
 @end

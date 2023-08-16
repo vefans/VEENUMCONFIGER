@@ -34,4 +34,14 @@
 
 @interface VETabButton : UIButton
 
+/**
+ *  The size of the selected state font. The default is consistent with the normal state.
+ */
+@property (nonatomic, assign) CGFloat selectedFontSize;
+
+/**
+ *  The size of the normal state font. The default is 14.
+ */
+@property (nonatomic, assign) CGFloat normalFontSize;
+
 @end

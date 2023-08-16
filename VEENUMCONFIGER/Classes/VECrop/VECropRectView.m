@@ -16,7 +16,11 @@
         
         self.videoCropType = videoCropType;
         self.backgroundColor = Color(0,0,0,0.5);
-        self.layer.borderColor =  Color(255,255,255,1).CGColor;
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            self.layer.borderColor =  UIColorFromRGB(0x727272).CGColor;
+        }else{
+            self.layer.borderColor =  Color(255,255,255,1).CGColor;
+        }
         self.layer.borderWidth = 1;
         
     }
@@ -28,8 +32,11 @@
     
     if ( (self.videoCropType !=VEVideoCropType_Dewatermark) && (!_isTrackButtonHidden) ) {
         CGContextRef context = UIGraphicsGetCurrentContext();
-        CGContextSetStrokeColorWithColor(context, Color(255,255,255,1).CGColor);//线框颜色
-        
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            CGContextSetStrokeColorWithColor(context, UIColorFromRGB(0x727272).CGColor);//线框颜色
+        }else{
+            CGContextSetStrokeColorWithColor(context, Color(255,255,255,1).CGColor);//线框颜色
+        }
         // 绘制锤直虚线
         for (int i = 0; i < 2; i++) {
             float verticalLineWidth = self.frame.size.width/3;

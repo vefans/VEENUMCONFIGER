@@ -341,6 +341,15 @@
 }
 
 - (void)setCurrentColor:(UIColor *)color {
+    if (!color || CGColorEqualToColor(color.CGColor, [UIColor clearColor].CGColor)) {
+        if (_selectedColorIndex >= 0) {
+            ColorButton *prevBtn = [_colorBtnScrollView viewWithTag:_selectedColorIndex + 1];
+            prevBtn.selected = NO;
+        }
+        _currentCustomColorBtn.selected = NO;
+        _currentCustomColor = nil;
+        return;
+    }
     __block NSUInteger index = -1;
     if( color )
     {
@@ -358,12 +367,12 @@
             }
         }];
     }
-    if (index >= 0) {
-        ColorButton *btn = [_colorBtnScrollView viewWithTag:index + 1];
-        [self colorBtnAction:btn];
-    }else {
+    if (index == -1) {
         _currentCustomColor = color;
         [self refreshSelectedColorBtn];
+    }else {
+        ColorButton *btn = [_colorBtnScrollView viewWithTag:index + 1];
+        [self colorBtnAction:btn];
     }
 }
 

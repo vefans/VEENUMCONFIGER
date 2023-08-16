@@ -379,6 +379,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
                          urlPath:(NSString *)urlPath;
 
 +(NSArray *)classificationParams:( NSString * ) type atAppkey:( NSString * ) appkey atURl:( NSString * ) netMaterialTypeURL;
++(NSString *)createPostURL:(NSMutableDictionary *)params;
 + (id)updateInfomation:(NSMutableDictionary *)params andUploadUrl:(NSString *)uploadUrl;
 + (id)getNetworkMaterialWithParams:(NSMutableDictionary *)params
                             appkey:(NSString *)appkey
@@ -399,6 +400,11 @@ extern float const VEAdjust_DefaultValue_Exposure;
                                  timeRange:(CMTimeRange)timeRange
                                  currentFrameTexturePath:(NSString *)currentFrameTexturePath
                                                   atPath:( NSString * ) path;
++ (CustomMultipleFilter *)getCustomMultipleFilerWithPath:(NSString *)path
+                                              categoryId:(NSString *)categoryId
+                                              resourceId:(NSString *)resourceId
+                                               timeRange:(CMTimeRange)timeRange
+                                               currentFrameTexturePath:(NSString *)currentFrameTexturePath;
 +(CaptionEffectColorParam *)getShadowStrokes:( NSDictionary * ) obj;
 +(NSDictionary *)getConfig_Dic:( NSString * ) configPath;
 +(NSDictionary *)getCaptionConfig_Dic:( NSString * ) configPath;
@@ -540,6 +546,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 //剪同款
 + (NSString *)getCachedAPITemplatePathWithUrlStr:(NSString *)urlStr;
 
++ (NSString *)getCachedFileNameWithUrlStr:(NSString *)urlStr;
+
 + (NSString *)getPathFolderName:(NSString *)path;
 
 + (CVPixelBufferRef)pixelBufferFromCGImage:(UIImage *)img;
@@ -670,14 +678,20 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 +(NSString *)getChineseFirstLetter:(NSString *)text;
 
++ (NSMutableData *)getAudioDataWithAssetReader_Customization:( NSURL * ) url atTimeRange:( CMTimeRange ) timeRange atSampleRate:( int ) sampleRate  atChannels:( NSInteger ) channels atBit:( NSInteger ) bit atIsFloat:( BOOL ) isFloat;
+
 //获取音频文件所有数据
 + (NSMutableData *)getAudioDataWithAssetReader:( NSURL * ) url atTimeRange:( CMTimeRange ) timeRange atSampleRate:( int ) sampleRate;
 
-+(NSString *)getPrivateCloud_UploadToken:( NSString * ) tokenURL;
++(NSString *)getUploadToken;
 +(NSString *)getPrivateCloud_UploadAudioFile:(NSString *)audioFilePath atToken:( NSString * ) token   atURL:( NSString * ) url;
 +(NSMutableArray *)getPrivateCloud_StartASR:( NSMutableArray * ) uploadFileURLs atLanguage:( NSString * ) language  atIsCancel:( BOOL * ) isCancel   atURL:( NSString * ) url atAppkey:( NSString * ) appkey;
 //分句
 + (NSMutableArray *)breakSentenceWithText:(NSString *)sentence lineMaxTextLength:(int)lineMaxTextLength;
 
 + (BOOL)isEmptyStr:(NSString *)str;
+
++(BOOL)createDocXWithFilePath:( NSString * ) filePath atString:( NSAttributedString * ) attributedString;
+
++(NSMutableArray *)getTextWordAudioWithFilePath_PrivateCloud:( NSString * ) filePath;
 @end

@@ -72,7 +72,8 @@
 "是否删除当前视频?" = "Sure to delete current video?";
 "个" = "Number";
 "截取不能小于1.0秒!" = "Trim not trim video under 1 second!";
-
+"选择视频不能小于%.1fs" = "The selected video cannot be less than %.1fs";
+"选择视频不能大于%.1fs" = "The selected video cannot be greater than %.1fs";
 "美颜" = "Beauty";
 "磨皮" = "Smooth";
 "美白" = "Whiten";
@@ -649,7 +650,7 @@
 "KTV" = "KTV";
 "厂房" = "Factory";
 "竞技场" = "Arena";
-"电音" = "Electronic";
+"电子" = "Electron";
 
 "授权未通过,请重新授权" = "Authorization do not pass, please authorize again";
 "已取消" = "Had been cancelled";
@@ -2797,3 +2798,8 @@
 
 "选择语言" = "Select language";
 "识别类型" = "Recognition type";
+
+"横屏" = "Landscape";
+"竖屏" = "Portrait";
+
+

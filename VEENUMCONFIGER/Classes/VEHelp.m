@@ -22,6 +22,8 @@
 #import <VEENUMCONFIGER/XLBallLoading.h>
 #import <LibVECore/VECoreYYModel.h>
 
+#import <DocX/DocX.h>
+
 VENetworkResourceType const VENetworkResourceType_CardMusic = @"cardpoint_music";//卡点音乐
 VENetworkResourceType const VENetworkResourceType_CloudMusic = @"cloud_music";//配乐
 VENetworkResourceType const VENetworkResourceType_OnlineAlbum = @"cloud_video";//在线相册
@@ -2096,9 +2098,21 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             fileURL = [NSURL fileURLWithPath:filePah];
         }else{
             if(![[VEConfigManager sharedManager].directory isEqualToString:NSHomeDirectory()]){
+                range = [absolutePath rangeOfString:@"/Library/Caches"];
                 absolutePath = [absolutePath stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-                filePah = [[absolutePath componentsSeparatedByString:[[VEConfigManager sharedManager].directory lastPathComponent]] lastObject];
-                filePah = [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:filePah];
+                if (range.location != NSNotFound) {
+                    filePah = [[absolutePath componentsSeparatedByString:@"/Library/Caches"] lastObject];
+                    NSString *cachesPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+                    filePah = [cachesPath stringByAppendingPathComponent:filePah];
+                }else{
+                    range = [absolutePath rangeOfString:@"Data/Application/"];
+                    if (range.location != NSNotFound) {
+                        filePah = [[absolutePath componentsSeparatedByString:[[VEConfigManager sharedManager].directory lastPathComponent]] lastObject];
+                        filePah = [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:filePah];
+                    }else{
+                        filePah = absolutePath;
+                    }
+                }
                 fileURL = [NSURL fileURLWithPath:filePah];
             }else{
                 range = [absolutePath rangeOfString:@"Data/Application/"];
@@ -2143,8 +2157,20 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }else{
             if(![[VEConfigManager sharedManager].directory isEqualToString:NSHomeDirectory()]){
                 absolutePath = [absolutePath stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-                filePah = [[absolutePath componentsSeparatedByString:[[VEConfigManager sharedManager].directory lastPathComponent]] lastObject];
-                filePah = [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:filePah];
+                range = [absolutePath rangeOfString:@"/Library/Caches"];
+                if (range.location != NSNotFound) {
+                    filePah = [[absolutePath componentsSeparatedByString:@"/Library/Caches"] lastObject];
+                    NSString *cachesPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+                    filePah = [cachesPath stringByAppendingPathComponent:filePah];
+                }else{
+                    range = [absolutePath rangeOfString:@"Data/Application/"];
+                    if (range.location != NSNotFound) {
+                        filePah = [[absolutePath componentsSeparatedByString:[[VEConfigManager sharedManager].directory lastPathComponent]] lastObject];
+                        filePah = [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:filePah];
+                    }else{
+                        filePah = absolutePath;
+                    }
+                }
                 fileURL = filePah;
             }
             else
@@ -4110,6 +4136,17 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     apngData = nil;
     apngImage = nil;
+    
+    NSString *jsonPath = [path stringByAppendingPathComponent:@"config.json"];
+    unlink([jsonPath UTF8String]);
+    NSString *jsonStr = [VEHelp objectToJson:jsonDic];
+    if (jsonStr.length > 0) {
+        NSError *error = nil;
+        [jsonStr writeToFile:jsonPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        if (error) {
+            NSLog(@"%@", error);
+        };
+    }
 }
 + (UIImage *) imageWithColor:(UIColor *)color size:(CGSize)size cornerRadius:(CGFloat)cornerRadius {
     CGRect rect = CGRectMake(0, 0, size.width, size.height);
@@ -4140,7 +4177,15 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }else {
         path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mov", file.localIdentifier]];
     }
+    BOOL isExist = NO;
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        AVURLAsset *asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:path]];
+        NSArray *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+        if (videoTracks.count > 0) {
+            isExist = YES;
+        }
+    }
+    if (isExist) {
         if (![file.contentURL.absoluteString.lastPathComponent isEqual:path.lastPathComponent]) {
             file.videoActualTimeRange = kCMTimeRangeZero;
             file.contentURL = [NSURL fileURLWithPath:path];
@@ -9800,8 +9845,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                                  currentFrameTexturePath:(NSString *)currentFrameTexturePath
                                                   atPath:( NSString * ) path
 {
-    CustomMultipleFilter *customMultipleFilter = nil;
-    NSMutableArray<CustomFilter*>* filterArray = [[NSMutableArray alloc] init];
     __block NSString *categoryId;
     __block NSString *resourceId;
     if (fxId.length == 0) {
@@ -9831,43 +9874,66 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             return nil;
         }
     }
+    CustomMultipleFilter *customMultipleFilter = [self getCustomMultipleFilerWithPath:path categoryId:categoryId resourceId:resourceId timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath];
     
+    return customMultipleFilter;
+}
+
++ (CustomMultipleFilter *)getCustomMultipleFilerWithPath:(NSString *)path
+                                              categoryId:(NSString *)categoryId
+                                              resourceId:(NSString *)resourceId
+                                 timeRange:(CMTimeRange)timeRange
+                                 currentFrameTexturePath:(NSString *)currentFrameTexturePath
+{
+    CustomMultipleFilter *customMultipleFilter = nil;
+    NSMutableArray<CustomFilter*>* filterArray = [[NSMutableArray alloc] init];
+    NSInteger fileCount = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil] count];
+    if (fileCount == 0) {
+        return nil;
+    }
     if (![[NSFileManager defaultManager] fileExistsAtPath:currentFrameTexturePath]) {
         currentFrameTexturePath = [currentFrameTexturePath.stringByDeletingPathExtension stringByAppendingPathExtension:@"png"];
     }
     NSString *configPath = [self getConfigPathWithFolderPath:path];
-    path = [path stringByDeletingLastPathComponent];
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
     NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
     jsonData = nil;
     NSArray* shaderArray = effectDic[@"effect"];
     if (shaderArray.count) {
-        WeakSelf(self);
         [shaderArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            CustomFilter *customFilter = [weakSelf getCustomFilterWithDictionary:obj folderPath:path categoryId:categoryId resourceId:resourceId fxId:fxId filterFxArray:filterFxArray timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath atCallback:^(CustomFilter *customFilter) {
+            CustomFilter *customFilter = [self getCustomFilterWithDictionary:obj folderPath:path categoryId:categoryId resourceId:resourceId fxId:nil filterFxArray:nil timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath atCallback:^(CustomFilter *customFilter) {
+            }];
+            if (customFilter) {
                 if( [effectDic[@"ver"] integerValue] >= 8 )
                 {
                     customFilter.decodeName = effectDic[@"name"];
                 }
-            }];
-            if (customFilter) {
                 customFilter.cycleDuration = [effectDic[@"duration"] floatValue];
+                if (effectDic[@"script"]) {
+                    NSError * error = nil;
+                    NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
+                    customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
+                    customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
+                }
                 [filterArray addObject:customFilter];
             }
+        }];
+    }
+    else {
+        CustomFilter *customFilter = [self getCustomFilerWithFxPath:path timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath];
+        if (customFilter) {
+            customFilter.networkCategoryId = categoryId;
+            customFilter.networkResourceId = resourceId;
+            if( [effectDic[@"ver"] integerValue] >= 8 )
+            {
+                customFilter.decodeName = effectDic[@"name"];
+            }
+            customFilter.cycleDuration = [effectDic[@"duration"] floatValue];
             if (effectDic[@"script"]) {
                 NSError * error = nil;
                 NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
                 customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
                 customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
-            }
-        }];
-    }
-    else {
-        CustomFilter *customFilter = [self getCustomFilerWithFxId:fxId filterFxArray:filterFxArray timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath atPath:path];
-        if (customFilter) {
-            if( [effectDic[@"ver"] integerValue] >= 8 )
-            {
-                customFilter.decodeName = effectDic[@"name"];
             }
             [filterArray addObject:customFilter];
         }
@@ -9964,10 +10030,19 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 //            path = [path stringByAppendingPathComponent:folderName];
 //        }
     }
-    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
-    CustomFilter *customFilter = [[CustomFilter alloc] init];
+    CustomFilter *customFilter = [self getCustomFilerWithFxPath:path timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath];
     customFilter.networkCategoryId = categoryId;
     customFilter.networkResourceId = resourceId;
+    
+    return customFilter;
+}
+
++ (CustomFilter *)getCustomFilerWithFxPath:(NSString *)path
+                                 timeRange:(CMTimeRange)timeRange
+                   currentFrameTexturePath:(NSString *)currentFrameTexturePath
+{
+    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+    CustomFilter *customFilter = [[CustomFilter alloc] init];
     
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
     NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
@@ -12229,6 +12304,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return [kAPITemplateFolder stringByAppendingPathComponent:file];
 }
 
++ (NSString *)getCachedFileNameWithUrlStr:(NSString *)urlStr {
+    NSString *file = [[[urlStr stringByDeletingLastPathComponent] lastPathComponent] stringByAppendingString: [NSString stringWithFormat:@"%lu",[[[urlStr lastPathComponent] stringByDeletingPathExtension] hash]]];
+    return file;
+}
+
 +(void)saveUserInfo:(id) obj forKey:(NSString*) key
 {
     NSFileManager *fman = [NSFileManager defaultManager];
@@ -14390,8 +14470,103 @@ static OSType help_inputPixelFormat(){
     return reader;
 }
 
+//获取音频文件所有数据
++ (NSMutableData *)getAudioDataWithAssetReader_Customization:( NSURL * ) url atTimeRange:( CMTimeRange ) timeRange atSampleRate:( int ) sampleRate  atChannels:( NSInteger ) channels atBit:( NSInteger ) bit atIsFloat:( BOOL ) isFloat
+{
+    AVAssetReader *audioReader = [self getAudioAssetReader_Customization:url atTimeRange:timeRange atSampleRate:sampleRate atChannels:channels atBit:bit atIsFloat:isFloat];
+    if( audioReader == nil )
+        return nil;
+    
+    NSMutableData *audioData = nil;
+    BOOL isGET = true;
+    for (;isGET;) {
+        //判断是否开启解码
+        if (audioReader && audioReader.status == AVAssetReaderStatusUnknown) {
+            [audioReader startReading];
+        }
+        //判断是否解码完成
+        if(audioReader && (audioReader.status == AVAssetReaderStatusCompleted || audioReader.status == AVAssetReaderStatusFailed))
+        {
+            if(audioReader)
+            {
+                [audioReader cancelReading];
+                audioReader = nil;
+            }
+            isGET = false;
+        }
+        //判断是否正在解码
+        if (audioReader && audioReader.status == AVAssetReaderStatusReading) {
+
+            CMSampleBufferRef sampleBuffer = [audioReader.outputs.firstObject copyNextSampleBuffer];
+            if(!sampleBuffer && audioReader.status == AVAssetReaderStatusReading)
+            {
+                if(audioReader)
+                {
+                    [audioReader cancelReading];
+                    audioReader = nil;
+                }
+                isGET = false;
+//                NSValue *audioTimeValue = [NSValue valueWithCMTimeRange:timeRange];
+//                [audioReader.outputs.firstObject resetForReadingTimeRanges:@[audioTimeValue]];
+//                 sampleBuffer = [audioReader.outputs.firstObject copyNextSampleBuffer];
+            }
+            //保存音频数据
+            if( sampleBuffer )
+            {
+                size_t lengthAtOffsetOutput, totalLengthOutput;
+                char *dataPointer;
+                CMBlockBufferRef blockBUfferRef = CMSampleBufferGetDataBuffer(sampleBuffer);//取出数据
+                CMBlockBufferGetDataPointer(blockBUfferRef, 0, &lengthAtOffsetOutput, &totalLengthOutput, &dataPointer);
+                if( audioData == nil )
+                {
+                    audioData  = [NSMutableData new];
+                }
+                [audioData appendBytes:dataPointer length:totalLengthOutput];
+            }
+        }
+    }
+    
+    return audioData;
+}
+
+//创建音频解码器
++ (AVAssetReader *)getAudioAssetReader_Customization:( NSURL * ) url atTimeRange:( CMTimeRange ) timeRange atSampleRate:( int ) sampleRate atChannels:( NSInteger ) channels atBit:( NSInteger ) bit atIsFloat:( BOOL ) isFloat
+{
+    AVAssetReader *reader = nil;
+    AVURLAsset* urlAsset = [AVURLAsset assetWithURL:url];
+    NSArray* audioTracks = [urlAsset tracksWithMediaType:AVMediaTypeAudio];
+    if ([audioTracks count] > 0) {
+        AVAssetTrack *audioTrack = [audioTracks firstObject];
+        NSError *error = nil;
+        reader = [[AVAssetReader alloc] initWithAsset:(AVAsset *)urlAsset error:&error];
+        if (reader) {
+            NSDictionary *dic   = @{ AVFormatIDKey :@(kAudioFormatLinearPCM),    // 音频格式
+                                     AVSampleRateKey : @(sampleRate),    // 采样率
+                                     AVNumberOfChannelsKey : @(channels),    // 通道数 1 || 2
+                                     AVLinearPCMBitDepthKey : @(bit),  // 音频的每个样点的位数
+                                     AVLinearPCMIsNonInterleaved : @NO,  // 音频采样是否非交错
+                                     AVLinearPCMIsFloatKey : @(isFloat),    // 采样信号是否浮点数
+                                     AVLinearPCMIsBigEndianKey : @NO // 音频采用高位优先的记录格式
+            };
+            //读取输出，在相应的轨道和输出对应格式的数据
+            AVAssetReaderTrackOutput *audioOutput = [[AVAssetReaderTrackOutput alloc]initWithTrack:audioTrack outputSettings:dic];
+//                audioOutput.alwaysCopiesSampleData = NO;
+            audioOutput.supportsRandomAccess = YES;
+            if ([reader canAddOutput:audioOutput]) {
+                [reader addOutput:audioOutput];
+                if (CMTimeRangeEqual(timeRange, kCMTimeRangeInvalid)) {
+                    reader.timeRange = CMTimeRangeMake(kCMTimeZero, urlAsset.duration);
+                }else {
+                    reader.timeRange = timeRange;
+                }
+            }
+        }
+    }
+    return reader;
+}
+
 #pragma mark- PrivateCloud  私有云
-+(NSString *)getPrivateCloud_UploadToken:( NSString * ) tokenURL
++(NSString *)getUploadToken
 {
     return [VECore getToken_AI:[VEConfigManager sharedManager].appKey];
 }
@@ -14561,7 +14736,7 @@ static OSType help_inputPixelFormat(){
         if( data[@"taskId"] )
         {
             NSString * taskId = data[@"taskId"];
-           NSString *asrUrl =  [VEHelp getPrivateCloud_EndASRWith:taskId atIsCancel:isCancel atURL:url atAppkey:appkey];
+           NSString *asrUrl =  [VEHelp getPrivateCloud_EndASRWith:taskId atIsCancel:isCancel atURL:url atAppkey:appkey atIndex:0];
             if( (*isCancel) )
             {
                 return nil;
@@ -14642,7 +14817,7 @@ static OSType help_inputPixelFormat(){
     return time;
 }
 
-+(NSString *)getPrivateCloud_EndASRWith:( NSString * ) taskId  atIsCancel:( BOOL * ) isCancel   atURL:( NSString * ) url  atAppkey:( NSString * ) appkey
++(NSString *)getPrivateCloud_EndASRWith:( NSString * ) taskId  atIsCancel:( BOOL * ) isCancel   atURL:( NSString * ) url  atAppkey:( NSString * ) appkey atIndex:( NSInteger ) index
 {
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:[NSURL URLWithString:url]];
@@ -14702,12 +14877,15 @@ static OSType help_inputPixelFormat(){
         }
         if( status == 0 )
         {
-            sleep(0.1);
+            sleep(0.2);
             if( (*isCancel) )
             {
                 return nil;
             }
-            return [VEHelp getPrivateCloud_EndASRWith:taskId atIsCancel:isCancel atURL:url atAppkey:appkey];
+//            if( index <= 100 )
+            return [VEHelp getPrivateCloud_EndASRWith:taskId atIsCancel:isCancel atURL:url atAppkey:appkey atIndex:index+1];
+//            else
+//                return nil;
         }
         else{
             if( (*isCancel) )
@@ -14887,4 +15065,39 @@ static OSType help_inputPixelFormat(){
     return count;
 }
 
++(BOOL)createDocXWithFilePath:( NSString * ) filePath atString:( NSAttributedString * ) attributedString
+{
+    NSError *error = nil;
+    bool isDone =  [attributedString writeDocXTo:[NSURL fileURLWithPath:filePath] error:&error];
+    return isDone;
+}
+
++(NSMutableArray *)getTextWordAudioWithFilePath_PrivateCloud:( NSString * ) filePath
+{
+    NSString *token = [VEHelp getUploadToken];
+    if( token )
+    {
+        NSString *uploadFileURL = [VEHelp getPrivateCloud_UploadAudioFile:filePath atToken:token atURL:[VEConfigManager sharedManager].editConfiguration.privateCloudAIRecogConfig.uploadAudioFileURL];
+        if( uploadFileURL )
+        {
+            NSMutableArray *array = [NSMutableArray new];
+            [array addObject:uploadFileURL];
+            NSString *language = @"zh";
+            if( [VEConfigManager sharedManager].language != CHINESE )
+            {
+                language = @"en";
+            }
+            BOOL _isCancelSpeech = false;
+            NSMutableArray *privateCloudArray = [VEHelp getPrivateCloud_StartASR:array atLanguage:language atIsCancel:&_isCancelSpeech atURL:[VEConfigManager sharedManager].editConfiguration.privateCloudAIRecogConfig.receiveCmdURL atAppkey:[VEConfigManager sharedManager].editConfiguration.privateCloudAIRecogConfig.appKey];
+            return privateCloudArray;
+        }
+        else{
+            return nil;
+        }
+    }
+    else
+    {
+        return nil;
+    }
+}
 @end

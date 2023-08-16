@@ -132,6 +132,15 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
                          completionHandler:(void (^)(NSMutableArray <id >*filelist))completionHandler
                              cancelHandler:(void(^)(void))cancelHandler;
 
+/** 显示相机界面回调
+ *  Display album interface callback.
+ */
+- (void)veShowCameraControllerWithSuperView:(UIViewController *)superViewController
+                                isFromAlbum:(BOOL)isFromAlbum
+                         isDefaultTakePhoto:(BOOL)isDefaultTakePhoto
+                          completionHandler:(VECompletionHandler)completionHandler
+                              cancelHandler:(VECancelHandler)cancelHandler;
+
 /** 开始直播推流
  */
 - (void)startLivePush;
@@ -165,6 +174,9 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 /**  设置是否为 图片编辑
  */
 @property (nonatomic, assign) BOOL isPEPhotoAlbum;
+/**  设置是否为 导出后还能继续返回编辑(default false)
+ */
+@property (nonatomic, assign) BOOL isExportBackEdit;
 
 + (instancetype)sharedManager;
 
@@ -202,6 +214,10 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
  */
 @property (nonatomic, assign) FolderType folderType;
 
+/** 应用APPKey
+ *  在官网中注册应用的key
+ *  Register the application key on the official website
+ */
 @property (copy,nonatomic)NSString  * appKey;
 @property (copy,nonatomic)NSString  * licenceKey;
 @property (copy,nonatomic)NSString  * appSecret;
@@ -214,6 +230,7 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property (nonatomic, assign) CGRect     waterLayerRect;
 
 @property (nonatomic, copy) VECompletionHandler   callbackBlock;
+@property(nonatomic, copy) void(^completioHandler) (NSString * videoPath, UIViewController *controller);
 @property(nonatomic,copy) VECancelHandler cancelHandler;
 @property(nonatomic,copy) VEFailedHandler failedHandler;
 @property(nonatomic,copy) VECloudBackingUpHandler cloudBackingUpHandler;

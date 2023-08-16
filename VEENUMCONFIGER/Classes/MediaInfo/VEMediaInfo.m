@@ -1117,7 +1117,7 @@
         media.rectInVideo = _rectInScene;
         media.rotate = _rotate;
     }
-    if (_pointsInVideoArray) {
+    if (_pointsInVideoArray.count > 4) {
         [media setPointsInVideoLeftTop:CGPointMake([_pointsInVideoArray[0][0] floatValue], [_pointsInVideoArray[0][1] floatValue])
                               rightTop:CGPointMake([_pointsInVideoArray[1][0] floatValue], [_pointsInVideoArray[1][1] floatValue])
                            rightBottom:CGPointMake([_pointsInVideoArray[2][0] floatValue], [_pointsInVideoArray[2][1] floatValue])

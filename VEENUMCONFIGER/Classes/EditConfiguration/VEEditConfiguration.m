@@ -84,7 +84,8 @@
         _enableMorph = true;
         _enableDeformed = true;
         _enableEqualizer = true;
-        
+        _enableTemplateDraft = true;
+        _enableEffectAccessObject = true;
         //编辑导出预设
         _enableMV           = false;
         _enableSubtitle     = true;
@@ -186,6 +187,7 @@
     copy.mediaCountLimit                        = _mediaCountLimit;
     copy.mediaMinCount                          = _mediaMinCount;
     copy.minVideoDuration                       = _minVideoDuration;
+    copy.maxVideoDuration                       = _maxVideoDuration;
     copy.enableAlbumCamera                      = _enableAlbumCamera;
     copy.clickAlbumCameraBlackBlock             = _clickAlbumCameraBlackBlock;
     copy.isDisableEdit                          = _isDisableEdit;
@@ -302,6 +304,7 @@
     copy.enableHierarchy = _enableHierarchy;
     copy.enableMixedMode = _enableMixedMode;
     copy.enablePIPBind = _enablePIPBind;
+    copy.enableEffectAccessObject = _enableEffectAccessObject;
     return copy;
 }
 
@@ -329,6 +332,7 @@
     copy.mediaCountLimit                         = _mediaCountLimit;
     copy.mediaMinCount                          = _mediaMinCount;
     copy.minVideoDuration                       = _minVideoDuration;
+    copy.maxVideoDuration                       = _maxVideoDuration;
     copy.enableAlbumCamera                      = _enableAlbumCamera;
     copy.clickAlbumCameraBlackBlock             = _clickAlbumCameraBlackBlock;
     copy.isDisableEdit                          = _isDisableEdit;
@@ -444,6 +448,7 @@
     copy.enableHierarchy = _enableHierarchy;
     copy.enableMixedMode = _enableMixedMode;
     copy.enablePIPBind = _enablePIPBind;
+    copy.enableEffectAccessObject = _enableEffectAccessObject;
     return copy;
 }
 

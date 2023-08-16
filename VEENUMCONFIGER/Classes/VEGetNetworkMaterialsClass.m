@@ -69,7 +69,13 @@
             }
         }
         NSDictionary *obj = typeArray.firstObject;
-        [self getSpeechVoicesWithCategoryId:obj[@"id"]];
+        NSArray *array = [self getSpeechVoicesWithCategoryId:obj[@"id"]];
+        if (array.count > 0) {
+            NSMutableArray *itemArray = obj[@"data"];
+            NSRange range = NSMakeRange(0, [array count]);
+            NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+            [itemArray insertObjects:array atIndexes:indexSet];
+        }
         if (speechVoices.count > 0) {
             BOOL suc = [speechVoices writeToFile:kTTSMaretrialPlistPath atomically:YES];
             if(suc){

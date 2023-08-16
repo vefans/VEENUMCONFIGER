@@ -10,6 +10,154 @@
 
 #import "VEHelp.h"
 #import "VEExportProgressView.h"
+@interface UIRectProgressView()
+@property(nonatomic,strong) UIImageView *topView;
+@property(nonatomic,strong) UIImageView *rightView;
+@property(nonatomic,strong) UIImageView *buttomView;
+@property(nonatomic,strong) UIImageView *leftView;
+@property(nonatomic,strong) UILabel *progressLabel;
+
+@end
+@implementation UIRectProgressView
+
+- (instancetype)initWithFrame:(CGRect)frame coverImage:(UIImage *)coverImage{
+    if(self = [super initWithFrame:frame]){
+        UIButton *cancelBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, kNavgationBar_Height - 44, 44, 44)];
+        cancelBtn.exclusiveTouch = YES;
+        cancelBtn.tag = 100;
+        cancelBtn.backgroundColor = [UIColor clearColor];
+        UIImage *cancelImage = [VEHelp imageNamed:@"左上角叉_默认_@3x"];
+        [cancelBtn setImage:cancelImage forState:UIControlStateNormal];
+        _cancelBtn = cancelBtn;
+        [self addSubview:cancelBtn];
+        [cancelBtn addTarget:self action:@selector(cancelExportAction) forControlEvents:UIControlEventTouchUpInside];
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(cancelBtn.frame) + 10, CGRectGetWidth(frame), 30)];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.backgroundColor = [UIColor clearColor];
+        label.font = [UIFont boldSystemFontOfSize:16];
+        label.textColor = UIColorFromRGB(0x131313);
+        label.text = NSLocalizedString(@"努力导出中...", nil);
+        [self addSubview:label];
+        
+        UILabel *desclabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(label.frame), CGRectGetWidth(frame), 30)];
+        desclabel.textAlignment = NSTextAlignmentCenter;
+        desclabel.backgroundColor = [UIColor clearColor];
+        desclabel.font = [UIFont boldSystemFontOfSize:13];
+        desclabel.textColor = UIColorFromRGB(0x727272);
+        desclabel.text = NSLocalizedString(@"请保持屏幕点亮，不要锁屏或切换程序", nil);
+        [self addSubview:desclabel];
+        
+        float width = (CGRectGetWidth(frame) - 100);
+        float height = width * (coverImage.size.height/coverImage.size.width);
+        
+        if(coverImage.size.width < coverImage.size.height){
+            height = MIN(height, self.frame.size.height - CGRectGetMaxY(desclabel.frame) - kBottomSafeHeight - 240);
+            width = height * (coverImage.size.width/coverImage.size.height);
+        }
+        
+        _coverImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - width)/2.0, CGRectGetMaxY(desclabel.frame) + ((coverImage.size.width < coverImage.size.height) ? 10 : 44), width, height)];
+        _coverImageView.image = coverImage;
+        
+        [self addSubview:_coverImageView];
+        
+        UIImageView *borderView = [[UIImageView alloc] initWithFrame:_coverImageView.bounds];
+        borderView.image = coverImage;
+        borderView.layer.borderColor = UIColorFromRGB(0xcdd0d7).CGColor;
+        borderView.layer.borderWidth = 6;
+        [_coverImageView addSubview:borderView];
+        {
+            _progressLabel = [[UILabel alloc] initWithFrame:_coverImageView.bounds];
+            _progressLabel.textAlignment = NSTextAlignmentCenter;
+            _progressLabel.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.1];
+            _progressLabel.font = [UIFont boldSystemFontOfSize:24];
+            _progressLabel.textColor = UIColorFromRGB(0xFFFFFF);
+            _progressLabel.text = NSLocalizedString(@"0%%", nil);
+            [_coverImageView addSubview:_progressLabel];
+        }
+        
+        {
+            _topView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0, 6)];
+            _topView.backgroundColor = UIColorFromRGB(0x131313);
+            [_coverImageView addSubview:_topView];
+            
+            _rightView = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetWidth(_coverImageView.frame) - 6, 0, 6, 0)];
+            _rightView.backgroundColor = UIColorFromRGB(0x131313);
+            [_coverImageView addSubview:_rightView];
+            
+            _buttomView = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetWidth(_coverImageView.frame)-6, CGRectGetHeight(_coverImageView.frame)-6, 0, 6)];
+            _buttomView.backgroundColor = UIColorFromRGB(0x131313);
+            [_coverImageView addSubview:_buttomView];
+            
+            
+            _leftView = [[UIImageView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(_coverImageView.frame)-6, 6, 0)];
+            _leftView.backgroundColor = UIColorFromRGB(0x131313);
+            [_coverImageView addSubview:_leftView];
+            
+            [self setProgress:0.0];
+        }
+    }
+    return self;
+}
+- (void)setIsHiddenCancelBtn:(BOOL)isHiddenCancelBtn{
+    _isHiddenCancelBtn = isHiddenCancelBtn;
+    _cancelBtn.hidden = _isHiddenCancelBtn;
+}
+- (void)cancelExportAction{
+    if(_cancelExportBlock){
+        _cancelExportBlock();
+    }
+}
+
+- (void)dismiss{
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview) withObject:nil];
+    [self removeFromSuperview];
+    
+}
+
+
+- (void)setProgress:(double)progress{
+    _progress = progress;
+    _progressLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%02i%%", nil),(int)(_progress * 100)];
+    float totalWidth = (_coverImageView.frame.size.width + _coverImageView.frame.size.height) * 2 - 6 * 4;
+    
+    float progressWidth = totalWidth * _progress;
+    if(progressWidth < CGRectGetWidth(_coverImageView.frame)){
+        _topView.frame = CGRectMake(0, 0, progressWidth, 6);
+        _rightView.frame = CGRectMake(CGRectGetWidth(_coverImageView.frame) - 6, 0, 6, 0);
+        _buttomView.frame = CGRectMake(CGRectGetWidth(_coverImageView.frame)-6, CGRectGetHeight(_coverImageView.frame)-6, 0, 6);
+        _leftView.frame = CGRectMake(0, CGRectGetHeight(_coverImageView.frame)-6, 6, 0);
+    }
+    else if(progressWidth < CGRectGetWidth(_coverImageView.frame) + CGRectGetHeight(_coverImageView.frame)-6){
+        float height = progressWidth - CGRectGetWidth(_coverImageView.frame);
+        _topView.frame = CGRectMake(0, 0, CGRectGetWidth(_coverImageView.frame), 6);
+        _rightView.frame = CGRectMake(CGRectGetWidth(_coverImageView.frame) - 6, 6, 6, height);
+        _buttomView.frame = CGRectMake(CGRectGetWidth(_coverImageView.frame)-6, CGRectGetHeight(_coverImageView.frame)-6, 0, 6);
+        _leftView.frame = CGRectMake(0, CGRectGetHeight(_coverImageView.frame)-6, 6, 0);
+    }else if(progressWidth < CGRectGetWidth(_coverImageView.frame) + CGRectGetHeight(_coverImageView.frame) - 6 + CGRectGetWidth(_coverImageView.frame)-6){
+        float width = progressWidth - CGRectGetWidth(_coverImageView.frame) - (CGRectGetHeight(_coverImageView.frame) - 6);
+        _topView.frame = CGRectMake(0, 0, CGRectGetWidth(_coverImageView.frame), 6);
+        _rightView.frame = CGRectMake(CGRectGetWidth(_coverImageView.frame) - 6, 6, 6, (CGRectGetHeight(_coverImageView.frame) - 6));
+        _buttomView.frame = CGRectMake(CGRectGetWidth(_coverImageView.frame)-6 - width, CGRectGetHeight(_coverImageView.frame)-6, width, 6);
+        _leftView.frame = CGRectMake(0, CGRectGetHeight(_coverImageView.frame)-6, 6, 0);
+        
+    }else{
+        float height = progressWidth - CGRectGetWidth(_coverImageView.frame) - (CGRectGetHeight(_coverImageView.frame) - 6) - (CGRectGetWidth(_coverImageView.frame) - 6);
+        
+        _topView.frame = CGRectMake(0, 0, CGRectGetWidth(_coverImageView.frame), 6);
+        _rightView.frame = CGRectMake(CGRectGetWidth(_coverImageView.frame) - 6, 6, 6, (CGRectGetHeight(_coverImageView.frame) - 6));
+        _buttomView.frame = CGRectMake(0, CGRectGetHeight(_coverImageView.frame)-6, (CGRectGetWidth(_coverImageView.frame) - 6), 6);
+        _leftView.frame = CGRectMake(0, CGRectGetHeight(_coverImageView.frame)-6 - height, 6, height);
+    }
+    
+    
+}
+
+@end
+
+
+
+
 @interface VEExportProgressView()
 {
    UIView *_childrensView;

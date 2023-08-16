@@ -16,11 +16,11 @@
 "卡通" = "Cartoon";
 "混响" = "Reverberação";
 "回声" = "Eco";
-"房间" = "Espaço interior";
+"礼堂" = "Espaço interior";
 "舞台" = "Palco";
 "厂房" = "Fábrica";
 "竞技场" = "Arena";
-"电音" = "Elétrico";
+"电子" = "Elétrico";
 "极慢" = "Ultralento";
 "慢" = "Lento";
 "标准" = "Normal";

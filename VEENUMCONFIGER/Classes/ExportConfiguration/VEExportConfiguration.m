@@ -75,6 +75,7 @@
     //设置水印是否可用
     copy.watermarkDisabled  = _watermarkDisabled;
     copy.watermarkImage     = _watermarkImage;
+    copy.watermarkImagePath = _watermarkImagePath;
     copy.watermarkPosition  = _watermarkPosition;
     copy.isCanDeleteWatermark = _isCanDeleteWatermark;
     copy.endPicDisabled     = _endPicDisabled;
@@ -112,6 +113,7 @@
     //设置水印是否可用
     copy.watermarkDisabled  = _watermarkDisabled;
     copy.watermarkImage     = _watermarkImage;
+    copy.watermarkImagePath = _watermarkImagePath;
     copy.watermarkPosition  = _watermarkPosition;
     copy.isCanDeleteWatermark = _isCanDeleteWatermark;
     copy.endPicDisabled     = _endPicDisabled;

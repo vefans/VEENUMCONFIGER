@@ -28,6 +28,9 @@
     if(!_selectedView){
         _selectedView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, self.frame.size.width - 4, self.frame.size.height - 4)];
         _selectedView.layer.borderColor = ([VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : VIEW_COLOR).CGColor;
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            _selectedView.layer.borderColor = UIColorFromRGB(0xf9f9f9).CGColor;
+        }
         _selectedView.layer.borderWidth = 2.5;
         _selectedView.layer.cornerRadius = CGRectGetWidth(_selectedView.frame)/2.0;
         _selectedView.layer.masksToBounds = YES;

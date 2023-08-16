@@ -103,6 +103,7 @@ typedef NS_ENUM(NSInteger, BackGroundColorType) {
 NS_ASSUME_NONNULL_BEGIN
 
 @interface VEEditConfiguration : NSObject<NSMutableCopying,NSCopying>
+
 /** 字幕样式加入工具栏-音量(default true)
  */
 @property(nonatomic, assign)BOOL    enableSubtitleStyleInTool;
@@ -176,6 +177,10 @@ NS_ASSUME_NONNULL_BEGIN
 /**选择视频最小时长，默认为0s不限制
  */
 @property (nonatomic,assign) float minVideoDuration;
+
+/**选择视频最小时长，默认为0s不限制
+ */
+@property (nonatomic,assign) float maxVideoDuration;
 
 /**启用相册相机 (default true)
  */
@@ -312,6 +317,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 动画  (default true)
  */
 @property (nonatomic,assign) bool enableAnimation;
+/** 特效的作用对象  (default true)
+ */
+@property (nonatomic,assign) bool enableEffectAccessObject;
 /** 替换  (default true)
  */
 @property (nonatomic,assign) bool enableReplace;
@@ -348,6 +356,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 云草稿 (default true)
  */
 @property (nonatomic,assign) bool enableCloudDraft;
+/** 模板草稿 (default true)
+ */
+@property (nonatomic,assign) bool enableTemplateDraft;
 
 /** 不显示草稿按钮 (default false)
  */

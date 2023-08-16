@@ -701,6 +701,9 @@ isPhoneX;\
 #define kSubtitleIconPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleIconList.plist"]
 #define kSubtitleCategoryPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleCategoryListType.plist"]
 
+//自定义贴纸
+#define kCustomStickerFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/CustomStickerFolder/"]
+
 #pragma mark- 换背景
 #define KChangeBackgroundFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/ChangeBackground"]
 #define kChangeBackgroundPath [KChangeBackgroundFolder stringByAppendingPathComponent:@"ChangeBackgroundPath.plist"]

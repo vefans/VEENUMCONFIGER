@@ -1,0 +1,11 @@
+framework module DocX {
+  umbrella header "DocX.h"
+
+  export *
+  module * { export * }
+}
+
+module DocX.Swift {
+  header "DocX-Swift.h"
+  requires objc
+}

@@ -70,7 +70,7 @@
             self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:([VEConfigManager sharedManager].iPad_HD ? 0.0 : 0.9)];
         }
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            self.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:([VEConfigManager sharedManager].iPad_HD ? 0.0 : 0.5)];
+            self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:([VEConfigManager sharedManager].iPad_HD ? 0.0 : 0.5)];
         }
         CGFloat width = frame.size.width;
         CGFloat height = frame.size.height;
@@ -1544,7 +1544,11 @@
 -(VETrackButton *)topTrackButton{
     if (_topTrackButton == nil) {
         _topTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake(self.croporiginX + (self.cropWidth - VE_TRACK_HEIGHT)/2, self.croporiginY-VE_TRACK_WIDTH,VE_TRACK_HEIGHT , VE_TRACK_WIDTH) withCropViewTrackType:VE_TRACK_TOP];
-        [_topTrackButton setBackgroundColor:[UIColor whiteColor]];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [_topTrackButton setBackgroundColor:UIColorFromRGB(0x131313)];
+        }else{
+            [_topTrackButton setBackgroundColor:[UIColor whiteColor]];
+        }
     }
     return _topTrackButton;
 
@@ -1553,7 +1557,12 @@
 -(VETrackButton *)bottomTrackButton{
     if (_bottomTrackButton == nil) {
         _bottomTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake(self.croporiginX + (self.cropWidth - VE_TRACK_HEIGHT)/2, self.croporiginY +self.cropHeight, VE_TRACK_HEIGHT, VE_TRACK_WIDTH) withCropViewTrackType:VE_TRACK_BOTTOM];
-        [_bottomTrackButton setBackgroundColor:[UIColor whiteColor]];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [_bottomTrackButton setBackgroundColor:UIColorFromRGB(0x131313)];
+        }
+        else{
+            [_bottomTrackButton setBackgroundColor:[UIColor whiteColor]];
+        }
     }
     return _bottomTrackButton;
 }
@@ -1561,7 +1570,12 @@
 -(VETrackButton *)leftTrackButton{
     if (_leftTrackButton == nil) {
         _leftTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake(self.croporiginX -VE_TRACK_WIDTH, self.croporiginY + (self.cropHeight-VE_TRACK_HEIGHT)/2, VE_TRACK_WIDTH, VE_TRACK_HEIGHT) withCropViewTrackType:VE_TRACK_LEFT];
-        [_leftTrackButton setBackgroundColor:[UIColor whiteColor]];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [_leftTrackButton setBackgroundColor:UIColorFromRGB(0x131313)];
+        }
+        else{
+            [_leftTrackButton setBackgroundColor:[UIColor whiteColor]];
+        }
     }
     return _leftTrackButton;
 }
@@ -1569,7 +1583,12 @@
 -(VETrackButton *)rightTrackButton{
     if (_rightTrackButton == nil) {
         _rightTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake(self.croporiginX + self.cropWidth, self.croporiginY + (self.cropHeight-VE_TRACK_HEIGHT)/2, VE_TRACK_WIDTH, VE_TRACK_HEIGHT) withCropViewTrackType:VE_TRACK_RIGHT];
-        [_rightTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [_rightTrackButton setBackgroundColor:UIColorFromRGB(0x131313)];
+        }
+        else{
+            [_rightTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
+        }
     }
     return _rightTrackButton;
 }
@@ -1579,7 +1598,12 @@
         if ((self.videoCropType == VEVideoCropType_Crop)
             || (VEVideoCropType_FixedCrop == self.videoCropType )) {
             _topLeftTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake(self.croporiginX -VE_TRACK_WIDTH, self.croporiginY - VE_TRACK_WIDTH, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH) withCropViewTrackType:VE_TRACK_TOPLEFT];
-            [_topLeftTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                [_topLeftTrackButton setBackgroundColor:UIColorFromRGB(0x131313)];
+            }
+            else{
+                [_topLeftTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
+            }
         }else if (self.videoCropType == VEVideoCropType_Dewatermark){
             _topLeftTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake(self.croporiginX -VE_TRACK_HEIGHT_DEWATERMARK/2, self.croporiginY - VE_TRACK_HEIGHT_DEWATERMARK/2, VE_TRACK_HEIGHT_DEWATERMARK , VE_TRACK_HEIGHT_DEWATERMARK) withCropViewTrackType:VE_TRACK_Dewatermark];
             _topLeftTrackButton.layer.cornerRadius = VE_TRACK_HEIGHT_DEWATERMARK/2;
@@ -1600,7 +1624,12 @@
         if ((self.videoCropType == VEVideoCropType_Crop)
             || (VEVideoCropType_FixedCrop == self.videoCropType )) {
             _topRightTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake((self.croporiginX+ self.cropWidth) -VE_TRACK_HEIGHT*1/2, self.croporiginY - VE_TRACK_WIDTH, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH) withCropViewTrackType:VE_TRACK_TOPRIGHT];
-            [_topRightTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                [_topRightTrackButton setBackgroundColor:UIColorFromRGB(0x131313)];
+            }
+            else{
+                [_topRightTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
+            }
         }else if (self.videoCropType == VEVideoCropType_Dewatermark){
             _topRightTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake((self.croporiginX+ self.cropWidth) -VE_TRACK_HEIGHT_DEWATERMARK*1/2, self.croporiginY - VE_TRACK_HEIGHT_DEWATERMARK/2, VE_TRACK_HEIGHT_DEWATERMARK , VE_TRACK_HEIGHT_DEWATERMARK) withCropViewTrackType:VE_TRACK_Dewatermark];
             _topRightTrackButton.layer.cornerRadius = VE_TRACK_HEIGHT_DEWATERMARK/2;
@@ -1618,7 +1647,12 @@
 -(VETrackButton *)bottomLeftTrackButton{
     if (_bottomLeftTrackButton == nil) {
         _bottomLeftTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake(self.croporiginX -VE_TRACK_WIDTH, self.croporiginY+self.cropHeight - VE_TRACK_HEIGHT*1/2, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH) withCropViewTrackType:VE_TRACK_BOTTOMLEFT];
-        [_bottomLeftTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [_bottomLeftTrackButton setBackgroundColor:UIColorFromRGB(0x131313)];
+        }
+        else{
+            [_bottomLeftTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
+        }
     }
     return _bottomLeftTrackButton;
 }
@@ -1629,7 +1663,11 @@
         if ((self.videoCropType == VEVideoCropType_Crop)
             || (VEVideoCropType_FixedCrop == self.videoCropType )) {
             _bottomRightTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake(self.croporiginX+self.cropWidth -VE_TRACK_HEIGHT*1/2, self.croporiginY+self.cropHeight -VE_TRACK_HEIGHT*1/2, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH) withCropViewTrackType:VE_TRACK_BOTTOMRIGHT];
-            [_bottomRightTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                [_bottomRightTrackButton setBackgroundColor:UIColorFromRGB(0x131313)];
+            }else{
+                [_bottomRightTrackButton setBackgroundColor:Color(255, 255, 255, 1)];
+            }
         }else if (self.videoCropType == VEVideoCropType_Dewatermark){
             _bottomRightTrackButton = [[VETrackButton alloc] initWithFrame:CGRectMake(self.croporiginX+self.cropWidth -VE_TRACK_HEIGHT_DEWATERMARK*1/2, self.croporiginY+self.cropHeight -VE_TRACK_HEIGHT_DEWATERMARK*1/2, VE_TRACK_HEIGHT_DEWATERMARK , VE_TRACK_HEIGHT_DEWATERMARK) withCropViewTrackType:VE_TRACK_Dewatermark];
             _bottomRightTrackButton.layer.cornerRadius = VE_TRACK_HEIGHT_DEWATERMARK/2;

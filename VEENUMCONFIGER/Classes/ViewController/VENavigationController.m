@@ -72,14 +72,20 @@
 - (BOOL)shouldAutorotate{
     return YES;
 }
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    if([VEConfigManager sharedManager].iPad_HD){
-        return UIInterfaceOrientationMaskLandscape;
-    }else{
-        return UIInterfaceOrientationMaskPortrait;
-    }
-    
+
+/// 所支持的方向
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeRight;
 }
+//- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+//    if([VEConfigManager sharedManager].iPad_HD){
+//        return UIInterfaceOrientationMaskLandscape;
+//    }else{
+//        return UIInterfaceOrientationMaskPortrait;
+//    }
+//
+//}
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
 }

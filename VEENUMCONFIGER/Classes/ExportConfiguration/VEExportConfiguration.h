@@ -87,7 +87,10 @@ typedef NS_ENUM(NSInteger, ExportFileType) {
 @property (nonatomic,assign) bool isCanDeleteWatermark;
 /** 图片水印
  */
-@property (nonatomic,strong) UIImage *watermarkImage;
+@property (nonatomic,strong) UIImage *watermarkImage DEPRECATED_MSG_ATTRIBUTE("Use watermarkImagePath instead.");
+/** 图片水印地址
+ */
+@property (nonatomic,strong) NSString *watermarkImagePath;
 /** 显示位置
  */
 @property (nonatomic,assign)VEWatermarkPosition watermarkPosition;

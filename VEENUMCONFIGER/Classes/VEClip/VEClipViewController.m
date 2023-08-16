@@ -1782,7 +1782,7 @@
                         rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - kToolbarHeight - ipadToolBarHeight);
                     }
                     else
-                        rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - 65 - kToolbarHeight);
+                        rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - 65 - kToolbarHeight - 25.0);
                 }
                 else{
                     if( _isCropTypeViewHidden )
@@ -2023,7 +2023,7 @@
         {
             if( _photoView )
                 if( _cutMmodeType == kCropTypeFixed ) {
-                    _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _photoView.frame.size.height - 65, CGRectGetWidth(self.bgView.frame) - 16, 65)];
+                    _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _photoView.frame.size.height - 80, CGRectGetWidth(self.bgView.frame) - 16, 80)];
                 }else {
                     _cropTypeView = [[VECropTypeView alloc] initWithFrame:CGRectMake(16, _videoView.frame.size.height - 65, CGRectGetWidth(self.bgView.frame) - 16, 65)];
                 }
