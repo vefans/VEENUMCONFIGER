@@ -35,7 +35,8 @@
         
         [self.loveView addSubview:self.loveCenterView];
         
-        self.centreImageView.frame = CGRectMake( (self.loveCenterView.frame.size.width - RoundnessHeight)/2.0, (self.loveCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+//        self.centreImageView.frame = CGRectMake( (self.loveCenterView.frame.size.width - RoundnessHeight)/2.0, (self.loveCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+        self.centreImageView.frame = CGRectMake( (self.loveCenterView.frame.size.width - 10.0)/2.0, (self.loveCenterView.frame.size.height - 10.0)/2.0, 10.0, 10.0);
     }
     {
         UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake( (self.curretnView.frame.size.width - btnWidth)/2.0, self.curretnView.frame.size.height - btnWidth, btnWidth, btnWidth)];
@@ -289,7 +290,8 @@
 
 -(void)setCenterView_Love
 {
-    self.centreImageView.frame = CGRectMake( (self.loveCenterView.frame.size.width - RoundnessHeight)/2.0, (self.loveCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+//    self.centreImageView.frame = CGRectMake( (self.loveCenterView.frame.size.width - RoundnessHeight)/2.0, (self.loveCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+    self.centreImageView.frame = CGRectMake( (self.loveCenterView.frame.size.width - 10.0)/2.0, (self.loveCenterView.frame.size.height - 10.0)/2.0, 10.0, 10.0);
     self.rotate_ImageView.frame = CGRectMake( (self.curretnView.frame.size.width - btnWidth)/2.0, self.curretnView.frame.size.height - btnWidth, btnWidth, btnWidth);
     
     [((VEOvalView*)self.loveCenterView) setNeedsDisplay];

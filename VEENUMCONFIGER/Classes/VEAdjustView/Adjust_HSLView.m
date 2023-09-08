@@ -53,10 +53,11 @@
         [resetBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
         resetBtn.titleLabel.font = [UIFont systemFontOfSize:12.0];
         [resetBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
-        if([VEConfigManager sharedManager].toolsTitleColor){
-            [resetBtn setTitleColor:[VEConfigManager sharedManager].toolsTitleColor forState:UIControlStateNormal];
-        }
         [resetBtn setTitleColor:DISABLED_COLOR forState:UIControlStateDisabled];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [resetBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+            [resetBtn setTitleColor:UIColorFromRGB(0x727272) forState:UIControlStateDisabled];
+        }
         [resetBtn addTarget:self action:@selector(resetBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         if([VEConfigManager sharedManager].iPad_HD){
             resetBtn.frame = CGRectMake(5, (CGRectGetHeight(self.frame) - 40), 80, 40);

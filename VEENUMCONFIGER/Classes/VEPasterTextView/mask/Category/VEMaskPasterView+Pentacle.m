@@ -17,7 +17,8 @@
 
 -(void)initPentacle:(float) CenterHeight atWidth:(float) CenterWidth
 {
-    UIView * view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, RoundnessHeight + CenterWidth + (btnWidth+intervalWidth)*2.0, RoundnessHeight + CenterHeight + (btnWidth+intervalWidth)*2.0)];    [self addSubview:view];
+    UIView * view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, RoundnessHeight + CenterWidth + (btnWidth+intervalWidth)*2.0, RoundnessHeight + CenterHeight + (btnWidth+intervalWidth)*2.0)];
+    [self addSubview:view];
     self.pentacleView = view;
     self.curretnView = view;
     
@@ -35,7 +36,8 @@
         
         [self.pentacleView addSubview:self.pentacleCenterView];
         
-        self.centreImageView.frame = CGRectMake( (self.pentacleCenterView.frame.size.width - RoundnessHeight)/2.0, (self.pentacleCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+//        self.centreImageView.frame = CGRectMake( (self.pentacleCenterView.frame.size.width - RoundnessHeight)/2.0, (self.pentacleCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+        self.centreImageView.frame = CGRectMake( (self.pentacleCenterView.frame.size.width - 10.0)/2.0, (self.pentacleCenterView.frame.size.height - 10.0)/2.0, 10.0, 10.0);
     }
     {
         UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake( (self.curretnView.frame.size.width - btnWidth)/2.0, self.curretnView.frame.size.height - btnWidth, btnWidth, btnWidth)];
@@ -291,7 +293,8 @@
 
 -(void)setCenterView_Pentacle
 {
-    self.centreImageView.frame = CGRectMake( (self.pentacleCenterView.frame.size.width - RoundnessHeight)/2.0, (self.pentacleCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+//    self.centreImageView.frame = CGRectMake( (self.pentacleCenterView.frame.size.width - RoundnessHeight)/2.0, (self.pentacleCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+    self.centreImageView.frame = CGRectMake( (self.pentacleCenterView.frame.size.width - 10.0)/2.0, (self.pentacleCenterView.frame.size.height - 10.0)/2.0, 10.0, 10.0);
     self.rotate_ImageView.frame = CGRectMake( (self.curretnView.frame.size.width - btnWidth)/2.0, self.curretnView.frame.size.height - btnWidth, btnWidth, btnWidth);
     
     [((VEOvalView*)self.pentacleCenterView) setNeedsDisplay];

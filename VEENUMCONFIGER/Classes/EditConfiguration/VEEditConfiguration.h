@@ -178,7 +178,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,assign) float minVideoDuration;
 
-/**选择视频最小时长，默认为0s不限制
+/**选择视频最大时长，默认为0s不限制
  */
 @property (nonatomic,assign) float maxVideoDuration;
 

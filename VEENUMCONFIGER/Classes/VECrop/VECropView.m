@@ -69,9 +69,6 @@
         {
             self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:([VEConfigManager sharedManager].iPad_HD ? 0.0 : 0.9)];
         }
-        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:([VEConfigManager sharedManager].iPad_HD ? 0.0 : 0.5)];
-        }
         CGFloat width = frame.size.width;
         CGFloat height = frame.size.height;
         

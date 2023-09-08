@@ -130,6 +130,7 @@
             default:
                 break;
         }
+        RoundnessHeight = 0.5;
     }
     return self;
 }

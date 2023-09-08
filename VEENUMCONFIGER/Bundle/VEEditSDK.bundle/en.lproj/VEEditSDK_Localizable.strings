@@ -104,7 +104,7 @@
 "左右翻转" = "Horizontal";
 "旋转" = "Rotate";
 "旋     转" = "Rotate";
-"视频抠像" = "Remove background";
+"智能抠像" = "Remove background";
 "剪辑-编辑裁切" = "Editing-editing and cutting";
 "剪辑-编辑旋转" = "Editing edit rotation";
 
@@ -2371,6 +2371,7 @@
 "点击录音" = "Tap to record";
 "参数设置" = "Parameter setting";
 "拖动选择视频显示区域" = "Drag to select the video display area";
+"拖动或双指缩放调整画面" = "Drag or double finger zoom to adjust the screen";
 "ar-" = "Arabic";
 "zh-" = "Chinese";
 "cs-" = "Czech";
@@ -2422,6 +2423,7 @@
 "关闭" = "Close";
 
 "选择抠图模式" = "Select cutout model";
+"抠图模式" = "Cutout Model";
 "摄像头" = "Camera";
 "隐藏" = "Hide";
 "全局" = "All videos";
@@ -2472,9 +2474,10 @@
 "长按拖动可调整位置" = "Long press and drag to adjust position";
 "切换人脸" = "Switch faces";
 "视频截图" = "Snapshort";
-"合并长图" = "Merge long pictures";
+"拼接长图" = "Merge long pictures";
 "双指缩放时间轴可调节精度" = "Pinch-to-zoom, the timeline can be adjusted for precision";
 "截取当前画面" = "Capture current screen";
+"请截取两张以上图片" = "Please take two or more images";
 "添加素材" = "Add material";
 "形状" = "Shape";
 "请输入宽高比（例如：16:9）" = "Enter ratio（e.g：16:9）";
@@ -2612,7 +2615,7 @@
 "导出为GIF" = "Export as GIF";
 
 "分屏排版" = "Collage";
-"视频排版" = "Collage";
+"分屏排版" = "Collage";
 "请至少选择2个素材" = "Please select at least 2 assets";
 "请删减素材至9个以内" = "Please cut the material to no more than 9";
 
@@ -2769,7 +2772,7 @@
 "多格拼图" = "Collage";
 "自由拼" = "DIY Collage";
 "拼长图" = "Spliced Multigraph";
-"九宫格" = "9 Photo Collage";
+"九宫格" = "9Photo\nCollage";
 "九宫格_sub" = "Nine";
 "四宫格_sub" = "Four";
 "水平" = "Horizontal";
@@ -2802,4 +2805,5 @@
 "横屏" = "Landscape";
 "竖屏" = "Portrait";
 
-
+"努力导出中..." = "Exporting...";
+"请保持屏幕点亮，不要锁屏或切换程序" = "Please keep the screen lit, do not lock the screen or switch programs";

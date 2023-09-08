@@ -19,6 +19,8 @@
     CGPoint     _pasterTextCenter;
     CMTimeRange _playTimeRange;
     NSMutableArray  *thumbTimes;
+    
+    VEMediaInfo     *_originFile;
 }
 
 @property (nonatomic,assign) float trimDuration_OneSpecifyTime;
@@ -36,11 +38,7 @@
 @property(nonatomic,strong) VEPlaySlider            * playSlider;
 @property(nonatomic,strong) UILabel                 * endTimeLabel;
 
-@property(nonatomic,strong) UIButton                * backButton;
-@property(nonatomic,strong) UIView                  * lineView;
-@property(nonatomic,strong) UIButton                * vertButton;//垂直翻转
-@property(nonatomic,strong) UIButton                * horizontalButton;//水平翻转
-@property(nonatomic,strong) UIButton                * whirlButton;
+@property(nonatomic,strong) UIButton                * resetBtn;
 
 @property(nonatomic,strong)VECropTypeView            * cropTypeView;
 @property(nonatomic,strong) NSMutableArray           * dataCropTypeArray;
@@ -86,6 +84,7 @@
 #pragma mark - 1.Life Cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = ([VEConfigManager sharedManager].iPad_HD ? SCREEN_IPAD_BACKGROUND_COLOR : SCREEN_BACKGROUND_COLOR);
     if( [VEConfigManager sharedManager].isPictureEditing )
     {
         self.view.backgroundColor = UIColorFromRGB(0x111111);//[UIColor whiteColor];
@@ -118,6 +117,28 @@
     [self setupNavBar];
     [self setupViews];
     [self setupData];
+    if( _cutMmodeType == kCropTypeFixed )
+    {
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, _videoCropView.frame.origin.y + CGRectGetMaxY(_syncContainerView.frame), self.bgView.frame.size.width, 45)];
+        if( _isNeedExport )
+        {
+            label.frame = CGRectMake(0, kNavgationBar_Height, self.bgView.frame.size.width, 45);
+        }
+        label.text = VELocalizedString(@"拖动或双指缩放调整画面", nil);
+        if( [VEConfigManager sharedManager].isPictureEditing )
+        {
+            label.textColor = PESDKTEXT_COLOR;
+        }
+        else {
+            label.textColor = UIColorFromRGB(0x727272);
+        }
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            label.textColor = UIColorFromRGB(0x727272);
+        }
+        label.textAlignment = NSTextAlignmentCenter;
+        label.font = [UIFont systemFontOfSize:16];
+        [self.bgView addSubview:label];
+    }
     
     if(_flowPicture){
 //        _videoView.backgroundColor = SCREEN_BACKGROUND_COLOR;
@@ -158,6 +179,7 @@
 //            ((UILabel*)[self.cropTypeSelectBtn viewWithTag:22222]).textColor = PESDKMain_Color;
 //    }
     _selectFile = selectFile;
+    _originFile = [_selectFile mutableCopy];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -214,9 +236,10 @@
         self.toolBar.hidden = NO;
         self.titlelab.text = @"";
     }else{
-        self.titlelab.textColor = UIColorFromRGB(0xffffff);
+        self.titlelab.textColor = TEXT_COLOR;
         self.barline.backgroundColor = UIColorFromRGB(0x1a1a1a);
         self.titlelab.text = VELocalizedString(@"裁切", nil);
+        self.titlelab.font = [UIFont boldSystemFontOfSize:14];
 //        self.titlelab.backgroundColor = UIColorFromRGB(0x1a1a1a);
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
             self.titlelab.textColor = UIColorFromRGB(0x131313);
@@ -227,43 +250,24 @@
 
 
 - (void)setupViews {
+    [self.bgView addSubview:self.toolView];
     [self.bgView addSubview:self.videoCropView];
-    if( _cutMmodeType == kCropTypeFixed )
-    {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, kPlayerViewOriginX, self.bgView.frame.size.width, 45)];
-        if( _isNeedExport )
-        {
-            label.frame = CGRectMake(0, kNavgationBar_Height, self.bgView.frame.size.width, 45);
-        }
-        label.text = VELocalizedString(@"拖动选择视频显示区域", nil);
-        if( [VEConfigManager sharedManager].isPictureEditing )
-        {
-            label.text = VELocalizedString(@"拖动选择图片显示区域", nil);
-            label.textColor = PESDKTEXT_COLOR;
-        }
-        else
-            label.textColor = [UIColor whiteColor];
-        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            label.textColor = UIColorFromRGB(0x727272);
-        }
-        label.textAlignment = NSTextAlignmentCenter;
-        label.font = [UIFont systemFontOfSize:16];
-        [self.bgView addSubview:label];
-    }
     if( _cutMmodeType == kCropTypeNone )
     {
-        [self.bgView addSubview:self.toolView];
         [self.toolView addSubview:self.playButton];
         [self.toolView addSubview:self.playTimeLabel];
         [self.toolView addSubview:self.playSlider];
         [self.toolView addSubview:self.endTimeLabel];
-        [self.toolView addSubview:self.backButton];
-        [self.toolView addSubview:self.lineView];
-        [self.toolView addSubview:self.vertButton];
-        [self.toolView addSubview:self.horizontalButton];
-        [self.toolView addSubview:self.whirlButton];
+        
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(86, 63,1, 2)];
+        [lineView setBackgroundColor:UIColorFromRGB(0x27262C)];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [lineView setBackgroundColor:UIColorFromRGB(0xefefef)];
+        }
+        [_toolView addSubview:lineView];
+        
         if(self.cropType != VE_VECROPTYPE_FIXEDRATIO)
-        [self.toolView addSubview:self.cropTypeView];
+            [self.toolView addSubview:self.cropTypeView];
     }
     else if( _cutMmodeType == kCropTypeFixed ){
         if( _selectFile.fileType == kFILEIMAGE && !_selectFile.isGif)
@@ -287,7 +291,44 @@
             [self.videoCropView addGestureRecognizer:tapGesture];
         }
     }
-    
+#if 0
+    if (_cutMmodeType == kCropTypeNone || _isCropTypeViewHidden) {
+        float width = (_toolView.frame.size.width - 40) / 4.0;
+        float y = (_toolView.frame.size.height - 44) / 2.0;
+        if (_cutMmodeType == kCropTypeNone) {
+            y = (_cropType == VE_VECROPTYPE_FIXEDRATIO ? ((_toolView.frame.size.height - 70 - 30)/2.0 + 70) : 70);
+        }
+        for (int i = 0; i < 4; i++) {
+            UIButton *rotateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+            rotateBtn.frame = CGRectMake(20 + width * i, y, width, 44);
+            NSString * imagePath = nil;
+            if (i == 0) {
+                imagePath = @"/New_EditVideo/scrollViewChildImage/剪辑_剪辑上下翻转默认_";
+                [rotateBtn setTitle:VELocalizedString(@"上下", nil) forState:UIControlStateNormal];
+            }else if (i == 1) {
+                imagePath = @"/New_EditVideo/scrollViewChildImage/剪辑_剪辑左右翻转默认_";
+                [rotateBtn setTitle:VELocalizedString(@"左右", nil) forState:UIControlStateNormal];
+            }else if (i == 2) {
+                imagePath = @"New_EditVideo/scrollViewChildImage/剪辑_剪辑旋转默认_";
+                [rotateBtn setTitle:VELocalizedString(@"旋转", nil) forState:UIControlStateNormal];
+            }else {
+                imagePath = @"剪辑_重置默认_";
+                [rotateBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
+                rotateBtn.enabled = NO;
+                _resetBtn = rotateBtn;
+            }
+            [rotateBtn setImage:[VEHelp imageWithContentOfFile:imagePath] forState:UIControlStateNormal];
+            [rotateBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                [rotateBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+            }
+            rotateBtn.titleLabel.font = [UIFont systemFontOfSize:12.0];
+            [rotateBtn addTarget:self action:@selector(rotateBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+            rotateBtn.tag = i + 1;
+            [_toolView addSubview:rotateBtn];
+        }
+    }
+#endif
 }
 
 - (void)setCropType:(VECropType)cropType{
@@ -316,29 +357,7 @@
     CMTime endTime = CMTimeMakeWithSeconds(_videoCoreSDK.duration, TIMESCALE);
     self.endTimeLabel.text = [NSString stringWithFormat:@"%@",[VEHelp timeToStringFormat:(CMTimeGetSeconds(endTime))]];
     
-    [self canvasImage];
-    CGRect rect =  [self getFileCrop];
-    
-    _pasterTextCenter = CGPointMake(rect.origin.x, rect.origin.y);
-    
-    if( _videoCropView.cropView.cropType != self.cropType )
-        [_videoCropView.cropView setCropRectViewFrame:self.cropType];
-    //    if (!CGRectEqualToRect(_selectFile.cropRect, CGRectZero)) {
-    //        [_videoCropView.cropView setCropRect:_selectFile.cropRect];
-    //    }else{
-    CGRect r = _selectFile.cropRect;
-    r.size.width = rect.size.width;
-    r.size.height = rect.size.height;
-    r.origin.x = (_videoCropView.cropView.cropRectView.frame.size.width-rect.size.width)/2.0;
-    r.origin.y =  (_videoCropView.cropView.cropRectView.frame.size.height - rect.size.height)/2.0;
-    if( self.cropType == VE_VECROPTYPE_ORIGINAL )
-    {
-        r.origin.x = (_syncContainerRect.size.width-rect.size.width)/2.0;
-        r.origin.y =  (_syncContainerRect.size.height - rect.size.height)/2.0;
-    }
-    [_videoCropView.cropView setCropRect:r];
-    [_videoCropView.cropView trackButton_hidden:YES];
-    //    }
+    [self getFileCrop];
     
     if( _videoView )
     {
@@ -715,6 +734,7 @@
                 cropTypeModel.isSelect = NO;
                 
             }
+            cropTypeModel.isSelect = (_selectFile.fileCropModeType == i);
             [self.dataCropTypeArray addObject:cropTypeModel];
             
             cropTypeModel.selecctTitle = [[NSMutableAttributedString alloc] initWithString:str attributes:@{NSFontAttributeName: [UIFont fontWithName:@"PingFang SC" size: 12.0/90.0*self.cropTypeView.frame.size.height], NSForegroundColorAttributeName: Main_Color, NSStrokeWidthAttributeName:@(shaow),NSStrokeColorAttributeName:Main_Color}];
@@ -800,10 +820,7 @@
         scene.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
     }
     [self.scenesArray addObject:scene];
-
-    _editVideoSize = [VEHelp getEditOrginSizeWithFile:_selectFile];
-
-//    self.editVideoSize = self.videoCropView.bounds.size;
+    [self getVideoSize];
     
     if (_videoCoreSDK == nil) {
         _videoCoreSDK = [[VECore alloc] initWithAPPKey:[VEConfigManager sharedManager].appKey
@@ -871,7 +888,6 @@
         self.syncContainerView.syncContainer_Y_Left = nil;
         [self.syncContainerView.syncContainer_Y_Right removeFromSuperview];
         self.syncContainerView.syncContainer_Y_Right = nil;
-        [self initPasterViewWithFile:[self canvasImage]];
     }
     
     [_videoCoreSDK build];
@@ -908,6 +924,13 @@
 -(void)backAction{
     
     [self deletePlayer];
+    _selectFile.isHorizontalMirror = _originFile.isHorizontalMirror;
+    _selectFile.isVerticalMirror = _originFile.isVerticalMirror;
+    _selectFile.rotate = _originFile.rotate;
+    _selectFile.crop = _originFile.crop;
+    _selectFile.rectInFile = _originFile.rectInFile;
+    _selectFile.rectInScale = _originFile.rectInScale;
+    _selectFile.fileScale = _originFile.fileScale;
     if (_cancelBlock) {
         _cancelBlock();
     }
@@ -1003,12 +1026,14 @@
 
 -(void)whirlButtonClicked{
     _selectFile.rotate += 90;
-    
+    if (_selectFile.rotate == 360) {
+        _selectFile.rotate = 0;
+    }
     self.videoCropView.hidden = YES;
     [self playVideo:NO];
-    [_videoCoreSDK stop];
+    
     [self refreshPlayerFrame];
-    [self setBackButtonWithisEnabled:YES];
+    [self setResetButtonEnabled:YES];
     
 }
 
@@ -1019,10 +1044,7 @@
     MediaAsset * vvasset = [[_scenes firstObject].media firstObject];
     vvasset.isVerticalMirror = _selectFile.isVerticalMirror;
     [self.videoCoreSDK refreshCurrentFrame];
-    [self setBackButtonWithisEnabled:YES];
-   
-
-    
+    [self setResetButtonEnabled:YES];
 }
 
 -(void)horizontalButtonClicked{
@@ -1034,48 +1056,31 @@
     vvasset.isHorizontalMirror = _selectFile.isHorizontalMirror;
     [self.videoCoreSDK refreshCurrentFrame];
     
-    [self setBackButtonWithisEnabled:YES];
-    
-    
+    [self setResetButtonEnabled:YES];
 }
 
--(void)backButtonClicked{
+-(void)resetButtonClicked{
     
-    [self setBackButtonWithisEnabled:NO];
+    [self setResetButtonEnabled:NO];
     [self playVideo:NO];
     _selectFile.isVerticalMirror = NO;
     _selectFile.isHorizontalMirror = NO;
     _selectFile.rotate = 0;
-    [self deletePlayer];
-    [self initPlayer];
+    _selectFile.fileScale = 0;
     
+    [self refreshPlayerFrame];
+    [_videoCropView.cropView trackButton_hidden:YES];
 }
 
--(void)setBackButtonWithisEnabled:(BOOL)isEnabled{
-    if (isEnabled) {
-        [self.backButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_back_select"] forState:UIControlStateNormal];
-        self.backButton.userInteractionEnabled = YES;
-        [self.backButton setTitleColor:UIColorFromRGB(0xB2B2B2) forState:UIControlStateNormal];
-        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            [self.backButton setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
-        }
-    }else{
-        
-        [_backButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_back_normal"] forState:UIControlStateNormal];
-        [self.backButton setTitleColor:UIColorFromRGB(0x808080) forState:UIControlStateNormal];
-        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            [self.backButton setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
-        }
-        self.backButton.userInteractionEnabled = NO;
+-(void)setResetButtonEnabled:(BOOL)isEnabled{
+    _resetBtn.enabled = isEnabled;
+    if (!isEnabled) {
         [self.cropTypeView didSelectItemAtIndexPathRow:self.cropType];//0
         //self.cropType = VE_VECROPTYPE_FREE;
         [_videoCropView.cropView setCropRectViewFrame:self.cropType];
         self.playSlider.value = self.playSlider.minimumValue;
         _playTimeLabel.text = @"00:00.0";
-        
-        
     }
-    
 }
 
 - (void)save{
@@ -1348,25 +1353,34 @@
     }];
 }
 
+- (void)getVideoSize {
+    float rotate = _selectFile.rotate;
+    _selectFile.rotate = 0;
+    _editVideoSize = [VEHelp getEditOrginSizeWithFile:_selectFile];
+    _selectFile.rotate = rotate;
+    if (rotate == 90 || rotate == 180) {
+        _editVideoSize = CGSizeMake(_editVideoSize.height, _editVideoSize.width);
+    }
+}
+
 -(void)refreshPlayerFrame{
-    
-    
-    
+    [_videoCoreSDK stop];
     MediaAsset * vvasset = [[_scenes firstObject].media firstObject];
     vvasset.rotate = _selectFile.rotate;
     vvasset.isVerticalMirror = _selectFile.isVerticalMirror;
     vvasset.isHorizontalMirror = _selectFile.isHorizontalMirror;
-    vvasset.crop = CGRectZero;
-    _selectFile.crop = CGRectMake(0, 0, 1, 1);
+//    vvasset.crop = CGRectZero;
+//    _selectFile.crop = CGRectMake(0, 0, 1, 1);
     
-    self.editVideoSize = [VEHelp getEditSizeWithFile:self.selectFile];
+    [self getVideoSize];
     self.videoCropView.videoSize = self.editVideoSize;
+    [_videoCropView.cropView trackButton_hidden:YES];
     
     
     self.videoCoreSDK.frame = self.videoCropView.videoView.bounds;
     [self.videoCoreSDK setEditorVideoSize:self.editVideoSize];
     [self.videoCoreSDK build];
-    
+    [self getFileCrop];
 }
 
 - (void)refreshPlayer:(NSNumber *)needRefreshFiles{
@@ -1536,27 +1550,6 @@
             [self performSelector:@selector(loadTrimmerViewThumbImage) withObject:nil afterDelay:0.1];
             [_videoTrimiSlider interceptProgress:CMTimeGetSeconds( timeRange.start )];
         }
-//        if([VEConfigManager sharedManager].iPad_HD){
-//            CGRect r = self.videoCropView.cropView.cropRectView.frame;
-//            r.origin.y = 0;
-//            self.videoCropView.cropView.cropRectView.frame = r;
-//        }
-        CGPoint point = self.videoCropView.cropView.cropRectView.frame.origin;
-        
-        point = [self.videoCropView.cropView convertPoint:point toView:self.syncContainerView];
-        self.pasterTextView.cropRect = CGRectMake(point.x, point.y, self.videoCropView.cropView.cropRectView.frame.size.width, self.videoCropView.cropView.cropRectView.frame.size.height);
-        
-        CGAffineTransform transform2 = CGAffineTransformMakeRotation( -_selectFile.rotate/(180.0/M_PI) );
-        self.pasterTextView.transform = CGAffineTransformScale(transform2, _pasterTextViewScale, _pasterTextViewScale);
-        [self.pasterTextView setFramescale:_pasterTextViewScale];
-        [self.pasterTextView setCenter:CGPointMake(_pasterTextCenter.x+(point.x + self.pasterTextView.cropRect.size.width/2.0), _pasterTextCenter.y+(point.y + self.pasterTextView.cropRect.size.height/2.0))];
-        
-        [self svae_PaterText];
-        [self.videoCoreSDK refreshCurrentFrame];
-        
-        {
-            
-        }
     }
 }
 - (void)tapPlayerView{
@@ -1684,7 +1677,7 @@
 
 -(void)cropViewbeginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event{
     
-    [self setBackButtonWithisEnabled:YES];
+    [self setResetButtonEnabled:YES];
 }
 
 
@@ -1792,6 +1785,7 @@
                     else
                         rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - 180 - kToolbarHeight);
                 }
+                rect = CGRectMake(0, kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), _toolView.frame.origin.y - kPlayerViewOriginX - 45);
             }
             else if( kCropTypeFixedRatio == _cutMmodeType ){
                 rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - kToolbarHeight);
@@ -1808,13 +1802,9 @@
         }
         if( _cutMmodeType == kCropTypeFixed )
         {
-//            rect.origin.x =  rect.origin.x+5;
-//            rect.origin.y =  rect.origin.y+45;
-//            rect.size.width =  rect.size.width-10;
-//            rect.size.height =  rect.size.height-90;
             if( [VEConfigManager sharedManager].isPictureEditing )
             {
-                rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - 100 - kToolbarHeight);
+                rect = CGRectMake(0,kPlayerViewOriginX, CGRectGetWidth(self.bgView.frame), CGRectGetHeight(self.bgView.frame) - kPlayerViewOriginX - 120 - kToolbarHeight);
             }
             _videoCropView = [[VEVideoCropView alloc] initWithFrame:rect withVideoCropType:VEVideoCropType_FixedCrop];
             UIImage * image = [self canvasImage];
@@ -1828,21 +1818,36 @@
 }
 
 -(UIView *)toolView{
-    if (_toolView == nil) {
-        if (_isNeedExport) {
-            _toolView = [[UIView alloc] initWithFrame:CGRectMake(0,([VEConfigManager sharedManager].iPad_HD ? (CGRectGetHeight(self.bgView.frame) - 85) : (CGRectGetHeight(self.bgView.frame) - kBottomSafeHeight - 240)), CGRectGetWidth(self.bgView.frame), 240)];
+    if (!_toolView) {
+        if (_cutMmodeType == kCropTypeNone) {
+            if (_isNeedExport) {
+                _toolView = [[UIView alloc] initWithFrame:CGRectMake(0,([VEConfigManager sharedManager].iPad_HD ? (CGRectGetHeight(self.bgView.frame) - 85) : (CGRectGetHeight(self.bgView.frame) - kBottomSafeHeight - 240)), CGRectGetWidth(self.bgView.frame), 240)];
+            }else {
+                _toolView = [[UIView alloc] initWithFrame:CGRectMake(0,([VEConfigManager sharedManager].iPad_HD ? (CGRectGetHeight(self.bgView.frame) - 85) : (CGRectGetHeight(self.bgView.frame) - kToolbarHeight - 240)), CGRectGetWidth(self.bgView.frame), 240)];
+            }
+            
+            _toolView.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : UIColorFromRGB(0x10100F);
+            if( [VEConfigManager sharedManager].isPictureEditing )
+            {
+                _toolView.backgroundColor = [UIColor whiteColor];
+            }
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                _toolView.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
+            }
         }else {
-            _toolView = [[UIView alloc] initWithFrame:CGRectMake(0,([VEConfigManager sharedManager].iPad_HD ? (CGRectGetHeight(self.bgView.frame) - 85) : (CGRectGetHeight(self.bgView.frame) - kToolbarHeight - 240)), CGRectGetWidth(self.bgView.frame), 240)];
+            _toolView = [[UIView alloc] init];
+            if( _selectFile.fileType == kFILEIMAGE && !_selectFile.isGif) {
+                _toolView.frame = CGRectMake(0, self.toolBar.frame.origin.y - 60, self.bgView.frame.size.width, 60);
+            }else {
+                _toolView.frame = CGRectMake(0, self.toolBar.frame.origin.y - 85 - 60, self.bgView.frame.size.width, 60);
+            }
+//            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+//                _toolView.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
+//            }else {
+//                _toolView.backgroundColor = TOOLBAR_COLOR;
+//            }
         }
         
-        _toolView.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : UIColorFromRGB(0x10100F);
-        if( [VEConfigManager sharedManager].isPictureEditing )
-        {
-            _toolView.backgroundColor = [UIColor whiteColor];
-        }
-        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            _toolView.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
-        }
     }
     return _toolView;
 }
@@ -1910,112 +1915,6 @@
     }
     return _playSlider;
 }
-
--(UIButton *)backButton{
-    if (_backButton == nil) {
-        
-        _backButton = [[UIButton alloc] initWithFrame:CGRectMake(16, (self.cropType == VE_VECROPTYPE_FIXEDRATIO ? ((self.toolView.frame.size.height - 70 - 30)/2.0 + 70) : 70), 80, 30)];
-        [_backButton setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
-        [_backButton setImage:[VEHelp imageNamed:@"剪辑_重置默认_"] forState:UIControlStateNormal];
-        [_backButton setImage:[VEHelp imageNamed:@"剪辑_重置选中_"] forState:UIControlStateHighlighted];
-        _backButton.titleLabel.font = [UIFont systemFontOfSize:12];
-        _backButton.layer.cornerRadius = 30/2;
-        _backButton.layer.masksToBounds = YES;
-        [_backButton setTitleColor:UIColorFromRGB(0x808080) forState:UIControlStateNormal];
-        [_backButton setBackgroundColor:UIColorFromRGB(0x27262C)];
-        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            [_backButton setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
-            [_backButton setBackgroundColor:[UIColor clearColor]];
-        }
-        _backButton.userInteractionEnabled = NO;
-        [_backButton addTarget:self action:@selector(backButtonClicked) forControlEvents:UIControlEventTouchUpInside];
-        
-    }
-    return _backButton;
-}
-
--(UIView *)lineView{
-    if (_lineView == nil) {
-        _lineView = [[UIView alloc] initWithFrame:CGRectMake(86, 63,1, 2)];
-        [_lineView setBackgroundColor:UIColorFromRGB(0x27262C)];
-        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            [_lineView setBackgroundColor:UIColorFromRGB(0xefefef)];
-
-        }
-        
-    }
-    return _lineView;
-}
-
--(UIButton *)vertButton{
-    if (_vertButton == nil) {
-
-        float widthButton = (CGRectGetWidth(self.bgView.frame) -  99 - (10*3))/3;
-        
-        _vertButton = [[UIButton alloc] initWithFrame:CGRectMake(99, (self.cropType == VE_VECROPTYPE_FIXEDRATIO ? ((self.toolView.frame.size.height - 70 - 30)/2.0 + 70) : 70), widthButton, 30)];
-        [_vertButton setTitle:VELocalizedString(@"垂直翻转", nil) forState:UIControlStateNormal];
-        [_vertButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_vert"] forState:UIControlStateNormal];
-        _vertButton.titleLabel.font = [UIFont systemFontOfSize:12];
-        _vertButton.layer.cornerRadius = 30/2;
-        _vertButton.layer.masksToBounds = YES;
-        [_vertButton setTitleColor:UIColorFromRGB(0xB2B2B2) forState:UIControlStateNormal];
-        [_vertButton setBackgroundColor:UIColorFromRGB(0x27262C)];
-        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            [_vertButton setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
-            [_vertButton setBackgroundColor:UIColorFromRGB(0xefefef)];
-
-        }
-        
-        [_vertButton addTarget:self action:@selector(vertButtonClicked) forControlEvents:UIControlEventTouchUpInside];
-        
-    }
-    return _vertButton;
-}
--(UIButton *)horizontalButton{
-    if (_horizontalButton == nil) {
-        
-        float widthButton = (CGRectGetWidth(self.bgView.frame) -  99 - (10*3))/3;
-        
-        _horizontalButton = [[UIButton alloc]initWithFrame:CGRectMake(99 + widthButton +10, (self.cropType == VE_VECROPTYPE_FIXEDRATIO ? ((self.toolView.frame.size.height - 70 - 30)/2.0 + 70) : 70), widthButton, 30)];
-        [_horizontalButton setTitle:VELocalizedString(@"水平翻转", nil) forState:UIControlStateNormal];
-        [_horizontalButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_horizontal"] forState:UIControlStateNormal];
-        _horizontalButton.titleLabel.font = [UIFont systemFontOfSize:12];
-        _horizontalButton.layer.cornerRadius = 30/2;
-        _horizontalButton.layer.masksToBounds = YES;
-        [_horizontalButton setTitleColor:UIColorFromRGB(0xB2B2B2) forState:UIControlStateNormal];
-        [_horizontalButton setBackgroundColor:UIColorFromRGB(0x27262C)];
-        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            [_horizontalButton setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
-            [_horizontalButton setBackgroundColor:UIColorFromRGB(0xefefef)];
-
-        }
-        
-        [_horizontalButton addTarget:self action:@selector(horizontalButtonClicked) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _horizontalButton;
-}
-
--(UIButton *)whirlButton{
-    if (_whirlButton == nil) {
-        float widthButton = (CGRectGetWidth(self.bgView.frame) -  99 - (10*3))/3;
-        _whirlButton = [[UIButton alloc]initWithFrame:CGRectMake(99 + (widthButton +10)*2, (self.cropType == VE_VECROPTYPE_FIXEDRATIO ? ((self.toolView.frame.size.height - 70 - 30)/2.0 + 70) : 70), widthButton, 30)];
-        [_whirlButton setTitle:VELocalizedString(@"旋     转", nil) forState:UIControlStateNormal];
-        [_whirlButton setImage:[VEHelp imageWithContentOfFile:@"jianji/bianji/jianji_whirl_icon"] forState:UIControlStateNormal];
-        _whirlButton.titleLabel.font = [UIFont systemFontOfSize:12];
-        _whirlButton.layer.cornerRadius = 30/2;
-        _whirlButton.layer.masksToBounds = YES;
-        [_whirlButton setTitleColor:UIColorFromRGB(0xB2B2B2) forState:UIControlStateNormal];
-        [_whirlButton setBackgroundColor:UIColorFromRGB(0x27262C)];
-        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            [_whirlButton setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
-            [_whirlButton setBackgroundColor:UIColorFromRGB(0xefefef)];
-
-        }
-        [_whirlButton addTarget:self action:@selector(whirlButtonClicked) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _whirlButton;
-}
-
 
 -(VECropTypeView *)cropTypeView{
     if (_cropTypeView == nil) {
@@ -2112,6 +2011,21 @@
     if( _isCropTypeViewHidden )
     {
         self.cropTypeView.hidden = YES;
+    }
+}
+
+- (void)rotateBtnAction:(UIButton *)sender {
+    if (sender.tag == 1) {//上下
+        [self vertButtonClicked];
+    }
+    else if (sender.tag == 2) {//左右
+        [self horizontalButtonClicked];
+    }
+    else if (sender.tag == 3) {//旋转
+        [self whirlButtonClicked];
+    }
+    else if (sender.tag == 4) {//重置
+        [self resetButtonClicked];
     }
 }
 
@@ -2348,6 +2262,7 @@
         rect.origin.y = (0.5-(_selectFile.crop.origin.y+_selectFile.crop.size.height/2.0)) * cropSize.height * scale;
         _pasterTextViewScale = scale;
     }
+    [self initPasterViewWithFile:[self canvasImage]];
     size = CGSizeMake(cropSize.width*_fixedMaxCrop.size.width, cropSize.height*_fixedMaxCrop.size.height);
     float originalProportion = size.width/size.height;
     width = originalProportion*videoSize.height;
@@ -2359,6 +2274,24 @@
         minScale = videoSize.width/size.width;
     }
     [self.pasterTextView setMinScale:minScale];
+        
+    _pasterTextCenter = CGPointMake(rect.origin.x, rect.origin.y);
+    
+    if( _videoCropView.cropView.cropType != self.cropType )
+        [_videoCropView.cropView setCropRectViewFrame:self.cropType];
+    
+    CGRect r = _selectFile.cropRect;
+    r.size.width = rect.size.width;
+    r.size.height = rect.size.height;
+    r.origin.x = (_videoCropView.cropView.cropRectView.frame.size.width-rect.size.width)/2.0;
+    r.origin.y =  (_videoCropView.cropView.cropRectView.frame.size.height - rect.size.height)/2.0;
+    if( self.cropType == VE_VECROPTYPE_ORIGINAL )
+    {
+        r.origin.x = (_syncContainerRect.size.width-rect.size.width)/2.0;
+        r.origin.y =  (_syncContainerRect.size.height - rect.size.height)/2.0;
+    }
+    [_videoCropView.cropView setCropRect:r];
+    [_videoCropView.cropView trackButton_hidden:YES];
     
     return rect;
 }
@@ -2476,6 +2409,13 @@
 //    self.isCanvasFirst = false;
     
     double rotate = 0;//file.rotate;
+    if (_cutMmodeType == kCropTypeFixed
+        && _isCropTypeViewHidden
+        && _selectFile.fileType == kFILEIMAGE && !_selectFile.isGif
+        && ![VEConfigManager sharedManager].isPictureEditing)
+    {
+        rotate = file.rotate;
+    }
     if( (fileScale == 0) && ( (rectInScene.origin.x == 0) && (rectInScene.origin.y == 0)
                              && (rectInScene.size.width == 1)
                              && (rectInScene.size.height == 1)))
@@ -2583,20 +2523,7 @@
         {
             self.originalRect = rectInScene;
         }
-        
-        [self svae_PaterText];
-        [self.videoCoreSDK refreshCurrentFrame];
     }
-//    CGPoint point = CGPointMake(rectInScene.origin.x + rectInScene.size.width/2.0, rectInScene.origin.y + rectInScene.size.height/2.0);
-//    point = CGPointMake(point.x*self.syncContainerView.frame.size.width, point.y*self.syncContainerView.frame.size.height);
-    
-    fileScale = [VEHelp getMediaAssetScale_File:thumbImage.size atRect:rectInScene atCorp:CGRectMake(0, 0, 1, 1) atSyncContainerHeihgt:self.syncContainerView.bounds.size mediaType:VEAdvanceEditType_None];
-//    file.fileScale = fileScale;
-    CGAffineTransform transform2 = CGAffineTransformMakeRotation( -rotate/(180.0/M_PI) );
-    self.pasterTextView.transform = CGAffineTransformScale(transform2, file.fileScale, file.fileScale);
-    [self.pasterTextView setFramescale:file.fileScale];
-    
-//    self.pasterTextView.center = point;
     [self.syncContainerView setMark];
     [self.pasterTextView setCanvasPasterText:true];
     [self.pasterTextView setMinScale:1.0/4.0];
@@ -2604,6 +2531,18 @@
     self.pasterTextView.isDrag = true;
     self.syncContainerView.currentPasterTextView = self.pasterTextView;
     self.pasterTextView.syncContainer = self.syncContainerView;
+    
+    CGPoint point = self.videoCropView.cropView.cropRectView.frame.origin;
+    
+    point = [self.videoCropView.cropView convertPoint:point toView:self.syncContainerView];
+    self.pasterTextView.cropRect = CGRectMake(point.x, point.y, self.videoCropView.cropView.cropRectView.frame.size.width, self.videoCropView.cropView.cropRectView.frame.size.height);
+    
+    CGAffineTransform transform2 = CGAffineTransformMakeRotation( -_selectFile.rotate/(180.0/M_PI) );
+    self.pasterTextView.transform = CGAffineTransformScale(transform2, _pasterTextViewScale, _pasterTextViewScale);
+    [self.pasterTextView setFramescale:_pasterTextViewScale];
+    [self.pasterTextView setCenter:CGPointMake(_pasterTextCenter.x+(point.x + self.pasterTextView.cropRect.size.width/2.0), _pasterTextCenter.y+(point.y + self.pasterTextView.cropRect.size.height/2.0))];
+    
+    [self svae_PaterText];
 }
 
 -(void)pasterView_Rect:(  CGRect * ) rect atRotate:( double * ) rotate
@@ -2632,6 +2571,7 @@
         [self svae_PaterText];
         [sticker showEditingHandles];
         [self.videoCoreSDK refreshCurrentFrame];
+        _resetBtn.enabled = YES;
     }
     _zoomScale = sticker.selfscale;
 }
@@ -2643,6 +2583,7 @@
         [self svae_PaterText];
         [sticker showEditingHandles];
         [self.videoCoreSDK refreshCurrentFrame];
+        _resetBtn.enabled = YES;
     }
 }
 

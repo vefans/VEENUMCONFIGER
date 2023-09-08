@@ -92,6 +92,7 @@
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
     copy.addTextList = _addTextList;
+    copy.localIdentifier = _localIdentifier;
     copy.addTextOriginalImageUrl = _addTextOriginalImageUrl;
     copy.addTextCrop = _addTextCrop;
     copy.sceneIdentifier = [NSString stringWithFormat:@"scene_%@", [VEHelp getMediaIdentifier]];
@@ -303,6 +304,7 @@
 - (id)copyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
     copy.addTextList = _addTextList;
+    copy.localIdentifier = _localIdentifier;
     copy.addTextOriginalImageUrl = _addTextOriginalImageUrl;
     copy.addTextCrop = _addTextCrop;
     copy.sceneIdentifier = [NSString stringWithFormat:@"scene_%@", [VEHelp getMediaIdentifier]];

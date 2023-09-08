@@ -1260,7 +1260,7 @@
 // 2020.11.25 add
 "音    量" = "Volumen";
 "旋     转" =  "Rotate";
-"视频抠像" = "VideoMatting";
+"智能抠像" = "VideoMatting";
 "请输入宽高比（例如：16:9）" = "Enter proportion（e.g：16:9）";
 "输入自定义比例" = "Enter custom proportion";
 "请输入正确的宽高比（例如：16:9）" = "Enter right proportion（e.g：16:9）"

@@ -47,10 +47,11 @@
         [resetBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
         resetBtn.titleLabel.font = [UIFont systemFontOfSize:12.0];
         [resetBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
-        if([VEConfigManager sharedManager].toolsTitleColor){
-            [resetBtn setTitleColor:[VEConfigManager sharedManager].toolsTitleColor forState:UIControlStateNormal];
-        }
         [resetBtn setTitleColor:DISABLED_COLOR forState:UIControlStateDisabled];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            [resetBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+            [resetBtn setTitleColor:UIColorFromRGB(0x727272) forState:UIControlStateDisabled];
+        }
         [resetBtn addTarget:self action:@selector(resetBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         if([VEConfigManager sharedManager].iPad_HD){
             resetBtn.frame = CGRectMake(5, (CGRectGetHeight(self.frame) - 40), 80, 40);
@@ -109,6 +110,14 @@
         _separationTypeIndex = 1;
         NSArray *array = @[@"高光色调", @"阴影色调"];
         y = CGRectGetMaxY(slider.frame) + (frame.size.height - CGRectGetMaxY(slider.frame) - kBottomSafeHeight - 64) / 2.0;
+        if (y + 64 > frame.size.height) {
+            float diff = (y + 64 - frame.size.height);
+            CGRect rect = slider.frame;
+            rect.size.height -= diff;
+            rect.origin.y -= diff / 2.0;
+            slider.frame = rect;
+            y -= diff;
+        }
         UIView *tabBarView = [[UIView alloc] initWithFrame:CGRectMake(0, y, self.frame.size.width, 64)];
         [self addSubview:tabBarView];
         for (int i = 0; i < array.count; i++) {

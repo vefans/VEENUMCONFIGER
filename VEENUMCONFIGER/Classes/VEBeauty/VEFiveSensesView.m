@@ -23,14 +23,8 @@
         self.backgroundColor = [VEConfigManager sharedManager].iPad_HD ? VIEW_IPAD_COLOR : VIEW_COLOR;
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
             self.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
-            [VEHelp addShadowToView:self withColor:UIColorFromRGB(0x000000)];
+            //[VEHelp addShadowToView:self withColor:UIColorFromRGB(0x000000)];
         }
-        // 左上和右上为圆角
-        UIBezierPath *cornerRadiusPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds byRoundingCorners:UIRectCornerTopRight | UIRectCornerTopLeft cornerRadii:CGSizeMake(16, 16)];
-        CAShapeLayer *cornerRadiusLayer = [ [CAShapeLayer alloc ]  init];
-        cornerRadiusLayer.frame = self.bounds;
-        cornerRadiusLayer.path = cornerRadiusPath.CGPath;
-        self.layer.mask = cornerRadiusLayer;
         [self initToolbarView];
 //        {
 //            UIButton * resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(5, [VEConfigManager sharedManager].iPad_HD ? (self.frame.size.height - 40) : (self.frame.size.height - kPlayerViewOriginX - 40), 80, 35)];
@@ -166,7 +160,7 @@
                 contentsWidth += ItemBtnWidth+25;
                                 
                 
-                VEPlaySlider * slider = [[VEPlaySlider alloc] initWithFrame:CGRectMake(63, (CGRectGetHeight(sliderSupView.frame) - 35)/2.0,sliderSupView.frame.size.width - 63*2 , 35)];
+                VESlider * slider = [[VESlider alloc] initWithFrame:CGRectMake(43, (CGRectGetHeight(sliderSupView.frame) - 35)/2.0,sliderSupView.frame.size.width - 63*2 , 35)];
                 slider.tag = [list[i][@"id"] integerValue];
                 UIImage *trackImage = [VEHelp imageWithColor:SliderMaximumTrackTintColor size:CGSizeMake(10, 2.0) cornerRadius:1];
                 if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
@@ -218,7 +212,7 @@
         }
         
         UIButton *compareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        compareBtn.frame = CGRectMake(self.frame.size.width - 63 + (63 - 40)/2.0, (CGRectGetHeight(self.frame) - 44) - 10 , 40, 44);
+        compareBtn.frame = CGRectMake(CGRectGetMaxX(((VEPlaySlider *)(_adjustmentSliders.firstObject)).frame) + 10, (CGRectGetHeight(self.frame) - 44) - 10 , 40, 44);
         [compareBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@默认",@"对比"]] forState:UIControlStateNormal];
         [compareBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@选中",@"对比"]] forState:UIControlStateSelected];
         [compareBtn addTarget:self action:@selector(compareBtnDown:) forControlEvents:UIControlEventTouchDown];
@@ -1016,17 +1010,17 @@
 }
 
 #pragma mark-滑动进度条
-- (void)beginScrub:(VEPlaySlider *)slider{
+- (void)beginScrub:(VESlider *)slider{
     [self sliderValueChanged:slider];
     _sliderValueLabel.hidden = NO;
 }
 
-- (void)scrub:(VEPlaySlider *)slider{
+- (void)scrub:(VESlider *)slider{
     NSLog(@"%d,%f",slider.tag,slider.value);
     [self sliderValueChanged:slider];
 }
 
-- (void)endScrub:(VEPlaySlider *)slider{
+- (void)endScrub:(VESlider *)slider{
     if([VEConfigManager sharedManager].iPad_HD){
         _currentType = slider.tag;
     }
@@ -1034,7 +1028,7 @@
     _sliderValueLabel.hidden = YES;
 }
 
--(void)sliderValueChanged:(VEPlaySlider *) slider
+-(void)sliderValueChanged:(VESlider *) slider
 {
     float trackImageHeight = slider.currentMinimumTrackImage.size.height + 1;
     float thumbImageWidth = slider.currentThumbImage.size.width;

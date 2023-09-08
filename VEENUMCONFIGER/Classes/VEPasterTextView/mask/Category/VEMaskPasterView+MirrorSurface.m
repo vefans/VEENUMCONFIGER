@@ -210,7 +210,8 @@
         self.curretnView.center = center;
         
         self.mirrorSurfaceCenterView .frame = CGRectMake( 0, (self.curretnView.frame.size.height - width)/2.0, self.frame.size.width*3.0, width);
-        self.centreImageView.frame = CGRectMake( (self.mirrorSurfaceCenterView.frame.size.width - RoundnessHeight)/2.0, (self.mirrorSurfaceCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+//        self.centreImageView.frame = CGRectMake( (self.mirrorSurfaceCenterView.frame.size.width - RoundnessHeight)/2.0, (self.mirrorSurfaceCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+        self.centreImageView.frame = CGRectMake( (self.mirrorSurfaceCenterView.frame.size.width - 10.0)/2.0, (self.mirrorSurfaceCenterView.frame.size.height - 10.0)/2.0, 10.0, 10.0);
         self.rotate_ImageView.frame = CGRectMake( (self.curretnView.frame.size.width - btnWidth)/2.0, self.curretnView.frame.size.height - btnWidth, btnWidth, btnWidth);
         self.curretnView.transform = CGAffineTransformMakeRotation(-angleDiff);
     }
@@ -253,7 +254,8 @@
             self.curretnView.center = center;
             
             self.mirrorSurfaceCenterView .frame = CGRectMake( 0, (self.curretnView.frame.size.height - width)/2.0, self.frame.size.width*3.0, width);
-            self.centreImageView.frame = CGRectMake( (self.mirrorSurfaceCenterView.frame.size.width - RoundnessHeight)/2.0, (self.mirrorSurfaceCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+//            self.centreImageView.frame = CGRectMake( (self.mirrorSurfaceCenterView.frame.size.width - RoundnessHeight)/2.0, (self.mirrorSurfaceCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+            self.centreImageView.frame = CGRectMake( (self.mirrorSurfaceCenterView.frame.size.width - 10.0)/2.0, (self.mirrorSurfaceCenterView.frame.size.height - 10.0)/2.0, 10.0, 10.0);
             self.rotate_ImageView.frame = CGRectMake( (self.curretnView.frame.size.width - btnWidth)/2.0, self.curretnView.frame.size.height - btnWidth, btnWidth, btnWidth);
             self.curretnView.transform = CGAffineTransformMakeRotation(-deltaAngle);
         }

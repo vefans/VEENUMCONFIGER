@@ -112,7 +112,7 @@
             [self setDefaultValue];
             _beautyView.contentSize = CGSizeMake(0, list.count * 50);
         }else{
-            _beautyView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 20 + 20, CGRectGetWidth(self.frame), 60)];
+            _beautyView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, (CGRectGetHeight(self.frame) - 44 - kBottomSafeHeight - 60) / 2.0, CGRectGetWidth(self.frame), 60)];
             _beautyView.backgroundColor = [UIColor clearColor];
             _beautyView.showsHorizontalScrollIndicator = NO;
             _beautyView.showsVerticalScrollIndicator = NO;
@@ -229,13 +229,14 @@
         [self addSubview:compareBtn];
         
         UIButton * resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, compareBtn.frame.origin.y, 80, 44)];
-        [resetBtn setImage:[VEHelp imageNamed:@"剪辑_重置默认_"] forState:UIControlStateNormal];
-        [resetBtn setImage:[VEHelp imageNamed:@"剪辑_重置选中_"] forState:UIControlStateHighlighted];
+        [resetBtn setImage:[VEHelp imageNamed:@"VirtualLive/美颜重置默认@3x"] forState:UIControlStateNormal];
+        [resetBtn setImage:[VEHelp imageNamed:@"VirtualLive/美颜重置选中@3x"] forState:UIControlStateHighlighted];
         [resetBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
         [resetBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
         [resetBtn setTitleColor:Main_Color forState:UIControlStateHighlighted];
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
             [resetBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+            [resetBtn setTitleColor:Main_Color forState:UIControlStateHighlighted];
         }
         resetBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         resetBtn.titleLabel.textAlignment = NSTextAlignmentCenter;

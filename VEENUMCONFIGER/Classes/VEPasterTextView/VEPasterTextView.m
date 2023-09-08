@@ -43,6 +43,15 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 {
     return CGSizeMake(sqrt(t.a * t.a + t.c * t.c), sqrt(t.b * t.b + t.d * t.d)) ;
 }
+
+@implementation VEAlignBtn
+
+- (void)setHidden:(BOOL)hidden{
+    [super setHidden:hidden];
+}
+
+@end
+
 @interface VEPasterTextView()<UIGestureRecognizerDelegate>
 {
     CGFloat globalInset;
@@ -539,7 +548,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 }
 -(void)addCopyBtn
 {
-    _alignBtn = [[UIButton alloc] initWithFrame:CGRectMake(-rotateViewWidth/2.0 + globalInset, self.bounds.size.height - rotateViewWidth/2.0 - globalInset, rotateViewWidth, rotateViewWidth)];
+    _alignBtn = [[VEAlignBtn alloc] initWithFrame:CGRectMake(-rotateViewWidth/2.0 + globalInset, self.bounds.size.height - rotateViewWidth/2.0 - globalInset, rotateViewWidth, rotateViewWidth)];
     _alignBtn.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin ;
     _alignBtn.backgroundColor = [UIColor clearColor];
     [_alignBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑-字幕居中_"] forState:UIControlStateNormal];
@@ -635,13 +644,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 }
 
 - (void)contentTapped:(UITapGestureRecognizer*)tapGesture
-{
-//    if( self.syncContainer.isCalculateSelected )
-//    {
-//        [self.syncContainer contentTapped:tapGesture];
-//        return;
-//    }
-    
+{   
     if( self.syncContainer == nil )
     {
         return;
@@ -1470,7 +1473,9 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     }
 //    [self removeFromSuperview];
 }
-
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [super touchesEnded:touches withEvent:event];
+}
 - (NSInteger)getTextAlign{
     if (_alignment == NSTextAlignmentLeft) {
         return 0;
@@ -1599,7 +1604,9 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     if( _closeBtn )
     {
         CGPoint center = _closeBtn.center;
-        _closeBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
+        if(rotateView){
+            _closeBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
+        }
         _closeBtn.center = center;
     }
     

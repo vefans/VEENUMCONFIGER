@@ -34,7 +34,8 @@
         
         [self.rectangleView addSubview:self.rectangleViewCenterView];
         
-        self.centreImageView.frame = CGRectMake( (self.rectangleViewCenterView.frame.size.width - RoundnessHeight)/2.0, (self.rectangleViewCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+//        self.centreImageView.frame = CGRectMake( (self.rectangleViewCenterView.frame.size.width - RoundnessHeight)/2.0, (self.rectangleViewCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+        self.centreImageView.frame = CGRectMake( (self.rectangleViewCenterView.frame.size.width - 10.0)/2.0, (self.rectangleViewCenterView.frame.size.height - 10.0)/2.0, 10.0, 10.0);
     }
     
     {
@@ -489,7 +490,8 @@
 
 -(void)setCenterView_Rectangle
 {
-    self.centreImageView.frame = CGRectMake( (self.rectangleViewCenterView.frame.size.width - RoundnessHeight)/2.0, (self.rectangleViewCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+//    self.centreImageView.frame = CGRectMake( (self.rectangleViewCenterView.frame.size.width - RoundnessHeight)/2.0, (self.rectangleViewCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+    self.centreImageView.frame = CGRectMake( (self.rectangleViewCenterView.frame.size.width - 10.0)/2.0, (self.rectangleViewCenterView.frame.size.height - 10.0)/2.0, 10.0, 10.0);
     
     self.fillet_ImageView.frame = CGRectMake((self.rectangleViewCenterView.frame.origin.x - filletWidth + 3  - btnWidth),(self.rectangleViewCenterView.frame.origin.y - filletWidth + 3  - btnWidth),btnWidth,btnWidth);
     

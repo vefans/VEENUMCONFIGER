@@ -2853,6 +2853,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 }
                 filter.netCover = obj1[@"cover"];
                 filter.name = obj1[@"name"];
+                if( [[VEConfigManager sharedManager].peCameraConfiguration.cameraFilterType isEqualToString:@"filter_cube"] )
+                    filter.type = kFilterType_3D_Lut_Cube;
                 [filterArray addObject:filter];
             }];
         }else {
@@ -8096,6 +8098,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             Scene *scene = [[Scene alloc] init];
             scene.type = SceneTypeHead;
             MediaAsset* vvasset = [coverFile getMedia];
+            if( coverFile.coverURL )
+            {
+                vvasset.url = coverFile.coverURL;
+            }
             vvasset.timeRange = CMTimeRangeMake(kCMTimeZero, coverTime);
             vvasset.timeRangeInVideo = vvasset.timeRange;
             scene.media = [NSMutableArray arrayWithObject:vvasset];
@@ -13677,7 +13683,11 @@ static OSType help_inputPixelFormat(){
         option.strokeMask = [configDic[@"strokeMask"] intValue];
     }
     if (configDic[@"autoBrush"]) {
+        NSDictionary *autoBrush = configDic[@"autoBrush"];
         option.autoBrush = [AutoBrush veCore_yy_modelWithDictionary:configDic[@"autoBrush"]];
+        if(autoBrush[@"outlineColor"]){
+            option.autoBrush.outlineColor = ANDROID_COLOR([autoBrush[@"outlineColor"] intValue]);
+        }
     }
     if (configDic[@"pngBrush"]) {
         option.pngBrush = [PNGBrush veCore_yy_modelWithDictionary:configDic[@"pngBrush"]];
@@ -14231,7 +14241,7 @@ static OSType help_inputPixelFormat(){
 +(NSMutableArray *)getColorList
 {
     NSString *path = [[self getEditBundle] pathForResource:@"ColorList.txt" ofType:@""];
-    NSString *content = [NSString stringWithContentsOfFile:path encoding:kCFStringEncodingUTF8 error:nil];
+    NSString *content = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
     NSArray *list = [content componentsSeparatedByString:@"\r\n"];
     NSMutableArray * colorArray = [NSMutableArray array];
     for (int i = 0; i<list.count; i++) {
@@ -15098,6 +15108,72 @@ static OSType help_inputPixelFormat(){
     else
     {
         return nil;
+    }
+}
+
++(NSMutableArray *)createStickerImagePathWithGIF:( NSURL * ) gifURL
+{
+    if( ![[NSFileManager defaultManager] fileExistsAtPath:kStickerImageGIFFolder] )
+    {
+        [[NSFileManager defaultManager] createDirectoryAtPath:kStickerImageGIFFolder withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
+    NSString *fileName = @"";
+    if ([VEHelp isSystemPhotoUrl:gifURL])
+    {
+        NSRange range = [gifURL.absoluteString rangeOfString:@"?id="];
+        if (range.location != NSNotFound) {
+            fileName = [gifURL.absoluteString substringFromIndex:range.length + range.location];
+            range = [fileName rangeOfString:@"&ext"];
+            fileName = [fileName substringToIndex:range.location];
+        }else {
+            fileName = [gifURL.lastPathComponent stringByDeletingPathExtension];
+        }
+    }else {
+        NSString *str = [VEHelp getStrPath:gifURL.pathComponents];
+        fileName = [NSString stringWithFormat:@"%ld",[str hash]];
+    }
+    
+    NSString * str = [kStickerImageGIFFolder stringByAppendingPathComponent:[NSString stringWithFormat:@"/%@", fileName]];
+    if( [[NSFileManager defaultManager] fileExistsAtPath:str] )
+    {
+        CGImageSourceRef gifSource = CGImageSourceCreateWithURL((__bridge CFURLRef)gifURL, NULL);
+        size_t frameCount = CGImageSourceGetCount(gifSource);
+        
+        if( frameCount > 0 )
+        {
+            
+            if( ![[NSFileManager defaultManager] fileExistsAtPath:str] )
+            {
+                [[NSFileManager defaultManager] createDirectoryAtPath:str withIntermediateDirectories:YES attributes:nil error:nil];
+            }
+            
+            for (size_t i = 0; i < frameCount; i++) {
+                CGImageRef frameImageRef = CGImageSourceCreateImageAtIndex(gifSource, i, NULL);
+                UIImage *frameImage = [UIImage imageWithCGImage:frameImageRef];
+                @autoreleasepool {
+                    NSURL * url = [NSURL fileURLWithPath:[str stringByAppendingString:[NSString stringWithFormat:@"/fileName_%zu",i]]];
+                    unlink([url.path UTF8String]);
+                    NSData *imageData = UIImagePNGRepresentation(frameImage);
+                    [imageData writeToFile:url.path atomically:NO];
+                };
+                CGImageRelease(frameImageRef);
+            }
+            CFRelease(gifSource);
+            NSMutableArray *array = [NSMutableArray new];
+            [array addObject:fileName];
+            [array addObject:str];
+            return array;
+        }
+        else
+            return nil;
+    }
+    else
+    {
+        NSMutableArray *array = [NSMutableArray new];
+        [array addObject:fileName];
+        [array addObject:str];
+        return array;
     }
 }
 @end

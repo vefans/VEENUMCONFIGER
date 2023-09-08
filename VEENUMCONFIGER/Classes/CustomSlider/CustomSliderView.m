@@ -90,9 +90,9 @@
         [self insertSubview:cycleView belowSubview:self.currentCycleView];
         UILabel *indexLb = [[UILabel alloc] init];
         [self.indexLabelArrM addObject:indexLb];
-        indexLb.font = systemFont(10);
+        indexLb.font = systemFont(11);
         indexLb.textColor = UIColorFromRGB(0x727272);
-        indexLb.text = [NSString stringWithFormat:@"%@", self.baifenbiArr[i]];
+        indexLb.text = self.baifenbiArr[i];
         indexLb.textAlignment = NSTextAlignmentCenter;
         indexLb.frame = CGRectMake(0, CGRectGetHeight(self.frame) - 15, 40, 15);
         indexLb.center = CGPointMake(cycleView.center.x, indexLb.center.y);

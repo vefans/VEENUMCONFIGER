@@ -653,7 +653,8 @@
 
 -(void)setCenterView_Quadrilateral
 {
-    self.centreImageView.frame = CGRectMake( (self.quadrilateralViewCenterView.frame.size.width - RoundnessHeight)/2.0, (self.quadrilateralViewCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+//    self.centreImageView.frame = CGRectMake( (self.quadrilateralViewCenterView.frame.size.width - RoundnessHeight)/2.0, (self.quadrilateralViewCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+    self.centreImageView.frame = CGRectMake( (self.quadrilateralViewCenterView.frame.size.width - 10.0)/2.0, (self.quadrilateralViewCenterView.frame.size.height - 10.0)/2.0, 10.0, 10.0);
     
     float x = sqrt((filletWidth*filletWidth)/2.0);
     self.fillet_ImageView.frame = CGRectMake((self.quadrilateralViewCenterView.frame.origin.x - x - btnWidth),(self.quadrilateralViewCenterView.frame.origin.y - x - btnWidth),btnWidth,btnWidth);

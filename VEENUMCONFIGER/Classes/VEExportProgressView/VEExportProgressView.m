@@ -20,7 +20,7 @@
 @end
 @implementation UIRectProgressView
 
-- (instancetype)initWithFrame:(CGRect)frame coverImage:(UIImage *)coverImage{
+- (instancetype)initWithFrame:(CGRect)frame coverImage:(UIImage *)coverImage exportSize:(CGSize)exportSize {
     if(self = [super initWithFrame:frame]){
         UIButton *cancelBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, kNavgationBar_Height - 44, 44, 44)];
         cancelBtn.exclusiveTouch = YES;
@@ -32,37 +32,44 @@
         [self addSubview:cancelBtn];
         [cancelBtn addTarget:self action:@selector(cancelExportAction) forControlEvents:UIControlEventTouchUpInside];
         
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(cancelBtn.frame) + 10, CGRectGetWidth(frame), 30)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(cancelBtn.frame) + 20, CGRectGetWidth(frame), 30)];
         label.textAlignment = NSTextAlignmentCenter;
         label.backgroundColor = [UIColor clearColor];
-        label.font = [UIFont boldSystemFontOfSize:16];
+        label.font = [UIFont boldSystemFontOfSize:28];
         label.textColor = UIColorFromRGB(0x131313);
-        label.text = NSLocalizedString(@"努力导出中...", nil);
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleLightContent){
+            label.textColor = [UIColor whiteColor];
+        }
+        label.text = VELocalizedString(@"努力导出中...", nil);
         [self addSubview:label];
         
-        UILabel *desclabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(label.frame), CGRectGetWidth(frame), 30)];
+        UILabel *desclabel = [[UILabel alloc] initWithFrame:CGRectMake(56, CGRectGetMaxY(label.frame) + 10, CGRectGetWidth(frame) - 56 * 2, 30)];
         desclabel.textAlignment = NSTextAlignmentCenter;
         desclabel.backgroundColor = [UIColor clearColor];
-        desclabel.font = [UIFont boldSystemFontOfSize:13];
+        desclabel.font = [UIFont boldSystemFontOfSize:15];
         desclabel.textColor = UIColorFromRGB(0x727272);
-        desclabel.text = NSLocalizedString(@"请保持屏幕点亮，不要锁屏或切换程序", nil);
+        desclabel.text = VELocalizedString(@"请保持屏幕点亮，不要锁屏或切换程序", nil);
+        desclabel.numberOfLines = 0;
         [self addSubview:desclabel];
         
-        float width = (CGRectGetWidth(frame) - 100);
-        float height = width * (coverImage.size.height/coverImage.size.width);
+        float width = (CGRectGetWidth(frame) - 56 * 2);
+        float height = width * (exportSize.height/exportSize.width);
         
-        if(coverImage.size.width < coverImage.size.height){
-            height = MIN(height, self.frame.size.height - CGRectGetMaxY(desclabel.frame) - kBottomSafeHeight - 240);
-            width = height * (coverImage.size.width/coverImage.size.height);
+        if(exportSize.width < exportSize.height){
+            height = kHEIGHT * 0.34;
+            width = height * (exportSize.width/exportSize.height);
         }
         
-        _coverImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - width)/2.0, CGRectGetMaxY(desclabel.frame) + ((coverImage.size.width < coverImage.size.height) ? 10 : 44), width, height)];
+        _coverImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - width)/2.0, CGRectGetMaxY(desclabel.frame) + ((exportSize.width < exportSize.height) ? 44 : 64), width, height)];
         _coverImageView.image = coverImage;
-        
+        _coverImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _coverImageView.clipsToBounds = YES;
+        _coverImageView.layer.masksToBounds = YES;
         [self addSubview:_coverImageView];
         
         UIImageView *borderView = [[UIImageView alloc] initWithFrame:_coverImageView.bounds];
         borderView.image = coverImage;
+        borderView.contentMode = UIViewContentModeScaleAspectFill;
         borderView.layer.borderColor = UIColorFromRGB(0xcdd0d7).CGColor;
         borderView.layer.borderWidth = 6;
         [_coverImageView addSubview:borderView];
@@ -99,6 +106,13 @@
     }
     return self;
 }
+
+- (void)setProgressColor:(UIColor *)progressColor {
+    _topView.backgroundColor = progressColor;
+    _rightView.backgroundColor = progressColor;
+    _buttomView.backgroundColor = progressColor;
+    _leftView.backgroundColor = progressColor;
+}
 - (void)setIsHiddenCancelBtn:(BOOL)isHiddenCancelBtn{
     _isHiddenCancelBtn = isHiddenCancelBtn;
     _cancelBtn.hidden = _isHiddenCancelBtn;
@@ -118,7 +132,7 @@
 
 - (void)setProgress:(double)progress{
     _progress = progress;
-    _progressLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%02i%%", nil),(int)(_progress * 100)];
+    _progressLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%i%%", nil),(int)(_progress * 100)];
     float totalWidth = (_coverImageView.frame.size.width + _coverImageView.frame.size.height) * 2 - 6 * 4;
     
     float progressWidth = totalWidth * _progress;

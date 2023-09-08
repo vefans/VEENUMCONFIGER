@@ -73,7 +73,9 @@
     [textField resignFirstResponder];
     return YES;
 }
-
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView{
+    return YES;
+}
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
     if (_delegate && [_delegate respondsToSelector:@selector(textViewShouldBeginEditing:)]) {
         [_delegate textViewShouldBeginEditing:textView];

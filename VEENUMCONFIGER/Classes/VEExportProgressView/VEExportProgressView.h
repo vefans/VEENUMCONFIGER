@@ -14,8 +14,9 @@ typedef void(^CancelExportBlock) (void);
 @property(nonatomic,strong) UIImageView *coverImageView;
 @property(nonatomic,assign) double progress;
 @property (nonatomic, assign) BOOL isHiddenCancelBtn;//是否隐藏取消,默认为NO
+@property (nonatomic, strong) UIColor *progressColor;//default is UIColorFromRGB(0x131313)
 @property (nonatomic, copy) CancelExportBlock cancelExportBlock;
-- (instancetype)initWithFrame:(CGRect)frame coverImage:(UIImage *)coverImage;
+- (instancetype)initWithFrame:(CGRect)frame coverImage:(UIImage *)coverImage exportSize:(CGSize)exportSize;
 - (void)dismiss;
 @end
 

@@ -35,7 +35,8 @@
         
         [self.roundnessView addSubview:self.roundnessCenterView];
         
-        self.centreImageView.frame = CGRectMake( (self.roundnessCenterView.frame.size.width - RoundnessHeight)/2.0, (self.roundnessCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+//        self.centreImageView.frame = CGRectMake( (self.roundnessCenterView.frame.size.width - RoundnessHeight)/2.0, (self.roundnessCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+        self.centreImageView.frame = CGRectMake( (self.roundnessCenterView.frame.size.width - 10.0)/2.0, (self.roundnessCenterView.frame.size.height - 10.0)/2.0, 10.0, 10.0);
     }
     {
         UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake( (self.curretnView.frame.size.width - btnWidth)/2.0, self.curretnView.frame.size.height - btnWidth, btnWidth, btnWidth)];
@@ -416,7 +417,9 @@
 
 -(void)setCenterView_Roundness
 {
-    self.centreImageView.frame = CGRectMake( (self.roundnessCenterView.frame.size.width - RoundnessHeight)/2.0, (self.roundnessCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+//    self.centreImageView.frame = CGRectMake( (self.roundnessCenterView.frame.size.width - RoundnessHeight)/2.0, (self.roundnessCenterView.frame.size.height - RoundnessHeight)/2.0, RoundnessHeight, RoundnessHeight);
+    self.centreImageView.frame = CGRectMake( (self.roundnessCenterView.frame.size.width - 10.0)/2.0, (self.roundnessCenterView.frame.size.height - 10.0)/2.0, 10.0, 10.0);
+    
     self.level_ImageView.frame = CGRectMake(self.curretnView.frame.size.width - btnWidth,(self.curretnView.frame.size.height - btnWidth)/2.0,btnWidth,btnWidth);
     self.vertical_ImageView.frame = CGRectMake((self.curretnView.frame.size.width - btnWidth)/2.0,0,btnWidth,btnWidth);
     self.rotate_ImageView.frame = CGRectMake( (self.curretnView.frame.size.width - btnWidth)/2.0, self.curretnView.frame.size.height - btnWidth, btnWidth, btnWidth);

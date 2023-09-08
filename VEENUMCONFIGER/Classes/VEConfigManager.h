@@ -141,6 +141,15 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
                           completionHandler:(VECompletionHandler)completionHandler
                               cancelHandler:(VECancelHandler)cancelHandler;
 
+/** 显示音乐界面回调
+ *  @param  defaultType     0: Cloud     1: iTunes      2: Local
+ *  Display music interface callback.
+ */
+- (void)veEnterMusicControllerWithSuperView:(UIViewController *)superViewController
+                                defaultType:(NSInteger)defaultType
+                          completionHandler:(void (^)(MusicInfo *music))completionHandler
+                              cancelHandler:(VECancelHandler)cancelHandler;
+
 /** 开始直播推流
  */
 - (void)startLivePush;

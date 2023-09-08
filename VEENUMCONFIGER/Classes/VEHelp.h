@@ -694,4 +694,6 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(BOOL)createDocXWithFilePath:( NSString * ) filePath atString:( NSAttributedString * ) attributedString;
 
 +(NSMutableArray *)getTextWordAudioWithFilePath_PrivateCloud:( NSString * ) filePath;
+
++(NSMutableArray *)createStickerImagePathWithGIF:( NSURL * ) gifURL;
 @end

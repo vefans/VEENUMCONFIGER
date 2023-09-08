@@ -7,6 +7,9 @@
 #import "UIButton+VECustomLayout.h"
 
 #define kAppKeyType      @"AppKeyType"       //appkey类型
+#define HEXCOLOR(c) [UIColor colorWithRed:((c>>24)&0xFF)/255.0 green:((c>>16)&0xFF)/255.0 blue:((c>>8)&0xFF)/255.0  alpha:((c)&0xFF)/255.0]
+#define ANDROID_COLOR(c) [UIColor colorWithRed:((c>>16)&0xFF)/255.0 green:((c>>8)&0xFF)/255.0 blue:((c)&0xFF)/255.0  alpha:((c>>24)&0xFF)/255.0]
+
 //画笔
 typedef NS_ENUM(NSInteger, VEDoodleType){
     VEDoodleType_rectangle,   //矩形
@@ -16,8 +19,8 @@ typedef NS_ENUM(NSInteger, VEDoodleType){
 
 typedef NS_ENUM(NSInteger,VLSegmentType){
     KVLSegment_None = 0, //无
-    KVLSegment_Green, //绿幕
     KVLSegment_AI, //智能
+    KVLSegment_Green, //绿幕
     KVLSegment_ChromaColor, //色度抠图
 };
 typedef NS_ENUM(NSInteger,KVLBeautyType){
@@ -538,9 +541,10 @@ isPhoneX;\
 #define SliderMinimumTrackTintColor [UIColor whiteColor]
 #define SliderMaximumTrackTintColor UIColorFromRGB(0x434343)
 #pragma mark-PESDK颜色配比
-#define PEDrawMain_Color UIColorFromRGB(0x9600ff)
+#define PEDrawMain_Color UIColorFromRGB(0xf74660)//UIColorFromRGB(0x9600ff)
 #define PEDrawTEXT_COLOR UIColorFromRGB(0x3a3a3a)
 #define PESDKMain_Color Main_Color //
+
 #define PESDKTEXT_COLOR UIColorFromRGB(0xcccccc)//
 #define VIEW_COLOR UIColorFromRGB(0x111111)
 #define VIEW_IPAD_COLOR UIColorFromRGB(0x1a1a1a)
@@ -680,6 +684,7 @@ isPhoneX;\
 #define kTextImageFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/TextImage"]
 #define kCoverFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/cover"]
 #define kCanvasFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/Canvas"]
+#define kCoverTemplateFodler [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/coverTemplateFolder"]
 
 #define kDoodleFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/doodle"]
 #define kTextboardFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/textboard"]
@@ -687,6 +692,8 @@ isPhoneX;\
 
 #define kAEJsonMVEffectPath [NSTemporaryDirectory() stringByAppendingString:@"AEJsonAnimation/"]
 #define kAEPreProgressFolder [kAEJsonMVEffectPath stringByAppendingPathComponent:@"AEPreProgress"]
+
+#define kStickerImageGIFFolder [NSTemporaryDirectory() stringByAppendingString:@"StickerImageGIFFolder/"]
 
 #define kVEDraftDirectory [kVEDirectory stringByAppendingPathComponent:@"VEDraft"]
 #define kVEDraftPListPath [kVEDraftDirectory stringByAppendingPathComponent:@"VEDraft.plist"]

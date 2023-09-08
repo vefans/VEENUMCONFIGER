@@ -11,6 +11,7 @@
 
 - (instancetype)init{
     if(self = [super init]){
+        _cameraFilterType = @"filter";
         _captureAsYUV                       = true;
         _cameraCaptureDevicePosition        = AVCaptureDevicePositionFront;
         _cameraRecordSizeType               = RecordVideoTypeMixed;

@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "VESyncContainerView.h"
 #import "VEPasterLabel.h"
+@interface VEAlignBtn :UIButton
 
+@end
 @class VEPasterTextView;
 @protocol VEPasterTextViewDelegate <NSObject>
 
@@ -67,7 +69,7 @@
 @property (nonatomic, weak) UIButton * _Nullable textEditBtn;
 @property (nonatomic, strong) UIButton * _Nullable closeBtn;
 @property (nonatomic,nonnull) SEL editTextAction;
-@property (nonatomic, strong)UIButton * _Nullable alignBtn;
+@property (nonatomic, strong)VEAlignBtn * _Nullable alignBtn;
 -(void)addCopyBtn;
 
 @property (nonatomic, weak)UIButton  * _Nullable TextEditBtn;

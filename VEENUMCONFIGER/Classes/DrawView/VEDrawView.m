@@ -376,14 +376,8 @@
 }
 /** 设置画笔大小 */
 - (void)setStrokeWidth:(CGFloat)lineWidth {
-//    if (CGColorEqualToColor(self.lineColor.CGColor, [UIColor clearColor].CGColor)) {
-//        _isEarse = YES;
-//    }else {
-//        _isEarse = NO;
-//    }
     self.lineWidth = lineWidth;
 }
-
 
 - (UIImage *)snapsHotView
 {

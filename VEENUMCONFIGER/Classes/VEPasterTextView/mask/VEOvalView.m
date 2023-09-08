@@ -8,7 +8,11 @@
 
 #import "VEOvalView.h"
 #define th M_PI/180
-
+@interface VEOvalView()
+{
+    CGSize _orignalSize;
+}
+@end
 @implementation VEOvalView
 
 - (instancetype)initWithFrame:(CGRect)frame atType:(int) type atColor:( UIColor * ) color
@@ -16,6 +20,7 @@
     if (self = [super initWithFrame:frame]) {
         _type = type;
         _mainColor = color;
+        _orignalSize = frame.size;
     }
     return self;
 }
@@ -88,14 +93,16 @@
 
 -(void)drawOver:(CGRect) rect
 {
-    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(2,2,rect.size.width - 4,rect.size.height - 4)];
+    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0,0,rect.size.width - 0,rect.size.height - 0)];
     [[UIColor clearColor] setStroke];
     [_mainColor setStroke];
     [path stroke];
 }
 -(void)drawPentacle:(CGRect) rect
 {
-    CGFloat radius = (rect.size.width) / 2+ rect.size.width/10.0/4.0;
+    float scale = (rect.size.width - _orignalSize.width)/_orignalSize.width;
+    scale = MAX(scale,0);
+    CGFloat radius = (rect.size.width) / 2 + rect.size.width/10.0/4.0;
     
     CGFloat centerX = (rect.size.width) / 2;
     CGFloat centerY = (rect.size.height) / 2 + rect.size.width/10.0/2.0;
@@ -106,8 +113,8 @@
     
     for (int i = 0; i < 5; i ++)
     {
-        x1[i] = centerX + radius * cos((90 + i *72) * th); /* 计算出大圆上的五个平均分布点的坐标*/
-        y1[i]=centerY - radius * sin((90 + i * 72) * th);
+        x1[i] = centerX  + (radius + scale) * cos((90 + i *72) * th); /* 计算出大圆上的五个平均分布点的坐标*/
+        y1[i]=centerY - (radius + scale) * sin((90 + i * 72) * th);
         x2[i]=centerX + r0 * cos((54  + i *72) * th); /* 计算出小圆上的五个平均分布点的坐标*/
         y2[i]=centerY - r0 * sin((54 + i * 72) * th);
     }
@@ -140,26 +147,29 @@
 }
 -(void)draw_Love:(CGRect) rect
 {
+    float scale = (rect.size.width - _orignalSize.width)/_orignalSize.width;
+    scale = MAX(scale,0);
     float spaceWidth = 2;
     //上面的两个半圆 半径为整个frame的四分之一
-    CGFloat radius = MIN((self.frame.size.width-spaceWidth*2)/4, (self.frame.size.height-spaceWidth*2)/4);
+    //CGFloat radius = MIN((self.frame.size.width-spaceWidth*2)/4, (self.frame.size.height-spaceWidth*2)/4);
+    CGFloat radius = MIN((self.frame.size.width)/4, (self.frame.size.height)/4);
     
     //左侧圆心 位于左侧边距＋半径宽度
-    CGPoint leftCenter = CGPointMake(spaceWidth+radius, spaceWidth+radius + radius/5.0);
+    CGPoint leftCenter = CGPointMake(spaceWidth+radius + 1.5 * scale, spaceWidth+radius + radius/5.0 + 1.0 * scale);
     //右侧圆心 位于左侧圆心的右侧 距离为两倍半径
-    CGPoint rightCenter = CGPointMake(spaceWidth+radius*3, spaceWidth+radius + radius/5.0);
+    CGPoint rightCenter = CGPointMake(radius*3 - 1 - spaceWidth * scale, spaceWidth+radius + radius/5.0 + 1.0 * scale);
     
     //左侧半圆
-    UIBezierPath *heartLine = [UIBezierPath bezierPathWithArcCenter:leftCenter radius:radius startAngle:M_PI endAngle:0 clockwise:YES];
+    UIBezierPath *heartLine = [UIBezierPath bezierPathWithArcCenter:leftCenter radius:radius startAngle:M_PI endAngle: -M_PI/8.0 - (M_PI /60.0) clockwise:YES];
     
     //右侧半圆
-    [heartLine addArcWithCenter:rightCenter radius:radius startAngle:M_PI endAngle:0 clockwise:YES];
+    [heartLine addArcWithCenter:rightCenter radius:radius startAngle:M_PI * (9.0/8.0) + (M_PI /60.0) endAngle:0 clockwise:YES];
     
     //曲线连接到新的底部顶点 为了弧线的效果，控制点，坐标x为总宽度减spaceWidth，刚好可以相切，平滑过度 y可以根据需要进行调整，y越大，所画出来的线越接近内切圆弧
     [heartLine addQuadCurveToPoint:CGPointMake((self.frame.size.width/2), self.frame.size.height-spaceWidth*2 - radius/4.5) controlPoint:CGPointMake(self.frame.size.width-spaceWidth, self.frame.size.height*0.6)];
     
     //用曲线 底部的顶点连接到左侧半圆的左起点 为了弧线的效果，控制点，坐标x为spaceWidth，刚好可以相切，平滑过度。y可以根据需要进行调整，y越大，所画出来的线越接近内切圆弧（效果是越胖）
-    [heartLine addQuadCurveToPoint:CGPointMake(spaceWidth, spaceWidth + radius + radius/5.0) controlPoint:CGPointMake(spaceWidth, self.frame.size.height*0.6)];
+     [heartLine addQuadCurveToPoint:CGPointMake(leftCenter.x - radius, spaceWidth + radius + radius/5.0) controlPoint:CGPointMake(spaceWidth, self.frame.size.height*0.6)];
     
     //线条处理
     [heartLine setLineCapStyle:kCGLineCapRound];

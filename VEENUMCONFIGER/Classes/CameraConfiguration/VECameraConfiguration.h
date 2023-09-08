@@ -58,6 +58,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VECameraConfiguration : NSObject<NSMutableCopying,NSCopying>
 
+@property (nonatomic,copy,nullable)NSString    *cameraFilterType;
+
 @property(nonatomic, assign) BOOL                   enableSoundtrack;
 @property (nonatomic, copy) void(^ startupMusicViewCallBlock)(id _Nonnull music);
 @property (nonatomic, copy) void(^ startupMusicViewCancelBlock)(void);

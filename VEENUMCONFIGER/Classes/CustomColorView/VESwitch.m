@@ -29,7 +29,7 @@
         _backgroundView.layer.masksToBounds = YES;
         [self addSubview:_backgroundView];
         
-        UIImage *image = [VEHelp imageNamed:@"/jianji/Adjust/剪辑-调色_球1"];
+        UIImage *image = [VEHelp imageNamed:@"switch_circle_@3x"];
         _thumbBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, (frame.size.height - image.size.height)/2.0, image.size.width, image.size.height)];
         [_thumbBtn setImage:image forState:UIControlStateNormal];
         [_thumbBtn setImage:image forState:UIControlStateHighlighted];
