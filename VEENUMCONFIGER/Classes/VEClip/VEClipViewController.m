@@ -291,13 +291,43 @@
             [self.videoCropView addGestureRecognizer:tapGesture];
         }
     }
-#if 0
     if (_cutMmodeType == kCropTypeNone || _isCropTypeViewHidden) {
         float width = (_toolView.frame.size.width - 40) / 4.0;
         float y = (_toolView.frame.size.height - 44) / 2.0;
         if (_cutMmodeType == kCropTypeNone) {
             y = (_cropType == VE_VECROPTYPE_FIXEDRATIO ? ((_toolView.frame.size.height - 70 - 30)/2.0 + 70) : 70);
         }
+#if 1
+        width = (_toolView.frame.size.width - 40) / 3.0;
+        for (int i = 0; i < 3; i++) {
+            UIButton *rotateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+            rotateBtn.frame = CGRectMake(20 + width * i, y, width, 44);
+            NSString * imagePath = nil;
+            if (i == 0) {
+                imagePath = @"/New_EditVideo/scrollViewChildImage/剪辑_剪辑上下翻转默认_";
+                [rotateBtn setTitle:VELocalizedString(@"上下", nil) forState:UIControlStateNormal];
+            }else if (i == 1) {
+                imagePath = @"/New_EditVideo/scrollViewChildImage/剪辑_剪辑左右翻转默认_";
+                [rotateBtn setTitle:VELocalizedString(@"左右", nil) forState:UIControlStateNormal];
+            }else {
+                imagePath = @"剪辑_重置默认_";
+                [rotateBtn setImage:[VEHelp imageWithContentOfFile:@"剪辑_重置选中_"] forState:UIControlStateDisabled];
+                [rotateBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
+                [rotateBtn setTitleColor:UIColorFromRGB(0x3c3d3d) forState:UIControlStateDisabled];
+                rotateBtn.enabled = NO;
+                _resetBtn = rotateBtn;
+            }
+            [rotateBtn setImage:[VEHelp imageWithContentOfFile:imagePath] forState:UIControlStateNormal];
+            [rotateBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                [rotateBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
+            }
+            rotateBtn.titleLabel.font = [UIFont systemFontOfSize:12.0];
+            [rotateBtn addTarget:self action:@selector(rotateBtnAction:) forControlEvents:UIControlEventTouchUpInside];
+            rotateBtn.tag = i + 1;
+            [_toolView addSubview:rotateBtn];
+        }
+#else
         for (int i = 0; i < 4; i++) {
             UIButton *rotateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
             rotateBtn.frame = CGRectMake(20 + width * i, y, width, 44);
@@ -313,7 +343,9 @@
                 [rotateBtn setTitle:VELocalizedString(@"旋转", nil) forState:UIControlStateNormal];
             }else {
                 imagePath = @"剪辑_重置默认_";
+                [rotateBtn setImage:[VEHelp imageWithContentOfFile:@"剪辑_重置选中_"] forState:UIControlStateDisabled];
                 [rotateBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
+                [rotateBtn setTitleColor:UIColorFromRGB(0x3c3d3d) forState:UIControlStateDisabled];
                 rotateBtn.enabled = NO;
                 _resetBtn = rotateBtn;
             }
@@ -327,8 +359,8 @@
             rotateBtn.tag = i + 1;
             [_toolView addSubview:rotateBtn];
         }
-    }
 #endif
+    }
 }
 
 - (void)setCropType:(VECropType)cropType{
@@ -1865,7 +1897,7 @@
         }else {
             _playButton.frame = CGRectMake((CGRectGetWidth(self.bgView.frame) - 56)/2.0, (iPhone_X ? 44 : 0) + (_videoCropView.frame.size.height - 56)/2.0, 56, 56);
             [_playButton setImage:[VEHelp imageWithContentOfFile:@"/剪辑_播放_@3x"] forState:UIControlStateNormal];
-            [_playButton setImage:[VEHelp imageWithContentOfFile:@"/剪辑_暂停_@3x"] forState:UIControlStateSelected];
+//            [_playButton setImage:[VEHelp imageWithContentOfFile:@"/剪辑_暂停_@3x"] forState:UIControlStateSelected];
         }
         [_playButton addTarget:self action:@selector(playButtonClicked) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -2021,12 +2053,18 @@
     else if (sender.tag == 2) {//左右
         [self horizontalButtonClicked];
     }
+#if 1
+    else if (sender.tag == 3) {//重置
+        [self resetButtonClicked];
+    }
+#else
     else if (sender.tag == 3) {//旋转
         [self whirlButtonClicked];
     }
     else if (sender.tag == 4) {//重置
         [self resetButtonClicked];
     }
+#endif
 }
 
 #pragma mark- 视频

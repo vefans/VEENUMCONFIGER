@@ -515,4 +515,8 @@
     }
 }
 
+- (void)dealloc {
+    [_customShowColorView.strawLayer removeFromSuperlayer];    
+}
+
 @end

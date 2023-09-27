@@ -1153,7 +1153,7 @@
 "保存草稿失败" = "Fail to save draft";
 "音乐家 Jason Shaw @audionautix.com\n授权证书" = "Musician Jason Shaw @audionautix.com\n Authorization certificate";
 "音效处理" = "Sound effect processing";
-"无效果" = "No effect";
+"基础" = "No effect";
 "卡通快" = "Cartoon fast";
 "KTV" = "KTV";
 "授权未通过,请重新授权" = "Authorization do not pass, please authorize again";
@@ -1183,7 +1183,7 @@
 "分辨率:  %dx%d" = "Resolution:%dx%d";
 "分辨率:" = "Resolution:";
 "大小:  %.2fMB" = "Size:%.2fMB";
-"压缩后大小:%.2fMB" = "Compressed size:%.2fMB";
+"压缩后大小：%.2fMB" = "Compressed size: %.2fMB";
 "Photos are syncing from iCloud, please retry later" = "Photos are syncing from iCloud, please retry later";
 "Videos are syncing from iCloud, please retry later" = "Videos are syncing from iCloud, please retry later";
 "[分:秒.毫秒(开始时间),分:秒.毫秒(结束时间)]文字内容" = "[m:s.ms(startTime),m:s.ms(endTime)]Text content";

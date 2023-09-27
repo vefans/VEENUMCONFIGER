@@ -215,6 +215,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) bool isShowAlbumButton;
 
+/** 是否显示模板按钮(default true)
+ */
+@property (nonatomic, assign) bool isShowTemplateButton;
+
+/** 可设置最大拍摄时长(default true)
+ */
+@property (nonatomic, assign) bool enableSetMaxDuration;
+
 @end
 
 NS_ASSUME_NONNULL_END

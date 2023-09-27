@@ -42,7 +42,7 @@
     fxItemBtn.moveTitleLabel.hidden = YES;
     
     LongCacheImageView * imageView = [[LongCacheImageView alloc] initWithFrame:CGRectMake(0, 0, fxItemBtn.frame.size.width, fxItemBtn.frame.size.width)];
-    imageView.backgroundColor = UIColorFromRGB(0x1f1f1f);
+    imageView.backgroundColor = UIColorFromRGB(0x272727);
     if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
         imageView.backgroundColor = UIColorFromRGB(0xf9f9f9);
     }

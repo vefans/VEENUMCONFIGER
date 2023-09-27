@@ -11,5 +11,7 @@
 @interface VESlider : UISlider
 
 @property (nonatomic, assign) CGRect thumbRect;
+@property (nonatomic, assign) BOOL isAETemplate;
+@property (nonatomic, assign) BOOL isAdj;
 
 @end

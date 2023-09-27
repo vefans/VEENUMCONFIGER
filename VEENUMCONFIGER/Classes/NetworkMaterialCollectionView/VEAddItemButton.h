@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "LongCacheImageView.h"
 #import <SDWebImage/SDAnimatedImageView.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 @interface VEAddItemButton : UIButton
 

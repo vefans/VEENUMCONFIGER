@@ -1395,6 +1395,20 @@
 "ColorR" = "红色";
 "ColorG" = "绿色";
 "ColorB" = "蓝色";
+
+"color0" = "红色";
+"color1" = "绿色";
+"color2" = "蓝色";
+"color3" = "透明度";
+
+"Color0" = "红色";
+"Color1" = "绿色";
+"Color2" = "蓝色";
+"Color3" = "透明度";
+"line" = "大小";
+"offsetX" = "水平位移";
+"offsetY" = "垂直位移";
+
 "FromColorR" = "源红色";
 "FromColorG" = "源绿色";
 "FromColorB" = "源蓝色";
@@ -1457,6 +1471,7 @@
 "Exit Editing" = "退出编辑";
 "Exit editing at this time, and the entered text content will not be saved" = "此时退出编辑，已输入的文本内容将不会保存";
 "Confirm exit" = "确认退出";
+"Route not found" = "链接打开失败！";
 "Import Edit" = "导入剪辑";
 "Select Tone" = "选择音色";
 "Paste Link" = "粘贴链接";
@@ -1489,3 +1504,18 @@
 "TTS" = "字说";
 "Are you sure to delete the last recording?" = "确定删除上一段录音吗？";
 "Show original video" = "显示原视频";
+"Auto" = "智能压缩";
+"Clarity Priority" = "清晰优先";
+"Compression Priority" = "压缩优先";
+"Custom" = "自定义";
+"Preview first 10 seconds" = "预览前10s";
+"Before compression" = "压缩前";
+"After compression" = "压缩后";
+"Size: " = "大小：";
+"Resolution: " = "分辦率：";
+"Bitrate: " = "码率：";
+"FPS: " = "帧率：";
+"FPS" = "帧率";
+"Bitrate" = "码率";
+"Adding 「character effects」 to videos or images with clear characters yields the best results" = "对带有清晰人物的视频或者图片添加「人物特效」，效果最佳";
+"More Actions" = "更多操作";

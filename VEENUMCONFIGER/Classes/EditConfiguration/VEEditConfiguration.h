@@ -104,6 +104,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VEEditConfiguration : NSObject<NSMutableCopying,NSCopying>
 
+@property (nonatomic, assign) int defaultFunction;        //当前功能
 /** 字幕样式加入工具栏-音量(default true)
  */
 @property(nonatomic, assign)BOOL    enableSubtitleStyleInTool;

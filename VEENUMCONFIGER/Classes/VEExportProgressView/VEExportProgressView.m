@@ -103,6 +103,12 @@
             
             [self setProgress:0.0];
         }
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleLightContent){
+            self.progressColor = [UIColor whiteColor];
+            self.backgroundColor = SCREEN_BACKGROUND_COLOR;
+        }else {
+            self.backgroundColor = [UIColor whiteColor];
+        }
     }
     return self;
 }

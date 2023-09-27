@@ -1024,7 +1024,7 @@ bail:
         return false;
     
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-//    glBufferData(GL_ARRAY_BUFFER, verticeCoordinatesLen+textureCoordinatesLen, NULL, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, verticeCoordinatesLen+textureCoordinatesLen, NULL, GL_STATIC_DRAW);
 
     glBufferSubData(GL_ARRAY_BUFFER, 0, verticeCoordinatesLen, verticeCoordinates);
     glBufferSubData(GL_ARRAY_BUFFER, verticeCoordinatesLen, textureCoordinatesLen, textureCoordinates);

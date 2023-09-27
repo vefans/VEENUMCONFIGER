@@ -210,7 +210,7 @@
         titleLbl.textAlignment = NSTextAlignmentCenter;
         [toolbarView addSubview:titleLbl];
         
-        UIButton *resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(5, (44 - 40)/2.0, 80, 40)];
+        UIButton *resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(5, 0, 80, 44)];
         [resetBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
         resetBtn.titleLabel.font = [UIFont systemFontOfSize:12.0];
         [resetBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];

@@ -158,6 +158,8 @@
 "横屏视频不适合竖屏输出,系统将选择最佳画面比例" = "Cross screen video can out output in vertical, system will select the best proportion";
 "视频尚未导出完成，确定取消导出？" = "The video has not been exported yet, sure to cancel the export?";
 "视频导出中，请耐心等待..." = "Video is exporting, please wait...";
+"视频压缩中，请耐心等待..." = "Video is compressing, please wait...";
+"视频尚未压缩完成，确定取消压缩？" = "The video has not been compressed yet, sure to cancel the compress?";
 "模板导出中，请稍候..." = "Exporting template, please wait...";
 "模板尚未导出完成，确定取消导出？" = "The template is being exported. Are you sure to cancel?";
 "transition-title" = "Transition";
@@ -637,7 +639,6 @@
 
 "音效处理" = "Sound effect processing";
 //音效
-"无效果" = "No effect";
 "男声" = "Male";
 "女声" = "Female";
 "怪兽" = "Monster";
@@ -689,7 +690,7 @@
 "普通清晰度，内存占用小，适合分享" = "Normal resolution, small memory usage, suitable for sharing";
 "带给你更流畅的播放体验" = "Brings you a smoother playback experience";
 "大小:  %.2fMB" = "Size:%.2fMB";
-"压缩后大小:%.2fMB" = "Compressed size:%.2fMB";
+"压缩后大小：%.2fMB" = "Compressed size: %.2fMB";
 "如何还原最优的视频清晰度？" = "How to restore the optimal video resolution?";
 "一般来说，建议您将导出和导入视频的分辨率维持一致，会带来更好的播放体验，但如果您的原视频分辨率低，设置较高的分辨率导出清晰度的提升可能不是很明显。" = "Generally speaking, it is recommended that you keep the same resolution of the exported and imported videos, which will bring a better playback experience, but if your original video resolution is low, setting a higher resolution may not improve the export resolution.";
 "Photos are syncing from iCloud, please retry later" = "Photos are syncing from iCloud, please retry later";
@@ -1909,7 +1910,7 @@
 "最多输入%d个字" = "Enter at most %d texts";
 "当前时间点已有字幕，无法添加" = "Subtitles already exist at the current time point and cannot be added";
 "当前时间点无法添加" = "Cannot add the current time point";
-"无效果" = "No effect";
+"基础" = "Basic";
 "文字识别中..." = "Text recognition...";
 "字幕识别中..." = "In speech recognition...";
 "① 其它文字样式和我一样" = "① Style apply to all ";
@@ -2712,6 +2713,18 @@
 "textureScale" = "Size";
 "blurNum" ="Blur";
 "fullBlendTexSize" = "TextureSize";
+"color0" = "Red";
+"color1" = "Green";
+"color2" = "Blue";
+"color3" = "Alpha";
+
+"Color0" = "Red";
+"Color1" = "Green";
+"Color2" = "Blue";
+"Color3" = "Alpha";
+"line" = "Size";
+"offsetX" = "OffsetH";
+"offsetY" = "OffsetV";
 
 "仅画中画" = "Overlay";
 "长按拖动可调整层级" = "Long press and drag to adjust the layer";
@@ -2807,3 +2820,7 @@
 
 "努力导出中..." = "Exporting...";
 "请保持屏幕点亮，不要锁屏或切换程序" = "Please keep the screen lit, do not lock the screen or switch programs";
+"Before compression" = "Before";
+"After compression" = "After";
+"Clarity Priority" = "Clarity";
+"Compression Priority" = "Size";

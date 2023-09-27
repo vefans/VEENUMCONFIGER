@@ -28,6 +28,7 @@ FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CoverTemplat
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_DoodlePen;//涂鸦笔
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Mask;//蒙版
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_MaskShape;//形状蒙版
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Matting;//抠图
 
 //亮度
 extern float const VEAdjust_MinValue_Brightness;
@@ -326,6 +327,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 + (void)setApngCaptionFrameArrayWithImagePath:(NSString *)path jsonDic:(NSMutableDictionary *)jsonDic;
 + (UIImage *) imageWithColor:(UIColor *)color size:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
++ (UIImage *)gradientImageWithColors:(NSArray *)colors size:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
 + (BOOL)exportSlomoVideoFile:(VEMediaInfo *)file;
 + (BOOL)createSaveTmpFileFolder;
 
@@ -357,6 +359,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 ///获取当前时间戳作为文件名
 + (NSString *)getFileNameForNowTime;
 + (NSString *)getNowTimeToString;
++ (NSString *)getNowShareTimeToString;
 //获取
 +(NSString *)getPEImagePathForNowTime;
 
@@ -583,6 +586,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 + (NSString *)getAutoSegmentImagePath_Sky:(NSURL *)url;
 + (NSString *)getAutoSegmentImagePath:(NSURL *)url;
++ (NSString *)getAutoSegmentMaskImagePath:(NSURL *)autoSegmentImageUrl;
 + (NSString *)getAutoSegmentImagePath_Time:(NSURL *)url atUUID:( NSString * ) uuid;
 + (NSString *)getAutoSegmentImageFolder_Time:(NSURL *)url atUUID:( NSString * ) uuid;
 + (NSString *)getErasePenImagePath:(NSURL *)url;
@@ -696,4 +700,13 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(NSMutableArray *)getTextWordAudioWithFilePath_PrivateCloud:( NSString * ) filePath;
 
 +(NSMutableArray *)createStickerImagePathWithGIF:( NSURL * ) gifURL;
+
++ (UIImage *) filteredImage:(CIImage *)ciImage isInvert:(BOOL )isInvert;
++ (BOOL)isAllAlphaImage:(CGImageRef)imgref;
++ (UIImage *)drawSelectTextImage:(CGSize )size rects:(NSMutableArray <NSValue *>*)rects;
+#pragma mark- 适配比例 按指定比例计算素材裁剪比例
++ (void)getNewfileCrop:(VEMediaInfo *) file atfileCropModeType:(FileCropModeType) ProportionIndex atEditSize:(CGSize) editSize fileCrop:(CGRect)fileCrop;
+
++ (UIImage *)getImageWithPixelBuffer:(CVPixelBufferRef)pixelBufffer;
+
 @end

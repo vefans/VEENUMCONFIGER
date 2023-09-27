@@ -9,6 +9,8 @@
 #import "VEHelp.h"
 #import "CustomColorView.h"
 
+#define kVEColorViewBtnTag 10000
+
 @interface VEColorView ()<CustomColorViewDelegate>
 {
     BOOL            _isEnableEyedropper;
@@ -108,7 +110,7 @@
     for (int i = 0; i < _colors.count; i++) {
         ColorButton *btn = [[ColorButton alloc] initWithFrame:CGRectMake(_space + (width + _space) * i, 0, width, width)];
         btn.backgroundColor = _colors[i];
-        btn.tag = i + 1;
+        btn.tag = i + kVEColorViewBtnTag;
         [btn addTarget:self action:@selector(colorBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         if (!_currentCustomColor && i == _selectedColorIndex) {
             btn.selected = YES;
@@ -220,25 +222,28 @@
     _eyedropperBgView.hidden = YES;
     _eyedropperBtn.selected = NO;
     if (_selectedColorIndex >= 0) {
-        ColorButton *prevBtn = [_colorBtnScrollView viewWithTag:_selectedColorIndex + 1];
+        ColorButton *prevBtn = [_colorBtnScrollView viewWithTag:_selectedColorIndex + kVEColorViewBtnTag];
         prevBtn.selected = NO;
     }
     _currentCustomColor = sender.backgroundColor;
     _selectedColorIndex = -1;
     sender.selected = YES;
+    if (_delegate && [_delegate respondsToSelector:@selector(changeColor:)]) {
+        [_delegate changeColor:_currentCustomColor];
+    }
 }
 
 - (void)colorBtnAction:(ColorButton *)sender {
     _eyedropperBgView.hidden = YES;
     _eyedropperBtn.selected = NO;
     if (_selectedColorIndex >= 0) {
-        ColorButton *prevBtn = [_colorBtnScrollView viewWithTag:_selectedColorIndex + 1];
+        ColorButton *prevBtn = [_colorBtnScrollView viewWithTag:_selectedColorIndex + kVEColorViewBtnTag];
         prevBtn.selected = NO;
     }
     _currentCustomColor = nil;
     _currentCustomColorBtn.selected = NO;
     _selectedColor = sender.backgroundColor;
-    _selectedColorIndex = sender.tag - 1;
+    _selectedColorIndex = sender.tag - kVEColorViewBtnTag;
     sender.selected = YES;
     
     if ([sender.superview isKindOfClass:[UIScrollView class]]) {
@@ -298,7 +303,7 @@
     float x;
     if (_currentCustomColor) {
         if (_selectedColorIndex >= 0) {
-            ColorButton *prevBtn = [_colorBtnScrollView viewWithTag:_selectedColorIndex + 1];
+            ColorButton *prevBtn = [_colorBtnScrollView viewWithTag:_selectedColorIndex + kVEColorViewBtnTag];
             prevBtn.selected = NO;
         }
         _selectedColorIndex = -1;
@@ -343,7 +348,7 @@
 - (void)setCurrentColor:(UIColor *)color {
     if (!color || CGColorEqualToColor(color.CGColor, [UIColor clearColor].CGColor)) {
         if (_selectedColorIndex >= 0) {
-            ColorButton *prevBtn = [_colorBtnScrollView viewWithTag:_selectedColorIndex + 1];
+            ColorButton *prevBtn = [_colorBtnScrollView viewWithTag:_selectedColorIndex + kVEColorViewBtnTag];
             prevBtn.selected = NO;
         }
         _currentCustomColorBtn.selected = NO;
@@ -371,14 +376,16 @@
         _currentCustomColor = color;
         [self refreshSelectedColorBtn];
     }else {
-        ColorButton *btn = [_colorBtnScrollView viewWithTag:index + 1];
+        ColorButton *btn = [_colorBtnScrollView viewWithTag:index + kVEColorViewBtnTag];
         [self colorBtnAction:btn];
     }
 }
 
 - (void)dealloc {
     [_eyedropperBgView removeFromSuperview];
+    _eyedropperBgView = nil;
     [_customColorView removeFromSuperview];
+    _customColorView = nil;
 }
 
 @end

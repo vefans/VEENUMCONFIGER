@@ -55,6 +55,8 @@
         _enableFile = true;
         _enableFocalLength = true;
         _isShowAlbumButton = true;
+        _isShowTemplateButton = true;
+        _enableSetMaxDuration = true;
     }
     
     return self;
@@ -120,6 +122,8 @@
     copy.cameraWaterMarkEndDuration          = _cameraWaterMarkEndDuration;
     copy.cameraWaterProcessingCompletionBlock   = _cameraWaterProcessingCompletionBlock;
     copy.isShowAlbumButton = _isShowAlbumButton;
+    copy.isShowTemplateButton = _isShowTemplateButton;
+    copy.enableSetMaxDuration = _enableSetMaxDuration;
     
     return copy;
 }
@@ -175,6 +179,8 @@
     copy.cameraWaterMarkEndDuration          = _cameraWaterMarkEndDuration;
     copy.cameraWaterProcessingCompletionBlock   = _cameraWaterProcessingCompletionBlock;
     copy.isShowAlbumButton = _isShowAlbumButton;
+    copy.isShowTemplateButton = _isShowTemplateButton;
+    copy.enableSetMaxDuration = _enableSetMaxDuration;
     
     return copy;
 }

@@ -238,6 +238,7 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property (nonatomic, assign) float      videoAverageBitRate;
 @property (nonatomic, assign) CGRect     waterLayerRect;
 
+@property (nonatomic, assign) BOOL  isOutputAudioPath;
 @property (nonatomic, copy) VECompletionHandler   callbackBlock;
 @property(nonatomic, copy) void(^completioHandler) (NSString * videoPath, UIViewController *controller);
 @property(nonatomic,copy) VECancelHandler cancelHandler;
@@ -246,6 +247,9 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property(nonatomic,copy) VECloudBackupCompletionHandler cloudBackupCompletionHandler;
 @property(nonatomic,copy) VEPrepareExportHandler prepareExportHandler;
 @property(nonatomic,copy) VEExporTemplate  exporTemplate;   //导出模版
+
+//草稿增删 刷新
+@property (nonatomic, copy) void (^refreshDraftView)(void);
 
 /** 显示相机界面回调
  *  Display camera interface callback.

@@ -194,11 +194,13 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_DoodlePen         = 64,   //涂鸦笔
     VEAdvanceEditType_Snapshort         = 66,   //视频截图
     VEAdvanceEditType_BlurBackground    = 67,   //背景虚化
-    VEAdvanceEditType_MaskDoodlePen         = 68,   //马赛克涂鸦笔
-    VEAdvanceEditType_TemplatedTheme        = 69, //主题
-    VEAdvanceEditType_Camera                       = 70, //摄像头
-    VEAdvanceEditType_ImageOcclusion          = 71,   //画面遮挡
-    
+    VEAdvanceEditType_MaskDoodlePen     = 68,   //马赛克涂鸦笔
+    VEAdvanceEditType_TemplatedTheme    = 69,   //主题
+    VEAdvanceEditType_Camera            = 70,   //摄像头
+    VEAdvanceEditType_ImageOcclusion    = 71,   //画面遮挡
+    VEAdvanceEditType_Delete            = 72,   //删除
+    VEAdvanceEditType_Dehaze            = 73,   //去雾
+    VEAdvanceEditType_AutoCaptions      = 74,   //识别字幕
     
 };
 
@@ -642,6 +644,8 @@ isPhoneX;\
 #define kThemeMVIconPath [kThemeMVPath stringByAppendingPathComponent:@"MVIcon"]
 #define kThemeMVEffectPath [kThemeMVPath stringByAppendingPathComponent:@"MVEffects"]
 
+#define kShareFileFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/ShareFileFolder/"]
+
 #define kMVAnimateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/MVAnimate/"]
 #define kMVAnimatePlistPath [kMVAnimateFolder stringByAppendingPathComponent:@"animationlist_videoae.plist"]
 #define kMusicAnimatePlistPath [kMVAnimateFolder stringByAppendingPathComponent:@"musicAnimation.plist"]
@@ -679,7 +683,7 @@ isPhoneX;\
 
 #define kMergeLayersFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/MergeLayersFloatder"]
 
-#define kCutoutFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/CutoutFloatder"]
+#define kMattingFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VideoMatting"]
 #define kErasePenFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/ErasePenFloatder"]
 #define kTextImageFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/TextImage"]
 #define kCoverFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/cover"]

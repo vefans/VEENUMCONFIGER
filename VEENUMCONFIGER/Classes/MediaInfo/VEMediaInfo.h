@@ -233,6 +233,7 @@ typedef NS_ENUM(NSInteger, VECropType){
 /**视频(或图片)旋转角度
  */
 @property (nonatomic, assign) double rotate;
+@property (nonatomic, assign) double templateTemeRotate;
 
 /**是否上下镜像
  */
@@ -245,6 +246,7 @@ typedef NS_ENUM(NSInteger, VECropType){
 /**素材在整个视频中的显示位置
  */
 @property (nonatomic, assign) CGRect rectInScene;
+@property (nonatomic, assign) CGRect templateTemeRectInScene;
 
 /**素材在整个视频中的显示位置的中心坐标 （启用动画时 才会使用）
  */
@@ -311,6 +313,7 @@ typedef NS_ENUM(NSInteger, VECropType){
 @property (nonatomic, strong) NSString *maskName;
 
 @property (nonatomic, strong) MaskObject *mask;
+@property (nonatomic, strong) MaskObject *templateTemeMask;
 
 //@property (nonatomic, strong) NSArray * pointsArray;
 

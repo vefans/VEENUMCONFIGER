@@ -236,7 +236,35 @@
         copy.maskType = _maskType;
         copy.mask = [_mask copy];
     }
-    
+    if (_fxEffect) {
+        CustomMultipleFilter *customFilter = [VEHelp getCustomMultipleFilerWithPath:_fxEffect.folderPath categoryId:_fxEffect.networkCategoryId resourceId:_fxEffect.networkResourceId timeRange:_fxEffect.timeRange currentFrameTexturePath:nil];
+        if (customFilter) {
+            customFilter.overlayType = _fxEffect.overlayType;
+            for (ShaderParams *param in _fxEffect.filterArray.firstObject.uniformParams) {
+                for (CustomFilter *filterItem in customFilter.filterArray) {
+                    for (ShaderParams *paramItem in filterItem.uniformParams) {
+                        if ([paramItem.name isEqualToString:param.name]) {
+                            if (paramItem.type == UNIFORM_ARRAY) {
+                                paramItem.array = [NSMutableArray arrayWithArray:param.array];
+                            }
+                            else if (paramItem.type == UNIFORM_INT) {
+                                paramItem.iValue = param.iValue;
+                            }
+                            else {
+                                paramItem.fValue = param.fValue;
+                            }
+                            [filterItem setShaderUniformParams:[NSMutableArray arrayWithObject:paramItem] isRepeat:NO forUniform:paramItem.name];
+                        }
+                    }
+                }
+            }
+            
+            if (_fxEffect.repeatArray.count > 0) {
+                customFilter.repeatArray = _fxEffect.repeatArray;
+            }
+            copy.fxEffect = customFilter;
+        }
+    }
     if( _keyFrameTimeArray && (_keyFrameTimeArray.count > 0) )
     {
         copy.keyFrameTimeArray = [NSMutableArray new];
@@ -302,197 +330,7 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone{
-    VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
-    copy.addTextList = _addTextList;
-    copy.localIdentifier = _localIdentifier;
-    copy.addTextOriginalImageUrl = _addTextOriginalImageUrl;
-    copy.addTextCrop = _addTextCrop;
-    copy.sceneIdentifier = [NSString stringWithFormat:@"scene_%@", [VEHelp getMediaIdentifier]];
-    copy.mediaIdentifier = [NSString stringWithFormat:@"media_%@", [VEHelp getMediaIdentifier]];
-    copy.isPasterAssetViewDrag = _isPasterAssetViewDrag;
-    copy.audioSeparate = _audioSeparate;
-    copy.pointsInVideoArray = [NSMutableArray new];
-    [_pointsInVideoArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSMutableArray * array = [NSMutableArray new];
-        [array addObject:((NSMutableArray*)obj)[0]];
-        [array  addObject:((NSMutableArray*)obj)[1]];
-        [copy.pointsInVideoArray addObject:array];
-    }];
-    copy.animationPenIndex = _animationPenIndex;
-    copy.animationWritingModel = _animationWritingModel;
-    copy.sceneIdentifier = _sceneIdentifier;
-    copy.groupId = _groupId;
-    copy.fxEffect = _fxEffect;
-    copy.fxFileId = _fxFileId;
-    copy.isMove = _isMove;
-    copy.transition = _transition;
-    copy.fileSoundEffect = _fileSoundEffect;
-    copy.beautyBigEyeIntensity = _beautyBigEyeIntensity;
-    copy.beautyThinFaceIntensity = _beautyThinFaceIntensity;
-    copy.voiceFXIndex = _voiceFXIndex;
-    copy.pitch = _pitch;
-    copy.rectInFile = _rectInFile;
-    copy.animation3D = _animation3D;
-    copy.customAnimate = _customAnimate;
-    copy.customOutAnimate = _customOutAnimate;
-    copy.customOtherAnimate = _customOtherAnimate;
-    copy.isSelfieSegmentation = _isSelfieSegmentation;
-    copy.animate = _animate;
-    //降噪
-    copy.denoiseLevel = _denoiseLevel;
-//    copy.isIntelligentKey = _isIntelligentKey;
-    copy.autoSegmentType = _autoSegmentType;
-    copy.autoSegmentImageUrl = _autoSegmentImageUrl;
-    copy.animationType = _animationType;
-    copy.animationIndex= _animationIndex;
-    copy.transitionIndex = _transitionIndex;
-    copy.transitionTypeIndex = _transitionTypeIndex;
-    copy.chromaColor= _chromaColor;
-    copy.backgroundColor         = _backgroundColor;
-    copy.backgroundType          = _backgroundType;
-    copy.backgroundFile = [_backgroundFile mutableCopy];
-    copy.backgroundStyle = _backgroundStyle;
-    copy.backgroundBlurIntensity = _backgroundBlurIntensity;
-    copy.rectInScale    = _rectInScale;
-    copy.fileScale          = _fileScale;
-    copy.beautyBlurIntensity     = _beautyBlurIntensity;
-    copy.beautyToneIntensity     = _beautyToneIntensity;
-    copy.beautyBrightIntensity   = _beautyBrightIntensity;
-    copy.backgroundAlpha         = _backgroundAlpha;
-    copy.fileType                = _fileType;
-    copy.filtImagePatch          = _filtImagePatch;
-    copy.isGif                   = _isGif;
-    copy.fileTimeFilterTimeRange = _fileTimeFilterTimeRange;
-    copy.imageDurationTime       = _imageDurationTime;
-    copy.imageInVideoTimeRange = _imageInVideoTimeRange;
-    copy.imageTimeRange          = _imageTimeRange;
-    copy.coverTime               = _coverTime;
-    copy->_contentURL            = _contentURL;
-    copy.draftContentURL         = _draftContentURL;
-    copy.gifData                 = _gifData;
-    copy.reverseVideoURL         = _reverseVideoURL;
-    copy.filterNetworkCategoryId = _filterNetworkCategoryId;
-    copy.filterNetworkResourceId = _filterNetworkResourceId;
-    copy.filterIndex             = _filterIndex;
-    copy.filterIntensity         = _filterIntensity;
-    copy.isStrip                 = _isStrip;
-    copy.filterType              = _filterType;
-    copy.adjustments             = _adjustments;
-    copy.speed                   = _speed;
-    copy.speedIndex              = _speedIndex;
-    copy.videoVolume             = _videoVolume;
-    copy.audioFadeInDuration     = _audioFadeInDuration;
-    copy.audioFadeOutDuration    = _audioFadeOutDuration;
-    copy.videoTimeRange          = _videoTimeRange;
-    copy.videoActualTimeRange    = _videoActualTimeRange;
-    copy.reverseVideoTimeRange   = _reverseVideoTimeRange;
-    copy.videoDurationTime       = _videoDurationTime;
-    copy.reverseDurationTime     = _reverseDurationTime;
-    copy.crop                    = _crop;
-    copy.fileCropModeType        = _fileCropModeType;
-    copy.customFilterIndex       = _customFilterIndex;
-    copy.customFilterId          = _customFilterId;
-    copy.fileTimeFilterType      = _fileTimeFilterType;
-    copy.rotate                  = _rotate;
-    copy.reverseAudioType   = _reverseAudioType;
-    copy.isReverse               = _isReverse;
-    copy.isVerticalMirror        = _isVerticalMirror;
-    copy.isHorizontalMirror      = _isHorizontalMirror;
-    copy.transitionNetworkCategoryId = _transitionNetworkCategoryId;
-    copy.transitionNetworkResourceId = _transitionNetworkResourceId;
-    copy.transitionDuration      = _transitionDuration;
-    copy.transitionTypeName      = _transitionTypeName;
-    copy.transitionName          = _transitionName;
-    copy.transitionMask          = _transitionMask;
-    copy.thumbImage              = _thumbImage;
-    copy.cropRect                = _cropRect;
-    copy.videoTrimTimeRange          = _videoTrimTimeRange;
-    copy.reverseVideoTrimTimeRange   = _reverseVideoTrimTimeRange;
-    copy.customTextPhotoFile         = [_customTextPhotoFile copy];
-    copy.rectInScene                 = _rectInScene;
-    copy.timeEffectSceneCount        = _timeEffectSceneCount;
-    
-    if(_curvedSpeedPointArray.count > 0)
-    {
-        copy.curvedSpeedPointArray = [NSMutableArray<CurvedSpeedPoint *> array];
-        copy.curveSpeedIndex = _curveSpeedIndex;
-        [_curvedSpeedPointArray enumerateObjectsUsingBlock:^(CurvedSpeedPoint * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            CurvedSpeedPoint * speedPoint = [obj copy];
-            [copy.curvedSpeedPointArray addObject:speedPoint];
-        }];
-    }
-    copy.isSlomoVideo = _isSlomoVideo;
-    
-    if (_mask) {
-        copy.maskName = _maskName;
-//        MaskObject *mask = [VEHelp getMaskWithName:_maskName];
-        copy.maskThickColorIndex =_maskThickColorIndex;
-        copy.maskType = _maskType;
-        copy.mask = [_mask copy];
-    }
-    
-    if( _keyFrameTimeArray && (_keyFrameTimeArray.count > 0) )
-    {
-        copy.keyFrameTimeArray = [NSMutableArray new];
-        [_keyFrameTimeArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSNumber * number = [obj copy];
-            [copy.keyFrameTimeArray addObject:number];
-        }];
-    }
-    
-    if( _keyFrameRectRotateArray && (_keyFrameRectRotateArray.count > 0) )
-    {
-        copy.keyFrameRectRotateArray = [NSMutableArray new];
-        [_keyFrameRectRotateArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            
-            NSMutableArray * array = (NSMutableArray*)obj;
-            NSMutableArray *objArray = [NSMutableArray new];
-            [array enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
-                if( [obj1 isKindOfClass:[NSNumber class]] )
-                {
-                    NSNumber * number = [obj1 copy];
-                    [objArray  addObject:number];
-                }
-                else if( [obj1 isKindOfClass:[NSValue class]] )
-                {
-                    NSValue * value = [obj1 copy];
-                    [objArray addObject:value];
-                }
-                else if( [obj1 isKindOfClass:[NSMutableArray class]] )
-                {
-                    NSMutableArray *adjustArray = [NSMutableArray array];
-                    for (id value1 in obj1) {
-                        if ([value1 isKindOfClass:[NSNumber class]]) {
-                            [adjustArray addObject:value1];
-                        }
-                        else if ([value1 isKindOfClass:[NSValue class]]) {
-                            [adjustArray addObject:NSStringFromCGPoint(((NSValue *)value1).CGPointValue)];
-                        }
-                    }
-                    [objArray addObject:adjustArray];
-                }
-            }];
-            [copy.keyFrameRectRotateArray addObject:objArray];
-        }];
-    }
-    if (_multipleFaceAttribute.count > 0) {
-        copy.multipleFaceAttribute = [NSMutableArray array];
-        [_multipleFaceAttribute enumerateObjectsUsingBlock:^(FaceAttribute * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [copy.multipleFaceAttribute addObject:[obj copy]];
-        }];
-    }
-    copy.eq = [NSMutableArray new];
-    [_eq enumerateObjectsUsingBlock:^(EqObject * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        EqObject * newObject = [EqObject new];
-        newObject.frequecy = obj.frequecy;
-        newObject.gain = obj.gain;
-        [copy.eq addObject:newObject];
-    }];
-    copy.importMorph = _importMorph;
-    copy.speedHoldPitch = _speedHoldPitch;
-    copy.panorama = [_panorama copy];
-    copy.isTemplateTheme = _isTemplateTheme;
-    return copy;
+    return [self mutableCopyWithZone:zone];
 }
 
 
@@ -503,6 +341,7 @@
         _videoVolume = asset.volume;
         _backgroundAlpha = asset.alpha;
         _backgroundBlurIntensity = asset.blurIntensity;
+        _rectInFile = asset.rectInVideo;
         _rectInScene = asset.rectInVideo;
         if (asset.identifier.length > 0) {
             _mediaIdentifier = asset.identifier;

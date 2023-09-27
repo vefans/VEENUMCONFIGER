@@ -148,14 +148,10 @@
                 if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
                     [toolItemBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
                 }
-                [toolItemBtn setImageEdgeInsets:UIEdgeInsetsMake(0, (ItemBtnWidth - 40)/2.0, 20, (ItemBtnWidth - 40)/2.0)];
-                [toolItemBtn setTitleEdgeInsets:UIEdgeInsetsMake(40, -40, 0, 0)];
-                
-                
                 [toolItemBtn setTitle:VELocalizedString(title, nil) forState:UIControlStateNormal];
                 toolItemBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
                 toolItemBtn.titleLabel.font = [UIFont systemFontOfSize:10];
-                
+                [toolItemBtn layoutButtonWithEdgeInsetsStyle:VEButtonEdgeInsetsStyleTop imageTitleSpace:0];                
                 [toolItemBtn addTarget:self action:@selector(toolBar_Btn:) forControlEvents:UIControlEventTouchUpInside];
                 contentsWidth += ItemBtnWidth+25;
                                 
@@ -1030,16 +1026,16 @@
 
 -(void)sliderValueChanged:(VESlider *) slider
 {
-    float trackImageHeight = slider.currentMinimumTrackImage.size.height + 1;
+    float trackImageHeight = 0.5;
     float thumbImageWidth = slider.currentThumbImage.size.width;
     UIView *trackView = [slider.superview viewWithTag:100 + slider.tag];
     if([VEConfigManager sharedManager].iPad_HD){
         trackView = [slider.superview viewWithTag:100];
     }
-    float y = CGRectGetMidY(slider.frame) - trackImageHeight/2.0 - 0.5;
+    float y = CGRectGetMidY(slider.frame) - trackImageHeight/2.0;
     if( slider.value < 0)
     {
-        float with = slider.frame.size.width/2.0 - (slider.frame.size.width  - thumbImageWidth )*( (slider.value - slider.minimumValue )/(slider.maximumValue - slider.minimumValue))  - thumbImageWidth  ;
+        float with = slider.frame.size.width/2.0 - (slider.frame.size.width  - thumbImageWidth )*( (slider.value - slider.minimumValue )/(slider.maximumValue - slider.minimumValue))  - thumbImageWidth - 0.9;
         if( with >= 0 )
         {
             [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 - with + (3 * slider.value) + slider.frame.origin.x, y, with - (3 * slider.value), trackImageHeight) ];
@@ -1047,7 +1043,7 @@
             [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 - with + (3 * slider.value) + slider.frame.origin.x, y,0, trackImageHeight)];
         }
     }else {
-        float with = (slider.frame.size.width  - thumbImageWidth )*((slider.value - slider.minimumValue )/(slider.maximumValue - slider.minimumValue)) - slider.frame.size.width/2.0;
+        float with = (slider.frame.size.width  - thumbImageWidth )*((slider.value - slider.minimumValue )/(slider.maximumValue - slider.minimumValue)) - slider.frame.size.width/2.0 - 0.9;
         if( with >= 0 )
         {
             [trackView setFrame:CGRectMake( slider.frame.size.width/2.0 + slider.frame.origin.x, y, with + (3 * slider.value), trackImageHeight)];

@@ -111,7 +111,38 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 }
 @end
 @implementation VEPasterTextView
+//加这个方法是为了解决四个角的按钮不好点击的问题
+- (UIView *)hitTest:(CGPoint)point withEvent:(nullable UIEvent *)event{
+    UIView *view = [super hitTest:point withEvent:event];
+    if(view == nil){
+        if(_alignBtn && ! _alignBtn.hidden){
+            CGPoint temppoint = [self.alignBtn convertPoint:point fromView:self];
+            if(CGRectContainsPoint(self.alignBtn.bounds, temppoint)){
+                return self.alignBtn;
+            }
+        }
+        if(_closeBtn && ! _closeBtn.hidden){
+            CGPoint temppoint = [self.closeBtn convertPoint:point fromView:self];
+            if(CGRectContainsPoint(self.closeBtn.bounds, temppoint)){
+                return self.closeBtn;
+            }
+        }
+        if(rotateView && ! rotateView.hidden){
+            CGPoint temppoint = [rotateView convertPoint:point fromView:self];
+            if(CGRectContainsPoint(rotateView.bounds, temppoint)){
+                return rotateView;
+            }
 
+        }
+        if(_textEditBtn && ! _textEditBtn.hidden){
+            CGPoint temppoint = [_textEditBtn convertPoint:point fromView:self];
+            if(CGRectContainsPoint(_textEditBtn.bounds, temppoint)){
+                return _textEditBtn;
+            }
+        }
+    }
+    return view;
+}
 -(void)remove_Recognizer
 {
     [self removeGestureRecognizer:_GestureRecognizer];
@@ -1533,7 +1564,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 }
 
 - (void) setFramescale:(float)value{
-    if (isnan(value)) {
+    if (isnan(value) || value == 0) {
         return;
     }
 //    NSLog(@"%s %f", __func__, value);
@@ -1544,7 +1575,6 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     
     selectImageView.layer.borderWidth = selectImageViewBorderWidth*1/value;
     selectImageView.layer.shadowRadius = selectImageViewShadowRadius*1/value;
-    
     _cutout_MagnifierView.layer.borderWidth = 1.0*1/value;
     _cutout_MagnifierView.layer.shadowRadius = 2.0*1/value;
     _cutout_MagnifierView.transform = CGAffineTransformMakeScale(1, 1);

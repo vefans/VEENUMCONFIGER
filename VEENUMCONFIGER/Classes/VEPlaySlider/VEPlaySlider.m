@@ -44,18 +44,18 @@
 
 
     if([VEConfigManager sharedManager].iPad_HD){
-        [self setMinimumTrackImage:[VEHelp imageWithColor:Main_Color size:CGSizeMake(self.frame.size.width, 2) cornerRadius:1] forState:UIControlStateNormal];
-        [self setMaximumTrackImage:[VEHelp imageWithColor:Color(255,255,255,0.32) size:CGSizeMake(self.frame.size.width, 2) cornerRadius:1] forState:UIControlStateNormal];
+        [self setMinimumTrackImage:[VEHelp imageWithColor:Main_Color size:CGSizeMake(self.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
+        [self setMaximumTrackImage:[VEHelp imageWithColor:Color(255,255,255,0.32) size:CGSizeMake(self.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
     }else{
-        
-        UIImage *trackImage = [VEHelp imageWithColor:SliderMinimumTrackTintColor size:CGSizeMake(10, 2.0) cornerRadius:1];
+        CGSize size = CGSizeMake(10, 2);
+        UIImage *trackImage = [VEHelp imageWithColor:SliderMinimumTrackTintColor size:size cornerRadius:1];
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            trackImage = [VEHelp imageWithColor:UIColorFromRGB(0x131313) size:CGSizeMake(10, 2.0) cornerRadius:1];
+            trackImage = [VEHelp imageWithColor:UIColorFromRGB(0x131313) size:size cornerRadius:1];
         }
         [self setMinimumTrackImage:trackImage forState:UIControlStateNormal];
-        trackImage = [VEHelp imageWithColor:SliderMaximumTrackTintColor size:CGSizeMake(10, 2.0) cornerRadius:1];
+        trackImage = [VEHelp imageWithColor:SliderMaximumTrackTintColor size:size cornerRadius:1];
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            trackImage = [VEHelp imageWithColor:UIColorFromRGB(0xcccfd6) size:CGSizeMake(10, 2.0) cornerRadius:1];
+            trackImage = [VEHelp imageWithColor:UIColorFromRGB(0xcccfd6) size:size cornerRadius:1];
         }
         [self setMaximumTrackImage:trackImage forState:UIControlStateNormal];
     }

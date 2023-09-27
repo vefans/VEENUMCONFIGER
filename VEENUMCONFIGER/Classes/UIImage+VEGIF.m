@@ -55,15 +55,46 @@
     }
     NSDictionary *frameProperties = (__bridge NSDictionary *)cfFrameProperties;
     NSDictionary *gifProperties = frameProperties[(NSString *)kCGImagePropertyGIFDictionary];
-    
-    NSNumber *delayTimeUnclampedProp = gifProperties[(NSString *)kCGImagePropertyGIFUnclampedDelayTime];
-    if (delayTimeUnclampedProp != nil) {
-        frameDuration = [delayTimeUnclampedProp floatValue];
-    } else {
-        NSNumber *delayTimeProp = gifProperties[(NSString *)kCGImagePropertyGIFDelayTime];
-        if (delayTimeProp != nil) {
-            frameDuration = [delayTimeProp floatValue];
+    if (gifProperties) {
+        NSNumber *delayTimeUnclampedProp = gifProperties[(NSString *)kCGImagePropertyGIFUnclampedDelayTime];
+        if (delayTimeUnclampedProp != nil) {
+            frameDuration = [delayTimeUnclampedProp floatValue];
+        } else {
+            NSNumber *delayTimeProp = gifProperties[(NSString *)kCGImagePropertyGIFDelayTime];
+            if (delayTimeProp != nil) {
+                frameDuration = [delayTimeProp floatValue];
+            }
         }
+    }
+    else if (frameProperties[(NSString *)kCGImagePropertyPNGDictionary]) {
+        gifProperties = frameProperties[(NSString *)kCGImagePropertyPNGDictionary];
+        
+        NSNumber *delayTimeUnclampedProp = gifProperties[(NSString *)kCGImagePropertyAPNGUnclampedDelayTime];
+        if (delayTimeUnclampedProp != nil) {
+            frameDuration = [delayTimeUnclampedProp floatValue];
+        } else {
+            NSNumber *delayTimeProp = gifProperties[(NSString *)kCGImagePropertyAPNGDelayTime];
+            if (delayTimeProp != nil) {
+                frameDuration = [delayTimeProp floatValue];
+            }
+        }
+    }
+    else if (@available(iOS 14.0, *)) {
+        if (frameProperties[(NSString *)kCGImagePropertyWebPDictionary]) {
+            gifProperties = frameProperties[(NSString *)kCGImagePropertyPNGDictionary];
+            
+            NSNumber *delayTimeUnclampedProp = gifProperties[(NSString *)kCGImagePropertyWebPUnclampedDelayTime];
+            if (delayTimeUnclampedProp != nil) {
+                frameDuration = [delayTimeUnclampedProp floatValue];
+            } else {
+                NSNumber *delayTimeProp = gifProperties[(NSString *)kCGImagePropertyWebPDelayTime];
+                if (delayTimeProp != nil) {
+                    frameDuration = [delayTimeProp floatValue];
+                }
+            }
+        }
+    } else {
+        // Fallback on earlier versions
     }
     
     // Many annoying ads specify a 0 duration to make an image flash as quickly as possible.
