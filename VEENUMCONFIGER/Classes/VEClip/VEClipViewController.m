@@ -84,6 +84,14 @@
 #pragma mark - 1.Life Cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+    if(_zoomScale == 0){
+        _zoomScale = 1;
+    }
+    
+    if( [VEConfigManager sharedManager].isPictureEditing )
+    {
+        _selectFile.rectInFile = _selectFile.rectInScene;
+    }
     self.view.backgroundColor = ([VEConfigManager sharedManager].iPad_HD ? SCREEN_IPAD_BACKGROUND_COLOR : SCREEN_BACKGROUND_COLOR);
     if( [VEConfigManager sharedManager].isPictureEditing )
     {
@@ -112,7 +120,7 @@
     [self.view addSubview:_bgView];
     if (CGRectEqualToRect(_fixedMaxCrop, CGRectZero)) {
         _fixedMaxCrop = CGRectMake(0, 0, 1, 1);
-    }    
+    }
     [self initConfiguration];
     [self setupNavBar];
     [self setupViews];
@@ -139,11 +147,21 @@
         label.font = [UIFont systemFontOfSize:16];
         [self.bgView addSubview:label];
     }
-    
     if(_flowPicture){
 //        _videoView.backgroundColor = SCREEN_BACKGROUND_COLOR;
 //        _photoView.backgroundColor = SCREEN_BACKGROUND_COLOR;
 //        self.toolView.backgroundColor = SCREEN_BACKGROUND_COLOR;
+    }
+    if( [VEConfigManager sharedManager].isPictureEditing )
+    {
+        Scene * scene = (Scene *)[self.videoCoreSDK getScenes][0];
+        [scene.media enumerateObjectsUsingBlock:^(MediaAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            obj.rectInVideo = _selectFile.rectInFile;
+        }];
+        [self.videoCoreSDK refreshCurrentFrame];
+        [self.pasterTextView setFrame:CGRectMake(self.syncContainerView.bounds.size.width *_selectFile.rectInFile.origin.x, self.syncContainerView.bounds.size.height *_selectFile.rectInFile.origin.y, self.syncContainerView.bounds.size.width *_selectFile.rectInFile.size.width, self.syncContainerView.bounds.size.height *_selectFile.rectInFile.size.height)];
+        
+        [self resetButtonClicked];
     }
 #ifdef kEnterBackgroundCancelExport
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationEnterHome:) name:UIApplicationDidEnterBackgroundNotification object:nil];
@@ -1099,7 +1117,6 @@
     _selectFile.isHorizontalMirror = NO;
     _selectFile.rotate = 0;
     _selectFile.fileScale = 0;
-    
     [self refreshPlayerFrame];
     [_videoCropView.cropView trackButton_hidden:YES];
 }
@@ -1223,6 +1240,8 @@
         range.start = CMTimeMakeWithSeconds( _videoTrimiSlider.progressValue/(float)_selectFile.speed, TIMESCALE);
     }
     
+    CGRect rect = self.videoCoreSDK.getScenes.firstObject.media.firstObject.rectInVideo;
+    _selectFile.rectInScene = rect;
     if(_editVideoForOnce_timeFinishAction){
         _selectFile.contentURL = oldselectFile.contentURL;
         if (self.presentingViewController && self.navigationController.viewControllers.count == 1) {
@@ -1245,7 +1264,6 @@
     {
         _editVideoForOnceFinishFiltersAction(oldselectFile.crop,oldselectFile.cropRect,oldselectFile.isVerticalMirror,oldselectFile.isHorizontalMirror,oldselectFile.rotate,_cropType,oldselectFile.filterIndex);
     }
-    
     
 }
 
@@ -1670,7 +1688,8 @@
     point = [self.videoCropView.cropView convertPoint:point toView:self.syncContainerView];
     self.pasterTextView.cropRect = CGRectMake(point.x, point.y, self.videoCropView.cropView.cropRectView.frame.size.width, self.videoCropView.cropView.cropRectView.frame.size.height);
     float scale = [self.pasterTextView getCropREct_Scale:self.pasterTextView.selfscale];
-    [self.pasterTextView setMinScale:scale];
+//    [self.pasterTextView setMinScale:scale];
+    [self.pasterTextView setMinScale:1];
 //    if( self.cropType == VE_VECROPTYPE_ORIGINAL )
 //    {
 //        scale = [VEHelp getMediaAssetScale_File:[self canvasImage].size atRect:self.originalRect atCorp:CGRectMake(0, 0, 1, 1) atSyncContainerHeihgt:self.syncContainerView.bounds.size atIsWatermark:NO];
@@ -2259,21 +2278,29 @@
     if (_syncContainerRect.size.width == _syncContainerRect.size.height) {
         cropSize.width = _syncContainerRect.size.width/4.0;
         cropSize.height = cropSize.width / (imageSize.width / imageSize.height);
-    }else if (_syncContainerRect.size.width < _syncContainerRect.size.height) {
-        cropSize.width = _syncContainerRect.size.width/2.0;
-        cropSize.height = cropSize.width / (imageSize.width / imageSize.height);
-    }else {
-        cropSize.height = _syncContainerRect.size.height/2.0;
+    }else{
+        cropSize.height = _syncContainerRect.size.height;
         cropSize.width = cropSize.height * (imageSize.width / imageSize.height);
+        if(cropSize.width > _syncContainerRect.size.width){
+            cropSize.width = _syncContainerRect.size.width;
+            cropSize.height = cropSize.width * (imageSize.height / imageSize.width);
+        }
     }
-    
+//    else if (_syncContainerRect.size.width < _syncContainerRect.size.height) {
+//        cropSize.width = _syncContainerRect.size.width/2.0;
+//        cropSize.height = cropSize.width / (imageSize.width / imageSize.height);
+//    }else {
+//        cropSize.height = _syncContainerRect.size.height/2.0;
+//        cropSize.width = cropSize.height * (imageSize.width / imageSize.height);
+//    }
+//
     CGSize size = CGSizeMake(cropSize.width*_selectFile.crop.size.width, cropSize.height*_selectFile.crop.size.height);
     CGPoint point = CGPointMake(_selectFile.crop.origin.x*cropSize.width, _selectFile.crop.origin.y*cropSize.height);
     
     point.x = point.x + size.width/2.0;
     point.y = point.y + size.height/2.0;
     CGRect rect = CGRectZero;
-    CGSize videoSize = CGSizeMake(_syncContainerRect.size.width - 40, _syncContainerRect.size.height - 90);
+    CGSize videoSize = CGSizeMake(_syncContainerRect.size.width, _syncContainerRect.size.height);
     
     if( [VEConfigManager sharedManager].isPictureEditing )
     {
@@ -2311,8 +2338,8 @@
     }else {
         minScale = videoSize.width/size.width;
     }
+    minScale = 1;
     [self.pasterTextView setMinScale:minScale];
-        
     _pasterTextCenter = CGPointMake(rect.origin.x, rect.origin.y);
     
     if( _videoCropView.cropView.cropType != self.cropType )
@@ -2331,6 +2358,13 @@
     [_videoCropView.cropView setCropRect:r];
     [_videoCropView.cropView trackButton_hidden:YES];
     
+    {
+        CGPoint point1 = self.videoCropView.cropView.cropRectView.frame.origin;
+        point1 = [self.videoCropView.cropView convertPoint:point1 toView:self.syncContainerView];
+        CGRect rect = CGRectMake(point1.x, point1.y, self.videoCropView.cropView.cropRectView.frame.size.width, self.videoCropView.cropView.cropRectView.frame.size.height);
+        rect = CGRectMake(_selectFile.crop.origin.x*self.videoCropView.cropView.cropRectView.frame.size.width, _selectFile.crop.origin.y*self.videoCropView.cropView.cropRectView.frame.size.height, _selectFile.crop.size.width*self.videoCropView.cropView.cropRectView.frame.size.width, _selectFile.crop.size.height*self.videoCropView.cropView.cropRectView.frame.size.height);
+        self.pasterTextView.cropRect = rect;
+    }
     return rect;
 }
 
@@ -2384,15 +2418,24 @@
         float width;
         float height;
         if (self.syncContainerView.bounds.size.width == self.syncContainerView.bounds.size.height) {
-            width = self.syncContainerView.bounds.size.width/4.0;
+            width = self.syncContainerView.bounds.size.width;
             height = width / (size.width / size.height);
-        }else if (self.syncContainerView.bounds.size.width < self.syncContainerView.bounds.size.height) {
-            width = self.syncContainerView.bounds.size.width/2.0;
-            height = width / (size.width / size.height);
-        }else {
-            height = self.syncContainerView.bounds.size.height/2.0;
+        }else{
+            height = self.syncContainerView.bounds.size.height;
             width = height * (size.width / size.height);
+            if(width > self.syncContainerView.bounds.size.width){
+                width = self.syncContainerView.bounds.size.width;
+                height = width * (size.height / size.width);
+            }
         }
+        
+//        else if (self.syncContainerView.bounds.size.width < self.syncContainerView.bounds.size.height) {
+////            width = self.syncContainerView.bounds.size.width/2.0;
+////            height = width / (size.width / size.height);
+//        }else {
+//            height = self.syncContainerView.bounds.size.height/2.0;
+//            width = height * (size.width / size.height);
+//        }
         CGRect frame = CGRectMake((self.syncContainerView.bounds.size.width - width)/2.0, (self.syncContainerView.bounds.size.height - height)/2.0, width, height);
         
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
@@ -2428,13 +2471,22 @@
         if (self.syncContainerView.bounds.size.width == self.syncContainerView.bounds.size.height) {
             width = self.syncContainerView.bounds.size.width/4.0;
             height = width / (size.width / size.height);
-        }else if (self.syncContainerView.bounds.size.width <= self.syncContainerView.bounds.size.height) {
-            width = self.syncContainerView.bounds.size.width/2.0;
-            height = width / (size.width / size.height);
-        }else {
-            height = self.syncContainerView.bounds.size.height/2.0;
-            width = height * (size.width / size.height);
         }
+        else{
+            height = self.syncContainerView.bounds.size.height;
+            width = height * (size.width / size.height);
+            if(width > self.syncContainerView.bounds.size.width){
+                width = self.syncContainerView.bounds.size.width;
+                height = width * (size.height / size.width);
+            }
+        }
+//        else if (self.syncContainerView.bounds.size.width <= self.syncContainerView.bounds.size.height) {
+//            width = self.syncContainerView.bounds.size.width/2.0;
+//            height = width / (size.width / size.height);
+//        }else {
+//            height = self.syncContainerView.bounds.size.height/2.0;
+//            width = height * (size.width / size.height);
+//        }
         CGRect frame = CGRectMake((self.syncContainerView.bounds.size.width - width)/2.0, (self.syncContainerView.bounds.size.height - height)/2.0, width, height);
         CGRect rect = CGRectInset(frame, -8, -8);
         [self.pasterTextView refreshBounds:CGRectMake(0, 0, rect.size.width, rect.size.height)];
@@ -2459,13 +2511,13 @@
                              && (rectInScene.size.height == 1)))
     {
         
-        fileScale = 2.0;
+        fileScale = 1.0;
         CGSize size = CGSizeMake(rectInScene.size.width * self.syncContainerView.bounds.size.width, rectInScene.size.height* self.syncContainerView.bounds.size.height);
         
         if (self.syncContainerView.bounds.size.width == self.syncContainerView.bounds.size.height) {
-            fileScale = 4.0;
+            fileScale = 1.0;
             
-            float width = self.syncContainerView.bounds.size.width/4.0;
+            float width = self.syncContainerView.bounds.size.width/1.0;
             float height = width / (size.width / size.height);
             
             float imageScale = size.width/size.height;
@@ -2484,7 +2536,7 @@
         }
         else if (self.syncContainerView.bounds.size.width < self.syncContainerView.bounds.size.height) {
             
-            float width = self.syncContainerView.bounds.size.width/2.0;
+            float width = self.syncContainerView.bounds.size.width/1.0;
             float height = width / (size.width / size.height);
             float imageScale = size.width/size.height;
             float imageHeight = self.syncContainerView.bounds.size.width/imageScale;
@@ -2515,7 +2567,7 @@
         }
         else
         {
-            float height = self.syncContainerView.bounds.size.height/2.0;
+            float height = self.syncContainerView.bounds.size.height/1.0;
             float width = height * (size.width / size.height);
             
             float imageScale = size.width/size.height;
@@ -2554,7 +2606,7 @@
         if( file.fileScale >0 )
             [self.pasterTextView setFramescale:fileScale];
         else
-            [self.pasterTextView setFramescale:2.0];
+            [self.pasterTextView setFramescale:1.0];
         [self pasterView_Rect:&rectInScene atRotate:&rotate];
         
         if( self.originalRect.size.width == 0 )
@@ -2564,7 +2616,7 @@
     }
     [self.syncContainerView setMark];
     [self.pasterTextView setCanvasPasterText:true];
-    [self.pasterTextView setMinScale:1.0/4.0];
+    [self.pasterTextView setMinScale:1.0/1.0];
     self.pasterTextView.contentImage.alpha = 0.0;
     self.pasterTextView.isDrag = true;
     self.syncContainerView.currentPasterTextView = self.pasterTextView;
@@ -2626,3 +2678,4 @@
 }
 
 @end
+

@@ -70,53 +70,72 @@
     self.backgroundColor = UIColorFromRGB(0x1a1a1a);
     [VEHelp addShadowToView:self withColor:UIColorFromRGB(0x000000)];
    
-    _colorBottomView = [[UIView alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 44 - 44, self.frame.size.width, 44)];
-    [self addSubview:_colorBottomView];
+    UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 44)];
+    [self addSubview:titleView];
+    
+    UILabel *titleLbl = [[UILabel alloc] initWithFrame:titleView.bounds];
+    titleLbl.text = VELocalizedString(@"Color Palette", nil);
+    titleLbl.textColor = TEXT_COLOR;
+    titleLbl.textAlignment = NSTextAlignmentCenter;
+    titleLbl.font = [UIFont systemFontOfSize:16];
+    [titleView addSubview:titleLbl];
+    
+    UIButton *closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(4, 0, 44, 44)];
+    [closeBtn setImage:[VEHelp imageWithContentOfFile:@"background/Close_Bottom_44_@3x"] forState:UIControlStateNormal];
+    [closeBtn addTarget:self action:@selector(closeView) forControlEvents:UIControlEventTouchUpInside];
+    [titleView addSubview:closeBtn];
+    
+    UIButton *finishBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 48, 0, 44, 44)];
+    [finishBtn setImage:[VEHelp imageWithContentOfFile:@"/剪辑_勾_@3x"] forState:UIControlStateNormal];
+    [finishBtn addTarget:self action:@selector(doneAction:) forControlEvents:UIControlEventTouchUpInside];
+    [titleView addSubview:finishBtn];
     {
-        _customColorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, CGRectGetMinY(_colorBottomView.frame) - 20 - kBottomSafeHeight)];
-        _customShowColorView = [[ColorDragView alloc] initWithFrame:CGRectMake(20, 20, _customColorView.frame.size.width - 40, _customColorView.frame.size.height - 64)];
-        _customShowColorView.layer.cornerRadius = 10;
-        _customShowColorView.layer.masksToBounds = YES;
-        _customShowColorView.layer.borderWidth = 1;
-        _customShowColorView.delegate = self;
-        _customShowColorView.layer.borderColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5].CGColor;
-        [_customColorView addSubview:_customShowColorView];
-        _customColorView.hidden = NO;
+        _customColorView = [[UIView alloc] initWithFrame:CGRectMake(24, CGRectGetMaxY(titleView.frame) + 12, self.frame.size.width - 24 * 2, self.frame.size.height * 0.47)];
         [self addSubview:_customColorView];
+        
+        _customShowColorView = [[ColorDragView alloc] initWithFrame:_customColorView.bounds];
+        _customShowColorView.delegate = self;
+        [_customColorView addSubview:_customShowColorView];
     }
     
     {
-        _sliderBgView = [[UIImageView alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(_customShowColorView.frame) + 10 + 14, self.frame.size.width - 40, 2)];
+        _sliderBgView = [[UIImageView alloc] initWithFrame:CGRectMake(24, CGRectGetMaxY(_customColorView.frame) + ((self.frame.size.height - CGRectGetMaxY(_customColorView.frame)) / 2.0 - 12) / 2.0, self.frame.size.width - 24 * 2, 12)];
         _sliderBgView.image = [VEHelp imageNamed:@"色带.png" atBundle:[VEHelp getEditBundle]];
         _sliderBgView.contentMode = UIViewContentModeScaleAspectFill;
+        _sliderBgView.layer.cornerRadius = 6;
         _sliderBgView.layer.masksToBounds = YES;
-        [_customColorView addSubview:_sliderBgView];
+        [self addSubview:_sliderBgView];
 //        [VEHelp insertColorGradient:_sliderBgView colors:self.colors];
-        _moreColorSlider = [[VESlider alloc] initWithFrame:CGRectMake(CGRectGetMinX(_sliderBgView.frame), CGRectGetMinY(_sliderBgView.frame) - 15, CGRectGetWidth(_sliderBgView.frame), 30)];
+        _moreColorSlider = [[VESlider alloc] initWithFrame:CGRectMake(CGRectGetMinX(_sliderBgView.frame), CGRectGetMinY(_sliderBgView.frame) - (30 - _sliderBgView.frame.size.height) / 2.0, CGRectGetWidth(_sliderBgView.frame), 30)];
         _moreColorSlider.minimumValue = 0.0;
         _moreColorSlider.maximumValue = 1.0;
         [_moreColorSlider setMinimumTrackTintColor:UIColor.clearColor];
         [_moreColorSlider setMaximumTrackTintColor:UIColor.clearColor];
+        [_moreColorSlider setThumbImage:[VEHelp imageWithContentOfFile:@"background/Color_ThumbImage_@3x"] forState:UIControlStateNormal];
         _moreColorSlider.value = 1.0;
-        [_customColorView addSubview:_moreColorSlider];
+        [self addSubview:_moreColorSlider];
         [_moreColorSlider addTarget:self action:@selector(colorSliderChange) forControlEvents:UIControlEventValueChanged];
         [self colorSliderChange];
     }
     
     {
         {
-            _otherColorAddBtn = [[UIButton alloc] initWithFrame:CGRectMake(10, CGRectGetHeight(self.frame)  - 44 - 44 - 12 - kBottomSafeHeight, 28, 28)];
+            _otherColorAddBtn = [[UIButton alloc] initWithFrame:CGRectMake(_sliderBgView.frame.origin.x, self.frame.size.height - (self.frame.size.height - CGRectGetMaxY(_customShowColorView.frame)) / 2.0 + ((self.frame.size.height - CGRectGetMaxY(_customShowColorView.frame)) / 2.0 - 28) / 2.0, 60, 28)];
             _otherColorAddBtn.layer.cornerRadius = 14;
             _otherColorAddBtn.layer.masksToBounds = YES;
             _otherColorAddBtn.layer.borderWidth = 0;
-            [_otherColorAddBtn setImage:[VEHelp imageNamed:@"jianji/剪辑_添加1默认_" atBundle:[VEHelp getBundleName:@"VEEditSDK"]] forState:UIControlStateNormal];
-            [_otherColorAddBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+            [_otherColorAddBtn setImage:[VEHelp imageNamed:@"background/Add_Color_@3x" atBundle:[VEHelp getBundleName:@"VEEditSDK"]] forState:UIControlStateNormal];
+            [_otherColorAddBtn setTitle:VELocalizedString(@"添加", nil) forState:UIControlStateNormal];
+            [_otherColorAddBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
+            _otherColorAddBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+            _otherColorAddBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -5, 0, 0);
+            _otherColorAddBtn.titleEdgeInsets = UIEdgeInsetsMake(0, -10, 0, 0);
             [_otherColorAddBtn addTarget:self action:@selector(otherColorAddAction:) forControlEvents:UIControlEventTouchUpInside];
             [self addSubview:_otherColorAddBtn];
             [_customShowColorView setdefaultColor:nil];
         }
         
-        _otherColorScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(_otherColorAddBtn.frame) + 10, CGRectGetMinY(_otherColorAddBtn.frame) - 1 , self.frame.size.width - (CGRectGetMaxX(_otherColorAddBtn.frame) + 10), 30)];
+        _otherColorScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(_otherColorAddBtn.frame) + 20, CGRectGetMinY(_otherColorAddBtn.frame), self.frame.size.width - (CGRectGetMaxX(_otherColorAddBtn.frame) + 20) - _customShowColorView.frame.origin.x, 28)];
         _otherColorScrollView.showsVerticalScrollIndicator = NO;
         _otherColorScrollView.showsHorizontalScrollIndicator = NO;
         _otherColorScrollView.contentInset = UIEdgeInsetsMake(0, 10, 0, 10);
@@ -134,19 +153,26 @@
         }
         
     }
-    
-    {
-        _doneBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, CGRectGetHeight(self.frame)  - 44 - kBottomSafeHeight , self.frame.size.width - 40, 34)];
-        _doneBtn.backgroundColor = UIColorFromRGB(0x272727);
-        _doneBtn.layer.cornerRadius = 17;
-        _doneBtn.layer.masksToBounds = YES;
-        [_doneBtn setTitle:VELocalizedString(@"完成", nil) forState:UIControlStateNormal];
-        [_doneBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
-        _doneBtn.titleLabel.font = [UIFont systemFontOfSize:14];
-        [_doneBtn addTarget:self action:@selector(doneAction:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:_doneBtn];
-    }
 }
+
+- (void)closeView {
+    [_customShowColorView.strawLayer removeFromSuperlayer];
+    if([_delegate respondsToSelector:@selector(colorViewCancelChangeColor:)]){
+        [_delegate colorViewCancelChangeColor:self];
+    }
+    CGRect rect = self.frame;
+    if([VEConfigManager sharedManager].iPad_HD){
+        rect.origin.x += rect.size.width;
+    }else{
+        rect.origin.y += rect.size.height;
+    }
+    [UIView animateWithDuration:0.25 animations:^{
+        self.frame = rect;
+    } completion:^(BOOL finished) {
+        [self removeFromSuperview];
+    }];
+}
+
 - (void)doneAction:(UIButton *)sender{
     [_customShowColorView.strawLayer removeFromSuperlayer];
     if([_delegate respondsToSelector:@selector(colorViewClose_View:)]){
@@ -208,11 +234,11 @@
 
 - (void)refreshOtherColorScrollView{
     [_otherColorScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    float contentx = 0;
-    float contenty = 1;
-    for (int i = 0; i < 20; i++) {
-        ColorButton *btn = [[ColorButton alloc] initWithFrame:CGRectMake( contentx, contenty, 28, 28)];
-        btn.layer.cornerRadius = 14;
+    float space = 12;
+    int count = _otherColorScrollView.frame.size.width / (_otherColorScrollView.frame.size.height + space);
+    for (int i = 0; i < count; i++) {
+        ColorButton *btn = [[ColorButton alloc] initWithFrame:CGRectMake((_otherColorScrollView.frame.size.height + space) * i, 0, _otherColorScrollView.frame.size.height, _otherColorScrollView.frame.size.height)];
+        btn.layer.cornerRadius = btn.frame.size.width / 2.0;
         btn.layer.masksToBounds = YES;
         if(self.otherColors.count > i){
             btn.backgroundColor = [self RedoColorWithHexString:_otherColors[i]];
@@ -223,29 +249,14 @@
                 btn.selected = NO;
             }
             [btn addTarget:self action:@selector(lastColorBtnAction:) forControlEvents:UIControlEventTouchUpInside];
-        }else{
-            
-            btn.layer.cornerRadius = CGRectGetWidth(btn.bounds)/2;
-            CAShapeLayer *borderLayer = [CAShapeLayer layer];
-            borderLayer.bounds = CGRectMake(0, 0, CGRectGetWidth(btn.frame), CGRectGetHeight(btn.frame));
-            borderLayer.position = CGPointMake(CGRectGetMidX(btn.bounds), CGRectGetMidY(btn.bounds));
-            //圆形,圆角
-            borderLayer.path = [UIBezierPath bezierPathWithRoundedRect:borderLayer.bounds cornerRadius:CGRectGetWidth(borderLayer.bounds)/2].CGPath;
-            borderLayer.lineWidth = 1;
-            //虚线边框
-            borderLayer.lineDashPattern = @[@2, @2];
-            //实线边框
-            //    borderLayer.lineDashPattern = nil;
-            borderLayer.fillColor = [UIColor clearColor].CGColor;
-            borderLayer.strokeColor = [UIColor colorWithWhite:0.8 alpha:1.0].CGColor;
-            [btn.layer addSublayer:borderLayer];
+        }else {
+            [btn setBackgroundImage:[VEHelp imageWithContentOfFile:@"background/Color_none_@3x"] forState:UIControlStateNormal];
         }
         [_otherColorScrollView addSubview:btn];
         
         btn.tag = 100 + i;
-        contentx += 40;
     }
-    _otherColorScrollView.contentSize = CGSizeMake( contentx, _otherColorScrollView.frame.size.height);
+    _otherColorScrollView.contentSize = CGSizeMake(MAX(_otherColorScrollView.frame.size.width, (_otherColorScrollView.frame.size.height + space) * count - space), 0);
 }
 
 - (void)lastColorBtnAction:(UIButton *)sender{
@@ -255,7 +266,7 @@
         
         _selectColorIndex = sender.tag - 100;
         sender.selected = YES;
-        
+        _currentColor = sender.backgroundColor;
         if (_delegate && [_delegate respondsToSelector:@selector(colorViewChangeColor:)]) {
             [_delegate colorViewChangeColor:sender.backgroundColor];
         }
@@ -325,6 +336,7 @@
     float centerX = _customShowColorView.bounds.size.width*(saturation*0.9 + 0.1);
     float centerY = _customShowColorView.bounds.size.height*((1.0 - (0.9 *brightness)));
     CGPoint center = CGPointMake(centerX, centerY);
+    
     [_customShowColorView setFocusViewCenter:center];
     
     
@@ -336,6 +348,7 @@
         prevBtn.selected = NO;
         
         _selectColorIndex = 0;
+        _currentColor = sender.backgroundColor;
         if (_delegate && [_delegate respondsToSelector:@selector(colorViewChangeColor:)]) {
             [_delegate colorViewChangeColor:sender.backgroundColor];
         }
@@ -381,72 +394,6 @@
 - (NSMutableArray *)colors{
     if(!_colors){
         _colors = [VEHelp getColorList];
-//        [_colors addObject:UIColorFromRGB(0xffffff)];//0
-//        [_colors addObject:UIColorFromRGB(0xbfbfbf)];//1
-//        [_colors addObject:UIColorFromRGB(0x878787)];//2
-//        [_colors addObject:UIColorFromRGB(0x535353)];//3
-//        [_colors addObject:UIColorFromRGB(0x000000)];//4
-//        [_colors addObject:UIColorFromRGB(0xf8bfc7)];//5
-//        [_colors addObject:UIColorFromRGB(0xf1736d)];//06
-//        [_colors addObject:UIColorFromRGB(0xee3842)];//7
-//        [_colors addObject:UIColorFromRGB(0xed002b)];//预设效果_02 //08
-//        [_colors addObject:UIColorFromRGB(0xa50816)];//09
-//        [_colors addObject:UIColorFromRGB(0xfad9a2)];//010
-//        [_colors addObject:UIColorFromRGB(0xf4c76c)];//011
-//        [_colors addObject:UIColorFromRGB(0xf17732)];//012
-//        [_colors addObject:UIColorFromRGB(0xed260b)];//013
-//        [_colors addObject:UIColorFromRGB(0xaf160d)];//014
-//        [_colors addObject:UIColorFromRGB(0xfdf9b8)];//015
-//        [_colors addObject:UIColorFromRGB(0xfeff7a)];//016
-//        [_colors addObject:UIColorFromRGB(0xfbe80d)];//预设效果_03 //017
-//        [_colors addObject:UIColorFromRGB(0xf5af0a)];//018
-//        [_colors addObject:UIColorFromRGB(0xef5409)];//019
-//        [_colors addObject:UIColorFromRGB(0xf5aac4)];//020
-//        [_colors addObject:UIColorFromRGB(0xf1679a)];//021
-//        [_colors addObject:UIColorFromRGB(0xee246e)];//022
-//        [_colors addObject:UIColorFromRGB(0xed0045)];//023
-//        [_colors addObject:UIColorFromRGB(0x94004f)];//024
-//        [_colors addObject:UIColorFromRGB(0xd9aee1)];//025
-//        [_colors addObject:UIColorFromRGB(0xe261fa)];//026
-//        [_colors addObject:UIColorFromRGB(0xd40dfa)];//027
-//        [_colors addObject:UIColorFromRGB(0xb000f5)];//028
-//        [_colors addObject:UIColorFromRGB(0x4900a1)];//029
-//        [_colors addObject:UIColorFromRGB(0xc6b4e2)];//030
-//        [_colors addObject:UIColorFromRGB(0xa36bff)];//031
-//        [_colors addObject:UIColorFromRGB(0x723cff)];//032
-//        [_colors addObject:UIColorFromRGB(0x5000fe)];//033
-//        [_colors addObject:UIColorFromRGB(0x2e00a9)];//034
-//        [_colors addObject:UIColorFromRGB(0xaed6fa)];//035
-//        [_colors addObject:UIColorFromRGB(0x6f9eff)];//036
-//        [_colors addObject:UIColorFromRGB(0x3671ff)];//037
-//        [_colors addObject:UIColorFromRGB(0x2353fd)];//038
-//        [_colors addObject:UIColorFromRGB(0x162cbd)];//039
-//        [_colors addObject:UIColorFromRGB(0xa4e6ed)];//040
-//        [_colors addObject:UIColorFromRGB(0x76fffc)];//041
-//        [_colors addObject:UIColorFromRGB(0x51ffff)];//042
-//        [_colors addObject:UIColorFromRGB(0x47dfff)];//043
-//        [_colors addObject:UIColorFromRGB(0x1f6469)];//044
-//        [_colors addObject:UIColorFromRGB(0xa3d9a0)];//045
-//        [_colors addObject:UIColorFromRGB(0xa4d7d3)];//046
-//        [_colors addObject:UIColorFromRGB(0x9aff82)];//047
-//        [_colors addObject:UIColorFromRGB(0x59ffd0)];//048
-//        [_colors addObject:UIColorFromRGB(0x47e6a6)];//预设效果_04 //049
-//        [_colors addObject:UIColorFromRGB(0x206750)];//050
-//        [_colors addObject:UIColorFromRGB(0xbce2bc)];//051
-//        [_colors addObject:UIColorFromRGB(0xacf5bc)];//052
-//        [_colors addObject:UIColorFromRGB(0x5cf19d)];//预设效果_04 //053
-//        [_colors addObject:UIColorFromRGB(0x44e462)];//054
-//        [_colors addObject:UIColorFromRGB(0x247930)];//055
-//        [_colors addObject:UIColorFromRGB(0xecf3b6)];//056
-//        [_colors addObject:UIColorFromRGB(0xf1ff6e)];//057
-//        [_colors addObject:UIColorFromRGB(0xeaff33)];//058
-//        [_colors addObject:UIColorFromRGB(0xbcff0b)];//059
-//        [_colors addObject:UIColorFromRGB(0x5c7e04)];//060
-//        [_colors addObject:UIColorFromRGB(0xccbfbc)];//061
-//        [_colors addObject:UIColorFromRGB(0x8f746b)];//062
-//        [_colors addObject:UIColorFromRGB(0x654338)];//063
-//        [_colors addObject:UIColorFromRGB(0x4a302a)];//064
-//        [_colors addObject:UIColorFromRGB(0x2f1c1b)];//065
     }
     return _colors;
 }
@@ -497,6 +444,7 @@
 
 }
 - (void)changeDragViewColor:(UIColor *)color isDragEnd:(BOOL)isDragEnd{
+#if 0
     UIImage *imgCircleMask = [VEHelp imageNamed:@"拖动球1@3x.png"];
     CGSize size = CGSizeMake(imgCircleMask.size.width*3.0, imgCircleMask.size.height*3.0);
     UIImage *imgToBeMasked = [VEHelp imageWithColor:color size:CGSizeMake(size.width - 6, size.height - 6) cornerRadius:(size.width - 6)/2.0];
@@ -509,6 +457,8 @@
     
     UIImage * newFinalImage = [UIImage imageWithContentsOfFile:path];
     [_moreColorSlider setThumbImage:newFinalImage forState:UIControlStateNormal];
+#endif
+    _currentColor = color;
     _otherColorAddBtn.backgroundColor = color;
     if (_delegate && [_delegate respondsToSelector:@selector(colorViewChangeColor:)]) {
         [_delegate colorViewChangeColor:color];

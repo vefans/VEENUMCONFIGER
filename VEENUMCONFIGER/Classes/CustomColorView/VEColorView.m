@@ -14,8 +14,6 @@
 @interface VEColorView ()<CustomColorViewDelegate>
 {
     BOOL            _isEnableEyedropper;
-    UIColor         *_currentCustomColor;
-    UIColor         *_selectedColor;
     UIButton        *_eyedropperBtn;
     UIButton        *_customColorBtn;
     UIView          *_splitLineView;
@@ -26,6 +24,7 @@
     UIImage         *_currentImage;
     NSInteger       _selectedColorIndex;
     BOOL            _isIPad;
+    UIColor         *_prevCustomColor;
 }
 
 @property (nonatomic, strong) ColorButton *currentCustomColorBtn;
@@ -215,6 +214,7 @@
 - (void)customColorBtnAction:(UIButton *)sender {
     _eyedropperBgView.hidden = YES;
     _eyedropperBtn.selected = NO;
+    _prevCustomColor = _currentCustomColor;
     self.customColorView.hidden = NO;
 }
 
@@ -331,8 +331,23 @@
 
 #pragma mark - CustomColorViewDelegate
 - (void)colorViewChangeColor:(UIColor *)color{
-    _selectedColorIndex = -1;
     _currentCustomColor = color;
+    if (_delegate && [_delegate respondsToSelector:@selector(changeColor:)]) {
+        [_delegate changeColor:_currentCustomColor];
+    }
+}
+
+- (void)colorViewCancelChangeColor:(CustomColorView *)view {
+    _currentCustomColor = _prevCustomColor;
+    NSLog(@"_currentCustomColor:%@", _currentCustomColor);
+    if (_currentCustomColor) {
+        if (_delegate && [_delegate respondsToSelector:@selector(changeColor:)]) {
+            [_delegate changeColor:_currentCustomColor];
+        }
+    }
+    else if (_delegate && [_delegate respondsToSelector:@selector(changeColor:)]) {
+        [_delegate changeColor:_selectedColor];
+    }
 }
 
 - (void)colorViewClose_View:(CustomColorView *)view{

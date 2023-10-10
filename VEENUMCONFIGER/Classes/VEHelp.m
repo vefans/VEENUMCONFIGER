@@ -2079,9 +2079,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSURL *fileURL = [NSURL URLWithString:absolutePath];
     if ([self isSystemPhotoUrl:fileURL] || [absolutePath containsString:@"mobile/Media"])
     {
-        if ([absolutePath containsString:@"mobile/Media"]) {
-            fileURL = [NSURL fileURLWithPath:absolutePath];
-        }
+//        if ([absolutePath containsString:@"mobile/Media"]) {
+//            fileURL = [NSURL fileURLWithPath:absolutePath];
+//        }
         return fileURL;
     }else {
         fileURL = nil;

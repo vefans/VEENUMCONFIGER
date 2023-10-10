@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @class CustomColorView;
 @protocol CustomColorViewDelegate <NSObject>
 
+-(void)colorViewCancelChangeColor:( CustomColorView * _Nullable ) view;
+
 -(void)colorViewClose_View:( CustomColorView * _Nullable ) view;
 
 - (void)colorViewChangeColor:(UIColor *)color;
@@ -25,9 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface CustomColorView : UIView<ColorDragViewDelegate>{
     
 }
+@property (nonatomic, readonly) UIColor *currentColor;
 @property (nonatomic,strong)NSMutableArray *otherColors;
 @property (nonatomic,strong)NSMutableArray *colors;
-@property (nonatomic,strong)UIView *colorBottomView;
 @property (nonatomic,strong)UIButton *moreColorsBtn;
 @property (nonatomic,strong)VESlider *moreColorSlider;
 @property (nonatomic,strong)UIImageView  *sliderBgView;
@@ -39,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,strong)UIView *lastColorView;
 @property (nonatomic,strong)UIScrollView *otherColorScrollView;
 @property (nonatomic,strong)UIButton *otherColorAddBtn;
-@property (nonatomic,strong)UIButton *doneBtn;
+
 - (void)changeDragViewColorIndex:(NSInteger )selectColorIndex;
 - (void)refreshOtherColorScrollView;
 - (NSString *) UIColorToHexString:(UIColor *)uiColor;

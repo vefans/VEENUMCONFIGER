@@ -24,6 +24,8 @@
            currentCustomColor:(UIColor *)currentCustomColor
                  isLayoutiPad:(BOOL)isLayoutiPad;
 
+@property (nonatomic, readonly) UIColor *currentCustomColor;
+@property (nonatomic, readonly) UIColor *selectedColor;
 @property (nonatomic, weak) id<VEColorViewDelegate> delegate;
 
 - (void)setCurrentColor:(UIColor *)color;

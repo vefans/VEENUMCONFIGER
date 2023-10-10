@@ -247,6 +247,11 @@
 
 @property (nonatomic, strong) UIButton * _Nullable puzzleAddBtn;
 - (void)addContentTappedGestureRecognizer;
+-(void)deleteSelectImageView;
+
+@property (nonatomic, assign) BOOL isAngle;
+
+
 @end
 
 

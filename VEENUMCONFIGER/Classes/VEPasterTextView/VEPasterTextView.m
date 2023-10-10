@@ -236,6 +236,12 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     
 }
 
+-(void)deleteSelectImageView
+{
+    [selectImageView removeFromSuperview];
+    selectImageView = nil;
+}
+
 //加水印
 -(void)setWatermarkPasterText:(BOOL) isWatermark
 {
@@ -991,7 +997,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             {
                 isShock = true;
             }
-        
+            if( self.isAngle )
+                angleDiff = 0;
             self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), _selfScale, _selfScale);
             
             if( _isDrag )
@@ -1021,7 +1028,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             {
                 isShock = true;
             }
-            
+            if( self.isAngle )
+                angleDiff = 0;
             self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), _selfScale, _selfScale);
             if( _isDrag )
             {
@@ -1841,7 +1849,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             }
             float fheight = (scale*CGRectGetHeight(self.frame));
             scale = fheight/CGRectGetHeight(self.frame);
-            
+            if( self.isAngle )
+                angleDiff = 0;
             self.transform =  CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), scale, scale);
             [self setFramescale:scale];
             if([_delegate respondsToSelector:@selector(pasterViewSizeScale: atValue:)]){
@@ -1870,7 +1879,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             {
                 scale = _minScale;
             }
-            
+            if( self.isAngle )
+                angleDiff = 0;
             self.transform =  CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), scale, scale);
             [self setFramescale:scale];
             
@@ -3140,8 +3150,10 @@ static VEPasterTextView *lastTouchedView;
 
 -(CGPoint)getPictureCenter
 {
-    if( _syncContainer && _syncContainer.picturePreImageView )
-        return [_syncContainer  convertPoint:self.center toView:_syncContainer.picturePreImageView];
+    if( _syncContainer && _syncContainer.picturePreImageView ){
+        CGPoint center = [_syncContainer  convertPoint:self.center toView:_syncContainer.picturePreImageView];
+        return center;
+    }
     else{
         return self.center;
     }

@@ -1,0 +1,88 @@
+{
+  "ver": 8,
+  "verName": "",
+  "name": "",
+  "description": "。。",
+  "creationTime": 0,
+  "cover": "cover.jpg",
+  "video": "video.mp4",
+  "picture_need": 1,
+  "text_need": 6,
+  "draft": true,
+  "size": {
+    "width": 0,
+    "height": 0
+  },
+  "mediaInfo": [
+    {
+      "path": "Media/source.png",
+      "replaceType": 1,
+      "groupId": 0
+    }
+  ],
+  "pips": [
+    {
+      "identifier": "pip_0",
+      "groupId": 0,
+      "media": {
+        "level": 0,
+        "path": "Media/source.png",
+        "isHorizontalMirror": false,
+        "isVerticalMirror": false,
+        "trimTimeStart": 0,
+        "trimTimeEnd": 0,
+        "filterType": 0,
+        "filterIntensity": 0,
+        "blurIntensity": 0,
+        "beautyBlurIntensity": 0,
+        "beautyBrightIntensity": 0,
+        "beautyToneIntensity": 0,
+        "beautyThinFaceIntensity": 0,
+        "beautyBigEyeIntensity": 0,
+        "cutoutAlphaLower": 0,
+        "cutoutEdgeSize": 0,
+        "cutoutAlphaUpper": 0,
+        "cutoutFactor": 0,
+        "cutoutColor": 0,
+        "vignette": 0,
+        "sharpness": 0,
+        "saturation": 0,
+        "contrast": 0,
+        "brightness": 0,
+        "whiteBalance": 0,
+        "tint": 0,
+        "highlight": 0,
+        "shadows": 0,
+        "graininess": 0,
+        "lightSensation": 0,
+        "fade": 0,
+        "exposure": 0,
+        "alpha": 1,
+        "rotate": 0,
+        "blendType": 0,
+        "cropRect": {
+          "width": 1,
+          "height": 1,
+          "x": 0,
+          "y": 0
+        },
+        "showRectF": {
+          "width": 1,
+          "height": 1,
+          "x": 0,
+          "y": 0
+        },
+        "segementType": 0,
+        "replaceType": 3
+      }
+    }
+  ],
+  "bg": {
+    "color": {
+      "red": 1,
+      "green": 1,
+      "blue": 1,
+      "alpha": 0
+    }
+  }
+}

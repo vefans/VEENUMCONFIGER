@@ -217,7 +217,7 @@
     copy.customTextPhotoFile         = [_customTextPhotoFile copy];
     copy.rectInScene                 = _rectInScene;
     copy.timeEffectSceneCount        = _timeEffectSceneCount;
-    
+    copy.fileCropModeType  = _fileCropModeType;
     if(_curvedSpeedPointArray.count > 0)
     {
         copy.curvedSpeedPointArray = [NSMutableArray<CurvedSpeedPoint *> array];
@@ -376,19 +376,25 @@
                 option.resizeMode = PHImageRequestOptionsResizeModeExact;
                 PHFetchResult<PHAsset *> *result = [PHAsset fetchAssetsWithALAssetURLs:@[_contentURL] options:nil];
                 if (!result || result.count == 0) {
-                    return nil;
-                }
-                PHAsset* asset = [result objectAtIndex:0];
-                if ([[asset valueForKey:@"uniformTypeIdentifier"] isEqualToString:@"com.compuserve.gif"]) {
-                    _filtImagePatch = [VEHelp getMaterialThumbnail:_contentURL];
-                    _isGif = YES;
-                    [[PHImageManager defaultManager] requestImageDataForAsset:asset
-                                                                      options:option
-                                                                resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
-                        self.gifData = imageData;
-                        float imageDuration = [VECore isGifWithData:imageData];
-                        self.imageDurationTime = CMTimeMakeWithSeconds(imageDuration, TIMESCALE);
-                                                                }];
+                    NSData *data = [NSData dataWithContentsOfURL:_contentURL];
+                    if (data) {
+                        data = nil;
+                    }else {
+                        return nil;
+                    }
+                }else {
+                    PHAsset* asset = [result objectAtIndex:0];
+                    if ([[asset valueForKey:@"uniformTypeIdentifier"] isEqualToString:@"com.compuserve.gif"]) {
+                        _filtImagePatch = [VEHelp getMaterialThumbnail:_contentURL];
+                        _isGif = YES;
+                        [[PHImageManager defaultManager] requestImageDataForAsset:asset
+                                                                          options:option
+                                                                    resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+                            self.gifData = imageData;
+                            float imageDuration = [VECore isGifWithData:imageData];
+                            self.imageDurationTime = CMTimeMakeWithSeconds(imageDuration, TIMESCALE);
+                        }];
+                    }
                 }
             }else {
                 NSData *data = [NSData dataWithContentsOfURL:_contentURL];

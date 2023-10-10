@@ -348,8 +348,12 @@
         cell.isDragToChange = _isDragToChange;
         
         [cell initCollectView:_isVertical_Cell atWidth:_cellWidth atHeight:_cellHeight minimumInteritemSpacing:_cellMinimumInteritemSpacing minimumLineSpacing:_cellMinimumLineSpacing];
-        cell.collectionView.contentInset = UIEdgeInsetsMake(0, _cellMinimumInteritemSpacing + (_isVertical_Cell ? 2 : 0), 0, _cellMinimumInteritemSpacing + (_isVertical_Cell ? 2 : 0));
-       
+        if (_isVertical_Cell) {
+            cell.collectionView.contentInset = UIEdgeInsetsMake(_cellMinimumLineSpacing, _cellMinimumInteritemSpacing + 2, _cellMinimumLineSpacing, _cellMinimumInteritemSpacing + 2);
+        }else {
+            cell.collectionView.contentInset = UIEdgeInsetsMake(0, _cellMinimumInteritemSpacing + 2, 0, _cellMinimumInteritemSpacing + 2);
+        }
+        
         if( (!_isImageShow) && ( !_isVertical_Cell ) && (!_isNotMove)  )
         {
             if( (_currentCellIndex != -1) && (_currentCellIndex == indexPath.row ) )

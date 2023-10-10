@@ -72,7 +72,7 @@ typedef NS_ENUM(NSInteger, VECropType){
     VE_VECROPTYPE_2TO1      = 14,      //2:1
     VE_VECROPTYPE_185TO1    = 15,      //1.85:1
     VE_VECROPTYPE_FIXEDRATIO = 16,    /**< 固定比例裁切*/
-    VE_VECROPTYPE_1TO2      = 17,      //2:1
+    VE_VECROPTYPE_1TO2      = 17,      //1:2
 };
 
 //typedef NS_ENUM(NSInteger, VECropType){

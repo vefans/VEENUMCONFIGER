@@ -1081,6 +1081,7 @@
 "%s 秒" = "%s s";
 "未允许读取图片、视频！" = "Reading pictures and videos is not enabled!";
 "全部图片" = "All pictures";
+"自定义时长" = "Custom duration";
 "录音失败，请重试!" = "Failed to record audio, please try again!";
 "录音时间太短，请重试!" = "Recording time is too short, please try again!";
 "确认删除吗?" = "Confirm deleting?";
@@ -2435,7 +2436,7 @@
 "时长不足，填充为图片" = "Insufficient time, fill with picture";
 "最近项目" = "Recents";
 "添加点" = "Add beat";
-"删除点" = "Delete beat";
+"删除点" = "Delete";
 "批量编辑" = "Batch edit";
 "总共%d条字幕" = "Total %d subtitles";
 "点击或长按进行录音" = "Tap or press and hold to record";
@@ -2488,6 +2489,7 @@
 "请输入正确的宽高比（例如：16:9）" = "Enter right ratio（e.g：16:9）";
 "防抖" = "Stabilize";
 "防抖转换中..." = "Anti-shake transitioning...";
+"防抖转换中%0.1f%%" = "Anti-shake transitioning %0.1f%%";
 "音频卡点" = "Audio Card Point";
 "去选图" = "Album";
 "自动卡点" = "Automatic";
@@ -2824,3 +2826,76 @@
 "After compression" = "After";
 "Clarity Priority" = "Clarity";
 "Compression Priority" = "Size";
+
+"画面人脸完整露出时挡脸效果更好" = "Face blocking works better when the face is fully exposed.";
+"图片保存成功" = "Image saved successfully";
+"AI识别失败！" = "AI recognition failure!";
+"内录" = "Inside record";
+"麦克风+内录" = "Microphone + recording";
+
+"更多操作" = "More operations";
+"转文字" = "To text";
+"重命名" = "Rename";
+"移动" = "Move";
+"删除" = "Delete";
+
+"导出文字" = "Export text";
+"导出txt" = "Export txt";
+"导出word" = "Export word";
+
+"导出视频" = "Export video";
+"分享音频" = "Share audio";
+"生成视频" = "Generate video";
+
+"无" = "None";
+"普通" = "Normal";
+"低" = "Low";
+"高" = "High";
+
+" iTunes没有发现音乐" = "iTunes found no music";
+
+"导出文案" = "Export copy";
+"更多主播" = "More anchors";
+
+"文案素材" = "Material";
+
+"声音设置" = "Settings";
+"主播音量" = "Volume";
+"主播语速" = "Speed";
+"主播语调" = "Tone";
+"背景音乐" = "Music Volume";
+"背景音乐延迟结束" = "End of background music delay";
+"文本播报延迟开始" = "Delayed start of text broadcast";
+"背景音乐播放0秒后，开始播放文本内容" = "After 0 seconds of background music, start to play the text content";
+"背景音乐播放%d秒后，开始播放文本内容" = "After the background music plays for %d seconds, start playing the text content";
+"文本播放结束后，0秒后结束背景音乐播放" = "After the text is played, the background music is played after 0 seconds";
+"文本播放结束后，%d秒后结束背景音乐播放" = "End the background music after %d seconds";
+
+"请先添加背景音乐" = "Please add background music first";
+"请输入文本内容" = "Please enter the text content";
+
+"点击输入文字，可以导入文档、输入粘贴文字，或从文本模板中选择或修改文案。支持切换主播、背景音乐，调整播放效果。调整完成后，支持试听和保存音频。" = "Click Enter text to import the document, enter paste text, or select or modify the text from the text template. Support switching anchor, background music, adjust the playback effect. After the adjustment is completed, it supports listening and saving the audio.";
+"试听中" = "In audition";
+"暂停中" = "In pause";
+
+"文案素材" = "Copy material";
+
+"生成音频失败" = "Failed to generate audio";
+"请先选择需要停顿的位置" = "Please select the position to pause first.";
+
+"背景音乐" = "Music";
+"导出音频" = "Export audio";
+"提示：字数最多%d个" = "Tip: Max %d words";
+"制作教程" = "Make a tutorial";
+"1、点击输入文字" = "1, click the input text";
+"可以导入文档、输入粘贴文字，或从文本模板中选择或修改文案。" = "You can import documents, enter paste text, or select or modify text from a text template.";
+"2、调整和设置" = "2. Adjust and set";
+"支持切换主播、背景音乐，调整播放效果。" = "Support to switch anchor, background music, adjust the playback effect.";
+"3、试听及保存音频" = "3, listen and save audio";
+"调整完成后，支持试听和保存音频。" = "After adjustment, you can listen and save audio.";
+"多音字" = "Polyphone";
+"插入停顿" = "Insert pause";
+"在光标处插入停顿" = "Insert pause at cursor";
+
+"停顿" = "Pause";
+

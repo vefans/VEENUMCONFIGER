@@ -20,8 +20,20 @@
     return self;
 }
 - (void)initFocusView{
-    _focusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 12, 12)];
+    _focusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
     _focusView.backgroundColor = [UIColor clearColor];
+    _focusView.layer.cornerRadius = _focusView.frame.size.width / 2.0;
+    _focusView.layer.masksToBounds = YES;
+    _focusView.layer.borderColor = [UIColor whiteColor].CGColor;
+    _focusView.layer.borderWidth = 4.0;
+    [self addSubview:_focusView];
+#if 1
+    UIView *circleView = [[UIView alloc] initWithFrame:CGRectMake((_focusView.frame.size.width - 5) / 2.0, (_focusView.frame.size.height - 5) / 2.0, 5, 5)];
+    circleView.backgroundColor = [UIColor whiteColor];
+    circleView.layer.cornerRadius = circleView.frame.size.width / 2.0;
+    circleView.layer.masksToBounds = YES;
+    [_focusView addSubview:circleView];
+#else
     for (int i = 0; i<4; i++) {
         UIView *itemView = [[UIView alloc] init];
         switch (i) {
@@ -51,7 +63,6 @@
         itemView.backgroundColor = [UIColor whiteColor];
         [_focusView addSubview:itemView];
     }
-    [self addSubview:_focusView];
     _focusView.center = CGPointMake(self.frame.size.width/2.0, self.frame.size.height/2.0);
     
     _strawLayer = [[CALayer alloc] init];
@@ -75,6 +86,7 @@
             [CATransaction commit];
         }
     });
+#endif
 }
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     if([_delegate respondsToSelector:@selector(changeDragViewColor: isDragEnd:)]){
@@ -96,6 +108,7 @@
     if(!event){
         _focusView.center = CGPointMake(1, 1);
     }
+#if 0
     UIWindow * window=[[[UIApplication sharedApplication] delegate] window];
     CGRect rect=[_focusView convertRect:_focusView.bounds toView:window];
     CGPoint position = CGPointMake(CGRectGetMidX(rect) + 15 - _strawLayer.frame.size.width/2.0, rect.origin.y - _strawLayer.frame.size.height/2.0);
@@ -106,10 +119,11 @@
     [CATransaction setDisableActions:YES];
     _strawLayer.frame = frame;
     [CATransaction commit];
+#endif
     [self resetColor];
 }
 - (void)resetColor{
-    UIImage *image = [self imageFromLayer:self.headerLayer];
+//    UIImage *image = [self imageFromLayer:self.headerLayer];
 //    UIColor *color = [VEHelp colorAtPixel:CGPointMake(_focusView.center.x, _focusView.center.y) source:image];
     float saturation = (_focusView.center.x/self.frame.size.width - 0.1)/0.9;
     float brightness = (1.0 - _focusView.center.y/self.frame.size.height)/0.9;
@@ -156,6 +170,7 @@
 -(void)setFocusViewCenter:( CGPoint ) point
 {
     _focusView.center = point;
+#if 0
     UIWindow * window=[[[UIApplication sharedApplication] delegate] window];
     CGRect rect=[_focusView convertRect:_focusView.bounds toView:window];
     CGPoint position = CGPointMake(CGRectGetMidX(rect) + 15 - _strawLayer.frame.size.width/2.0, rect.origin.y - _strawLayer.frame.size.height/2.0);
@@ -166,6 +181,7 @@
     [CATransaction setDisableActions:YES];
     _strawLayer.frame = frame;
     [CATransaction commit];
+#endif
     [self resetColor];
 }
 @end
