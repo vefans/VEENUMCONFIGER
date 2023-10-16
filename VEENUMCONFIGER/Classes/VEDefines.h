@@ -688,6 +688,8 @@ isPhoneX;\
 #define kTextImageFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/TextImage"]
 #define kCoverFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/cover"]
 #define kCanvasFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/Canvas"]
+#define kLocalCanvasFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/LocalCanvas"]
+#define kLocalCanvasPlist [kLocalCanvasFolder stringByAppendingPathComponent:@"LocalCanvas.plist"]
 #define kCoverTemplateFodler [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/coverTemplateFolder"]
 
 #define kDoodleFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/doodle"]
@@ -714,6 +716,7 @@ isPhoneX;\
 
 //自定义贴纸
 #define kCustomStickerFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/CustomStickerFolder/"]
+#define kCollectStickerPlistPath [kCustomStickerFolder stringByAppendingPathComponent:@"CollectSticker.plist"]
 
 #pragma mark- 换背景
 #define KChangeBackgroundFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/ChangeBackground"]

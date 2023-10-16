@@ -14870,136 +14870,152 @@ static OSType help_inputPixelFormat(){
 
 +(NSMutableArray *)getPrivateCloud_StartASR:( NSMutableArray * ) uploadFileURLs atLanguage:( NSString * ) language atIsCancel:( BOOL * ) isCancel  atURL:( NSString * ) url atAppkey:( NSString * ) appkey
 {
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:[NSURL URLWithString:url]];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    
-//    [VEConfigManager sharedManager].appKey
-    NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setValue:appkey forKey:@"appkey"];
-    [params setValue:@"make" forKey:@"cmd"];
-    {
-        NSMutableDictionary *param = [NSMutableDictionary dictionary];
-        [param setValue:@"asr" forKey:@"guid"];
-        [param setObject:uploadFileURLs forKey:@"pics"];
+    @autoreleasepool {
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:[NSURL URLWithString:url]];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        
+        //    [VEConfigManager sharedManager].appKey
+        NSMutableDictionary *params = [NSMutableDictionary dictionary];
+        [params setValue:appkey forKey:@"appkey"];
+        [params setValue:@"make" forKey:@"cmd"];
         {
-            NSMutableDictionary *param1 = [NSMutableDictionary dictionary];
-            [param setValue:@"" forKey:@"callback"];
-            if( [language isEqualToString:@"zh"] )
-                [param1 setObject:@"funasr" forKey:@"method"];
-            else{
-                [param1 setObject:@"srt" forKey:@"format"];
-                [param1 setObject:language forKey:@"language"];
-                [param1 setObject:@"faster-whisper" forKey:@"method"];
-                [param1 setObject:@"medium" forKey:@"model"];
+            NSMutableDictionary *param = [NSMutableDictionary dictionary];
+            [param setValue:@"asr" forKey:@"guid"];
+            [param setObject:uploadFileURLs forKey:@"pics"];
+            {
+                NSMutableDictionary *param1 = [NSMutableDictionary dictionary];
+                [param setValue:@"" forKey:@"callback"];
+                if( [language isEqualToString:@"zh"] )
+                    [param1 setObject:@"funasr" forKey:@"method"];
+                else{
+                    [param1 setObject:@"srt" forKey:@"format"];
+                    [param1 setObject:language forKey:@"language"];
+                    [param1 setObject:@"faster-whisper" forKey:@"method"];
+                    [param1 setObject:@"medium" forKey:@"model"];
+                }
+                [param setObject:param1 forKey:@"extra"];
             }
-            [param setObject:param1 forKey:@"extra"];
+            [params setObject:param forKey:@"param"];
         }
-        [params setObject:param forKey:@"param"];
-    }
-    NSData *data = [NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil];
-    NSString *jsonParams = [[NSString alloc]initWithData: data encoding: NSUTF8StringEncoding];
-    data = [jsonParams dataUsingEncoding:NSUTF8StringEncoding];
-    
-    [request setHTTPBody:data];
-    [request setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
-    
-    if( (*isCancel) )
-    {
-        return nil;
-    }
-    __block NSHTTPURLResponse* urlResponse = nil;
-    __block NSError *error;
-    __block NSData *responseData = nil;
-    dispatch_semaphore_t disp = dispatch_semaphore_create(0);
-    NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error1) {
-        //处理model
-        urlResponse = (NSHTTPURLResponse*)response;
-        responseData = data;
-        error = error1;
-        dispatch_semaphore_signal(disp);
-    }];
-    [dataTask resume];
-    dispatch_semaphore_wait(disp, DISPATCH_TIME_FOREVER);
-    
-    if(error){
-        NSLog(@"error:%@",[error description]);
-    }
-    if( (*isCancel) )
-    {
-        return nil;
-    }
-    if(!responseData){
-        return nil;
-    }
-    id objc = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
-    if( [objc[@"code"] intValue] == 0 )
-    {
-        NSDictionary *data = objc[@"data"];
-        if( data[@"taskId"] )
+        NSData *data = [NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *jsonParams = [[NSString alloc]initWithData: data encoding: NSUTF8StringEncoding];
+        data = [jsonParams dataUsingEncoding:NSUTF8StringEncoding];
+        
+        [request setHTTPBody:data];
+        [request setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
+        
+        if( (*isCancel) )
         {
-            NSString * taskId = data[@"taskId"];
-           NSString *asrUrl =  [VEHelp getPrivateCloud_EndASRWith:taskId atIsCancel:isCancel atURL:url atAppkey:appkey atIndex:0];
-            if( (*isCancel) )
+            return nil;
+        }
+        __block NSHTTPURLResponse* urlResponse = nil;
+        __block NSError *error;
+        __block NSData *responseData = nil;
+        dispatch_semaphore_t disp = dispatch_semaphore_create(0);
+        NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error1) {
+            //处理model
+            urlResponse = (NSHTTPURLResponse*)response;
+            responseData = data;
+            error = error1;
+            dispatch_semaphore_signal(disp);
+        }];
+        [dataTask resume];
+        dispatch_semaphore_wait(disp, DISPATCH_TIME_FOREVER);
+        
+        if(error){
+            NSLog(@"error:%@",[error description]);
+        }
+        if( (*isCancel) )
+        {
+            return nil;
+        }
+        if(!responseData){
+            return nil;
+        }
+        id objc = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
+        [dataTask cancel];
+        dataTask = nil;
+        if( [objc[@"code"] intValue] == 0 )
+        {
+            NSDictionary *data = objc[@"data"];
+            if( data[@"taskId"] )
             {
-                return nil;
-            }
-            if( asrUrl )
-            {
+                NSString * taskId = data[@"taskId"];
+                NSString *asrUrl = nil;
+                for (;!asrUrl;) {
+                    @autoreleasepool {
+                        NSString * str = [VEHelp getPrivateCloud_EndASRWith:taskId atIsCancel:isCancel atURL:url atAppkey:appkey atIndex:0];
+                        if( [str isKindOfClass:[NSNumber class]] )
+                        {
+                            break;
+                        }
+                        else{
+                            asrUrl = str;
+                        }
+                    };
+                }
                 if( (*isCancel) )
                 {
                     return nil;
                 }
-                __block NSString *filePath = nil;
-                dispatch_semaphore_t sema1= dispatch_semaphore_create(0);
-                if(![[NSFileManager defaultManager] fileExistsAtPath:kTemplateThemeFolder]){
-                    [[NSFileManager defaultManager] createDirectoryAtPath:kTemplateThemeFolder withIntermediateDirectories:YES attributes:nil error:nil];
+                if( asrUrl )
+                {
+                    if( (*isCancel) )
+                    {
+                        return nil;
+                    }
+                    __block NSString *filePath = nil;
+                    dispatch_semaphore_t sema1= dispatch_semaphore_create(0);
+                    if(![[NSFileManager defaultManager] fileExistsAtPath:kTemplateThemeFolder]){
+                        [[NSFileManager defaultManager] createDirectoryAtPath:kTemplateThemeFolder withIntermediateDirectories:YES attributes:nil error:nil];
+                    }
+                    VEFileDownloader *downLoader = [[VEFileDownloader alloc] init];
+                    [downLoader downloadFileWithURL:asrUrl cachePath:kTemplateThemeFolder HTTPMethod:VEGET progress:^(NSNumber *numProgress) {
+                    } finish:^(NSString *fileCachePath) {
+                        filePath = fileCachePath;
+                        dispatch_semaphore_signal(sema1);
+                    } fail:^(NSError *error) {
+                        dispatch_semaphore_signal(sema1);
+                    } cancel:nil];
+                    //                [downLoader downloadFileWithURL:asrUrl cachePath:kTemplateThemeFolder httpMethod:GET progress:nil finish:^(NSString *fileCachePath) {
+                    //                    filePath = fileCachePath;
+                    //                    dispatch_semaphore_signal(sema1);
+                    //                } fail:^(NSError *error) {
+                    //                    dispatch_semaphore_signal(sema1);
+                    //                } cancel:nil];
+                    dispatch_semaphore_wait(sema1, DISPATCH_TIME_FOREVER);
+                    
+                    NSMutableData *fileData = [[NSMutableData alloc] initWithContentsOfFile:filePath];
+                    NSString *mutableDic = [[NSString alloc]initWithData: fileData encoding:NSUTF8StringEncoding];
+                    NSString *timeText = [mutableDic stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"];
+                    timeText = [timeText stringByReplacingOccurrencesOfString:@"\n\n" withString:@"\n"];
+                    timeText = [timeText stringByReplacingOccurrencesOfString:@" --> " withString:@"\n"];
+                    NSMutableArray *contentArray = [[NSMutableArray alloc] initWithArray:[timeText componentsSeparatedByString:@"\n"]];
+                    if( [((NSString*)contentArray[contentArray.count-1]) isEqualToString:@""] )
+                        [contentArray removeObjectAtIndex:contentArray.count-1];
+                    
+                    [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+                    
+                    NSMutableArray *array = [NSMutableArray new];
+                    for (int i = 0; (contentArray.count/4) > i ; i++) {
+                        int index = i*4;
+                        NSString *startTimeStr = contentArray[index+1];
+                        NSString *endTimeStr = contentArray[index+2];
+                        NSString *text = contentArray[index+3];
+                        NSMutableArray *objArray = [NSMutableArray new];
+                        [objArray addObject:[NSNumber numberWithFloat:[VEHelp getTimeWidthString:startTimeStr]]];
+                        [objArray addObject:[NSNumber numberWithFloat:[VEHelp getTimeWidthString:endTimeStr]]];
+                        [objArray addObject:text];
+                        [array addObject:objArray];
+                    }
+                    return array;
                 }
-                VEFileDownloader *downLoader = [[VEFileDownloader alloc] init];
-                [downLoader downloadFileWithURL:asrUrl cachePath:kTemplateThemeFolder HTTPMethod:VEGET progress:^(NSNumber *numProgress) {
-                } finish:^(NSString *fileCachePath) {
-                    filePath = fileCachePath;
-                    dispatch_semaphore_signal(sema1);
-                } fail:^(NSError *error) {
-                    dispatch_semaphore_signal(sema1);
-                } cancel:nil];
-//                [downLoader downloadFileWithURL:asrUrl cachePath:kTemplateThemeFolder httpMethod:GET progress:nil finish:^(NSString *fileCachePath) {
-//                    filePath = fileCachePath;
-//                    dispatch_semaphore_signal(sema1);
-//                } fail:^(NSError *error) {
-//                    dispatch_semaphore_signal(sema1);
-//                } cancel:nil];
-                dispatch_semaphore_wait(sema1, DISPATCH_TIME_FOREVER);
-                
-                NSMutableData *fileData = [[NSMutableData alloc] initWithContentsOfFile:filePath];
-                NSString *mutableDic = [[NSString alloc]initWithData: fileData encoding:NSUTF8StringEncoding];
-                NSString *timeText = [mutableDic stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"];
-                timeText = [timeText stringByReplacingOccurrencesOfString:@"\n\n" withString:@"\n"];
-                timeText = [timeText stringByReplacingOccurrencesOfString:@" --> " withString:@"\n"];
-                NSMutableArray *contentArray = [[NSMutableArray alloc] initWithArray:[timeText componentsSeparatedByString:@"\n"]];
-                if( [((NSString*)contentArray[contentArray.count-1]) isEqualToString:@""] )
-                    [contentArray removeObjectAtIndex:contentArray.count-1];
-                
-                [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-                
-                NSMutableArray *array = [NSMutableArray new];
-                for (int i = 0; (contentArray.count/4) > i ; i++) {
-                    int index = i*4;
-                    NSString *startTimeStr = contentArray[index+1];
-                    NSString *endTimeStr = contentArray[index+2];
-                    NSString *text = contentArray[index+3];
-                    NSMutableArray *objArray = [NSMutableArray new];
-                    [objArray addObject:[NSNumber numberWithFloat:[VEHelp getTimeWidthString:startTimeStr]]];
-                    [objArray addObject:[NSNumber numberWithFloat:[VEHelp getTimeWidthString:endTimeStr]]];
-                    [objArray addObject:text];
-                    [array addObject:objArray];
-                }
-                return array;
             }
         }
-    }
-    return nil;
+        return nil;
+    };
 }
 
 +(float)getTimeWidthString:( NSString * ) strTime
@@ -15023,86 +15039,91 @@ static OSType help_inputPixelFormat(){
 
 +(NSString *)getPrivateCloud_EndASRWith:( NSString * ) taskId  atIsCancel:( BOOL * ) isCancel   atURL:( NSString * ) url  atAppkey:( NSString * ) appkey atIndex:( NSInteger ) index
 {
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:[NSURL URLWithString:url]];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    
-    NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setValue:appkey forKey:@"appkey"];
-    [params setValue:@"quest" forKey:@"cmd"];
-    {
-        NSMutableDictionary *param = [NSMutableDictionary dictionary];
-        //        [param setValue:@"" forKey:@"callback"];
-        [param setObject:taskId forKey:@"taskId"];
-        [params setObject:param forKey:@"param"];
-    }
-    NSData *data = [NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil];
-    NSString *jsonParams = [[NSString alloc]initWithData: data encoding: NSUTF8StringEncoding];
-    data = [jsonParams dataUsingEncoding:NSUTF8StringEncoding];
-    
-    [request setHTTPBody:data];
-    [request setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
-    if( (*isCancel) )
-    {
-        return nil;
-    }
-    __block NSHTTPURLResponse* urlResponse = nil;
-    __block NSError *error;
-    __block NSData *responseData = nil;
-    dispatch_semaphore_t disp = dispatch_semaphore_create(0);
-    NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error1) {
-        //处理model
-        urlResponse = (NSHTTPURLResponse*)response;
-        responseData = data;
-        error = error1;
-        dispatch_semaphore_signal(disp);
-    }];
-    [dataTask resume];
-    dispatch_semaphore_wait(disp, DISPATCH_TIME_FOREVER);
-    if( (*isCancel) )
-    {
-        return nil;
-    }
-    if(error){
-        NSLog(@"error:%@",[error description]);
-    }
-    if(!responseData){
-        return nil;
-    }
-    id objc = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
-    if( [objc[@"code"] intValue] == 0 )
-    {
-        NSDictionary *dicData = objc[@"data"];
-        int status = -1;
-        if( dicData[@"status"] )
+    @autoreleasepool {
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL:[NSURL URLWithString:url]];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        
+        NSMutableDictionary *params = [NSMutableDictionary dictionary];
+        [params setValue:appkey forKey:@"appkey"];
+        [params setValue:@"quest" forKey:@"cmd"];
         {
-            status = [dicData[@"status"] intValue];
+            NSMutableDictionary *param = [NSMutableDictionary dictionary];
+            //        [param setValue:@"" forKey:@"callback"];
+            [param setObject:taskId forKey:@"taskId"];
+            [params setObject:param forKey:@"param"];
         }
-        if( status == 0 )
+        NSData *data = [NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *jsonParams = [[NSString alloc]initWithData: data encoding: NSUTF8StringEncoding];
+        data = [jsonParams dataUsingEncoding:NSUTF8StringEncoding];
+        
+        [request setHTTPBody:data];
+        [request setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
+        if( (*isCancel) )
         {
-            sleep(0.2);
-            if( (*isCancel) )
-            {
-                return nil;
-            }
-//            if( index <= 100 )
-            return [VEHelp getPrivateCloud_EndASRWith:taskId atIsCancel:isCancel atURL:url atAppkey:appkey atIndex:index+1];
-//            else
-//                return nil;
+            return nil;
         }
-        else{
-            if( (*isCancel) )
-            {
-                return nil;
-            }
-            if(  dicData[@"videoUrl"] )
-                return dicData[@"videoUrl"];
-            else
-                return nil;
+        __block NSHTTPURLResponse* urlResponse = nil;
+        __block NSError *error;
+        __block NSData *responseData = nil;
+        dispatch_semaphore_t disp = dispatch_semaphore_create(0);
+        NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error1) {
+            //处理model
+            urlResponse = (NSHTTPURLResponse*)response;
+            responseData = data;
+            error = error1;
+            dispatch_semaphore_signal(disp);
+        }];
+        [dataTask resume];
+        dispatch_semaphore_wait(disp, DISPATCH_TIME_FOREVER);
+        if( (*isCancel) )
+        {
+            return nil;
         }
-    }
-    return nil;
+        if(error){
+            NSLog(@"error:%@",[error description]);
+        }
+        if(!responseData){
+            return nil;
+        }
+        id objc = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
+        if( [objc[@"code"] intValue] == 0 )
+        {
+            NSDictionary *dicData = objc[@"data"];
+            int status = -1;
+            if( dicData[@"status"] )
+            {
+                status = [dicData[@"status"] intValue];
+            }
+            if( status == 0 )
+            {
+                sleep(2);
+                if( (*isCancel) )
+                {
+                    return nil;
+                }
+    //            if( index <= 20 )
+    //                return [VEHelp getPrivateCloud_EndASRWith:taskId atIsCancel:isCancel atURL:url atAppkey:appkey atIndex:index+1];
+    //            else
+                    return nil;
+            }
+            else if( status == 2 ){
+                if( (*isCancel) )
+                {
+                    return nil;
+                }
+                if(  dicData[@"videoUrl"] )
+                    return dicData[@"videoUrl"];
+                else
+                    return nil;
+            }
+            else if( status == -1 ){
+                return [NSNumber numberWithInteger:status];
+            }
+        }
+        return nil;
+    };
 }
 
 + (NSMutableArray *)breakSentenceWithText:(NSString *)sentence lineMaxTextLength:(int)lineMaxTextLength
