@@ -609,6 +609,7 @@ isPhoneX;\
 #define kHandleHeight 50.0    //把手高度
 
 #define MAX_DETECT_NUM 21 //最大检测次数
+#define kCollectionMarkTag -100
 
 #define kBundName @"VEEditSDK"
 #define kVELanguage @"VELanguage"
@@ -661,6 +662,7 @@ isPhoneX;\
 
 #define kSpecialEffectFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/SpecialEffect"]
 #define kNewSpecialEffectPlistPath [kSpecialEffectFolder stringByAppendingPathComponent:@"SpecialEffectList_New.plist"]
+#define kCollectEffectPlistPath [kSpecialEffectFolder stringByAppendingPathComponent:@"CollectEffect.plist"]
 
 #define kBoxEffectFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/BoxEffect"]
 #define kNewBoxEffectPlistPath [kBoxEffectFolder stringByAppendingPathComponent:@"BoxEffectList_New.plist"]
@@ -748,10 +750,12 @@ isPhoneX;\
 #define kSubtitleTTSPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleTTSListType.plist"]
 
 #define kFontFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"Font"]
+#define kLocalFontFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"LocalFont"]
 #define kFontIconPath [kFontFolder stringByAppendingPathComponent:@"icon"]
 #define kFontPlistPath [kFontFolder stringByAppendingPathComponent:@"fontList2020.plist"]
 #define kFontIconPlistPath [kFontFolder stringByAppendingPathComponent:@"fontIconList2020.plist"]
 #define kFontCheckPlistPath [kFontFolder stringByAppendingPathComponent:@"fontCheckList2020.plist"]
+#define kCollectFontPlistPath [kFontFolder stringByAppendingPathComponent:@"CollectFont.plist"]
 #define kFontType @"font_family_2"
 #define kPESDKFontType @"font"
 #define kDefaultFontPath [VEEditResourceBundle pathForResource:@"New_EditVideo/text_sample/PingFang-SC-Regular" ofType:@"otf"]

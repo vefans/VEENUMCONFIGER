@@ -29,6 +29,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, assign) bool               isNotMove;
 
+@property (nonatomic) CGSize headerReferenceSize;//Default is CGSizeZero.
+@property (nonatomic) CGSize footerReferenceSize;//Default is CGSizeZero.
+
 -(void)initCollectView:(BOOL) isVertical_Cell atWidth:(float) cellWidth atHeight:(float) cellHeight minimumInteritemSpacing:(float)minimumInteritemSpacing minimumLineSpacing:(float)minimumLineSpacing;
 
 @end
@@ -36,6 +39,10 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol VENetworkMaterialCollectionViewCellDelegate <NSObject>
 @optional
 -(UIView *)btnCollectCell:(NSInteger) index atIndexCount:(NSInteger) indexCount collectionView:(UICollectionView *)collectionView cell:(VENetworkMaterialBtn_Cell *)btnCell;
+
+- (void)veNetworkMaterialCellHeaderView:(UICollectionReusableView *)headerView;
+
+- (void)veNetworkMaterialCellFooterView:(UICollectionReusableView *)footerView;
 
 -(void)CellIndex:(NSInteger) index;
 

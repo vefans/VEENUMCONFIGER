@@ -50,6 +50,9 @@
         selectedItemIndex:(NSInteger)selectedItemIndex;
 
 -(void)freNetWorkMaterialVIew;
+
+- (CGPoint)getCurrentCellContentOffset;
+- (void)setCurrentCellContentOffset:(CGPoint)contentOffset animated:(BOOL)animated;
 @end
 
 @protocol VENetworkMaterialViewDelegate <NSObject>
@@ -57,8 +60,13 @@
 -(void) CellIndex:(NSInteger) index atNetwork:(VENetworkMaterialView *) network;
 -(UIView *)btnCollectCell:(NSInteger) index atIndexCount:(NSInteger) indexCount atNetwork:(VENetworkMaterialView *) network cell:(VENetworkMaterialBtn_Cell *)btnCell;
 -(NSInteger) indexCountCell:(NSInteger) index atNetwork:(VENetworkMaterialView *) network;
+-(NSInteger) indexCountCell:(NSInteger) index headerReferenceSize:(CGSize *)headerReferenceSize footerReferenceSize:(CGSize *)footerReferenceSize atNetwork:(VENetworkMaterialView *) network;
 
 -(UIView *)ImageViewCollectCell:(NSInteger) indexCount atNetwork:(VENetworkMaterialView *) network;
+
+- (void)veNetworkMaterialViewHeaderView:(UICollectionReusableView *)headerView;
+
+- (void)veNetworkMaterialViewFooterView:(UICollectionReusableView *)footerView;
 
 #pragma mark - UIScrollViewDelegate (时间轴的更新操作)
 //开始滑动

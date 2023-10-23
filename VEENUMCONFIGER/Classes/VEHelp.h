@@ -479,6 +479,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(void)getConfig_CaptionEx:( CaptionEx * ) captionEx atCaptionConfig:( NSString * ) configPath atConfig:( NSDictionary** ) config;
 #pragma mark- 贴纸
 +(void)getConfig_CaptionStickerEx:( CaptionEx * ) captionEx atCaptionConfig:( NSString * ) configPath atConfig:( NSDictionary** ) config;
++ (NSString *)getCaptionWebmAudioPathWithConfigPath:(NSString *)configPath;
 
 + (NSString *)getVerBationAnimationFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 

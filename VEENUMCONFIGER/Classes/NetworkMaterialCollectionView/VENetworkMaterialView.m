@@ -263,7 +263,31 @@
     }
 }
 
+- (CGPoint)getCurrentCellContentOffset {
+    VENetworkMaterialCollectionViewCell *currentCell = (VENetworkMaterialCollectionViewCell *)[_collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    return currentCell.collectionView.contentOffset;
+}
 
+- (void)setCurrentCellContentOffset:(CGPoint)contentOffset animated:(BOOL)animated {
+    VENetworkMaterialCollectionViewCell *currentCell = (VENetworkMaterialCollectionViewCell *)[_collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    if (_isVertical_Cell) {
+        if (contentOffset.y > 0 && contentOffset.y > currentCell.collectionView.contentSize.height - currentCell.contentView.frame.size.height) {
+            contentOffset = CGPointMake(contentOffset.x, currentCell.collectionView.contentSize.height - currentCell.contentView.frame.size.height);
+        }
+        if (contentOffset.y < -currentCell.collectionView.contentInset.top) {
+            contentOffset = CGPointMake(contentOffset.x, -currentCell.collectionView.contentInset.top);
+        }
+    }
+    else {
+        if (contentOffset.x > 0 && contentOffset.x > currentCell.collectionView.contentSize.width - currentCell.contentView.frame.size.width) {
+            contentOffset = CGPointMake(currentCell.collectionView.contentSize.width - currentCell.contentView.frame.size.width, contentOffset.y);
+        }
+        if (contentOffset.x < -currentCell.collectionView.contentInset.left) {
+            contentOffset = CGPointMake(-currentCell.collectionView.contentInset.left, contentOffset.y);
+        }
+    }
+    [currentCell.collectionView setContentOffset:contentOffset animated:animated];
+}
 
 #pragma mark- UICollectionViewDelegate/UICollectViewdataSource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
@@ -334,7 +358,12 @@
         cell.index = 0;
         [cell.collectionView setContentOffset:CGPointMake(0, 0)];
         
-        if( _delegate && [_delegate respondsToSelector:@selector(indexCountCell:atNetwork:)] )
+        CGSize headerReferenceSize = CGSizeZero;
+        CGSize footerReferenceSize = CGSizeZero;
+        if (_delegate && [_delegate respondsToSelector:@selector(indexCountCell:headerReferenceSize:footerReferenceSize:atNetwork:)]) {
+            cell.indexCount = [_delegate indexCountCell:indexPath.row headerReferenceSize:&headerReferenceSize footerReferenceSize:&footerReferenceSize atNetwork:self];
+        }
+        else if( _delegate && [_delegate respondsToSelector:@selector(indexCountCell:atNetwork:)] )
             cell.indexCount = [_delegate indexCountCell:indexPath.row atNetwork:self];
         
         cell.index = indexPath.row;
@@ -353,6 +382,8 @@
         }else {
             cell.collectionView.contentInset = UIEdgeInsetsMake(0, _cellMinimumInteritemSpacing + 2, 0, _cellMinimumInteritemSpacing + 2);
         }
+        cell.headerReferenceSize = headerReferenceSize;
+        cell.footerReferenceSize = footerReferenceSize;
         
         if( (!_isImageShow) && ( !_isVertical_Cell ) && (!_isNotMove)  )
         {
@@ -425,6 +456,18 @@
         [_delegate CellIndex:index atNetwork:self];
         [_collectionView setContentOffset:CGPointMake(_collectionView.frame.size.width*(index), 0) animated:true];
         [_collectionView reloadData];
+    }
+}
+
+- (void)veNetworkMaterialCellHeaderView:(UICollectionReusableView *)headerView {
+    if (_delegate && [_delegate respondsToSelector:@selector(veNetworkMaterialViewHeaderView:)]) {
+        [_delegate veNetworkMaterialViewHeaderView:headerView];
+    }
+}
+
+- (void)veNetworkMaterialCellFooterView:(UICollectionReusableView *)footerView {
+    if (_delegate && [_delegate respondsToSelector:@selector(veNetworkMaterialViewFooterView:)]) {
+        [_delegate veNetworkMaterialViewFooterView:footerView];
     }
 }
 

@@ -9716,12 +9716,41 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     }
                     captionEx.duration = duration;
                 }
+                if ([subtitleEffectConfig[@"webm"] boolValue]) {
+                    captionImage.captionImagePath = [[configPath stringByAppendingPathComponent:subtitleEffectConfig[@"name"]] stringByAppendingPathExtension:@"webm"];
+                    if (![manager fileExistsAtPath:captionImage.captionImagePath]) {
+                        NSArray *files = [manager enumeratorAtPath:configPath].allObjects;
+                        for (NSString *fileName in files) {
+                            if (fileName.pathExtension.length > 0 && [fileName.pathExtension.lowercaseString isEqualToString:@"webm"]) {
+                                captionImage.captionImagePath = [configPath stringByAppendingPathComponent:fileName];
+                                break;
+                            }
+                        }
+                    }
+                    if (!captionEx.musics) {
+                        captionEx.musics = [NSMutableArray array];
+                    }
+                    MusicInfo *music = [[MusicInfo alloc] init];
+                    music.url = [NSURL fileURLWithPath:[self getCaptionWebmAudioPathWithConfigPath:path]];
+                    AVURLAsset *musicAsset = [[AVURLAsset alloc]initWithURL:music.url options:nil];
+                    music.clipTimeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(CMTimeGetSeconds(musicAsset.duration), TIMESCALE));
+                    music.volume = 2.0;
+                    [captionEx.musics addObject:music];
+                    
+                    captionEx.duration = CMTimeGetSeconds(music.clipTimeRange.duration);
+                }
             }
         }
     }@catch (NSException * exception)
     {
         NSLog(@"%@",exception);
     }
+}
+
++ (NSString *)getCaptionWebmAudioPathWithConfigPath:(NSString *)configPath {
+    NSString *webmAudioPath = [configPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"webmAudio.mp3"];
+    
+    return webmAudioPath;
 }
 
 #pragma mark- 气泡

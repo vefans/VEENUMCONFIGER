@@ -71,6 +71,8 @@
     _cellWidth = cellWidth;
     _cellHeight = cellHeight;
     _isVertical_Cell = isVertical_Cell;
+    _headerReferenceSize = CGSizeZero;
+    _footerReferenceSize = CGSizeZero;
     
     if( isVertical_Cell )
     {
@@ -103,6 +105,20 @@
     _collectionView.showsVerticalScrollIndicator = NO;
     
     [self addSubview:_collectionView];
+}
+
+- (void)setHeaderReferenceSize:(CGSize)headerReferenceSize {
+    _headerReferenceSize = headerReferenceSize;
+    if (!CGSizeEqualToSize(headerReferenceSize, CGSizeZero)) {
+        [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"VENetworkMaterialHeaderView"];
+    }
+}
+
+- (void)setFooterReferenceSize:(CGSize)footerReferenceSize {
+    _footerReferenceSize = footerReferenceSize;
+    if (!CGSizeEqualToSize(footerReferenceSize, CGSizeZero)) {
+        [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"VENetworkMaterialFooterView"];
+    }
 }
 
 #pragma mark-scrollView
@@ -201,7 +217,35 @@
     return 1;
 }
 
+- (CGSize )collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
+    return _headerReferenceSize;
+}
 
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
+    return _footerReferenceSize;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        if (CGSizeEqualToSize(_headerReferenceSize, CGSizeZero)) {
+            return nil;
+        }
+        UICollectionReusableView *header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"VENetworkMaterialHeaderView" forIndexPath:indexPath];
+        if (_delegate && [_delegate respondsToSelector:@selector(veNetworkMaterialCellHeaderView:)]) {
+            [_delegate veNetworkMaterialCellHeaderView:header];
+        }
+        return header;
+    }else {
+        if (CGSizeEqualToSize(_footerReferenceSize, CGSizeZero)) {
+            return nil;
+        }
+        UICollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"VENetworkMaterialFooterView" forIndexPath:indexPath];
+        if (_delegate && [_delegate respondsToSelector:@selector(veNetworkMaterialCellFooterView:)]) {
+            [_delegate veNetworkMaterialCellFooterView:footer];
+        }
+        return footer;
+    }
+}
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return _indexCount;
