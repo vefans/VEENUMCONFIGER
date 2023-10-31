@@ -46,6 +46,7 @@ VENetworkResourceType const VENetworkResourceType_DoodlePen = @"doodleeffect";//
 VENetworkResourceType const VENetworkResourceType_Mask = @"mask";//蒙版
 VENetworkResourceType const VENetworkResourceType_MaskShape = @"mask_shape";//形状蒙版
 VENetworkResourceType const VENetworkResourceType_Matting = @"video_matting";//抠图
+VENetworkResourceType const VENetworkResourceType_BookTemplate = @"templateapi_books";//书单剪同款
 
 //亮度
 float const VEAdjust_MinValue_Brightness = -1.0;
@@ -1641,6 +1642,42 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return  resourceBundle;
 }
 
++ (NSString *)getDownloadFontPathWithUfid:(NSString *)ufid {
+    NSString *path = [kFontFolder stringByAppendingPathComponent:ufid];
+    
+    return path;
+}
+
++ (NSString *)getFontPathWithUfid:(NSString *)ufid {
+    NSString *folderPath = [self getDownloadFontPathWithUfid:ufid];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSMutableArray *files = [NSMutableArray arrayWithArray:[fm contentsOfDirectoryAtPath:folderPath error:nil]];
+    if ([files containsObject:@"__MACOSX"]) {
+        [files removeObject:@"__MACOSX"];
+    }
+    NSString *fileName;
+    while (files.count == 1) {
+        fileName = files.firstObject;
+        if (fileName.pathExtension.length > 0) {
+            break;
+        }else {
+            folderPath = [folderPath stringByAppendingPathComponent:fileName];
+            files = [NSMutableArray arrayWithArray:[fm contentsOfDirectoryAtPath:folderPath error:nil]];
+            if ([files containsObject:@"__MACOSX"]) {
+                [files removeObject:@"__MACOSX"];
+            }
+        }
+    }
+    NSString *path = [folderPath stringByAppendingPathComponent:fileName];
+    
+    return path;
+}
+
++ (BOOL)isCachedFontWithUfid:(NSString *)ufid {
+    NSString *path = [self getFontPathWithUfid:ufid];
+    return [[NSFileManager defaultManager] fileExistsAtPath:path];
+}
+
 //判断是否已经缓存过这个URL
 +(BOOL) hasCachedFont:(NSString *)code url:(NSString *)fontUrl{
     
@@ -2069,6 +2106,62 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         CFRelease(fontArray);
         return customFontArray;
         
+    }
+}
+
++ (NSString *)getLocalizedFontNameWithPath:(NSString *)path {
+    path = [self getFileURLFromAbsolutePath_str:path];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        return nil;
+    }
+    @autoreleasepool {
+        CFStringRef fontPath = CFStringCreateWithCString(NULL, [path UTF8String], kCFStringEncodingUTF8);
+        CFURLRef fontUrl = CFURLCreateWithFileSystemPath(NULL, fontPath, kCFURLPOSIXPathStyle, 0);
+        if(!fontPath){
+            CFRelease(fontUrl);
+            return nil;
+        }
+        CFRelease(fontPath);
+        
+        CFArrayRef fontArray = CTFontManagerCreateFontDescriptorsFromURL(fontUrl);
+        CFRelease(fontUrl);
+        if(!fontArray){
+            return nil;
+        }
+        NSMutableArray *customFontArray = [NSMutableArray array];
+        for (CFIndex i = 0 ; i < CFArrayGetCount(fontArray); i++){
+            CTFontDescriptorRef  descriptor = CFArrayGetValueAtIndex(fontArray, i);
+            CTFontRef fontRef = CTFontCreateWithFontDescriptor(descriptor, 10, NULL);
+            if(fontRef) {
+                NSString *fontName;
+                if (!isEnglish) {
+                    CFStringRef preferredLanguage = (__bridge CFStringRef)@"zh-Hans";
+                    CFStringRef localizedFontName = CTFontCopyLocalizedName(fontRef, kCTFontFullNameKey, &preferredLanguage);
+                    fontName = (__bridge NSString *)localizedFontName;
+                    
+                    CFRelease(preferredLanguage);
+                    CFRelease(localizedFontName);
+                }
+                if (fontName.length > 0) {
+                    fontName = CFBridgingRelease(CTFontCopyName(fontRef, kCTFontPostScriptNameKey));
+                }
+                if (fontName.length > 0) {
+                    NSData *data = [fontName dataUsingEncoding:NSUTF8StringEncoding];
+                    if (data) {
+                        fontName = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                        if (fontName.length > 0) {
+                            [customFontArray addObject:fontName];
+                        }
+                    }
+                }
+                CFRelease(fontRef);
+            }
+        }
+        CFRelease(fontArray);
+        if (customFontArray.count == 0) {
+            return nil;
+        }
+        return customFontArray.lastObject;
     }
 }
 
@@ -6270,56 +6363,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if(![[params allKeys] containsObject:@"ver"])
         [params setObject:[NSNumber numberWithInt:[VECore getSDKVersion]] forKey:@"ver"];
     return [self updateInfomation:params andUploadUrl:urlPath];
-}
-
-+(void)downloadFonts:(void(^)(NSError *error))callBack
-{
-    VEEditConfiguration *editConfig =  [VEConfigManager sharedManager].peEditConfiguration;
-    NSString *uploadUrl = editConfig.fontResourceURL;
-    NSMutableDictionary *fontListDic;
-    if( [VEConfigManager sharedManager].isNewFont )
-        fontListDic = [VEHelp getNetworkMaterialWithType:kPESDKFontType
-                                                         appkey:[VEConfigManager sharedManager].appKey
-                                                  urlPath:uploadUrl];
-    else
-        fontListDic = [VEHelp getNetworkMaterialWithType:kFontType
-                                                         appkey:[VEConfigManager sharedManager].appKey
-                                                  urlPath:uploadUrl];
-    
-    if ([fontListDic[@"code"] intValue] != 0){//http://pesystem.effectlib.com/api/v1/file/list
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (callBack) {
-                NSString *message;
-                if (fontListDic) {
-                    message = fontListDic[@"msg"];
-                }
-                if (!message || message.length == 0) {
-                    message = VELocalizedString(@"下载失败，请检查网络!", nil);
-                }
-                NSDictionary *userInfo = [NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey];
-                NSError *error = [NSError errorWithDomain:@"com.PESDK.ErrorDomain" code:VESDKErrorCode_DownloadSubtitle userInfo:userInfo];
-                callBack(error);
-            }
-        });
-        return;
-    }
-    NSArray *fontList = [fontListDic objectForKey:@"data"];
-    NSDictionary *fontIconDic = [fontListDic objectForKey:@"icon"];
-    NSString *iconUrl = [fontIconDic objectForKey:@"caption"];
-    NSString *cacheFolderPath = [[VEHelp pathFontForURL:[NSURL URLWithString:iconUrl]] stringByDeletingLastPathComponent];
-    NSString *cacheIconPath = [cacheFolderPath stringByAppendingPathComponent:@"icon"];
-    if(![[NSFileManager defaultManager] fileExistsAtPath:cacheFolderPath]){
-        [[NSFileManager defaultManager] createDirectoryAtPath:cacheFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    
-    [self updateLocalMaterialWithType:VEAdvanceEditType_None newList:fontList];
-    BOOL suc = [fontList writeToFile:kFontPlistPath atomically:YES];
-    suc = [fontIconDic writeToFile:kFontIconPlistPath atomically:YES];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (callBack) {
-            callBack(nil);
-        }
-    });
 }
 
 + (void)updateLocalMaterialWithType:(VEAdvanceEditType)type newList:(NSArray *)newList {
@@ -10892,38 +10935,65 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         return  nil;
     }
     VEReachability *lexiu = [VEReachability reachabilityForInternetConnection];
-    if (materialType == kVEEFFECTS) {
-        plistPath = kNewSpecialEffectPlistPath;
-        folderPath = kSpecialEffectFolder;
-        type = @"specialeffects";
-    }
-    else if (materialType == KTRANSITION) {
-        plistPath = kTransitionPlistPath;
-        folderPath = kTransitionFolder;
-        type = @"transition";
-    }else if (materialType == kVETEXTTITLE) {//字幕
-        plistPath = kSubtitlePlistPath;
-        folderPath = kSubtitleFolder;
-        type = @"sub_title";
-    }else if (materialType == kVEMUSICAE) {
-        plistPath = kMusicAnimatePlistPath;
-        folderPath = kMVAnimateFolder;
-        type = @"mvae2";
-    }else if (materialType == kTEMPLATERECORD) {
-        plistPath = kTemplateRecordPlist;
-        folderPath = kTemplateRecordFolder;
-        type = @"recorderae";
-    } else if(materialType ==  KSTICKERANIMATION)//贴纸动画
-    {
-        plistPath = kStickerAnimationPath;
-        folderPath = KStickerAnimationFolder;
-        type = @"ani_sticker";
-    }
-    else if( kVEANIMATION == materialType )//动画
-    {
-        plistPath = kAnimationPath;
-        folderPath = KAnimationFolder;
-        type = @"animate";
+    switch (materialType) {
+        case kVEEFFECTS://特效
+        {
+            plistPath = kNewSpecialEffectPlistPath;
+            folderPath = kSpecialEffectFolder;
+            type = @"specialeffects";
+        }
+            break;
+        case KTRANSITION://转场
+        {
+            plistPath = kTransitionPlistPath;
+            folderPath = kTransitionFolder;
+            type = @"transition";
+        }
+            break;
+        case kVETEXTTITLE://字幕
+        {
+            plistPath = kSubtitleCategoryPlistPath;
+            folderPath = kSubtitleFolder;
+            type = @"sub_title";
+        }
+            break;
+        case kVEMUSICAE://音乐相册(AE)
+        {
+            plistPath = kMusicAnimatePlistPath;
+            folderPath = kMVAnimateFolder;
+            type = @"mvae2";
+        }
+            break;
+        case kTEMPLATERECORD://模板拍摄(AE)
+        {
+            plistPath = kTemplateRecordPlist;
+            folderPath = kTemplateRecordFolder;
+            type = @"recorderae";
+        }
+            break;
+        case kVEANIMATION://动画
+        {
+            plistPath = kAnimationPath;
+            folderPath = KAnimationFolder;
+            type = @"animate";
+        }
+            break;
+        case KSTICKERANIMATION://贴纸动画
+        {
+            plistPath = kStickerAnimationPath;
+            folderPath = KStickerAnimationFolder;
+            type = @"ani_sticker";
+        }
+            break;
+        case kVESORT://字体
+        {
+            plistPath = kFontPlistPath;
+            folderPath = kFontFolder;
+            type = VENetworkResourceType_Font;
+        }
+            break;
+        default:
+            break;
     }
     NSMutableArray *oldMaterialArray = [NSMutableArray arrayWithContentsOfFile:plistPath];
     if ([lexiu currentReachabilityStatus] == VEReachabilityStatus_NotReachable) {
@@ -11271,6 +11341,17 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 
             case VEAdvanceEditType_None:
             {
+#if 1
+                [self getCategoryMaterialWithAppkey:appKey
+                                        typeUrlPath:editConfig.netMaterialTypeURL
+                                    materialUrlPath:editConfig.subtitleResourceURL
+                                       materialType:kVESORT];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (callBack) {
+                        callBack(nil);
+                    }
+                });
+#else
                 NSMutableDictionary *fontListDic = [self getNetworkMaterialWithType:kFontType
                                                                    appkey:appKey
                                                                   urlPath:editConfig.fontResourceURL];
@@ -11309,6 +11390,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         callBack(nil);
                     }
                 });
+#endif
             }
                 break;
                 

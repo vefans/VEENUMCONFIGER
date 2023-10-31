@@ -29,15 +29,15 @@
             [self setMinimumTrackImage:[VEHelp imageWithColor:UIColorFromRGB(0xffffff) size:CGSizeMake(self.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
             [self setMaximumTrackImage:[VEHelp imageWithColor:UIColorFromRGB(0x2F302F) size:CGSizeMake(self.frame.size.width, 1) cornerRadius:1] forState:UIControlStateNormal];
         }else{
-            CGSize size = CGSizeMake(10, 2);
-            UIImage *trackImage = [VEHelp imageWithColor:SliderMinimumTrackTintColor size:size cornerRadius:1];
+            CGSize size = CGSizeMake(10, 1);
+            UIImage *trackImage = [VEHelp imageWithColor:SliderMinimumTrackTintColor size:size cornerRadius:0.5];
             if([VEConfigManager sharedManager].backgroundStyle ==UIBgStyleDarkContent){
-                trackImage = [VEHelp imageWithColor:UIColorFromRGB(0x131313) size:size cornerRadius:1];
+                trackImage = [VEHelp imageWithColor:UIColorFromRGB(0x131313) size:size cornerRadius:0.5];
             }
             [self setMinimumTrackImage:trackImage forState:UIControlStateNormal];
-            trackImage = [VEHelp imageWithColor:SliderMaximumTrackTintColor size:size cornerRadius:1];
+            trackImage = [VEHelp imageWithColor:SliderMaximumTrackTintColor size:size cornerRadius:0.5];
             if([VEConfigManager sharedManager].backgroundStyle ==UIBgStyleDarkContent){
-                trackImage = [VEHelp imageWithColor:UIColorFromRGB(0xcccfd6) size:size cornerRadius:1];
+                trackImage = [VEHelp imageWithColor:UIColorFromRGB(0xcccfd6) size:size cornerRadius:0.5];
             }
             [self setMaximumTrackImage:trackImage forState:UIControlStateNormal];
         }

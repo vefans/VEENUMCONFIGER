@@ -850,6 +850,7 @@ isPhoneX;\
 
 #define kTemplateRecordFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/TemplateRecord"]
 #define kTemplateRecordPlist [kTemplateRecordFolder stringByAppendingPathComponent:@"TemplateRecord.plist"]
+#define kCollectRecordTemplatePlistPath [kTemplateRecordFolder stringByAppendingPathComponent:@"CollectRecordTemplate.plist"]
 
 #pragma mark-媒体动画
 #define KAnimationFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/Animation"]

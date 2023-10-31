@@ -503,7 +503,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,assign) bool enableSubtitle;
 /** 字幕转语音 (default false),enableSubtitle为true时，才生效
- *  该功能是以阿里云智能语音为例，须设置nuiSDKConfig
  */
 @property (nonatomic,assign) bool enableSubtitleToSpeech;
 /** enableAIRecogSubtitle为true时，才生效

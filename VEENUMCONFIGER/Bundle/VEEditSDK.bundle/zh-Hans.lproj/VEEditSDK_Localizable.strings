@@ -1218,7 +1218,7 @@
 "WoodGrain" = "木纹";
 "VD" = "情人节";
 "WaterPattern" = "水纹";
-"Sky" = "天空";
+"Sky" = "换天空";
 "Pattern" = "图案";
 "StarryUniverse" = "星空宇宙";
 "Shading" = "底纹";
@@ -1526,10 +1526,12 @@
 "No effects in collection yet. Long press effect cover for local collection." = "暂无收藏的特效，长按特效封面可进行本地收藏";
 "No filters in collection yet. Long press filter cover/to add local filters for local collection." = "暂无收藏的滤镜，长按滤镜封面/添加本地滤镜，可进行本地收藏";
 "No fonts in collection yet. Long press font cover/to add local fonts for local collection." = "暂无收藏的字体，长按字体封面/添加本地字体可进行本地收藏";
-"Collection" = "收藏";
+"No templates in collection yet." = "暂无收藏的模板";
+"Collect" = "收藏";
+"Collected" = "已收藏";
 "Collection canceled" = "已取消收藏";
 "Collection successful" = "收藏成功";
-"" = "";
+"By uploading, you confirm that the font can be used for commercial purposes and does not infringe any third-party rights." = "上传即表示你确认该字体可用于商业目的且未侵犯任何三方权利。";
 "" = "";
 "" = "";
 "" = "";

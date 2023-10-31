@@ -2018,7 +2018,7 @@
 "字幕模板" = "Subtitle template";
 "贴纸" = "Stickers";
 "马赛克" = "Mosaic";
-"天空" = "Sky";
+"换天空" = "Sky";
 "运动" = "Animate";
 "固定" = "Fixed";
 "擦除" = "Eraser";
@@ -2104,12 +2104,12 @@
 "模板配方" = "Template recipe";
 "人像" = "Beauty";
 "抠图" = "Cutout";
+"去雾" = "Defog";
 "消除笔" = "Eraser";
 "图层合并" = "Layer merging";
 "合并" = "merging";
 "图层调整" = "Layer adjust";
 "裁剪" = "Crop";
-"天空" = "Sky";
 "加图" = "Add";
 "素材" = "Material";
 "景深" = "Depth of Field";

@@ -29,6 +29,7 @@ FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_DoodlePen;//
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Mask;//蒙版
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_MaskShape;//形状蒙版
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Matting;//抠图
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_BookTemplate;//书单剪同款
 
 //亮度
 extern float const VEAdjust_MinValue_Brightness;
@@ -97,7 +98,9 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSMutableArray *)getMaxLengthStringArr:(NSString *)string fontSize:(float)fontSize;
 
 + (NSString *)pathForURL_font_WEBP_down:(NSString *)name extStr:(NSString *)extStr;
-
++ (NSString *)getDownloadFontPathWithUfid:(NSString *)ufid;
++ (NSString *)getFontPathWithUfid:(NSString *)ufid;
++ (BOOL)isCachedFontWithUfid:(NSString *)ufid;
 +(BOOL) hasCachedFont:(NSString *)code url:(NSString *)fontUrl;
 
 + (UIImage *) imageWithColor:(UIColor *)color cornerRadius:(CGFloat)cornerRadius;
@@ -252,6 +255,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 /**通过字体文件路径加载字体, 适用于 ttf ，otf,ttc
  */
 + (NSMutableArray*)customFontArrayWithPath:(NSString*)path;
+
++ (NSString *)getLocalizedFontNameWithPath:(NSString*)path;
 
 //从保存到plist文件中的绝对路径获取URL
 + (NSURL *)getFileURLFromAbsolutePath:(NSString *)absolutePath;
@@ -414,8 +419,6 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(NSMutableDictionary *)jsonToObject:( NSString * ) jsonStr;
 +(Caption *)getCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atType:(NSInteger) captionType;
 
-//字体
-+(void)downloadFonts:(void(^)(NSError *error))callBack;
 + (UIImage *)drawImage:(UIImage *)image bgImage:(UIImage *)bgImage;
 + (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize;
 + (UIImage *)rescaleImage:(UIImage *)image size:(CGSize)size;
