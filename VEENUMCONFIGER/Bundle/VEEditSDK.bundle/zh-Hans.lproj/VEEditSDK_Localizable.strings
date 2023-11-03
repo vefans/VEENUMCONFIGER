@@ -1528,6 +1528,7 @@
 "No fonts in collection yet. Long press font cover/to add local fonts for local collection." = "暂无收藏的字体，长按字体封面/添加本地字体可进行本地收藏";
 "No templates in collection yet." = "暂无收藏的模板";
 "Collection" = "收藏";
+"Collect" = "收藏";
 "Collected" = "已收藏";
 "Collection canceled" = "已取消收藏";
 "Collection successful" = "收藏成功";
