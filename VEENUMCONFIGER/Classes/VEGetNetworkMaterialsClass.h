@@ -6,10 +6,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <VEENUMCONFIGER/VEHelp.h>
 
 @interface VEGetNetworkMaterialsClass : NSObject
 
 //获取TTS的所有分类数据
++ (void)getAllCategorysWithType:(VENetworkResourceType)type
+              completionHandler:(void (^)(NSError *error, NSMutableArray *categorys))completionHandler;
+
++ (void)getResourcesWithType:(VENetworkResourceType)type
+                  categoryId:(NSString *)categoryId
+           completionHandler:(void (^)(NSString *errorMessage, NSMutableArray *resources))completionHandler;
+
+
 + (NSMutableArray *)getSpeechVoiceAllCategorys;
 //获取TTS的单个分类数据
 + (NSMutableArray *)getSpeechVoicesWithCategoryId:(NSString *)categoryId;

@@ -47,6 +47,7 @@ VENetworkResourceType const VENetworkResourceType_Mask = @"mask";//蒙版
 VENetworkResourceType const VENetworkResourceType_MaskShape = @"mask_shape";//形状蒙版
 VENetworkResourceType const VENetworkResourceType_Matting = @"video_matting";//抠图
 VENetworkResourceType const VENetworkResourceType_BookTemplate = @"templateapi_books";//书单剪同款
+VENetworkResourceType const VENetworkResourceType_TTS = @"edge_tts_language";
 
 //亮度
 float const VEAdjust_MinValue_Brightness = -1.0;
@@ -4977,6 +4978,33 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     
     return newSize;
+}
+
+/**图片翻转
+ */
++ (UIImage *)imageFilp:(UIImage *)cImage isVerticalFlip:(BOOL)isVerticalFlip
+{
+    CGSize size = cImage.size;
+    UIGraphicsBeginImageContext(size);
+    CGContextRef bitmap = UIGraphicsGetCurrentContext();
+    if(isVerticalFlip){
+        CGContextTranslateCTM(bitmap, size.width, size.height);
+        CGContextScaleCTM(bitmap, -1.0, -1.0);
+        CGContextDrawImage(bitmap, CGRectMake(0, 0, cImage.size.width, cImage.size.height), [cImage CGImage]);
+    }else{
+        CGContextTranslateCTM(bitmap, 0, size.height);
+        CGContextScaleCTM(bitmap, 1.0, -1.0);
+        // uiImage是将要绘制的UIImage图片，width和height是它的宽高
+        UIGraphicsPushContext( bitmap );
+        [cImage drawInRect:CGRectMake(0, 0, size.width, size.height)];
+        UIGraphicsPopContext();
+    }
+    
+    
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+    
 }
 /**图片旋转
  */
@@ -12611,8 +12639,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return [kAPITemplateFolder stringByAppendingPathComponent:file];
 }
 
-+ (NSString *)getCachedFileNameWithUrlStr:(NSString *)urlStr {
++ (NSString *)getCachedFileNameWithUrlStr:(NSString *)urlStr folderPath:(NSString *)folderPath {
     NSString *file = [[[urlStr stringByDeletingLastPathComponent] lastPathComponent] stringByAppendingString: [NSString stringWithFormat:@"%lu",[[[urlStr lastPathComponent] stringByDeletingPathExtension] hash]]];
+    if(folderPath.length > 0){
+        if (![[NSFileManager defaultManager] fileExistsAtPath:folderPath]) {
+            [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+        return [folderPath stringByAppendingPathComponent:file];
+    }
     return file;
 }
 

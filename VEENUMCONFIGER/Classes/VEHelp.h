@@ -30,6 +30,7 @@ FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Mask;//蒙�
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_MaskShape;//形状蒙版
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Matting;//抠图
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_BookTemplate;//书单剪同款
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_TTS;
 
 //亮度
 extern float const VEAdjust_MinValue_Brightness;
@@ -553,7 +554,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 //剪同款
 + (NSString *)getCachedAPITemplatePathWithUrlStr:(NSString *)urlStr;
 
-+ (NSString *)getCachedFileNameWithUrlStr:(NSString *)urlStr;
++ (NSString *)getCachedFileNameWithUrlStr:(NSString *)urlStr folderPath:(NSString *)folderPath;
 
 + (NSString *)getPathFolderName:(NSString *)path;
 
@@ -578,6 +579,10 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (BOOL) isVideoPortrait:(AVURLAsset *)asset;
 
 + (NSString *)getTransitionCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
+
+/**图片翻转
+ */
++ (UIImage *)imageFilp:(UIImage *)cImage isVerticalFlip:(BOOL)isVerticalFlip;
 
 + (UIImage *)imageRotatedByDegrees:(UIImage *)cImage rotation:(float)rotation;
 

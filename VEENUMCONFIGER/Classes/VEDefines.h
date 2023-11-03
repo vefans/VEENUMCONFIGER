@@ -655,6 +655,9 @@ isPhoneX;\
 
 #define kAPITemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkAPITemplate/"]
 #define kAPITemplatePlistPath [kAPITemplateFolder stringByAppendingPathComponent:@"veNetworkApiTemplates.plist"]
+#define kBookTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkBookTemplate/"]
+#define kBookTemplatePlistPath [kBookTemplateFolder stringByAppendingPathComponent:@"veNetworkBookTemplates.plist"]
+
 #define kFragmentAPITemplatePlistPath [kAPITemplateFolder stringByAppendingPathComponent:@"veNetworkFragmentApiTemplates.plist"]//test
 
 #define kCoverTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkCoverTemplate/"]
@@ -793,6 +796,7 @@ isPhoneX;\
 #define kFilterFolder [kVEDirectory stringByAppendingPathComponent:@"filters"]
 #define kFilterCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"filterCategory.plist"]
 #define kNewFilterPlistPath [kFilterFolder stringByAppendingPathComponent:@"filterTypeList.plist"]
+#define kFilterCollectionPlist [kFilterFolder stringByAppendingPathComponent:@"filtersCollection.plist"]
 
 #define kImageOcclusionIconPath [kImageOcclusionFolder stringByAppendingPathComponent:@"ImageOcclusionIcon"]
 #define kImageOcclusionPlistPath [kImageOcclusionFolder stringByAppendingPathComponent:@"ImageOcclusionList.plist"]

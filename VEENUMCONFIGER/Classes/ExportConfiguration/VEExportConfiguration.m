@@ -94,6 +94,7 @@
     copy.cloudBackupListPath = _cloudBackupListPath;
     copy.userUniqueId = _userUniqueId;
     copy.enableSetExportParams = _enableSetExportParams;
+    copy.isDefaultExportGif = _isDefaultExportGif;
     
     return copy;
 }
@@ -132,6 +133,7 @@
     copy.cloudBackupListPath = _cloudBackupListPath;
     copy.userUniqueId = _userUniqueId;
     copy.enableSetExportParams = _enableSetExportParams;
+    copy.isDefaultExportGif = _isDefaultExportGif;
     
     return copy;
     

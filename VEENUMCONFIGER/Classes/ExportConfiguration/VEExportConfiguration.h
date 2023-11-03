@@ -99,6 +99,10 @@ typedef NS_ENUM(NSInteger, ExportFileType) {
  */
 @property (nonatomic,assign) bool enableExportTemplate;
 
+/** 是否默认导出GIF，(default false)
+ */
+@property (nonatomic,assign) bool isDefaultExportGif;
+
 /** 上传模板网络资源地址
  */
 @property (nonatomic,copy)NSString *uploadTemplatePath;
