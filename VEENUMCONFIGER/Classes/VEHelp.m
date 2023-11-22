@@ -27,7 +27,7 @@ VENetworkResourceType const VENetworkResourceType_CardMusic = @"cardpoint_music"
 VENetworkResourceType const VENetworkResourceType_CloudMusic = @"cloud_music";//配乐
 VENetworkResourceType const VENetworkResourceType_OnlineAlbum = @"cloud_video";//在线相册
 VENetworkResourceType const VENetworkResourceType_SoundEffect = @"audio";//音效
-VENetworkResourceType const VENetworkResourceType_MediaAnimation = @"animate";//媒体动画
+VENetworkResourceType const VENetworkResourceType_MediaAnimation = @"animate2";//媒体动画
 VENetworkResourceType const VENetworkResourceType_Text = @"sub_title";//文字
 VENetworkResourceType const VENetworkResourceType_TextAnimation = @"ani_subtitle";//文字动画
 VENetworkResourceType const VENetworkResourceType_TextTemplate = @"text_template";//文字模板
@@ -48,6 +48,8 @@ VENetworkResourceType const VENetworkResourceType_MaskShape = @"mask_shape";//�
 VENetworkResourceType const VENetworkResourceType_Matting = @"video_matting";//抠图
 VENetworkResourceType const VENetworkResourceType_BookTemplate = @"templateapi_books";//书单剪同款
 VENetworkResourceType const VENetworkResourceType_TTS = @"edge_tts_language";
+VENetworkResourceType const VENetworkResourceType_Theme = @"templateapi_theme";//主题
+VENetworkResourceType const VENetworkResourceType_ScreenEffect2 = @"specialeffects2";//画面特效;
 
 //亮度
 float const VEAdjust_MinValue_Brightness = -1.0;
@@ -203,7 +205,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     int hours = seconds / 3600;
     int minutes = seconds / 60;
-    int sec = fabs(round((int)seconds % 60));
+    int sec = abs((int)(round(seconds)) % 60);
     NSString *ch = hours <= 9 ? @"0": @"";
     NSString *cm = minutes <= 9 ? @"0": @"";
     NSString *cs = sec <= 9 ? @"0": @"";
@@ -247,7 +249,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     int hours = seconds / 3600;
     int minutes = seconds / 60;
-    int sec = fabs(round((int)seconds % 60));
+    int sec = abs((int)(round(seconds)) % 60);
     NSString *ch = hours <= 9 ? @"0": @"";
     NSString *cm = minutes <= 9 ? @"0": @"";
     NSString *cs = sec <= 9 ? @"0": @"";
@@ -1153,6 +1155,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 +(UIImage *)imageWithContentOfFile:(NSString *)path atBundleName:(NSString *)bundleName
 {
     return [VEHelp imageWithContentOfFile:path atBundle:[VEHelp getBundleName:bundleName atViewController:[VEHelp getCurrentViewController]]];
+}
+
++(NSString *)getBase64String:( NSString * ) absoluteString
+{
+    NSMutableData *plainData = [absoluteString dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *encryptedString = [plainData base64EncodedStringWithOptions:0];
+    
+    return encryptedString;
 }
 
 //获取当前屏幕显示的viewcontroller
@@ -2224,6 +2234,17 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     
     return fileURL;
+}
+
++ (NSURL *)getCubeLocalFloderPath:(NSString *)folderPath fileName:(NSString *)fileName {
+    if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *filePath;
+    BOOL isExists = NO;
+    NSInteger index = 0;
+    filePath = [[folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%ld", fileName.stringByDeletingPathExtension, (long)index]] stringByAppendingPathExtension:fileName.pathExtension];
+    return [NSURL fileURLWithPath:filePath];
 }
 
 + (NSString *)getFileURLFromAbsolutePath_str:(NSString *)absolutePath {
@@ -4607,6 +4628,52 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         image = [self fixOrientation:image];
         return image;
     }
+}
+
++(VECore *)createFIlterImageCore:( NSURL * ) url
+{
+    VECore * filterCore = [[VECore alloc] initWithAPPKey:[VEConfigManager sharedManager].appKey APPSecret:[VEConfigManager sharedManager].appSecret
+                                              LicenceKey:[VEConfigManager sharedManager].licenceKey videoSize:CGSizeMake(480, 480) fps:24 resultFail:^(NSError *error) {
+        NSLog(@"initSDKError:%@", error.localizedDescription);
+    }];
+    
+    NSMutableArray *sceneArray = [NSMutableArray array];
+    Scene *sceneMultiMabia = [[Scene alloc] init];
+    [sceneArray addObject:sceneMultiMabia];
+    
+    MediaAsset *mediaAsset = [MediaAsset new];
+    mediaAsset.type = MediaAssetTypeImage;
+    mediaAsset.url = [NSURL fileURLWithPath:[VEHelp getResourceFromBundle:@"VEEditSDK" resourceName:@"New_EditVideo/scrollViewChildImage/Filter_LocalCube" Type:@"png"]];
+    mediaAsset.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(3.0, TIMESCALE));
+    mediaAsset.filterType = kFilterType_3D_Lut_Cube;
+    mediaAsset.filterUrl = url;
+    mediaAsset.filterIntensity = 1.0;
+    sceneMultiMabia.media = [[NSMutableArray alloc] init];
+    [sceneMultiMabia.media addObject:mediaAsset];
+    [filterCore setScenes:sceneArray];
+    return filterCore;
+}
+
++( NSMutableDictionary * )createFilterDictionaryWithImage:( UIImage * ) filterImage atFilterUrl:( NSURL * ) filterUrl atCollectionPlistsCount:( NSInteger ) count atFilterTypeIndex:( NSInteger ) filterTypeIndex
+{
+    NSMutableDictionary *filterDic = [NSMutableDictionary new];
+    [filterDic setObject:@"filter_LocalCube" forKey:@"type"];
+    NSString *strPath = [filterUrl absoluteString];
+    strPath = [VEHelp getFileURLFromAbsolutePath_str:strPath];
+    [filterDic setObject:strPath forKey:@"file"];
+    [filterDic setObject:[NSString stringWithFormat:@"%d", 120000] forKey:@"filtertType"];
+    [filterDic setObject:[NSString stringWithFormat:@"%ld", filterTypeIndex + count] forKey:@"filtertItemIndex"];
+    [filterDic setObject:[NSString stringWithFormat:@"%ld", filterTypeIndex] forKey:@"currentFilterIndex"];
+    [filterDic setObject:[NSString stringWithFormat:VELocalizedString(@"我的%ld", nil), count] forKey:@"name"];
+    [filterDic setObject:[NSString stringWithFormat:VELocalizedString(@"LocalCubeID%ld", nil), count]   forKey:@"id"];
+    
+    NSURL *urlPath = [VEHelp getFileUrlWithFolderPath:kFilterCubeLocalCoverFloder fileName:[NSString stringWithFormat:@"cover_%@.png", [[filterUrl absoluteString] pathExtension] ]];
+    NSData *imageData = UIImagePNGRepresentation(filterImage);//20210926 截图中有镂空文字模板时，本来镂空文字模板是黑色的，使用UIImageJPEGRepresentation就会变成白色的
+    unlink([urlPath.path UTF8String]);
+    [imageData writeToFile:urlPath.path atomically:YES];
+    [filterDic setObject:urlPath.path forKey:@"cover"];
+    
+    return filterDic;
 }
 
 + (UIImage *)imageWithWebP:(NSString *)filePath error:(NSError **)error
@@ -12639,6 +12706,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return [kAPITemplateFolder stringByAppendingPathComponent:file];
 }
 
++ (NSString *)getCachedFileNameWithUrlStr:(NSString *)urlStr {
+    NSString *file = [[[urlStr stringByDeletingLastPathComponent] lastPathComponent] stringByAppendingString: [NSString stringWithFormat:@"%lu",[[[urlStr lastPathComponent] stringByDeletingPathExtension] hash]]];
+    return file;
+}
+
 + (NSString *)getCachedFileNameWithUrlStr:(NSString *)urlStr folderPath:(NSString *)folderPath {
     NSString *file = [[[urlStr stringByDeletingLastPathComponent] lastPathComponent] stringByAppendingString: [NSString stringWithFormat:@"%lu",[[[urlStr lastPathComponent] stringByDeletingPathExtension] hash]]];
     if(folderPath.length > 0){
@@ -15756,5 +15828,4 @@ static OSType help_inputPixelFormat(){
 
     return image;
 }
-
 @end

@@ -380,7 +380,7 @@
         if (_isVertical_Cell) {
             cell.collectionView.contentInset = UIEdgeInsetsMake(_cellMinimumLineSpacing, _cellMinimumInteritemSpacing + 2, _cellMinimumLineSpacing, _cellMinimumInteritemSpacing + 2);
         }else {
-            cell.collectionView.contentInset = UIEdgeInsetsMake(0, _cellMinimumInteritemSpacing + 2, 0, _cellMinimumInteritemSpacing + 2);
+            cell.collectionView.contentInset = UIEdgeInsetsMake(0, _cellMinimumLineSpacing + 2, 0, _cellMinimumLineSpacing + 2);
         }
         cell.headerReferenceSize = headerReferenceSize;
         cell.footerReferenceSize = footerReferenceSize;

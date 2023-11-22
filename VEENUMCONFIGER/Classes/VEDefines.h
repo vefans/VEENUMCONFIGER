@@ -722,6 +722,7 @@ isPhoneX;\
 //自定义贴纸
 #define kCustomStickerFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/CustomStickerFolder/"]
 #define kCollectStickerPlistPath [kCustomStickerFolder stringByAppendingPathComponent:@"CollectSticker.plist"]
+#define kVEHistoryStickerPlistPath [kCustomStickerFolder stringByAppendingPathComponent:@"VEHistorySticker.plist"]
 
 #pragma mark- 换背景
 #define KChangeBackgroundFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/ChangeBackground"]
@@ -797,6 +798,8 @@ isPhoneX;\
 #define kFilterCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"filterCategory.plist"]
 #define kNewFilterPlistPath [kFilterFolder stringByAppendingPathComponent:@"filterTypeList.plist"]
 #define kFilterCollectionPlist [kFilterFolder stringByAppendingPathComponent:@"filtersCollection.plist"]
+#define kFilterCubeLocalFloder [kFilterFolder stringByAppendingPathComponent:@"LocalFilterFldoer"]
+#define kFilterCubeLocalCoverFloder [kFilterFolder stringByAppendingPathComponent:@"LocalFilterCoverFldoer"]
 
 #define kImageOcclusionIconPath [kImageOcclusionFolder stringByAppendingPathComponent:@"ImageOcclusionIcon"]
 #define kImageOcclusionPlistPath [kImageOcclusionFolder stringByAppendingPathComponent:@"ImageOcclusionList.plist"]
@@ -809,6 +812,9 @@ isPhoneX;\
 #define kParticlesFolder [kVEDirectory stringByAppendingPathComponent:@"particles"]
 #define kParticlesCategoryPlist [kParticlesFolder stringByAppendingPathComponent:@"particlesCategory.plist"]
 #define kNewParticlesPlistPath [kParticlesFolder stringByAppendingPathComponent:@"particlesTypeList.plist"]
+
+//APITemplate
+#define kAPITemplateVideoFolder [kVEDirectory stringByAppendingPathComponent:@"templateVideoFolder"]
 
 //拍摄粒子目录
 #define kShootParticlesFolder [kVEDirectory stringByAppendingPathComponent:@"shootParticles"]
@@ -891,8 +897,8 @@ isPhoneX;\
 #define kWhisperModelFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/whisperModel"]
 
 #define kTemplateThemeFolder [kVEDirectory stringByAppendingPathComponent:@"TemplateThemes"]
-#define kTemplateThemeCategoryPlist [kFilterFolder stringByAppendingPathComponent:@"TemplateThemeCategory.plist"]
-#define kTemplateThemeTypeListPath [kFilterFolder stringByAppendingPathComponent:@"TemplateThemeTypeList.plist"]
+#define kTemplateThemeCategoryPlist [kTemplateThemeFolder stringByAppendingPathComponent:@"TemplateThemeCategory.plist"]
+#define kTemplateThemeTypeListPath [kTemplateThemeFolder stringByAppendingPathComponent:@"TemplateThemeTypeList.plist"]
 #define kTemplateThemeIconFolder [kVEDirectory stringByAppendingPathComponent:@"TemplateThemeIconFolder"]
 #define kVEInterfaceStyle @"kVEInterfaceStyle"//界面风格
 #define kNewMask

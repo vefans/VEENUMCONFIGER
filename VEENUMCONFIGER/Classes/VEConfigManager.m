@@ -80,8 +80,10 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
 }
 
 - (void)startExportWithMinWH:(int)minWH {
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:VEStartExportNotification object:[NSNumber numberWithInt:minWH]];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:VEStartExportNotification object:[NSNumber numberWithInt:minWH]];
+    });
 }
 
 @end

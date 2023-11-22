@@ -19,7 +19,7 @@
 #define kValidDirections [NSArray arrayWithObjects: @"top", @"bottom", @"left", @"right",nil]
 
 
-float distanceBetweenPoints(CGPoint a, CGPoint b);
+float VE_DistanceBetweenPoints(CGPoint a, CGPoint b);
 @interface VEThumbImageView (){
     UIImageView *_backImageView;
     CAGradientLayer *headerLayer;
@@ -212,6 +212,10 @@ float distanceBetweenPoints(CGPoint a, CGPoint b);
 
 - (void)setContentFile:(VEMediaInfo *)contentFile{
     _contentFile = contentFile;
+    if( _contentFile )
+    {
+        [self selectThumb:NO];
+    }
     if (_enableMovePostion) {
         @autoreleasepool {
             if(_contentFile.fileType == kFILEVIDEO){
@@ -303,20 +307,25 @@ float distanceBetweenPoints(CGPoint a, CGPoint b);
 - (void)selectThumb:(BOOL)selected{
 
     if (selected) {
-        
-        _backImageView.layer.borderColor = ((UIColor*)Main_Color).CGColor;
-        _thumbIdlabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
-        _coverView.backgroundColor = [UIColor colorWithRed:227.0/255.0 green:138.0/255.0 blue:67.0/255.0 alpha:0.66];
-//        _coverView.backgroundColor = [Main_Color colorWithAlphaComponent:0.66];
-        _backImageView.layer.borderWidth = 0;
-        //_thumbFileTypelabel.alpha = 1;
+//        _backImageView.layer.borderColor = ((UIColor*)Main_Color).CGColor;
+//        _thumbIdlabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
+//        _coverView.backgroundColor = [UIColor colorWithRed:227.0/255.0 green:138.0/255.0 blue:67.0/255.0 alpha:0.66];
+////        _coverView.backgroundColor = [Main_Color colorWithAlphaComponent:0.66];
+//        _backImageView.layer.borderWidth = 0;
+//        //_thumbFileTypelabel.alpha = 1;
+        _thumbIconView.layer.borderWidth = 2.0;
+        _thumbIconView.layer.borderColor = Main_Color.CGColor;
+        _thumbIconView.layer.masksToBounds = true;
+        _thumbIconView.alpha = 1.0;
     }else{
-        _backImageView.layer.borderColor = UIColorFromRGB(0x888888).CGColor;
-        _thumbIdlabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
-        _coverView.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
-
-        _backImageView.layer.borderWidth = 0;
+//        _backImageView.layer.borderColor = UIColorFromRGB(0x888888).CGColor;
+//        _thumbIdlabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
+//        _coverView.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
+//
+//        _backImageView.layer.borderWidth = 0;
+        _thumbIconView.layer.borderWidth = 0.0;
         self.deleted = NO;
+        _thumbIconView.alpha = self.alpha;
         //_thumbFileTypelabel.alpha = 0;
     }
     
@@ -412,7 +421,7 @@ float distanceBetweenPoints(CGPoint a, CGPoint b);
         float deltaY = newTouchLocation.y - touchLocation.y;
         [self moveByOffset:CGPointMake(deltaX, deltaY)withEvent:event];
     }
-    else if (distanceBetweenPoints(touchLocation, newTouchLocation) > DRAG_THRESHOLD)
+    else if (VE_DistanceBetweenPoints(touchLocation, newTouchLocation) > DRAG_THRESHOLD)
     {
         touchLocation = newTouchLocation;
         dragging = YES;
@@ -468,7 +477,7 @@ float distanceBetweenPoints(CGPoint a, CGPoint b);
 - (void)goHome
 {
     // distance is in pixels
-    float distanceFromHome = distanceBetweenPoints([self frame].origin, [self home].origin);
+    float distanceFromHome = VE_DistanceBetweenPoints([self frame].origin, [self home].origin);
     // duration is in seconds, so each additional pixel adds only 1/1000th of a second.
     float animationDuration = 0.1 + distanceFromHome * 0.001;
     NSLog(@"[self home].x:%lf",[self home].origin.x);
@@ -538,7 +547,7 @@ float distanceBetweenPoints(CGPoint a, CGPoint b);
 }
 @end
 
-float distanceBetweenPoints(CGPoint a, CGPoint b)
+float VE_DistanceBetweenPoints(CGPoint a, CGPoint b)
 {
     float deltaX = a.x - b.x;
     float deltaY = a.y - b.y;

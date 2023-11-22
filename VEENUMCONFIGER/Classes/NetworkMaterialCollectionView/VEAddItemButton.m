@@ -72,7 +72,7 @@
         UIView * editView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, fxItemBtn.frame.size.width, fxItemBtn.frame.size.width)];
         editView.backgroundColor = [UIColorFromRGB(0x000000) colorWithAlphaComponent:0.3];
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            editView.backgroundColor = [UIColorFromRGB(0xFFFFFF) colorWithAlphaComponent:0.3];
+            editView.backgroundColor = [UIColorFromRGB(0x000000) colorWithAlphaComponent:0.8];
         }
         fxItemBtn.editView = editView;
         [fxItemBtn.thumbnailIV addSubview:editView];
@@ -89,9 +89,7 @@
         editLabel.userInteractionEnabled = YES;
         editLabel.font = [UIFont systemFontOfSize:9];
         editLabel.textColor = [UIColor whiteColor];
-        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-            editLabel.textColor = UIColorFromRGB(0x131313);
-        }
+        
         editLabel.text = @"更换画笔";
         editLabel.textAlignment = NSTextAlignmentCenter;
         [fxItemBtn.editView addSubview:editLabel];

@@ -106,7 +106,6 @@
         [array  addObject:((NSMutableArray*)obj)[1]];
         [copy.pointsInVideoArray addObject:array];
     }];
-    copy.sceneIdentifier = _sceneIdentifier;
     copy.groupId = _groupId;
     copy.fxEffect = _fxEffect;
     copy.fileSoundEffect = _fileSoundEffect;
@@ -325,6 +324,7 @@
     copy.importMorph = _importMorph;
     copy.speedHoldPitch = _speedHoldPitch;
     copy.panorama = [_panorama mutableCopy];
+    copy.replaceType = _replaceType;
     
     return copy;
 }

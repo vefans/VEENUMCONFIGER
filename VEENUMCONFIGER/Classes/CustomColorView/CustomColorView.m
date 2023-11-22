@@ -68,6 +68,9 @@
 
 - (void)initUI{
     self.backgroundColor = UIColorFromRGB(0x1a1a1a);
+    if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+        self.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
+    }
     [VEHelp addShadowToView:self withColor:UIColorFromRGB(0x000000)];
    
     UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 44)];
@@ -76,6 +79,9 @@
     UILabel *titleLbl = [[UILabel alloc] initWithFrame:titleView.bounds];
     titleLbl.text = VELocalizedString(@"Color Palette", nil);
     titleLbl.textColor = TEXT_COLOR;
+    if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+        titleLbl.textColor = UIColorFromRGB(0x131313);
+    }
     titleLbl.textAlignment = NSTextAlignmentCenter;
     titleLbl.font = [UIFont systemFontOfSize:16];
     [titleView addSubview:titleLbl];
@@ -148,7 +154,11 @@
         [self addSubview:_otherColorScrollView];
         {
             UIImageView *line = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMinX(_otherColorScrollView.frame), CGRectGetMinY(_otherColorAddBtn.frame), 10, 28)];
-            line.image =  [VEHelp imageNamed:@"颜色-过度" atBundle:[VEHelp getBundleName:@"VEEditSDK"]];
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                line.image =  [VEHelp imageNamed:@"颜色-过度1" atBundle:[VEHelp getBundleName:@"VEEditSDK"]];
+            }else{
+                line.image =  [VEHelp imageNamed:@"颜色-过度" atBundle:[VEHelp getBundleName:@"VEEditSDK"]];
+            }
             [self addSubview:line];
         }
         

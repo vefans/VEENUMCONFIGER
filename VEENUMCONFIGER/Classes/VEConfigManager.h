@@ -18,7 +18,7 @@ typedef NS_ENUM(NSInteger, UIBgStyle) {
 /**支持的语言
  */
 typedef NS_ENUM(NSInteger, SUPPORTLANGUAGE){
-    CHINESE,    //中文
+    CHINESE = 0,    //中文
     ChineseTraditional,//繁体中文
     ENGLISH,     //英文
     Spanish,//西语
@@ -188,6 +188,9 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property (nonatomic, assign) BOOL isExportBackEdit;
 
 + (instancetype)sharedManager;
+/**  TmeplateRecoder 模版相册 是否打开
+ */
+@property (nonatomic, assign) BOOL isShowTmeplateRecoder;
 
 //是否为新字体
 @property (nonatomic, assign) BOOL  isNewFont;

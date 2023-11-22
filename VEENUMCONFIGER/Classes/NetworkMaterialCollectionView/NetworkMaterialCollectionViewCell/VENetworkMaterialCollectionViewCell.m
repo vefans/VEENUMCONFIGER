@@ -289,7 +289,7 @@
         UIView * view = [_delegate btnCollectCell:indexPath.row atIndexCount:_index collectionView:collectionView cell:cell];
 //        view.tag = 2500;
         cell.btnCollectBtn = view;
-        [cell addSubview:view];
+        [cell.contentView addSubview:view];
     }
     [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
     

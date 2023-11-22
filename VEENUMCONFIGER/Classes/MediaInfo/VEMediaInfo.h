@@ -124,6 +124,10 @@ typedef NS_ENUM(NSInteger, VECropType){
  */
 @property (nonatomic, assign) MediaType fileType;
 
+/** 可替换类型，默认为MediaReplaceableType_VideoOrPic
+ */
+@property (nonatomic, assign) MediaReplaceableType replaceType;
+
 /** 图片是否是Gif
  */
 @property (nonatomic, assign) BOOL isGif;

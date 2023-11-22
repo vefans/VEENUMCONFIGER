@@ -12,7 +12,9 @@
 
 @implementation VEGetNetworkMaterialsClass
 
-+ (void)getAllCategorysWithType:(VENetworkResourceType)type completionHandler:(void (^)(NSError *, NSMutableArray *))completionHandler
++ (void)getAllCategorysWithType:(VENetworkResourceType)type
+             isContainSystemTts:(BOOL)isContainSystemTts
+              completionHandler:(void (^)(NSError *, NSMutableArray *))completionHandler
 {
     NSString *folderPath;
     NSString *plistPath;
@@ -20,12 +22,16 @@
         folderPath = kTTSMaretrialFolder;
         plistPath = kTTSMaretrialPlistPath;
     }
+    else if ([type isEqualToString:VENetworkResourceType_Theme]) {
+        folderPath = kTemplateThemeFolder;
+        plistPath = kTemplateThemeCategoryPlist;
+    }
     NSMutableArray *categorys;
     VEReachability *lexiu = [VEReachability reachabilityForInternetConnection];
     if([lexiu currentReachabilityStatus] == VEReachabilityStatus_NotReachable
        || [VEConfigManager sharedManager].editConfiguration.netMaterialTypeURL.length == 0)
     {
-        categorys = [[NSArray arrayWithContentsOfFile:kTTSMaretrialPlistPath] mutableCopy];
+        categorys = [[NSArray arrayWithContentsOfFile:plistPath] mutableCopy];
         if (!categorys && [type isEqualToString:VENetworkResourceType_TTS]) {
             categorys = [self getSystemToneList];
         }
@@ -47,7 +53,7 @@
     if (typeDic && [typeDic[@"code"] intValue] == 0) {
         NSMutableArray *typeArray = [NSMutableArray arrayWithArray:typeDic[@"data"]];
         categorys = typeArray;
-        if ([type isEqualToString:VENetworkResourceType_TTS]) {
+        if ([type isEqualToString:VENetworkResourceType_TTS] && isContainSystemTts) {
             if(@available(iOS 16.0, *)){
                 for (int i = 0; i < typeArray.count; i++)
                 {
@@ -81,15 +87,19 @@
             }
         }
         
-        NSDictionary *obj = typeArray.firstObject;
+        NSMutableDictionary *obj = typeArray.firstObject;
         [self getResourcesWithType:type
                         categoryId:obj[@"id"]
                  completionHandler:^(NSString *errorMessage, NSMutableArray *resources) {
             if (resources.count > 0) {
-                NSMutableArray *itemArray = obj[@"data"];
-                NSRange range = NSMakeRange(0, [resources count]);
-                NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
-                [itemArray insertObjects:resources atIndexes:indexSet];
+                if ([type isEqualToString:VENetworkResourceType_TTS] && isContainSystemTts) {
+                    NSMutableArray *itemArray = obj[@"data"];
+                    NSRange range = NSMakeRange(0, [resources count]);
+                    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
+                    [itemArray insertObjects:resources atIndexes:indexSet];
+                }else {
+                    [obj setObject:resources forKey:@"data"];
+                }
             }
             if (categorys.count > 0) {
                 BOOL suc = [categorys writeToFile:plistPath atomically:YES];
@@ -122,6 +132,10 @@
     if ([type isEqualToString:VENetworkResourceType_TTS]) {
         folderPath = kTTSMaretrialFolder;
         plistPath = kTTSMaretrialPlistPath;
+    }
+    else if ([type isEqualToString:VENetworkResourceType_Theme]) {
+        folderPath = kTemplateThemeFolder;
+        plistPath = kTemplateThemeCategoryPlist;
     }
     NSString *appKey = [VEConfigManager sharedManager].appKey;
     

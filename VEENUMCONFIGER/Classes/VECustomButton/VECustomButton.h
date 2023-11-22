@@ -25,7 +25,6 @@
 
 @property (nonatomic, strong)NSString   *url;
 @property (nonatomic, strong)NSString   *name;
-
 @property(nonatomic,weak)id<VECustomButtonDelegate>   delegate;
 
 -(void)set_Recognizer;
@@ -43,5 +42,6 @@
  *  The size of the normal state font. The default is 14.
  */
 @property (nonatomic, assign) CGFloat normalFontSize;
+@property (nonatomic, strong)CAGradientLayer*gradientLayer;
 
 @end

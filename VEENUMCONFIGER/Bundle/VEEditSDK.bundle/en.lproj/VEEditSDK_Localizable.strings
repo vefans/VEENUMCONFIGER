@@ -1793,6 +1793,8 @@
 "已选(%d)" = "Selected(%d)";
 "将所选应用到本轨所有片段" = "Apply to all main videos";
 "将所选应用到画中画所有片段" = "Apply to all overlays";
+"优先图片" = "PriorityPicture";
+"优先视频" = "PriorityVideo";
 "仅图片" = "Photo only";
 "仅视频" = "Video only";
 "锁定素材不可编组" = "Locked material cannot be grouped";
@@ -1812,6 +1814,7 @@
 "请输入您的模板描述" = "Please enter your template description";
 "请设置您的模板分类" = "Please set your template category";
 "请选择编组的默认片段" = "Please select the default segment of the group";
+"素材默认来源" = "Media Source";
 "仅支持视频导入" = "Only supports video import";
 "仅支持图片导入" = "Only supports picture import";
 "不支持同时导入图片和视频" = "Importing pictures and videos at the same time is not supported";
@@ -2900,4 +2903,14 @@
 "停顿" = "Pause";
 "Edit Page" = "Edit";
 "Add Page" = "Add";
+"ReplaceMedia" = "Replace";
+"DeletePage" = "Delete";
+"Duration Page Tilte" = "Duration";
 
+"本地cube" = "Local Cube";
+"该cube滤镜已经添加！" = "The cube filter has been added!";
+"本地cube滤镜只支持cube文件！" = "Local cub filters only support cube files!";
+"滤镜效果图获取失败！" = "Filter rendering failed!";
+"智能挡脸" = "Face shield";
+"Edit_Subtitle" = "Edit";
+"TTS_Book" = "TTS";

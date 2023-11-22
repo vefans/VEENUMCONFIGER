@@ -12,6 +12,7 @@
 
 //获取TTS的所有分类数据
 + (void)getAllCategorysWithType:(VENetworkResourceType)type
+             isContainSystemTts:(BOOL)isContainSystemTts
               completionHandler:(void (^)(NSError *error, NSMutableArray *categorys))completionHandler;
 
 + (void)getResourcesWithType:(VENetworkResourceType)type

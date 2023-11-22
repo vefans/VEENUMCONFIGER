@@ -31,6 +31,8 @@ FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_MaskShape;//
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Matting;//抠图
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_BookTemplate;//书单剪同款
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_TTS;
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Theme;//主题
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_ScreenEffect2;//图片流动-特效
 
 //亮度
 extern float const VEAdjust_MinValue_Brightness;
@@ -553,7 +555,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 //剪同款
 + (NSString *)getCachedAPITemplatePathWithUrlStr:(NSString *)urlStr;
-
++ (NSString *)getCachedFileNameWithUrlStr:(NSString *)urlStr;
 + (NSString *)getCachedFileNameWithUrlStr:(NSString *)urlStr folderPath:(NSString *)folderPath;
 
 + (NSString *)getPathFolderName:(NSString *)path;
@@ -718,4 +720,11 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 + (UIImage *)getImageWithPixelBuffer:(CVPixelBufferRef)pixelBufffer;
 
++( NSMutableDictionary * )createFilterDictionaryWithImage:( UIImage * ) filterImage atFilterUrl:( NSURL * ) filterUrl atCollectionPlistsCount:( NSInteger ) count atFilterTypeIndex:( NSInteger ) filterTypeIndex;
+
++(VECore *)createFIlterImageCore:( NSURL * ) url;
+
++ (NSURL *)getCubeLocalFloderPath:(NSString *)folderPath fileName:(NSString *)fileName;
+
++(NSString *)getBase64String:( NSString * ) absoluteString;
 @end

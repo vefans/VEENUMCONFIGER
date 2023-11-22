@@ -1,14 +1,14 @@
 //
-//  VEScrollViewChildItem.m
-//  VELiteSDK
+//  ScrollViewChildItem.m
+//  VEFile
 //
-//  Created by iOS VESDK Team. on 16/10/23.
-//  Copyright © 2016年 VELiteSDK. All rights reserved.
+//  Created by iOS VESDK Team on 16/10/23.
+//  Copyright © 2016年 VEFile. All rights reserved.
 //
 
-#import "VEScrollViewChildItem.h"
+#import "VEFileScrollViewChildItem.h"
 #import "VEHelp.h"
-@interface VEScrollViewChildItem()<UIGestureRecognizerDelegate,CAAnimationDelegate>{
+@interface VEFileScrollViewChildItem()<UIGestureRecognizerDelegate,CAAnimationDelegate>{
     UITapGestureRecognizer *_gesture;
     BOOL _isReStart;
     __weak UILabel *_moveTitleLabel;
@@ -17,27 +17,34 @@
 }
 @end
 
-@implementation VEScrollViewChildItem
+@implementation VEFileScrollViewChildItem
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     
     if (self) {
+        _isCollection = NO;
+        _isSelectCollection = NO;
+        _collectionImageView = nil;
         [self initUI];
      }
     return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame itemType:(VEScrollItemType)itemType {
+
+- (instancetype)initWithFrame:(CGRect)frame itemType:(VEFileScrollItemType)itemType {
     if (self = [super initWithFrame:frame]) {
+        _isCollection = NO;
+        _isSelectCollection = NO;
+        _collectionImageView = nil;
         [self initUI];
         _type = itemType;
-        if (itemType == VEScrollItemType_Filter) {
-            _itemIconView.frame = self.bounds;
+        if (itemType == VEFileScrollItemType_Filter) {
+            _itemIconView.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height - 2);
             _itemIconView.layer.cornerRadius = 0;
-            _itemTitleLabel.frame = CGRectMake(0, self.frame.size.height * 0.75, self.frame.size.width, self.frame.size.height * 0.25);
+            _itemTitleLabel.frame = CGRectMake(0, self.frame.size.height - self.frame.size.height * 0.25, self.frame.size.width, self.frame.size.height * 0.25);
             self.layer.cornerRadius = 3.0;
-        }else if (itemType == VEScrollItemType_Tone || itemType == VEScrollItemType_VoiceFX) {
+        }else if (itemType == VEFileScrollItemType_Tone || itemType == VEFileScrollItemType_VoiceFX) {
             _itemIconView.frame = self.bounds;
             _itemTitleLabel.frame = self.bounds;
         }
@@ -113,7 +120,7 @@
     itemIconView.clipsToBounds = YES;
     _itemIconView = itemIconView;
     
-    UILabel *itemTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height, self.frame.size.width, 20)];
+    UILabel *itemTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.width, self.frame.size.width, 20)];
     itemTitleLabel.backgroundColor = [UIColor clearColor];
     itemTitleLabel.font = [UIFont systemFontOfSize:_fontSize>0?_fontSize:14];
     itemTitleLabel.textAlignment = NSTextAlignmentCenter;
@@ -126,7 +133,6 @@
     moveTitleLabel.textAlignment = NSTextAlignmentCenter;
     _moveTitleLabel = moveTitleLabel;
     
-
     self.userInteractionEnabled = YES;
     self.layer.masksToBounds = YES;
     _gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapgesture:)];
@@ -201,38 +207,38 @@
 //    _itemTitleLabel.frame = fr;
 //    //self.frame.size.width +
 //    CGPoint fromPoint = CGPointMake(_itemTitleLabel.frame.size.width/2, _itemTitleLabel.frame.origin.y + _itemTitleLabel.frame.size.height/2.0);
-//
+//    
 //    UIBezierPath *movePath = [UIBezierPath bezierPath];
 //    [movePath moveToPoint:fromPoint];
 //    [movePath addLineToPoint:CGPointMake(-_itemTitleLabel.frame.size.width, _itemTitleLabel.frame.origin.y + _itemTitleLabel.frame.size.height/2.0)];
-//
+//    
 //    CAKeyframeAnimation *moveAnim = [CAKeyframeAnimation animationWithKeyPath:@"position"];
 //    moveAnim.path = movePath.CGPath;
 //    moveAnim.removedOnCompletion = NO;
-//
+//    
 //    moveAnim.duration = _itemTitleLabel.frame.size.width * 8 * 0.01;
 //    [moveAnim setDelegate:self];
-//
+//    
 //    [_itemTitleLabel.layer addAnimation:moveAnim forKey:nil];
-//
+//    
 //    fr = _moveTitleLabel.frame;
 //    fr.size.width = (rect.size.width + 20) *2;
 //    fr.origin.x = self.frame.size.width*2;
 //    _moveTitleLabel.frame = fr;
-//
+//    
 //    fromPoint = CGPointMake(self.frame.size.width + _moveTitleLabel.frame.size.width/2, _moveTitleLabel.frame.origin.y + _moveTitleLabel.frame.size.height/2.0);
-//
+//    
 //    movePath = [UIBezierPath bezierPath];
 //    [movePath moveToPoint:fromPoint];
 //    [movePath addLineToPoint:CGPointMake(0, _moveTitleLabel.frame.origin.y + _moveTitleLabel.frame.size.height/2.0)];
-//
+//    
 //    CAKeyframeAnimation *moveAnim1 = [CAKeyframeAnimation animationWithKeyPath:@"position"];
 //    moveAnim1.path = movePath.CGPath;
 //    moveAnim1.removedOnCompletion = NO;
-//
+//    
 //    moveAnim1.duration = _itemTitleLabel.frame.size.width * 8 * 0.01;
 //    [moveAnim1 setDelegate:self];
-//
+//    
 //    [_moveTitleLabel.layer addAnimation:moveAnim1 forKey:nil];
     
 }
@@ -290,8 +296,8 @@
 }
 
 - (void)tapgesture:(UITapGestureRecognizer *)gesture{
-    if(_delegate && [_delegate respondsToSelector:@selector(scrollViewChildItemTapCallBlock:)]){
-        [_delegate scrollViewChildItemTapCallBlock:self];
+    if(self.delegate){
+        [self.delegate scrollViewChildItemTapCallBlock:self];
     }
 }
 - (void)setCornerRadius:(float)cornerRadius{
@@ -314,20 +320,29 @@
         _itemIconView.layer.borderColor = _selectedColor?_selectedColor.CGColor:UIColorFromRGB(0x31d065).CGColor;
         _itemIconView.layer.borderWidth = 2.0;
         _itemTitleLabel.textColor = _textSelectedColor ? _textSelectedColor : [UIColor whiteColor];
-        if(_type == VEScrollItemType_VoiceFX || _type == VEScrollItemType_Tone)
+        if(_type == VEFileScrollItemType_VoiceFX || _type == VEFileScrollItemType_Tone)
         {
             _itemTitleLabel.textColor = [UIColor whiteColor];
-            _itemIconView.backgroundColor = UIColorFromRGB(0x272727);
+            _itemIconView.backgroundColor = SCREEN_BACKGROUND_COLOR;
+            
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                _itemTitleLabel.textColor = UIColorFromRGB(0x131313);
+                _itemIconView.backgroundColor = UIColorFromRGB(0xefefef);
+            }
         }
-        else if(_type == VEScrollItemType_Music)
+        else if(_type == VEFileScrollItemType_Music)
         {
             _itemTitleLabel.textColor = [UIColor whiteColor];
             _itemIconselectedView.layer.borderColor = _selectedColor?_selectedColor.CGColor:UIColorFromRGB(0x31d065).CGColor;
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                _itemTitleLabel.textColor = UIColorFromRGB(0x131313);
+                _itemIconView.backgroundColor = UIColorFromRGB(0xefefef);
+            }
             _itemIconselectedView.layer.borderWidth = 1.0;
             _itemIconselectedView.hidden = NO;
             _itemIconView.hidden = YES;
         }
-        else if (_type == VEScrollItemType_Filter && ![VEConfigManager sharedManager].iPad_HD) {
+        else if (_type == VEFileScrollItemType_Filter && ![VEConfigManager sharedManager].iPad_HD) {
             _itemIconView.layer.borderWidth = 0.0;
             self.layer.borderWidth = 2.0;
             self.layer.borderColor = _selectedColor?_selectedColor.CGColor:UIColorFromRGB(0x31d065).CGColor;
@@ -337,23 +352,33 @@
         _itemIconView.layer.borderWidth = 0.0;
         _itemTitleLabel.textColor = _normalColor? _normalColor:[UIColor whiteColor];
         
-        if(_type == VEScrollItemType_VoiceFX || _type == VEScrollItemType_Tone)
+        if(_type == VEFileScrollItemType_VoiceFX || _type == VEFileScrollItemType_Tone)
         {
             _itemTitleLabel.textColor = [UIColor whiteColor];
-            _itemIconView.backgroundColor = UIColorFromRGB(0x272727);
+            _itemIconView.backgroundColor = UIColorFromRGB(0x333333);
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                _itemTitleLabel.textColor = UIColorFromRGB(0x131313);
+                _itemIconView.backgroundColor = UIColorFromRGB(0xefefef);
+            }
         }
-        else if(_type == VEScrollItemType_Music)
+        else if(_type == VEFileScrollItemType_Music)
         {
             _itemTitleLabel.textColor = UIColorFromRGB(0x666666);
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                _itemTitleLabel.textColor = UIColorFromRGB(0x131313);
+                _itemIconView.backgroundColor = UIColorFromRGB(0xefefef);
+            }
             _itemIconselectedView.hidden = YES;
             _itemIconView.hidden = NO;
         }
-        else if (_type == VEScrollItemType_Filter) {
+        else if (_type == VEFileScrollItemType_Filter) {
             self.layer.borderWidth = 0.0;
         }
     }
 }
 - (void)dealloc{
+    [_collectionImageView removeFromSuperview];
+    _collectionImageView = nil;
 //    NSLog(@"%s",__func__);
     [self stopScrollTitle];
     [_itemTitleLabel removeFromSuperview];
