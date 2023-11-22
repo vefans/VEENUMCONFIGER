@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "VEENUMCONFIGER"
-  spec.version      = "3.1.7"
+  spec.version      = "3.1.8"
   spec.summary      = "VEENUMCONFIGER is a library of common resources."
   spec.homepage     = "https://github.com/vefans/VEENUMCONFIGER"
   spec.platform     = :ios, "9.0"
@@ -20,6 +20,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'GoogleMLKit/SegmentationSelfie'
 
   spec.vendored_frameworks = 'VEENUMCONFIGER/Framework/DocX.framework'
+  spec.static_framework = true
 
   spec.xcconfig = {'CONFIGURATION_BUILD_DIR' => '${PODS_CONFIGURATION_BUILD_DIR}'}
   spec.pod_target_xcconfig ={ 'ALWAYS_SEARCH_USER_PATHS'=>'YES', 'ENABLE_BITCODE' => 'NO' }
