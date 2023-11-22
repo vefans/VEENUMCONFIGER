@@ -129,7 +129,7 @@ NSString * _netMaterialTypeURL;
                 {
                     filterCollectionPlists1 = [NSMutableDictionary new];
                     [filterCollectionPlists1 setObject:@"showchang" forKey:@"id"];
-                    [filterCollectionPlists1 setObject:VELocalizedString(@"收藏", nil) forKey:@"name"];
+                    [filterCollectionPlists1 setObject:VELocalizedString(@"Collect", nil) forKey:@"name"];
                     NSMutableArray *array = [NSMutableArray arrayWithContentsOfFile:kFilterCollectionPlist];
                     if( array == nil )
                     {
@@ -1005,12 +1005,10 @@ NSString * _netMaterialTypeURL;
         //        [filterCollectionPlists setObject:@"showchang" forKey:@"id"];
         //        [filterCollectionPlists setObject:VELocalizedString(@"收藏", nil) forKey:@"name"];
         //        [filterCollectionPlists setObject:[NSMutableDictionary arra] forKey:@"data"];
-        NSError *error = nil;
         BOOL success = [array writeToFile:kFilterCollectionPlist atomically:NO];
         if (!success) {
-            NSLog(@"保存失败，错误信息：%@", error);
+            NSLog(@"保存失败");
         }
-        int b = 0;
         _filter_CollectionPlists = filterCollectionPlists;
         
         [VEFilters_EditView createGlobalFilters];

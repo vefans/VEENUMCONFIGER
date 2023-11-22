@@ -317,6 +317,10 @@ float VE_DistanceBetweenPoints(CGPoint a, CGPoint b);
         _thumbIconView.layer.borderColor = Main_Color.CGColor;
         _thumbIconView.layer.masksToBounds = true;
         _thumbIconView.alpha = 1.0;
+        if( self.delegate && [self.delegate respondsToSelector:@selector(thumbImageViewResetPhotoMain:)] )
+        {
+            [self.delegate thumbImageViewResetPhotoMain:self];
+        }
     }else{
 //        _backImageView.layer.borderColor = UIColorFromRGB(0x888888).CGColor;
 //        _thumbIdlabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];

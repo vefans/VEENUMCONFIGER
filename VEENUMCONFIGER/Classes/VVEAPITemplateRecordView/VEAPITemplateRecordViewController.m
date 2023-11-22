@@ -1833,7 +1833,7 @@
 - (void)showPlayerViewWithMediaUrl:(NSURL *)url {
     if( self.isPhotoMain )
     {
-        if( _recordProgressView.percent == 1.0 )
+        if( (_recordProgressView.percent == 1.0) || ( !_isRecordVideo  ) )
         {
             [_player pause];
             if( self.previewPlayHandler )

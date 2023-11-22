@@ -144,5 +144,5 @@
 - (void)thumbImageViewMoved:(VEThumbImageView *)tiv withEvent:(UIEvent *)event;
 - (void)thumbImageViewStoppedTracking:(VEThumbImageView *)tiv withEvent:(UIEvent *)event;
 
-
+- (void)thumbImageViewResetPhotoMain:(VEThumbImageView *) tive;
 @end
