@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "VEENUMCONFIGER"
-  spec.version      = "3.1.6"
+  spec.version      = "3.1.7"
   spec.summary      = "VEENUMCONFIGER is a library of common resources."
   spec.homepage     = "https://github.com/vefans/VEENUMCONFIGER"
   spec.platform     = :ios, "9.0"
@@ -14,6 +14,10 @@ Pod::Spec.new do |spec|
   spec.dependency 'SDWebImageWebPCoder'
   spec.dependency "LibVECore"
   spec.dependency "ZipArchive"
+  spec.dependency "MBProgressHUD",'1.1.0'
+  spec.dependency "ATMHud"
+  spec.dependency 'MNNFaceDetection', '0.0.4'
+  spec.dependency 'GoogleMLKit/SegmentationSelfie'
 
   spec.vendored_frameworks = 'VEENUMCONFIGER/Framework/DocX.framework'
 
