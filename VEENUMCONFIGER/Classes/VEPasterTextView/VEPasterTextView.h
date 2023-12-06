@@ -31,6 +31,8 @@
 
 -(void)DoubleClick_pasterViewShowText:(VEPasterTextView *_Nullable)sticker;
 
+-(void)pasterViewMoveScaleSize:(VEPasterTextView *_Nullable) pasterTextView;
+
 @end
 
 @interface VEPasterTextView : UIView
@@ -251,7 +253,12 @@
 
 @property (nonatomic, assign) BOOL isAngle;
 
-
+@property(nonatomic, strong) UIImageView * _Nullable leftMoveImageView;
+@property(nonatomic, strong) UIImageView * _Nullable rightMoveImageView;
+@property(nonatomic, strong) UIImageView * _Nullable topMoveImageView;
+@property(nonatomic, strong) UIImageView * _Nullable bottomMoveImageView;
+-(CGSize)getMoveImage_ScaleSize;
+-(void)showFourSidesMove:( BOOL ) isMove;
 @end
 
 

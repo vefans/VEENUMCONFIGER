@@ -26,6 +26,14 @@
         folderPath = kTemplateThemeFolder;
         plistPath = kTemplateThemeCategoryPlist;
     }
+    else if ([type isEqualToString:VENetworkResourceType_Font]) {
+        folderPath = kFontFolder;
+        plistPath = kFontPlistPath;
+    }
+    else if ([type isEqualToString:VENetworkResourceType_FontLite]) {
+        folderPath = kFontLiteFolder;
+        plistPath = kFontLitePlistPath;
+    }
     NSMutableArray *categorys;
     VEReachability *lexiu = [VEReachability reachabilityForInternetConnection];
     if([lexiu currentReachabilityStatus] == VEReachabilityStatus_NotReachable
@@ -137,6 +145,17 @@
         folderPath = kTemplateThemeFolder;
         plistPath = kTemplateThemeCategoryPlist;
     }
+    else if ([type isEqualToString:VENetworkResourceType_Font]) {
+        folderPath = kFontFolder;
+        plistPath = kFontPlistPath;
+    }
+    else if ([type isEqualToString:VENetworkResourceType_FontLite]) {
+        folderPath = kFontLiteFolder;
+        plistPath = kFontLitePlistPath;
+    }
+    if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
     NSString *appKey = [VEConfigManager sharedManager].appKey;
     
     NSMutableDictionary *paramArray = [NSMutableDictionary dictionary];
@@ -144,7 +163,10 @@
         [paramArray setObject:appKey forKey:@"appkey"];
     }
     [paramArray setObject:type forKey:@"type"];
-    [paramArray setObject:categoryId forKey:@"category"];
+    if (categoryId.length > 0) {
+        [paramArray setObject:categoryId forKey:@"category"];
+    }
+    
     NSDictionary *resultDic = [VEHelp getNetworkMaterialWithParams:paramArray
                                                             appkey:appKey
                                                            urlPath:[VEConfigManager sharedManager].editConfiguration.netMaterialURL];

@@ -544,8 +544,8 @@
 }
 
 - (void)fiveSensesResetAll {
-    if (_delegate && [_delegate respondsToSelector:@selector(resetFiveSenses)]) {
-        [_delegate resetFiveSenses];
+    if (_delegate && [_delegate respondsToSelector:@selector(refreshFiveSenses:)]) {
+        [_delegate refreshFiveSenses:[_fiveSensesView getFaceAttribute]];
     }
 }
 

@@ -38,6 +38,11 @@
 
 @implementation VEFiveCameraView
 
+-(FaceAttribute *) getFaceAttribute
+{
+    return _faceAttribute;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];

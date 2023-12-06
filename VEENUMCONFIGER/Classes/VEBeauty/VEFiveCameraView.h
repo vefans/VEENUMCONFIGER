@@ -48,4 +48,5 @@
 @property(nonatomic, assign)float  adjHeight;
 - (void)setDefaultValue;
 - (void)resetAdjustment_Btn:(UIButton *)sender;
+-(FaceAttribute *) getFaceAttribute;
 @end

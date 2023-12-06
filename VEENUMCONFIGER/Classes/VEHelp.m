@@ -37,6 +37,7 @@ VENetworkResourceType const VENetworkResourceType_Filter = @"filter_cube";//滤�
 VENetworkResourceType const VENetworkResourceType_Transition = @"transition";//转场
 VENetworkResourceType const VENetworkResourceType_ScreenEffect = @"specialeffects";//画面特效
 VENetworkResourceType const VENetworkResourceType_Font = @"font_family_2";//字体
+VENetworkResourceType const VENetworkResourceType_FontLite = @"font_lite";//字体
 VENetworkResourceType const VENetworkResourceType_APITemplate = @"templateapi";//API剪同款
 VENetworkResourceType const VENetworkResourceType_Canvas = @"bg_style";//画布
 VENetworkResourceType const VENetworkResourceType_ParticleEffect = @"particle";//粒子特效
@@ -1687,6 +1688,42 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (BOOL)isCachedFontWithUfid:(NSString *)ufid {
     NSString *path = [self getFontPathWithUfid:ufid];
     return [[NSFileManager defaultManager] fileExistsAtPath:path];
+}
+
++ (BOOL)isCachedFontLiteWithUfid:(NSString *)ufid {
+    NSString *path = [self getFontLitePathWithUfid:ufid];
+    return [[NSFileManager defaultManager] fileExistsAtPath:path];
+}
+
++ (NSString *)getFontLitePathWithUfid:(NSString *)ufid {
+    NSString *folderPath = [self getDownloadFontLitePathWithUfid:ufid];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSMutableArray *files = [NSMutableArray arrayWithArray:[fm contentsOfDirectoryAtPath:folderPath error:nil]];
+    if ([files containsObject:@"__MACOSX"]) {
+        [files removeObject:@"__MACOSX"];
+    }
+    NSString *fileName;
+    while (files.count == 1) {
+        fileName = files.firstObject;
+        if (fileName.pathExtension.length > 0) {
+            break;
+        }else {
+            folderPath = [folderPath stringByAppendingPathComponent:fileName];
+            files = [NSMutableArray arrayWithArray:[fm contentsOfDirectoryAtPath:folderPath error:nil]];
+            if ([files containsObject:@"__MACOSX"]) {
+                [files removeObject:@"__MACOSX"];
+            }
+        }
+    }
+    NSString *path = [folderPath stringByAppendingPathComponent:fileName];
+    
+    return path;
+}
+
++ (NSString *)getDownloadFontLitePathWithUfid:(NSString *)ufid {
+    NSString *path = [kFontLiteFolder stringByAppendingPathComponent:ufid];
+    
+    return path;
 }
 
 //判断是否已经缓存过这个URL
@@ -15827,5 +15864,20 @@ static OSType help_inputPixelFormat(){
     CVPixelBufferUnlockBaseAddress(pixelBufffer, 0);   // 解锁pixel buffer
 
     return image;
+}
+
++(float)getTimeWithStr:( NSString * ) timeString
+{
+    NSArray<NSString *> *components = [timeString componentsSeparatedByString:@":"];
+
+    int hours = [components[0] intValue];
+    int minutes = [components[1] intValue];
+    
+    NSArray<NSString *> *secondsComponents = [components[2] componentsSeparatedByString:@","];
+    int seconds = [secondsComponents[0] intValue];
+    int milliseconds = [secondsComponents[1] intValue];
+
+    int totalMilliseconds = (hours * 3600 + minutes * 60 + seconds) * 1000 + milliseconds;
+    return ((float)totalMilliseconds)/1000.0;
 }
 @end

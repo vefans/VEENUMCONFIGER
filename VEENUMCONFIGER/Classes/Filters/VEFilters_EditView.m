@@ -7,6 +7,7 @@
 
 #import "VEFilters_EditView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/UIView+WebCache.h>
 #import <VEENUMCONFIGER/VEDownTool.h>
 #import <VEENUMCONFIGER/VEDefines.h>
 #import <VEENUMCONFIGER/VENetworkMaterialBtn_Cell.h>

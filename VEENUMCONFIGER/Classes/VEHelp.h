@@ -20,6 +20,7 @@ FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Filter;//滤
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Transition;//转场
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_ScreenEffect;//画面特效
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Font;//字体
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_FontLite;//字体
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_APITemplate;//API剪同款
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Canvas;//画布
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_ParticleEffect;//粒子特效
@@ -105,6 +106,9 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSString *)getFontPathWithUfid:(NSString *)ufid;
 + (BOOL)isCachedFontWithUfid:(NSString *)ufid;
 +(BOOL) hasCachedFont:(NSString *)code url:(NSString *)fontUrl;
++ (BOOL)isCachedFontLiteWithUfid:(NSString *)ufid;
++ (NSString *)getFontLitePathWithUfid:(NSString *)ufid;
++ (NSString *)getDownloadFontLitePathWithUfid:(NSString *)ufid;
 
 + (UIImage *) imageWithColor:(UIColor *)color cornerRadius:(CGFloat)cornerRadius;
 
@@ -727,4 +731,6 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSURL *)getCubeLocalFloderPath:(NSString *)folderPath fileName:(NSString *)fileName;
 
 +(NSString *)getBase64String:( NSString * ) absoluteString;
+
++(float)getTimeWithStr:( NSString * ) timeString;
 @end

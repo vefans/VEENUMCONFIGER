@@ -313,7 +313,7 @@ float VE_DistanceBetweenPoints(CGPoint a, CGPoint b);
 ////        _coverView.backgroundColor = [Main_Color colorWithAlphaComponent:0.66];
 //        _backImageView.layer.borderWidth = 0;
 //        //_thumbFileTypelabel.alpha = 1;
-        _thumbIconView.layer.borderWidth = 2.0;
+        _thumbIconView.layer.borderWidth = 1.0;
         _thumbIconView.layer.borderColor = Main_Color.CGColor;
         _thumbIconView.layer.masksToBounds = true;
         _thumbIconView.alpha = 1.0;

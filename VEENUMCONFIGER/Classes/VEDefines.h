@@ -764,6 +764,9 @@ isPhoneX;\
 #define kPESDKFontType @"font"
 #define kDefaultFontPath [VEEditResourceBundle pathForResource:@"New_EditVideo/text_sample/PingFang-SC-Regular" ofType:@"otf"]
 
+#define kFontLiteFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"FontLite"]
+#define kFontLitePlistPath [kFontFolder stringByAppendingPathComponent:@"fontLiteList.plist"]
+
 #define kWebmFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"webm"]
 #define kWebmIconPath [kWebmFolder stringByAppendingPathComponent:@"icon"]
 #define kWebmPlistPath [kWebmFolder stringByAppendingPathComponent:@"WebmList.plist"]

@@ -1067,7 +1067,6 @@
     _cameraManager.beautyToneIntensity =  [array[2] floatValue];
     _cameraManager.beautyBigEye =  [array[3] floatValue];
     _cameraManager.beautyThinFace =  [array[4] floatValue];
-
 }
 - (void)refreshBeautyValue:(float)value beautyType:(KVLBeautyType)beautyType {
     switch (beautyType) {
@@ -1090,6 +1089,11 @@
         default:
             break;
     }
+}
+
+- (void)refreshFiveSenses:( FaceAttribute * ) faceAttribute
+{
+    _cameraManager.faceAttribute = faceAttribute;
 }
 
 - (void)refreshFiveSensesValue:(float)value beautyType:(KBeautyType)beautyType {

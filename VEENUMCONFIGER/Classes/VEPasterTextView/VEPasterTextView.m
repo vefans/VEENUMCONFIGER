@@ -108,6 +108,11 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     UIPinchGestureRecognizer *_GestureRecognizer;
     //移动
     UIPanGestureRecognizer* _moveGesture;
+    
+    CGSize selfSize;
+    CGSize comimageSize;
+    CGPoint selfCenter;
+    CGPoint comimageCenter;
 }
 @end
 @implementation VEPasterTextView
@@ -1571,7 +1576,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     [_shadowLbl setNeedsLayout];
 }
 
-- (void) setFramescale:(float)value{
+-(void)frameScale_Value:( float ) value
+{
     if (isnan(value) || value == 0) {
         return;
     }
@@ -1657,6 +1663,45 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     
     [self refreshTextEidtFrameEx];
 //    [self refreshTextEidtFrameEx];
+}
+
+- (void) setFramescale:(float)value{
+    [self frameScale_Value:value];
+    
+    float deltaAngle  = - CGAffineTransformGetAngle(self.transform);
+    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1.0, 1.0);
+    if( _leftMoveImageView )
+    {
+        {
+            _leftMoveImageView.transform =  CGAffineTransformMakeScale(1, 1);
+            _leftMoveImageView.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+            CGPoint center = _leftMoveImageView.center;
+            _leftMoveImageView.frame = CGRectMake(-globalInset/2.0, self.frame.size.height/2.0 - _leftMoveImageView.frame.size.height/2.0, _leftMoveImageView.frame.size.width, _leftMoveImageView.frame.size.height);
+            _leftMoveImageView.center = center;
+        }
+        {
+            _rightMoveImageView.transform =  CGAffineTransformMakeScale(1, 1);
+            _rightMoveImageView.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+            CGPoint center = _rightMoveImageView.center;
+            _rightMoveImageView.frame = CGRectMake(self.frame.size.width - _rightMoveImageView.frame.size.width - 0.0, self.frame.size.height/2.0 - _rightMoveImageView.frame.size.height/2.0, _rightMoveImageView.frame.size.width, _rightMoveImageView.frame.size.height);
+            _rightMoveImageView.center = center;
+        }
+        {
+            _topMoveImageView.transform =  CGAffineTransformMakeScale(1, 1);
+            _topMoveImageView.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+            CGPoint center = _topMoveImageView.center;
+            _topMoveImageView.frame = CGRectMake(self.frame.size.width/2.0 - _topMoveImageView.frame.size.width/2.0, -globalInset/2.0, _topMoveImageView.frame.size.width, _topMoveImageView.frame.size.height);
+            _topMoveImageView.center = center;
+        }
+        {
+            _bottomMoveImageView.transform =  CGAffineTransformMakeScale(1, 1);
+            _bottomMoveImageView.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+            CGPoint center = _bottomMoveImageView.center;
+            _bottomMoveImageView.frame = CGRectMake(self.frame.size.width/2.0 - _bottomMoveImageView.frame.size.width/2.0, self.frame.size.height - _bottomMoveImageView.frame.size.height - 0.0, _bottomMoveImageView.frame.size.width, _bottomMoveImageView.frame.size.height);
+            _bottomMoveImageView.center = center;
+        }
+    }
+    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-deltaAngle), value, value);
 }
 
 - (float) getFramescale{
@@ -2467,6 +2512,14 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     
     _isShowingEditingHandles = NO;
     
+    if( _leftMoveImageView )
+    {
+        _leftMoveImageView.hidden = YES;
+        _rightMoveImageView.hidden = YES;
+        _topMoveImageView.hidden = YES;
+        _bottomMoveImageView.hidden = YES;
+    }
+    
     if( _textEditBtnArray )
     {
         [_textEditBtnArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -2505,6 +2558,13 @@ static VEPasterTextView *lastTouchedView;
     selectImageView.hidden = NO;
     rotateView.hidden = NO;
     
+    if( _leftMoveImageView )
+    {
+        _leftMoveImageView.hidden = NO;
+        _rightMoveImageView.hidden = NO;
+        _topMoveImageView.hidden = NO;
+        _bottomMoveImageView.hidden = NO;
+    }
 //    _syncContainer.currentPasterTextView = self;
     
     if( _textEditBtnArray )
@@ -3159,4 +3219,253 @@ static VEPasterTextView *lastTouchedView;
     }
 }
 
+-(void)showFourSidesMove:( BOOL ) isMove
+{
+    if( isMove )
+    {
+        float ImageWidth = 6.0;
+        _leftMoveImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-globalInset/2.0 - globalInset, self.frame.size.height/2.0 - globalInset*5/2.0, globalInset*5, globalInset*5)];
+        _leftMoveImageView.backgroundColor = [UIColor clearColor];
+        {
+            float  width = _leftMoveImageView.bounds.size.width;
+            float height = _leftMoveImageView.bounds.size.height;
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake((width - ImageWidth)/2.0, (height - ImageWidth)/2.0, ImageWidth, ImageWidth)];
+            imageView.layer.masksToBounds = true;
+            imageView.backgroundColor = [UIColor whiteColor];
+            imageView.layer.cornerRadius = imageView.frame.size.width/2.0;
+            [_leftMoveImageView addSubview:imageView];
+        }
+        _leftMoveImageView.tag = 0;
+        [self addSubview:_leftMoveImageView];
+        [_leftMoveImageView setUserInteractionEnabled:true];
+        _leftMoveImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin ;
+        _leftMoveImageView.userInteractionEnabled = YES;
+        {
+            UIPanGestureRecognizer* moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveImage_GestureRecognizer:)];
+            [_leftMoveImageView addGestureRecognizer:moveImageGesture];
+        }
+        
+        _rightMoveImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - globalInset*5 + globalInset/2.0 + globalInset, self.frame.size.height/2.0 - globalInset*5/2.0, globalInset*5, globalInset*5)];
+        _rightMoveImageView.backgroundColor = [UIColor clearColor];
+        [self addSubview:_rightMoveImageView];
+        {
+            float  width = _rightMoveImageView.bounds.size.width;
+            float height = _rightMoveImageView.bounds.size.height;
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake((width - ImageWidth)/2.0, (height - ImageWidth)/2.0, ImageWidth, ImageWidth)];
+            imageView.layer.masksToBounds = true;
+            imageView.backgroundColor = [UIColor whiteColor];
+            imageView.layer.cornerRadius = imageView.frame.size.width/2.0;
+            [_rightMoveImageView addSubview:imageView];
+        }
+        _rightMoveImageView.tag = 1;
+        _rightMoveImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin ;
+        _rightMoveImageView.userInteractionEnabled = YES;
+        {
+            UIPanGestureRecognizer* moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveImage_GestureRecognizer:)];
+            [_rightMoveImageView addGestureRecognizer:moveImageGesture];
+        }
+        
+        _topMoveImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width/2.0 - globalInset*5/2.0, -globalInset/2.0 - globalInset, globalInset*5, globalInset*5)];
+        _topMoveImageView.backgroundColor = [UIColor clearColor];
+        [self addSubview:_topMoveImageView];
+        {
+            float  width = _topMoveImageView.bounds.size.width;
+            float height = _topMoveImageView.bounds.size.height;
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake((width - ImageWidth)/2.0, (height - ImageWidth)/2.0, ImageWidth, ImageWidth)];
+            imageView.layer.masksToBounds = true;
+            imageView.backgroundColor = [UIColor whiteColor];
+            imageView.layer.cornerRadius = imageView.frame.size.width/2.0;
+            [_topMoveImageView addSubview:imageView];
+        }
+        _topMoveImageView.tag = 2;
+        _topMoveImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin ;
+        _topMoveImageView.userInteractionEnabled = YES;
+        {
+            UIPanGestureRecognizer* moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveImage_GestureRecognizer:)];
+            [_topMoveImageView addGestureRecognizer:moveImageGesture];
+        }
+        
+        _bottomMoveImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width/2.0 - globalInset*5/2.0, self.bounds.size.height - globalInset*5 + globalInset/2.0 + globalInset, globalInset*5, globalInset*5)];
+        _bottomMoveImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin ;
+        _bottomMoveImageView.userInteractionEnabled = YES;
+        _bottomMoveImageView.backgroundColor = [UIColor clearColor];
+        [self addSubview:_bottomMoveImageView];
+        {
+            float  width = _bottomMoveImageView.bounds.size.width;
+            float height = _bottomMoveImageView.bounds.size.height;
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake((width - ImageWidth)/2.0, (height - ImageWidth)/2.0, ImageWidth, ImageWidth)];
+            imageView.layer.masksToBounds = true;
+            imageView.backgroundColor = [UIColor whiteColor];
+            imageView.layer.cornerRadius = imageView.frame.size.width/2.0;
+            [_bottomMoveImageView addSubview:imageView];
+        }
+        _bottomMoveImageView.tag = 3;
+        {
+            UIPanGestureRecognizer* moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveImage_GestureRecognizer:)];
+            [_bottomMoveImageView addGestureRecognizer:moveImageGesture];
+        }
+    }
+    else{
+        [_leftMoveImageView removeFromSuperview];
+        _leftMoveImageView = nil;
+        
+        [_rightMoveImageView removeFromSuperview];
+        _rightMoveImageView = nil;
+        
+        [_topMoveImageView removeFromSuperview];
+        _topMoveImageView = nil;
+        
+        [_bottomMoveImageView removeFromSuperview];
+        _bottomMoveImageView = nil;
+    }
+}
+
+-(CGSize)getMoveImage_ScaleSize
+{
+    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-deltaAngle), 1.0, 1.0);
+    CGSize scaleSize = _contentImage.frame.size;
+    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-deltaAngle), _selfScale, _selfScale);
+    return scaleSize;
+}
+
+-(void)moveImage_GestureRecognizer:(UIGestureRecognizer *)rotation
+{
+    if( UIGestureRecognizerStateBegan == rotation.state )
+    {
+        selfCenter = self.center;
+        comimageCenter = _contentImage.center;
+        deltaAngle  = - CGAffineTransformGetAngle(self.transform);
+        selfSize = self.frame.size;
+        comimageSize = _contentImage.frame.size;
+        self.isDrag_Upated = NO;
+    }
+    else if( UIGestureRecognizerStateEnded == rotation.state )
+    {
+        self.isDrag_Upated = true;
+    }
+    
+    UIView *tappedView = rotation.view;
+    CGPoint point = [rotation locationInView:self];
+    
+    if( UIGestureRecognizerStateBegan == rotation.state )
+    {
+        touchLocation = point;
+        if( (tappedView.tag == 0) || (tappedView.tag == 2) )
+            [((UIPanGestureRecognizer*)rotation) setTranslation:CGPointMake(0, 0) inView:self];
+        return;
+    }
+    
+    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1.0, 1.0);
+    switch (tappedView.tag) {
+        case 0://MARK: left
+        {
+            float  minX = point.x;
+            minX = self.frame.size.width - minX;
+            if( minX < ( globalInset*2.0 + 30 ) )
+            {
+                minX = globalInset*2.0 + 30;
+            }
+            self.frame =  CGRectMake( 0, 0, minX, self.frame.size.height);
+        }
+            break;
+        case 1://MARK: right
+        {
+            float  maxX = touchLocation.x - point.x;
+            maxX = self.frame.size.width - maxX;
+            if( maxX < ( globalInset*2.0 + 30 ) )
+            {
+                maxX = globalInset*2.0 + 30;
+            }
+            self.frame =  CGRectMake( 0, 0, maxX,  self.frame.size.height);
+        }
+            break;
+        case 2://MARK: top
+        {
+            float  minY = point.y;
+            minY = self.frame.size.height - minY;
+            if( minY < ( globalInset*2.0 + 30 ) )
+            {
+                minY = globalInset*2.0 + 30;
+            }
+            self.frame =  CGRectMake( 0, 0, self.frame.size.width, minY);
+        }
+            break;
+        case 3://MARK: bottom
+        {
+            float  maxY = touchLocation.y - point.y;
+            maxY = self.frame.size.height - maxY;
+            if( maxY < ( globalInset*2.0 + 30 ) )
+            {
+                maxY = globalInset*2.0 + 30;
+            }
+            self.frame =  CGRectMake( 0, 0, self.frame.size.width, maxY);
+        }
+            break;
+        default:
+            break;
+    }
+    
+    selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
+    _contentImage.frame = CGRectInset(self.bounds, globalInset, globalInset);
+    [self frameScale_Value:_selfScale];
+    
+    if( _leftMoveImageView )
+    {
+        {
+            _leftMoveImageView.transform =  CGAffineTransformMakeScale(1, 1);
+            _leftMoveImageView.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+//            CGPoint center = _leftMoveImageView.center;
+            _leftMoveImageView.frame = CGRectMake(-globalInset/2.0 - globalInset, self.frame.size.height/2.0 - globalInset*5/2.0, globalInset*5, globalInset*5);
+            CGPoint center = _leftMoveImageView.center;
+            _leftMoveImageView.frame = CGRectMake(0.0, 0.0, globalInset*5*1/_selfScale, globalInset*5*1/_selfScale);
+            _leftMoveImageView.center = center;
+        }
+        {
+            _rightMoveImageView.transform =  CGAffineTransformMakeScale(1, 1);
+            _rightMoveImageView.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+//            CGPoint center = _rightMoveImageView.center;
+            _rightMoveImageView.frame = CGRectMake(self.bounds.size.width - globalInset*5 + globalInset/2.0 + globalInset, self.frame.size.height/2.0 - globalInset*5/2.0, globalInset*5, globalInset*5);
+            CGPoint center = _rightMoveImageView.center;
+            _rightMoveImageView.frame = CGRectMake(0.0, 0.0, globalInset*5*1/_selfScale, globalInset*5*1/_selfScale);
+            _rightMoveImageView.center = center;
+        }
+        {
+            _topMoveImageView.transform =  CGAffineTransformMakeScale(1, 1);
+            _topMoveImageView.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+//            CGPoint center = _topMoveImageView.center;
+            _topMoveImageView.frame = CGRectMake(self.frame.size.width/2.0 - globalInset*5/2.0, -globalInset/2.0 - globalInset, globalInset*5, globalInset*5);
+            CGPoint center = _topMoveImageView.center;
+            _topMoveImageView.frame = CGRectMake(0.0, 0.0, globalInset*5*1/_selfScale, globalInset*5*1/_selfScale);
+            _topMoveImageView.center = center;
+        }
+        {
+            _bottomMoveImageView.transform =  CGAffineTransformMakeScale(1, 1);
+            _bottomMoveImageView.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+//            CGPoint center = _bottomMoveImageView.center;
+            _bottomMoveImageView.frame = CGRectMake(self.frame.size.width/2.0 - globalInset*5/2.0, self.bounds.size.height - globalInset*5 + globalInset/2.0 + globalInset, globalInset*5, globalInset*5);
+            CGPoint center = _bottomMoveImageView.center;
+            _bottomMoveImageView.frame = CGRectMake(0.0, 0.0, globalInset*5*1/_selfScale, globalInset*5*1/_selfScale);
+            _bottomMoveImageView.center = center;
+        }
+    }
+    
+    if( _closeBtn )
+    {
+        _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+    }
+    
+    if( (tappedView.tag == 0) || (tappedView.tag == 2) )
+        [((UIPanGestureRecognizer*)rotation) setTranslation:CGPointMake(0, 0) inView:self];
+    else
+        touchLocation = point;
+    
+    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-deltaAngle), _selfScale, _selfScale);
+    self.center = selfCenter;
+    
+    if( _delegate && [_delegate respondsToSelector:@selector(pasterViewMoveScaleSize:)] )
+    {
+        [_delegate pasterViewMoveScaleSize:self];
+    }
+}
+#pragma mark- =============================
 @end
