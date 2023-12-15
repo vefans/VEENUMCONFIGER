@@ -43,7 +43,9 @@
         if (!categorys && [type isEqualToString:VENetworkResourceType_TTS]) {
             categorys = [self getSystemToneList];
         }
-        [VEWindow showMessage:VELocalizedString(@"无可用的网络", nil) duration:2.0];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [VEWindow showMessage:VELocalizedString(@"无可用的网络", nil) duration:2.0];
+        });
         if (completionHandler) {
             completionHandler(nil, categorys);
         }
@@ -124,7 +126,9 @@
     }
     categorys = [[NSArray arrayWithContentsOfFile:plistPath] mutableCopy];
     if([typeDic[@"msg"] length] > 0) {
-        [VEWindow showMessage:typeDic[@"msg"] duration:2.0];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [VEWindow showMessage:typeDic[@"msg"] duration:2.0];
+        });
     }
     if (completionHandler) {
         completionHandler(nil, categorys);

@@ -11,14 +11,19 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <ATMHud/ATMHud.h>
 #import <CoreMotion/CoreMotion.h>
+#ifdef EnableMNNFaceDetection
 #import <MNNFaceDetection/MNNFaceDetection.h>
 #import <MNNFaceDetection/MNNFaceDetector.h>
+
 #ifdef  AECHITECTURES_ARM64
 #import <MLKitSegmentationCommon/MLKSegmenter.h>
 #import <MLKitSegmentationCommon/MLKSegmentationMask.h>
 #import <MLKitVision/MLKVisionImage.h>
 #import <MLKitSegmentationSelfie/MLKSelfieSegmenterOptions.h>
 #endif
+
+#endif
+
 #import <Vision/Vision.h>
 #import "VEAPITemplateBeauty_VirtualView.h"
 #import "VEHelp.h"
@@ -48,14 +53,16 @@
     NSInteger                    selectedBeautyTypeIndex;
     VEAPITemplatePlayer              *_player;
     BOOL                         isResignActive;
-    MNNFaceDetector             *faceDetector;
     CMMotionManager             *motionManager; //设备传感器
     int                         deviecAutoRotateAngle;      //开启系统自动旋转时，设备旋转的角度0/90/270（手机倒置180不会更新）
     MBProgressHUD               *progressHud;
     MediaAsset                  *_orignalMedia;
     UIButton                    *_saveToAlbumBtn;
     
+#ifdef EnableMNNFaceDetection
+    MNNFaceDetector             *faceDetector;
     MNNFaceDetector             *_faceDetector;
+#endif
 #ifdef  AECHITECTURES_ARM64
     MLKSegmenter                *segmenter;        //mlkit segment
     NSThread                    *segmenterThread;      //mlkit背景分割线程
@@ -184,6 +191,7 @@
     self.topView.hidden = NO;
     self.bottomView.hidden = NO;
     
+#ifdef EnableMNNFaceDetection
     dispatch_async(dispatch_get_main_queue(), ^{
         MNNFaceDetectorCreateConfig *createConfig = [[MNNFaceDetectorCreateConfig alloc] init];
         createConfig.detectMode = MNN_FACE_DETECT_MODE_VIDEO;
@@ -195,6 +203,7 @@
             }
         }];
     });
+#endif
 #if 0
     if (_recordSize.width > _recordSize.height) {
         // 设备方向变化监听（需开启系统自动旋转功能，关闭时方向永远是UIDeviceOrientationPortrait）
@@ -1091,8 +1100,16 @@
     }
 }
 
-- (void)refreshFiveSenses:( FaceAttribute * ) faceAttribute
-{
+- (void)resetFiveSenses {
+    _cameraManager.faceAttribute = nil;
+    _cameraManager.blur = 0.6;
+    _cameraManager.brightness = 0.3;
+    _cameraManager.beautyThinFace = 0.5;
+    _cameraManager.beautyBigEye = 0.3;
+    _cameraManager.beautyToneIntensity = 0;
+}
+
+- (void)refreshFiveSenses:(FaceAttribute *)faceAttribute {
     _cameraManager.faceAttribute = faceAttribute;
 }
 
@@ -1563,6 +1580,7 @@
 
 -(NSArray<FaceRecognition*>*)faceDetectionWithSampleBuffer:(CMSampleBufferRef)sampleBuffer {
     
+#ifdef EnableMNNFaceDetection
     NSDictionary *angleDic = [self calculateInAndOutAngle];
     float inAngle = [angleDic[@"inAngle"] floatValue];
     float outAngle = [angleDic[@"outAngle"] floatValue];
@@ -1661,8 +1679,10 @@
         return faces;
     }
     return nil;
+#else
+    return nil;
+#endif
 }
-
 - (NSDictionary*)calculateInAndOutAngle {
     double degree = [self rotateDegreeFromDeviceMotion];
     //可以根据不同角度检测处理，这里只检测四个角度的改变
@@ -1950,8 +1970,10 @@
     }
     if(asset.beautyBigEyeIntensity > 0.0 || asset.beautyThinFaceIntensity > 0.0 || asset.multipleFaceAttribute.count > 0)
     {
+#ifdef EnableMNNFaceDetection
         if (!_faceDetector) {
             WeakSelf(self);
+            
             // init face detector
             MNNFaceDetectorCreateConfig *createConfig = [[MNNFaceDetectorCreateConfig alloc] init];
             /*
@@ -1969,6 +1991,7 @@
         if (_faceDetector) {
             return [self faceDetectionWithPixelBuffer:pixelBuffer asset:asset];
         }
+#endif
     }
     return nil;
 }
@@ -1979,6 +2002,8 @@
      // In `MNN_FACE_DETECT_MODE_IMAGE`, each frame will trigger the detection.
      // 测试设置图片需要每隔20帧才会真正检测一次，视频每帧都会检测，不知道为什么
      */
+    
+#ifdef EnableMNNFaceDetection
     for(int i = 0;i < MAX_DETECT_NUM;i++)
     {
         float inAngle = 0;
@@ -2075,6 +2100,10 @@
         }
     }
     return nil;
+#else
+    return nil;
+#endif
+    
 }
 
 #ifdef  AECHITECTURES_ARM64

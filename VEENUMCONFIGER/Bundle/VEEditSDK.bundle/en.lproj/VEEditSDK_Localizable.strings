@@ -245,7 +245,8 @@
 "无配乐" = "None";
 "本地" = "Local";
 "云音乐" = "Cloud";
-"本地草稿" = "Local";
+"剪辑" = "Local";
+"短视频" = "Shorts";
 "副本" = "copy";
 "画布颜色" = "Color";
 "画布样式" = "Background";
@@ -618,6 +619,12 @@
 "取消全选" = "Cancel select all";
 "确定删除所有的草稿？" = "Sure to delete all drafts?";
 "确定删除所选的%d个草稿？" = "Sure to delete %d draft?";
+"确定删除所有的剪辑草稿？" = "Sure to delete all edited drafts?";
+"确定删除所选的%d个剪辑草稿？" = "Sure to delete %d edited draft?";
+"确定删除所有的短视频草稿？" = "Sure to delete all short video drafts?";
+"确定删除所选的%d个短视频草稿？" = "Sure to delete %d short video draft?";
+"确定删除所有的模板草稿？" = "Sure to delete all template drafts?";
+"确定删除所选的%d个模板草稿？" = "Sure to delete %d template draft?";
 "相册中的源视频被删除了" = "Original video in album had been deleted";
 "所有素材原视频都被删除，无法恢复！" =  "All the original videos of the material are deleted and cannot be recovered!";
 "是否删除该草稿？" = "Delete the draft?";

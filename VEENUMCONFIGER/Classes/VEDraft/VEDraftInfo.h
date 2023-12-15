@@ -16,6 +16,13 @@ typedef NS_ENUM(NSInteger, VEDraftEditType){
     VEDraftEditType_Update  = 5,    //更新
 };
 
+typedef NS_ENUM(NSInteger, VEDraftType) {
+    VEDraftType_LocalEdit       = 0,    //本地剪辑
+    VEDraftType_LiteEdit        = 1,    //精简剪辑
+    VEDraftType_APITemplate     = 2,    //API模板
+    VEDraftType_Cloud           = 3,    //云草稿
+};
+
 @interface LocalDraftData : NSObject
 
 /** 唯一标识

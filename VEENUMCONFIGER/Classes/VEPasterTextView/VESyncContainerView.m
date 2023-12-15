@@ -25,6 +25,7 @@
     }else{
         
     }
+    
     if( !_isMask )
     {
         _currentPasterTextView = currentPasterTextView;

@@ -733,4 +733,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(NSString *)getBase64String:( NSString * ) absoluteString;
 
 +(float)getTimeWithStr:( NSString * ) timeString;
+
++ (BOOL)detectFaceInImage:(UIImage *)image;
++ (void)writeLog:(NSString *)message;
 @end

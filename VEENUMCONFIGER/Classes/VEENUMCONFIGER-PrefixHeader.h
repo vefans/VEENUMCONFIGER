@@ -10,7 +10,7 @@
 #import <VEENUMCONFIGER/VEConfigManager.h>
 
 #define VEENUMCONFIGERLocalizedString(key,des) [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"VEENUMCONFIGER.bundle/%@", isEnglish ? @"en" : @"zh-Hans"] ofType:@"lproj"]] localizedStringForKey:(key) value:des table:@"VEENUMCONFIGER_Localizable"]
-
+#define EnableMNNFaceDetection
 //#define NEED_DEBUG  //开启调试日志
 
 #ifdef NEED_DEBUG

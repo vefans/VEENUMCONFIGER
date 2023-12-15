@@ -425,16 +425,16 @@
         UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)collectionView.collectionViewLayout;
         if (_lineItemCount > 0) {
             NSInteger index = _selectedItemIndex / _lineItemCount;
-            float y = layout.itemSize.height * index;
+            float y = (layout.itemSize.height + layout.minimumLineSpacing) * index + collectionView.contentOffset.y;
             if (y + layout.itemSize.height > collectionView.frame.size.height) {
                 y = MIN(y, collectionView.contentSize.height - collectionView.frame.size.height);
-                [collectionView setContentOffset:CGPointMake(0, y) animated:YES];
+                [collectionView setContentOffset:CGPointMake(collectionView.contentOffset.x, y) animated:NO];
             }
         }else {
-            float x = (layout.itemSize.width + layout.minimumLineSpacing) * _selectedItemIndex;
+            float x = (layout.itemSize.width + layout.minimumLineSpacing) * _selectedItemIndex + collectionView.contentOffset.x;
             if (x + layout.itemSize.width > collectionView.frame.size.width) {
                 x = MIN(x, collectionView.contentSize.width - collectionView.frame.size.width);
-                [collectionView setContentOffset:CGPointMake(x, 0) animated:YES];
+                [collectionView setContentOffset:CGPointMake(x, collectionView.contentOffset.y) animated:NO];
             }
         }
         _selectedItemIndex = 0;

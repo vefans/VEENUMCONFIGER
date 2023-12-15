@@ -74,9 +74,10 @@
         self.custom_acceptEventInterval = .4;
      }
     
+    NSTimeInterval now = NSDate.date.timeIntervalSince1970;
     // 是否小于设定的时间间隔
-    BOOL needSendAction = (NSDate.date.timeIntervalSince1970 - self.custom_acceptEventTime >= self.custom_acceptEventInterval);
-    
+    BOOL needSendAction = (now - self.custom_acceptEventTime >= self.custom_acceptEventInterval);
+#if 0
     // 更新上一次点击时间戳
     if (self.custom_acceptEventInterval > 0) {
         self.custom_acceptEventTime = NSDate.date.timeIntervalSince1970;
@@ -87,6 +88,15 @@
         [self custom_sendAction:action to:target forEvent:event];
         self.prevAction = NSStringFromSelector(action);
     }
+#else
+    // 两次点击的时间间隔小于设定的时间间隔时，才执行响应事件
+    if (needSendAction
+         || ![NSStringFromSelector(action) isEqualToString:self.prevAction]) {//20230413 修复bug：一个按钮有多个事件，两个事件间隔时间段，后面的事件会无效
+        self.custom_acceptEventTime = now;
+        [super sendAction:action to:target forEvent:event];
+        self.prevAction = NSStringFromSelector(action);
+    }
+#endif
 }
 
 - (void)layoutButtonWithEdgeInsetsStyle:(VEButtonEdgeInsetsStyle)style

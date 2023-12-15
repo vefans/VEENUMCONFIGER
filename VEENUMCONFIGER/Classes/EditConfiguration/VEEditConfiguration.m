@@ -8,9 +8,7 @@
 #import "VEEditConfiguration.h"
 
 @implementation VEEditConfiguration
-- (void)setIsShowSplitScreen:(BOOL)isShowSplitScreen{
-    _isShowSplitScreen = isShowSplitScreen;
-}
+
 - (void)setIsSingletrack:(bool)isSingletrack{
     _isSingletrack = isSingletrack;
     if(_isSingletrack){
@@ -156,6 +154,10 @@
         _enableHierarchy = true;
         _enableMixedMode = true;
         _enablePIPBind = true;
+        _enableResetRect = true;
+        _enableLockAngleSize = true;
+        _enableHiddenMedia = true;
+        _isOnlyFragmentEdit = false;
     }
     
     return self;
@@ -305,151 +307,25 @@
     copy.enableMixedMode = _enableMixedMode;
     copy.enablePIPBind = _enablePIPBind;
     copy.enableEffectAccessObject = _enableEffectAccessObject;
+    copy.enableResetRect = _enableResetRect;
+    copy.enableLockAngleSize = _enableLockAngleSize;
+    copy.enableHiddenMedia = _enableHiddenMedia;
+    copy.isOnlyFragmentEdit = _isOnlyFragmentEdit;
+    copy.enableMorph = _enableMorph;
+    copy.enableCutout = _enableCutout;
+    copy.enableMask = _enableMask;
+    copy.enableAntiShake = _enableAntiShake;
+    copy.enableVR = _enableVR;
+    copy.enableCut_PIP = _enableCut_PIP;
+    copy.enableReplace = _enableReplace;
+    copy.enableTransparency = _enableTransparency;
+    copy.enableEqualizer = _enableEqualizer;
+    copy.enableNoise = _enableNoise;
     return copy;
 }
 
 - (id)copyWithZone:(NSZone *)zone{
-    VEEditConfiguration *copy   = [[[self class] allocWithZone:zone] init];
-    //相册界面
-    copy.enableCloudDraft = _enableCloudDraft;
-    copy.isHiddenNetworkMaterial = _isHiddenNetworkMaterial;
-    copy.resultFileType = _resultFileType;
-    copy.thumbDisable = _thumbDisable;
-    copy.isShowSplitScreen = _isShowSplitScreen;
-    
-    copy.netMaterialTypeURL                     = _netMaterialTypeURL;
-    copy.enableTon = _enableTon;
-    copy.enableParticle = _enableParticle;
-    copy.enableAperture = _enableAperture;
-    copy.enableHDR = _enableHDR;
-    copy.enableHoly = _enableHoly;
-    copy.enableSpirit = _enableSpirit;
-    copy.enableSharpen = _enableSharpen;
-    copy.enableBlurry = _enableBlurry;
-    copy.supportFileType                        = _supportFileType;
-    copy.isLivePhotoDisable                       = _isLivePhotoDisable;
-    copy.defaultSelectAlbum                     = _defaultSelectAlbum;
-    copy.mediaCountLimit                         = _mediaCountLimit;
-    copy.mediaMinCount                          = _mediaMinCount;
-    copy.minVideoDuration                       = _minVideoDuration;
-    copy.maxVideoDuration                       = _maxVideoDuration;
-    copy.enableAlbumCamera                      = _enableAlbumCamera;
-    copy.clickAlbumCameraBlackBlock             = _clickAlbumCameraBlackBlock;
-    copy.isDisableEdit                          = _isDisableEdit;
-    //片段编辑预设
-    copy.enableTextTitle                 = _enableTextTitle;
-    copy.enableSingleMediaAdjust         = _enableSingleMediaAdjust;
-    copy.enableSingleSpecialEffects      = _enableSingleSpecialEffects;
-    copy.enableSingleMediaFilter         = _enableSingleMediaFilter;
-    copy.enableTrim                      = _enableTrim;
-    copy.enableSplit                     = _enableSplit;
-    copy.enableEdit                      = _enableEdit;
-    copy.enableRotate                      = _enableRotate;
-    copy.enableMirror                      = _enableMirror;
-    copy.enableFlipUpAndDown                      = _enableFlipUpAndDown;
-    copy.enableTransition                      = _enableTransition;
-    copy.enableVolume                      = _enableVolume;
-    copy.enableSpeedcontrol              = _enableSpeedcontrol;
-    copy.enableCopy                      = _enableCopy;
-    copy.enableSort                      = _enableSort;
-    copy.enableImageDurationControl      = _enableImageDurationControl;
-    copy.enableProportion                = _enableProportion ;
-    copy.proportionType                  = _proportionType;
-    copy.enableReverseVideo              = _enableReverseVideo;
-    copy.enableAnimation = _enableAnimation;
-    copy.enableBeauty = _enableBeauty;
-    
-    copy.enableAuidoCurveSpeed = _enableAuidoCurveSpeed;
-    copy.enableMediaCurveSpeed = _enableMediaCurveSpeed;
-    copy.enableCaptionKeyframe = _enableCaptionKeyframe;
-    copy.enableCaptionTrack = _enableCaptionTrack;
-    copy.enableMediaKeyframe = _enableMediaKeyframe;
-    copy.enableAudioKeyframe = _enableAudioKeyframe;
-    copy.enableDoodlePenKeyframe = _enableDoodlePenKeyframe;
-    
-    //编辑导出预设
-    copy.enableMV   = _enableMV;
-    copy.enableSubtitle  = _enableSubtitle;
-    copy.enableAIRecogSubtitle  = _enableAIRecogSubtitle;
-    copy.enableSubtitleToSpeech = _enableSubtitleToSpeech;
-    copy.enableSticker   = _enableSticker;
-    copy.enablePicZoom    = _enablePicZoom;
-    copy.enableBackgroundEdit    = _enableBackgroundEdit;
-    copy.enableEffectsVideo     = _enableEffectsVideo;
-    copy.enableFreezeEffects    = _enableFreezeEffects;
-    copy.enableDewatermark      = _enableDewatermark;
-    copy.enableWatermark        = _enableWatermark;
-    copy.enableMosaic           = _enableMosaic;
-    copy.enableFilter    = _enableFilter;
-    copy.enableDubbing   = _enableDubbing;
-    copy.enableMusic     = _enableMusic;
-    copy.enableSoundEffect           = _enableSoundEffect;
-    copy.enableCollage               = _enableCollage;
-    copy.enableCover            = _enableCover;
-    copy.enableDoodle           = _enableDoodle;
-    copy.enableFragmentedit          = _enableFragmentedit;
-    copy.dubbingType                 = _dubbingType;
-    copy.mvResourceURL               = _mvResourceURL;
-    copy.enableLocalMusic            = _enableLocalMusic;
-    copy.soundMusicResourceURL       = _soundMusicResourceURL;
-    copy.soundMusicTypeResourceURL   = _soundMusicTypeResourceURL;
-    //截取视频预设
-    copy.defaultSelectMinOrMax      = _defaultSelectMinOrMax;
-    copy.presentAnimated            = _presentAnimated;
-    copy.dissmissAnimated           = _dissmissAnimated;
-    copy.defaultSelectMinOrMax          = _defaultSelectMinOrMax;
-    copy.trimDuration_OneSpecifyTime    = _trimDuration_OneSpecifyTime;
-    copy.trimMinDuration_TwoSpecifyTime = _trimMinDuration_TwoSpecifyTime;
-    copy.trimMaxDuration_TwoSpecifyTime = _trimMaxDuration_TwoSpecifyTime;
-    copy.trimExportVideoType            = _trimExportVideoType;
-    copy.newmvResourceURL               = _newmvResourceURL;
-    copy.newmusicResourceURL            = _newmusicResourceURL;
-    copy.cardMusicResourceURL           = _cardMusicResourceURL;
-    copy.newartist                      = _newartist;
-    copy.newartistHomepageTitle         = _newartistHomepageTitle;
-    copy.newartistHomepageUrl           = _newartistHomepageUrl;
-    copy.newmusicAuthorizationTitle     = _newmusicAuthorizationTitle;
-    copy.newmusicAuthorizationUrl       = _newmusicAuthorizationUrl;
-    copy.filterResourceURL              = _filterResourceURL;
-    copy.subtitleResourceURL            = _subtitleResourceURL;
-    copy.effectResourceURL              = _effectResourceURL;
-    copy.specialEffectResourceURL       = _specialEffectResourceURL;
-    copy.fontResourceURL                = _fontResourceURL;
-    copy.transitionURL                  = _transitionURL;
-    copy.enableDraft                    = _enableDraft;
-    copy.disableShowDraftButton         = _disableShowDraftButton;
-    copy.enableAutoSaveDraft            = _enableAutoSaveDraft;
-    copy.canvasVideosURL                = _canvasVideosURL;
-    copy.enableShowBackTipView          = _enableShowBackTipView;
-    copy.enableShowRepeatView           = _enableShowRepeatView;
-    copy.templateCategoryPath           = _templateCategoryPath;
-    copy.templatePath                   = _templatePath;
-    copy.stickerResourceMinVersion      = _stickerResourceMinVersion;
-    copy.netMaterialURL = _netMaterialURL;
-    copy.onlineAlbumPath = _onlineAlbumPath;
-    copy.doodlePenResourcePath = _doodlePenResourcePath;
-    copy.maskResourcePath = _maskResourcePath;
-    copy.searchMediaFromTextPath = _searchMediaFromTextPath;
-    copy.enableSubtitleStyleInTool = _enableSubtitleStyleInTool;
-    copy.getTextContentFromLinkPath = _getTextContentFromLinkPath;
-    copy.functionEnablePath = _functionEnablePath;
-    
-    copy.enableSoundVolume = _enableSoundVolume;
-    copy.enableSoundFade = _enableSoundFade;
-    copy.enableSoundEqualizer = _enableSoundEqualizer;
-    copy.enableSoundPlanting = _enableSoundPlanting;
-    copy.enableSoundSplit = _enableSoundSplit;
-    copy.enableSoundVoice = _enableSoundVoice;
-    copy.enableSoundSpeed = _enableSoundSpeed;
-    copy.enableSoundDelete = _enableSoundDelete;
-    copy.enableSoundCopy = _enableSoundCopy;
-    copy.enableSoundorginal = _enableSoundorginal;
-    copy.enableSingleAudioSepar = _enableSingleAudioSepar;
-    copy.enableHierarchy = _enableHierarchy;
-    copy.enableMixedMode = _enableMixedMode;
-    copy.enablePIPBind = _enablePIPBind;
-    copy.enableEffectAccessObject = _enableEffectAccessObject;
-    return copy;
+    return [self mutableCopyWithZone:zone];
 }
 
 - (void)setEnableEffect:(bool)enableEffect {

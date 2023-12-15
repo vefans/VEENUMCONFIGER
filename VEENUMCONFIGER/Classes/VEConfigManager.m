@@ -52,6 +52,7 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
         _toolsTitleFont = [UIFont systemFontOfSize:10];
         //_toolsTitleColor = UIColorFromRGB(0xcccccc);
         _backgroundStyle = UIBgStyleLightContent;
+        _isSelectFaces = NO;
     }
     return self;
 }

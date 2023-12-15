@@ -1661,6 +1661,13 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         _textEditBtn.center = center;
     }
     
+//    if( rotateView )
+//    {
+//        rotateView.frame = CGRectMake(self.bounds.size.width - globalInset/2.0*3.0/value, self.bounds.size.height - globalInset/2.0*3.0/value, rotateView.frame.size.width, rotateView.frame.size.height);
+//        
+//    }
+    
+    
     [self refreshTextEidtFrameEx];
 //    [self refreshTextEidtFrameEx];
 }
@@ -1669,9 +1676,10 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     [self frameScale_Value:value];
     
     float deltaAngle  = - CGAffineTransformGetAngle(self.transform);
-    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1.0, 1.0);
+    
     if( _leftMoveImageView )
     {
+        self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1.0, 1.0);
         {
             _leftMoveImageView.transform =  CGAffineTransformMakeScale(1, 1);
             _leftMoveImageView.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
@@ -1700,8 +1708,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             _bottomMoveImageView.frame = CGRectMake(self.frame.size.width/2.0 - _bottomMoveImageView.frame.size.width/2.0, self.frame.size.height - _bottomMoveImageView.frame.size.height - 0.0, _bottomMoveImageView.frame.size.width, _bottomMoveImageView.frame.size.height);
             _bottomMoveImageView.center = center;
         }
+        self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-deltaAngle), value, value);
     }
-    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-deltaAngle), value, value);
 }
 
 - (float) getFramescale{

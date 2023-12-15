@@ -303,6 +303,7 @@ NSString * _netMaterialTypeURL;
         
         _filterProgressSlider.enabled = true;
         _filterProgressSlider.value = currentCustomFilter.lookUpFilterIntensity;
+        oldFilterStrength = currentCustomFilter.lookUpFilterIntensity;
     }
 }
 
@@ -372,7 +373,8 @@ NSString * _netMaterialTypeURL;
         }
         UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake( (_loadView.frame.size.width - 60)/2.0, (_loadView.frame.size.height - 60.0)/2.0, 60, 60)];
         imageView.tag = 201201;
-        [imageView sd_setImageWithURL:[NSURL fileURLWithPath:[VEHelp getResourceFromBundle:@"VEPESDK" resourceName:@"/animatSchedule_@3x" Type:@"png"]]];
+        if([[NSFileManager defaultManager] fileExistsAtPath:[VEHelp getResourceFromBundle:@"VEPESDK" resourceName:@"/animatSchedule_@3x" Type:@"png"]])
+            [imageView sd_setImageWithURL:[NSURL fileURLWithPath:[VEHelp getResourceFromBundle:@"VEPESDK" resourceName:@"/animatSchedule_@3x" Type:@"png"]]];
         [_loadView addSubview:imageView];
         VEReachability *lexiu = [VEReachability reachabilityForInternetConnection];
         if([lexiu currentReachabilityStatus] != VEReachabilityStatus_NotReachable){

@@ -88,6 +88,9 @@
     
     UIButton *closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(4, 0, 44, 44)];
     [closeBtn setImage:[VEHelp imageWithContentOfFile:@"background/Close_Bottom_44_@3x"] forState:UIControlStateNormal];
+    if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+        [closeBtn setImage:[VEHelp imageWithContentOfFile:@"左上角叉_默认_@3x"] forState:UIControlStateNormal];
+    }
     [closeBtn addTarget:self action:@selector(closeView) forControlEvents:UIControlEventTouchUpInside];
     [titleView addSubview:closeBtn];
     

@@ -109,16 +109,7 @@
         
         _separationTypeIndex = 1;
         NSArray *array = @[@"高光色调", @"阴影色调"];
-        y = CGRectGetMaxY(slider.frame) + (frame.size.height - CGRectGetMaxY(slider.frame) - kBottomSafeHeight - 64) / 2.0;
-        if (y + 64 > frame.size.height) {
-            float diff = (y + 64 - frame.size.height);
-            CGRect rect = slider.frame;
-            rect.size.height -= diff;
-            rect.origin.y -= diff / 2.0;
-            slider.frame = rect;
-            y -= diff;
-        }
-        UIView *tabBarView = [[UIView alloc] initWithFrame:CGRectMake(0, y, self.frame.size.width, 64)];
+        UIView *tabBarView = [[UIView alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 64 - kBottomSafeHeight, self.frame.size.width, 64)];
         [self addSubview:tabBarView];
         for (int i = 0; i < array.count; i++) {
             NSString *title = array[i];

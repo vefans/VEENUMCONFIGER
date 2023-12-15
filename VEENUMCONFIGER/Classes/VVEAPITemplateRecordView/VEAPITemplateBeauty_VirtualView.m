@@ -78,7 +78,6 @@
         
         {
             VETabButton *btn = [[VETabButton alloc] init];
-            btn.frame = CGRectMake(10, 0, 60, 44);
             btn.tag = 2;
             [btn setTitleColor:UIColorFromRGB(0xa4a4a4) forState:UIControlStateNormal];
             [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
@@ -89,7 +88,10 @@
             [self addSubview:btn];
             _seleTypeBtn  = btn;
             btn.titleLabel.font = [UIFont boldSystemFontOfSize:14.0];
+            btn.frame = CGRectMake((self.frame.size.width - 60)/2.0, 0, 60, 44);
             
+#ifdef EnableMNNFaceDetection
+            btn.frame = CGRectMake(10, 0, 60, 44);
             VETabButton *btn1 = [[VETabButton alloc] init];
             btn1.frame = CGRectMake(CGRectGetMaxX(btn.frame), 0, 60, 44);
             btn1.tag = 1;
@@ -100,8 +102,8 @@
             [btn1 addTarget:self action:@selector(tapCategoryBtn:) forControlEvents:UIControlEventTouchUpInside];
             btn1.selected = NO;
             [self addSubview:btn1];
-            
-            UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(btn1.frame), frame.size.width, 1.0/[UIScreen mainScreen].scale)];
+#endif
+            UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(btn.frame), frame.size.width, 1.0/[UIScreen mainScreen].scale)];
             line.backgroundColor = UIColorFromRGB(0x1f1f1f);
             if([VEConfigManager sharedManager].toolLineColor){
                 line.backgroundColor = [VEConfigManager sharedManager].toolLineColor;
@@ -334,8 +336,11 @@
 
 - (void)compareBtnDown:(UIButton *)sender {
 #if 1   //20220721 重置/对比是恢复原始状态
-    if (_delegate && [_delegate respondsToSelector:@selector(resetBeauty)]) {
-        [_delegate resetBeauty];
+//    if (_delegate && [_delegate respondsToSelector:@selector(resetBeauty)]) {
+//        [_delegate resetBeauty];
+//    }
+    if (_delegate && [_delegate respondsToSelector:@selector(resetFiveSenses)]) {
+        [_delegate resetFiveSenses];
     }
 #else
     float value = 0.5;
@@ -415,6 +420,9 @@
         if (_delegate && [_delegate respondsToSelector:@selector(refreshBeautyValue:beautyType:)]) {
             [_delegate refreshBeautyValue:value beautyType:i];
         }
+    }
+    if (_delegate && [_delegate respondsToSelector:@selector(refreshFiveSenses:)]) {
+        [_delegate refreshFiveSenses:[_fiveSensesView getFaceAttribute]];
     }
 #endif
 }
@@ -544,8 +552,11 @@
 }
 
 - (void)fiveSensesResetAll {
-    if (_delegate && [_delegate respondsToSelector:@selector(refreshFiveSenses:)]) {
-        [_delegate refreshFiveSenses:[_fiveSensesView getFaceAttribute]];
+//    if (_delegate && [_delegate respondsToSelector:@selector(refreshFiveSenses:)]) {
+//        [_delegate refreshFiveSenses:[_fiveSensesView getFaceAttribute]];
+//    }
+    if (_delegate && [_delegate respondsToSelector:@selector(resetFiveSenses)]) {
+        [_delegate resetFiveSenses];
     }
 }
 

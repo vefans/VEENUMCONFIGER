@@ -346,11 +346,25 @@ NS_ASSUME_NONNULL_BEGIN
 /** VR (default true)
  */
 @property (nonatomic,assign) bool enableVR;
+/** 重置位置大小为(0,0,1,1) (default true)
+ *  Reset position size to (0,0,1,1)
+ */
+@property (nonatomic,assign) bool enableResetRect;
+/** 锁定媒体角度大小 (default true)
+ */
+@property (nonatomic,assign) bool enableLockAngleSize;
+/** 可隐藏媒体 (default true)
+ */
+@property (nonatomic,assign) bool enableHiddenMedia;
 
 #pragma mark- 设置高级编辑界面
 /**层级(default true)
   */
 @property (nonatomic,assign) bool enableHierarchy;
+/** 仅支持片段编辑(default false)
+ *  Only supports fragment editing
+  */
+@property (nonatomic,assign) bool isOnlyFragmentEdit;
 /** 草稿 (default false)
  */
 @property (nonatomic,assign) bool enableDraft;
