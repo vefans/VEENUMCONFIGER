@@ -428,7 +428,7 @@
             _filterPath = [VEHelp getFileURLFromAbsolutePath_str:asset.filterUrl.absoluteString];
         }
         if (asset.audioFilterType != AudioFilterTypeNormal) {
-            _fileSoundEffect = asset.audioFilterType - 1;
+            _fileSoundEffect = asset.audioFilterType;
         }
         if (asset.curvedSpeedPointArray.count > 0) {
             _curveSpeedIndex = asset.curveSpeedType + 1;
