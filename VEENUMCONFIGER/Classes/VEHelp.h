@@ -736,4 +736,5 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 + (BOOL)detectFaceInImage:(UIImage *)image;
 + (void)writeLog:(NSString *)message;
++(UIImage *)drawImageWithImage:( UIImage * ) image atIsHorizontalMirror:( BOOL ) isHorizontalMirror atIsVerticalMirror:( BOOL ) isVerticalMirror;
 @end

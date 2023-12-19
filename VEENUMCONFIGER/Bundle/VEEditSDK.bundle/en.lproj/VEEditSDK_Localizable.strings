@@ -714,7 +714,7 @@
 "背景音乐音量:" = "Background music volume:";
 "替换背景音乐" = "Replace background music";
 "替换背景音乐-已自定义" = "Replace background music - Customized";
-"选择音乐" = "Choose Music";
+"选择音乐" = "Add sound";
 "已恢复为默认音乐" = "Reverted to default music";
 "视频音量" = "Video volume";
 "提示:" = "Notice:";
@@ -2921,3 +2921,5 @@
 "智能挡脸" = "Face shield";
 "Edit_Subtitle" = "Edit";
 "TTS_Book" = "TTS";
+"Drag here to delete" = "Delete";
+"Release to delete" = "Delete";

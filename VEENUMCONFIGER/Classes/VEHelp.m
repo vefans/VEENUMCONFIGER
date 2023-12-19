@@ -6966,6 +6966,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         if( asset.multipleFaceAttribute.count > 0 )
         {
             faceAttribute = asset.multipleFaceAttribute[0];
+        }else {
+            faceAttribute = [FaceAttribute new];
+            faceAttribute.faceRect = faceRect;
+            [asset.multipleFaceAttribute addObject:faceAttribute];
         }
     }
     else
@@ -10183,6 +10187,30 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         if( itemDic == nil )
         {
             return nil;
+        }
+        if (path.length == 0) {
+            path = [VEHelp getEffectCachedFilePath:itemDic[@"file"] updatetime:itemDic[@"updatetime"]];
+            
+            NSInteger fileCount = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil] count];
+            if (fileCount == 0) {
+                return nil;
+            }
+            NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
+            NSString *folderName;
+            for (NSString *fileName in files) {
+                if (![fileName isEqualToString:@"__MACOSX"]) {
+                    NSString *folderPath = [path stringByAppendingPathComponent:fileName];
+                    BOOL isDirectory = NO;
+                    BOOL isExists = [[NSFileManager defaultManager] fileExistsAtPath:folderPath isDirectory:&isDirectory];
+                    if (isExists && isDirectory) {
+                        folderName = fileName;
+                        break;
+                    }
+                }
+            }
+            if (folderName.length > 0) {
+                path = [path stringByAppendingPathComponent:folderName];
+            }
         }
     }
     CustomMultipleFilter *customMultipleFilter = [self getCustomMultipleFilerWithPath:path categoryId:categoryId resourceId:resourceId timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath];
@@ -15946,4 +15974,30 @@ static OSType help_inputPixelFormat(){
       [handle closeFile];
 }
 
++(UIImage *)drawImageWithImage:( UIImage * ) image atIsHorizontalMirror:( BOOL ) isHorizontalMirror atIsVerticalMirror:( BOOL ) isVerticalMirror
+{
+    UIImage *flippedImage = nil;
+    @autoreleasepool {
+        UIImage *originalImage = image;
+        CGSize imageSize = originalImage.size;
+        UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0.0);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        if (isVerticalMirror && isHorizontalMirror) {
+            CGContextTranslateCTM(context, imageSize.width, imageSize.height);
+            CGContextScaleCTM(context, -1.0, -1.0);
+        }
+        else if (isVerticalMirror) {
+            CGContextTranslateCTM(context, imageSize.width, 0);
+            CGContextScaleCTM(context, 1.0, -1.0);
+        }
+        else if (isHorizontalMirror) {
+            CGContextTranslateCTM(context, 0, imageSize.height);
+            CGContextScaleCTM(context, -1.0, 1.0);
+        }
+        [originalImage drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
+        flippedImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    };
+    return flippedImage;
+}
 @end
