@@ -291,7 +291,6 @@
         cell.btnCollectBtn = view;
         [cell.contentView addSubview:view];
     }
-    [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
     
     return cell;
 }

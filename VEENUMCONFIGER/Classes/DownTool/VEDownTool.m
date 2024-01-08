@@ -54,9 +54,14 @@
         _savePath = [_savePath stringByAppendingPathComponent:downloadTask.response.suggestedFilename];
     }
     [fileManager moveItemAtPath:location.path toPath:_savePath error:&error];
-    
-    if (_Finish) {
-        _Finish(_savePath);
+    if(error){
+        if(_FailBlock){
+            _FailBlock(error);
+        }
+    }else{
+        if (_Finish) {
+            _Finish(_savePath);
+        }
     }
 }
 

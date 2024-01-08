@@ -1645,6 +1645,14 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     _textEditBtn.transform =  CGAffineTransformMakeScale(1, 1);
     _textEditBtn.transform = CGAffineTransformMakeScale(1/value, 1/value);
     
+    if (rotateView) {
+        rotateView.transform =  CGAffineTransformMakeScale(1, 1);
+        rotateView.transform = CGAffineTransformMakeScale(1/value, 1/value);
+        CGPoint center = rotateView.center;
+        rotateView.frame = CGRectMake(0, 0,  globalInset*3/value,  globalInset*3/value);
+        rotateView.center = center;
+    }
+    
     if( _closeBtn )
     {
         CGPoint center = _closeBtn.center;

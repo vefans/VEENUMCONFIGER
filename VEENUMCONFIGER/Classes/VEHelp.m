@@ -10131,6 +10131,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }
     }];
     
+    NSString *fxId = itemDic[@"id"];
+    if(!fxId){
+        fxId = itemDic[@"networkResourceId"];
+    }
     CustomMultipleFilter * filterCustomFilter = nil;
     if (currentFrameTexture) {
         if (![[NSFileManager defaultManager] fileExistsAtPath:kCurrentFrameTextureFolder]) {
@@ -10145,16 +10149,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             [[NSFileManager defaultManager] createFileAtPath:ratingFrameTexturePath contents:imagedata attributes:nil];
             imagedata = nil;
             
-            filterCustomFilter = [VEHelp getCustomMultipleFilerWithFxId:itemDic[@"id"] filterFxArray:effectArray timeRange:timeRange currentFrameTexturePath:ratingFrameTexturePath atPath:path];
+            filterCustomFilter = [VEHelp getCustomMultipleFilerWithFxId:fxId filterFxArray:effectArray timeRange:timeRange currentFrameTexturePath:ratingFrameTexturePath atPath:path];
         }
     }else {
-        filterCustomFilter = [VEHelp getCustomMultipleFilerWithFxId:itemDic[@"id"] filterFxArray:effectArray timeRange:timeRange currentFrameTexturePath:nil atPath:path];
+        filterCustomFilter = [VEHelp getCustomMultipleFilerWithFxId:fxId filterFxArray:effectArray timeRange:timeRange currentFrameTexturePath:nil atPath:path];
     }
     
     return filterCustomFilter;
 }
 #pragma mark - 多脚本json加载 特效
-+ (CustomMultipleFilter *)getCustomMultipleFilerWithFxId:(NSString *)fxId
++ (CustomMultipleFilter *)getCustomMultipleFiler2WithFxId:(NSString *)fxId
                                            filterFxArray:(NSArray *)filterFxArray
                                                timeRange:(CMTimeRange)timeRange
                                  currentFrameTexturePath:(NSString *)currentFrameTexturePath
@@ -10182,6 +10186,92 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     *stop = YES;
                 }
             }];
+        }];
+        
+        if( itemDic == nil )
+        {
+            return nil;
+        }
+        if (path.length == 0) {
+            path = [VEHelp getEffectCachedFilePath2:itemDic[@"file"] updatetime:itemDic[@"updatetime"]];
+            
+            NSInteger fileCount = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil] count];
+            if (fileCount == 0) {
+                return nil;
+            }
+            NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
+            NSString *folderName;
+            for (NSString *fileName in files) {
+                if (![fileName isEqualToString:@"__MACOSX"]) {
+                    NSString *folderPath = [path stringByAppendingPathComponent:fileName];
+                    BOOL isDirectory = NO;
+                    BOOL isExists = [[NSFileManager defaultManager] fileExistsAtPath:folderPath isDirectory:&isDirectory];
+                    if (isExists && isDirectory) {
+                        folderName = fileName;
+                        break;
+                    }
+                }
+            }
+            if (folderName.length > 0) {
+                path = [path stringByAppendingPathComponent:folderName];
+            }
+        }
+    }
+    CustomMultipleFilter *customMultipleFilter = [self getCustomMultipleFilerWithPath:path categoryId:categoryId resourceId:resourceId timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath];
+    
+    return customMultipleFilter;
+}
++ (CustomMultipleFilter *)getCustomMultipleFilerWithFxId:(NSString *)fxId
+                                           filterFxArray:(NSArray *)filterFxArray
+                                               timeRange:(CMTimeRange)timeRange
+                                 currentFrameTexturePath:(NSString *)currentFrameTexturePath
+                                                  atPath:( NSString * ) path
+{
+    __block NSString *categoryId;
+    __block NSString *resourceId;
+    if (fxId.length == 0) {
+        //        NSString *bundlePath = [[NSBundle bundleForClass:self.class] pathForResource: @"VEEditSDK" ofType :@"bundle"];
+        //        NSBundle *resourceBundle = [NSBundle bundleWithPath:bundlePath];
+        NSBundle *resourceBundle =[VEHelp getBundle];
+        path = [[resourceBundle resourcePath] stringByAppendingPathComponent:@"/jianji/effect_icon/shear/无"];
+    }else {
+        if (!filterFxArray || filterFxArray.count == 0) {
+            return nil;
+        }
+        __block NSDictionary *itemDic;
+        [filterFxArray enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if([obj isKindOfClass:[NSMutableArray class]]){
+                [((NSMutableArray *)obj) enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+                    if ([obj1[@"id"] isEqualToString:fxId]) {
+                        categoryId = obj1[@"category"];
+                        resourceId = obj1[@"id"];
+                        itemDic = obj1;
+                        *stop1 = YES;
+                        *stop = YES;
+                    }
+                }];
+            }
+            else{
+                if([[obj allKeys] containsObject:@"data"]){
+                    [obj[@"data"] enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
+                        if ([obj1[@"id"] isEqualToString:fxId]) {
+                            categoryId = obj[@"typeId"];
+                            resourceId = obj1[@"id"];
+                            itemDic = obj1;
+                            *stop1 = YES;
+                            *stop = YES;
+                        }
+                    }];
+                }
+                else{
+                    if ([obj[@"id"] isEqualToString:fxId]) {
+                        categoryId = obj[@"category"];
+                        resourceId = obj[@"id"];
+                        itemDic = obj;
+                        *stop = YES;
+                    }
+                }
+            }
         }];
         
         if( itemDic == nil )
@@ -10416,12 +10506,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                  currentFrameTexturePath:(NSString *)currentFrameTexturePath
                                   atPath:( NSString * ) path
 {
-    //    NSString *path;
     __block NSString *categoryId;
     __block NSString *resourceId;
     if (fxId.length == 0) {
-        //        NSString *bundlePath = [[NSBundle bundleForClass:self.class] pathForResource: @"VEEditSDK" ofType :@"bundle"];
-        //        NSBundle *resourceBundle = [NSBundle bundleWithPath:bundlePath];
         NSBundle *resourceBundle =[VEHelp getBundle];
         path = [[resourceBundle resourcePath] stringByAppendingPathComponent:@"/jianji/effect_icon/shear/无"];
     }else {
@@ -10440,27 +10527,29 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 }
             }];
         }];
-        //        path = [VEHelp getEffectCachedFilePath:itemDic[@"file"] updatetime:itemDic[@"updatetime"]];
-        //        NSInteger fileCount = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil] count];
-        //        if (fileCount == 0) {
-        //            return nil;
-        //        }
-        //        NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
-        //        NSString *folderName;
-        //        for (NSString *fileName in files) {
-        //            if (![fileName isEqualToString:@"__MACOSX"]) {
-        //                NSString *folderPath = [path stringByAppendingPathComponent:fileName];
-        //                BOOL isDirectory = NO;
-        //                BOOL isExists = [[NSFileManager defaultManager] fileExistsAtPath:folderPath isDirectory:&isDirectory];
-        //                if (isExists && isDirectory) {
-        //                    folderName = fileName;
-        //                    break;
-        //                }
-        //            }
-        //        }
-        //        if (folderName.length > 0) {
-        //            path = [path stringByAppendingPathComponent:folderName];
-        //        }
+        if (path.length == 0) {
+            path = [VEHelp getEffectCachedFilePath:itemDic[@"file"] updatetime:itemDic[@"updatetime"]];
+            NSInteger fileCount = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil] count];
+            if (fileCount == 0) {
+                return nil;
+            }
+            NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
+            NSString *folderName;
+            for (NSString *fileName in files) {
+                if (![fileName isEqualToString:@"__MACOSX"]) {
+                    NSString *folderPath = [path stringByAppendingPathComponent:fileName];
+                    BOOL isDirectory = NO;
+                    BOOL isExists = [[NSFileManager defaultManager] fileExistsAtPath:folderPath isDirectory:&isDirectory];
+                    if (isExists && isDirectory) {
+                        folderName = fileName;
+                        break;
+                    }
+                }
+            }
+            if (folderName.length > 0) {
+                path = [path stringByAppendingPathComponent:folderName];
+            }
+        }
     }
     CustomFilter *customFilter = [self getCustomFilerWithFxPath:path timeRange:timeRange currentFrameTexturePath:currentFrameTexturePath];
     customFilter.networkCategoryId = categoryId;
@@ -10775,9 +10864,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return tintedImage;
 }
 
++ (NSString *)getEffectCachedFilePath2:(NSString *)urlPath updatetime:(NSString *)updatetime {
+    NSString *cachedFilePath = [kSpecialEffectFolder2 stringByAppendingPathComponent:[VEHelp cachedFileNameForKey:urlPath]];
+    cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
+    return cachedFilePath;
+}
+
 + (NSString *)getEffectCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
     NSString *cachedFilePath = [kSpecialEffectFolder stringByAppendingPathComponent:[VEHelp cachedFileNameForKey:urlPath]];
-    cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
+    if([updatetime isKindOfClass:[NSString class]])
+        cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
     return cachedFilePath;
 }
 
@@ -11100,6 +11196,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     VEReachability *lexiu = [VEReachability reachabilityForInternetConnection];
     switch (materialType) {
+        case kVEEFFECTS2://特效2
+        {
+            plistPath = kNewSpecialEffectPlistPath2;
+            folderPath = kSpecialEffectFolder2;
+            type = @"specialeffects2";
+        }
+            break;
         case kVEEFFECTS://特效
         {
             plistPath = kNewSpecialEffectPlistPath;
@@ -14823,6 +14926,82 @@ static OSType help_inputPixelFormat(){
     return [VECore getTTSATWithLocale:locale atShortName:ShortName atText:text atFilePath:saveAudioPath isOnlyReturnAudioPath:isOnlyReturnAudioPath];
 }
 
++ (void)createLocalGifStickerWithFile:(VEMediaInfo *)file captionEx:(CaptionEx *)captionEx
+{
+    NSString *path = [kStickerFolder stringByAppendingPathComponent:file.filtImagePatch.lastPathComponent];
+    if ([captionEx.captionImage.captionImagePath containsString:kCustomStickerFolder.lastPathComponent]) {
+        path = [kCustomStickerFolder stringByAppendingPathComponent:file.filtImagePatch.lastPathComponent];
+    }
+    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        PHFetchResult<PHAsset *> *result = [PHAsset fetchAssetsWithALAssetURLs:@[file.contentURL] options:nil];
+        if (result.count > 0) {
+            PHAsset* asset = result.firstObject;
+            [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+            
+            NSString *gifPath = [NSString stringWithFormat:@"%@/%@0.gif", path, file.filtImagePatch.lastPathComponent];
+            PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+            option.synchronous = YES;
+            option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+            BOOL hasAdjustments = [[asset valueForKey:@"hasAdjustments"] boolValue];
+            if (!hasAdjustments) {
+                option.version = PHImageRequestOptionsVersionOriginal;
+            }
+            [[PHImageManager defaultManager] requestImageDataForAsset:asset
+                                                              options:option
+                                                        resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+                [[NSFileManager defaultManager] createFileAtPath:gifPath contents:imageData attributes:nil];
+            }];
+                            
+            NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+            [dic setValue:[NSNumber numberWithInt:1] forKey:@"ver"];
+            [dic setValue:file.filtImagePatch.lastPathComponent forKey:@"name"];
+            [dic setValue:[NSNumber numberWithInteger:file.thumbImage.size.width] forKey:@"width"];
+            [dic setValue:[NSNumber numberWithInteger:file.thumbImage.size.height] forKey:@"height"];
+            [dic setValue:[NSNumber numberWithFloat:0.5] forKey:@"centerX"];
+            [dic setValue:[NSNumber numberWithFloat:0.5] forKey:@"centerY"];
+            
+            [VEHelp setApngCaptionFrameArrayWithImagePath:path jsonDic:dic];
+            
+            captionEx.captionImage.imageName = dic[@"name"];
+            captionEx.captionImage.frameArray = dic[@"frameArray"];
+            captionEx.captionImage.timeArray = dic[@"timeArray"];
+            captionEx.duration = [dic[@"duration"] floatValue];
+        }else {
+            [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+            
+            NSString *gifPath = [NSString stringWithFormat:@"%@/%@0.gif", path, file.filtImagePatch.lastPathComponent];
+            [[NSFileManager defaultManager] copyItemAtPath:captionEx.captionImage.captionImagePath toPath:gifPath error:nil];
+            
+            NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+            [dic setValue:[NSNumber numberWithInt:1] forKey:@"ver"];
+            [dic setValue:file.filtImagePatch.lastPathComponent forKey:@"name"];
+            [dic setValue:[NSNumber numberWithInteger:file.thumbImage.size.width] forKey:@"width"];
+            [dic setValue:[NSNumber numberWithInteger:file.thumbImage.size.height] forKey:@"height"];
+            [dic setValue:[NSNumber numberWithFloat:0.5] forKey:@"centerX"];
+            [dic setValue:[NSNumber numberWithFloat:0.5] forKey:@"centerY"];
+            
+            [VEHelp setApngCaptionFrameArrayWithImagePath:path jsonDic:dic];
+            
+            captionEx.captionImage.imageName = dic[@"name"];
+            captionEx.captionImage.frameArray = dic[@"frameArray"];
+            captionEx.captionImage.timeArray = dic[@"timeArray"];
+            captionEx.duration = [dic[@"duration"] floatValue];
+        }
+    }else if ([[NSFileManager defaultManager] fileExistsAtPath:configPath]) {
+        NSData *data = [[NSData alloc] initWithContentsOfFile:configPath];
+        NSError *err;
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&err];
+        if (dic) {
+            captionEx.captionImage.imageName = dic[@"name"];
+            captionEx.captionImage.frameArray = dic[@"frameArray"];
+            captionEx.captionImage.timeArray = dic[@"timeArray"];
+            captionEx.duration = [dic[@"duration"] floatValue];
+        }
+    }
+    captionEx.captionImage.imageFolderPath = path;
+}
+
 +(float)volumeForData:(NSData *)pcmData
 {
     if (pcmData == nil)
@@ -15999,5 +16178,72 @@ static OSType help_inputPixelFormat(){
         UIGraphicsEndImageContext();
     };
     return flippedImage;
+}
++( void )SoundMusicInterceptWithInputPath:( NSString * ) inputPath atOutPath:( NSString * ) outPath atTime:( float ) fDuration atCallBlock:( void(^)(NSString *musicPath)  ) callBlock
+{
+    @autoreleasepool {
+        // 输入音频文件路径
+        NSString *inputFilePath = inputPath;
+        
+        // 输出音频文件路径
+        NSString *outputFilePath = outPath;
+        
+        // 截取的开始时间和结束时间（以秒为单位）
+        NSTimeInterval startTime = 0.0;
+        NSTimeInterval endTime = fDuration;
+        
+        // 创建输入音频文件URL
+        NSURL *inputFileURL = [NSURL fileURLWithPath:inputFilePath];
+        
+        // 创建音频文件读取器
+        NSError *error;
+        AVAudioFile *audioFile = [[AVAudioFile alloc] initForReading:inputFileURL commonFormat:AVAudioPCMFormatFloat32 interleaved:NO error:&error];
+        if (error) {
+            NSLog(@"Failed to create audio file reader: %@", error);
+            return;
+        }
+        
+        // 获取截取的起始帧和结束帧
+        AVAudioFramePosition startFrame = (AVAudioFramePosition)(startTime * audioFile.fileFormat.sampleRate);
+        AVAudioFrameCount frameCount = (AVAudioFrameCount)((endTime - startTime) * audioFile.fileFormat.sampleRate);
+        
+        // 创建输出音频文件URL
+        NSURL *outputFileURL = [NSURL fileURLWithPath:outputFilePath];
+        
+        // 创建音频文件写入器
+        AVAudioFile *outputAudioFile = [[AVAudioFile alloc] initForWriting:outputFileURL settings:audioFile.fileFormat.settings error:&error];
+        if (error) {
+            NSLog(@"Failed to create audio file writer: %@", error);
+            return;
+        }
+        
+        // 读取并写入截取的音频数据
+        AVAudioFrameCount remainingFrames = frameCount;
+        AVAudioFramePosition currentFrame = startFrame;
+        
+        while (remainingFrames > 0) {
+            AVAudioFrameCount framesToRead = MIN(remainingFrames, 1024);
+            
+            AVAudioPCMBuffer *buffer = [[AVAudioPCMBuffer alloc] initWithPCMFormat:audioFile.processingFormat frameCapacity:framesToRead];
+            [audioFile readIntoBuffer:buffer frameCount:framesToRead error:nil];
+            
+            AVAudioPCMBuffer *outputBuffer = [[AVAudioPCMBuffer alloc] initWithPCMFormat:buffer.format frameCapacity:framesToRead];
+            outputBuffer.frameLength = buffer.frameLength;
+            memcpy(outputBuffer.floatChannelData[0], buffer.floatChannelData[0], buffer.frameLength * sizeof(float));
+            
+            [outputAudioFile writeFromBuffer:outputBuffer error:nil];
+            
+            remainingFrames -= framesToRead;
+            currentFrame += framesToRead;
+        }
+        
+        if( callBlock )
+        {
+            callBlock(outPath);
+        }
+        // 完成后释放资源
+//        [audioFile close];
+//        [outputAudioFile close];
+    }
 }
 @end

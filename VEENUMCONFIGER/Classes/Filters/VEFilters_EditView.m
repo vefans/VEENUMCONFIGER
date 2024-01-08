@@ -8,7 +8,6 @@
 #import "VEFilters_EditView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <SDWebImage/UIView+WebCache.h>
-#import <VEENUMCONFIGER/VEDownTool.h>
 #import <VEENUMCONFIGER/VEDefines.h>
 #import <VEENUMCONFIGER/VENetworkMaterialBtn_Cell.h>
 #import <VEENUMCONFIGER/VEReachability.h>
@@ -191,6 +190,7 @@ NSString * _netMaterialTypeURL;
                             filter.networkCategoryId = [_filter_newFilterSortArray[i] objectForKey:@"id"];
                             filter.networkResourceId = filterDic[@"id"];
                             filter.netCover = filterDic[@"cover"];
+                            filter.netFile = filterDic[@"file"];
                             filter.name = filterDic[@"name"];
                             if( _globalFilters )
                             {
@@ -301,8 +301,8 @@ NSString * _netMaterialTypeURL;
             }
         }
         
-        _filterProgressSlider.enabled = true;
-        _filterProgressSlider.value = currentCustomFilter.lookUpFilterIntensity;
+        _filterProgressSlider.enabled = (![self.currentCustomFilter.networkResourceId isEqualToString: @""] && self.currentCustomFilter.networkResourceId != nil);;
+        _filterProgressSlider.value = !_filterProgressSlider.enabled ? 0 : currentCustomFilter.lookUpFilterIntensity;
         oldFilterStrength = currentCustomFilter.lookUpFilterIntensity;
     }
 }
@@ -353,7 +353,6 @@ NSString * _netMaterialTypeURL;
 
 -(void)initUI
 {
-    currentlabelFilter = 0;
     if( !_filter_newFilterSortArray )
     {
         if( [VEConfigManager sharedManager].iPad_HD )
@@ -491,6 +490,33 @@ NSString * _netMaterialTypeURL;
             _stripBtn.hidden = YES;
             [self addSubview:_stripBtn];
         }
+        if (currentlabelFilter > 0) {
+            [self filterLabelBtn:[_fileterLabelNewScroView viewWithTag:currentlabelFilter]];
+        }
+        if (_selectFilterIndex > 0) {
+            [_filterCollectionView performBatchUpdates:^{
+                UICollectionView *collectionView = _filterCollectionView;
+                if (collectionView.contentSize.width > collectionView.frame.size.width) {
+                    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)collectionView.collectionViewLayout;
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(_selectFilterIndex - 1) inSection:0];
+                    float x = indexPath.row * (layout.itemSize.width + layout.minimumLineSpacing) + 35 * currentlabelFilter;//35 :FooterWidth
+                    float centerX = x + layout.itemSize.width / 2.0;
+                    CGFloat offSetX = centerX - collectionView.bounds.size.width * 0.5;
+                    CGFloat offsetX1 = (collectionView.contentSize.width - centerX) - collectionView.bounds.size.width * 0.5;
+                    CGPoint offset = CGPointZero;
+                    if (offSetX > 0 && offsetX1 > 0) {
+                        offset = CGPointMake(offSetX, 0);
+                    }
+                    else if(offSetX < 0){
+                        offset = CGPointMake(-collectionView.contentInset.left, 0);
+                    }
+                    else if (offsetX1 < 0){
+                        offset = CGPointMake(collectionView.contentSize.width - collectionView.bounds.size.width + collectionView.contentInset.right, 0);
+                    }
+                    [collectionView setContentOffset:offset animated:YES];
+                }
+            } completion:nil];
+        }
     }
     
     if( !_finishBtn )
@@ -624,7 +650,6 @@ NSString * _netMaterialTypeURL;
         if( btn.tag != 120000 )
         {
             desiredSection = btn.tag;
-            NSArray * array = (NSArray *)_filter_CollectionPlists[@"data"];
             CGPoint targetOffset = CGPointMake( currentFilterIndex * (collectionCellWidth+10.0) + desiredSection * (35.0-10) - 35.0/2.0 - 3.0/2.0, 0.0);
             if( desiredSection == 0 )
                 targetOffset = CGPointMake(0.0, 0.0);
@@ -1097,23 +1122,24 @@ NSString * _netMaterialTypeURL;
                 UIButton *noBtn = [_fileterNewView viewWithTag:100];
                 noBtn.selected = NO;
                 
-                if ([item.superview isKindOfClass:[UIScrollView class]] && ![VEConfigManager sharedManager].iPad_HD) {
-                    UIButton *itemBtn = item;
-                    UIScrollView *scrollView = (UIScrollView *)itemBtn.superview;
-                    float margin = scrollView.frame.origin.x / 2.0;
-                    CGFloat offSetX = itemBtn.center.x - scrollView.bounds.size.width * 0.5 + margin;
-                    CGFloat offsetX1 = (scrollView.contentSize.width - itemBtn.center.x) - scrollView.bounds.size.width * 0.5;
-                    CGPoint offset = CGPointZero;
-                    if (offSetX > 0 && offsetX1 > 0) {
-                        offset = CGPointMake(offSetX, 0);
+                if ([item.superview.superview isKindOfClass:[UICollectionView class]] && ![VEConfigManager sharedManager].iPad_HD) {
+                    UICollectionView *collectionView = (UICollectionView *)item.superview.superview;
+                    if (collectionView.contentSize.width > collectionView.frame.size.width) {
+                        float centerX = item.superview.center.x;
+                        CGFloat offSetX = centerX - collectionView.bounds.size.width * 0.5;
+                        CGFloat offsetX1 = (collectionView.contentSize.width - centerX) - collectionView.bounds.size.width * 0.5;
+                        CGPoint offset = CGPointZero;
+                        if (offSetX > 0 && offsetX1 > 0) {
+                            offset = CGPointMake(offSetX, 0);
+                        }
+                        else if(offSetX < 0){
+                            offset = CGPointMake(-collectionView.contentInset.left, 0);
+                        }
+                        else if (offsetX1 < 0){
+                            offset = CGPointMake(collectionView.contentSize.width - collectionView.bounds.size.width + collectionView.contentInset.right, 0);
+                        }
+                        [collectionView setContentOffset:offset animated:YES];
                     }
-                    else if(offSetX < 0){
-                        offset = CGPointZero;
-                    }
-                    else if (offsetX1 < 0){
-                        offset = CGPointMake(scrollView.contentSize.width - scrollView.bounds.size.width, 0);
-                    }
-                    [scrollView setContentOffset:offset animated:YES];
                 }
                 
                 _selectFilterIndex = item.tag-1;
@@ -1792,8 +1818,6 @@ NSString * _netMaterialTypeURL;
         return;
     }
     
-    float fileterNewScroViewHeight = (self.frame.size.height - ([VEConfigManager sharedManager].iPad_HD ? 0 : kToolbarHeight) - 45 - CGRectGetHeight(self.fileterLabelNewScroView.frame));
-    
     float width = (self.frame.size.width - 60)/5.0;
     if(![VEConfigManager sharedManager].iPad_HD){
         width = (self.frame.size.width - 45) / 4.8;
@@ -1801,7 +1825,7 @@ NSString * _netMaterialTypeURL;
             width = 65;
         }
     }
-    
+    width = floorf(width);
     collectionCellWidth = width;
     
     UICollectionViewFlowLayout * flow_Video = [[UICollectionViewFlowLayout alloc] init];
@@ -2078,6 +2102,8 @@ NSString * _netMaterialTypeURL;
     if( ((item.tag-1) == _selectFilterIndex) && ( _currentCustomFilter ) ) {
 //        index = (int)idx;
         _currentScrollViewChildItem = item;
+        UIButton *noBtn = [_fileterNewView viewWithTag:100];
+        noBtn.selected = NO;
         [item setSelected:YES];
     }else {
         [item setSelected:NO];

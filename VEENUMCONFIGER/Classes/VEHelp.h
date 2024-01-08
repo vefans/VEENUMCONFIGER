@@ -94,6 +94,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (UIEdgeInsets) safeAreaInsets;
 +(NSString *)pathFontForURL:(NSURL *)aURL;
 
++ (void)createLocalGifStickerWithFile:(VEMediaInfo *)file captionEx:(CaptionEx *)captionEx;
+
 + (CGSize)getEditOrginSizeCropWithFile:(VEMediaInfo *)file;
 
 + (void)getCurrentImage:(BOOL)screenshot callBack:(void (^)(UIImage *))imageBlock;
@@ -148,6 +150,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (UIImage *)image:(UIImage *)image withBackgroundColor:(UIColor *)color;
 //MARK: 添加特效
 +(CustomMultipleFilter *)getCustomMultipleFilter:( NSDictionary * ) itemDic atPath:( NSString * ) path atTimeRange:( CMTimeRange ) timeRange atImage:( UIImage * ) FXFrameTexture atFXFrameTexturePath:( NSString * )  fXFrameTexturePath atEffectArray:( NSMutableArray * ) effectArray;
++ (NSString *)getEffectCachedFilePath2:(NSString *)urlPath updatetime:(NSString *)updatetime;
 + (NSString *)getEffectCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 + (NSString *)getSuperposiCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 + (NSString *)getBoxCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
@@ -332,6 +335,12 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(CustomFilter *)copyCustomMediaAsset:( CustomFilter * ) Animate atMedia:( MediaAsset * ) asset;
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath atMedia:( id ) mediaOrFile;
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath caption:(Caption *)caption;
+
++ (CustomFilter *)getCustomFilerWithFxId:(NSString *)fxId
+                           filterFxArray:(NSArray *)filterFxArray
+                               timeRange:(CMTimeRange)timeRange
+                 currentFrameTexturePath:(NSString *)currentFrameTexturePath
+                                  atPath:( NSString * ) path;
 #pragma mark- 多脚本json加载
 + (CustomMultipleFilter *)getCustomMultipleFilerWithFolderPath:(NSString *) folderPath currentFrameImagePath:(NSString *)currentFrameImagePath;
 
@@ -410,6 +419,11 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(NSString *)objectToJson:(id)obj;
 
 #pragma mark - 多脚本json加载 特效
++ (CustomMultipleFilter *)getCustomMultipleFiler2WithFxId:(NSString *)fxId
+                                           filterFxArray:(NSArray *)filterFxArray
+                                               timeRange:(CMTimeRange)timeRange
+                                 currentFrameTexturePath:(NSString *)currentFrameTexturePath
+                                                   atPath:( NSString * ) path;
 + (CustomMultipleFilter *)getCustomMultipleFilerWithFxId:(NSString *)fxId
                              filterFxArray:(NSArray *)filterFxArray
                                  timeRange:(CMTimeRange)timeRange
@@ -737,4 +751,6 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (BOOL)detectFaceInImage:(UIImage *)image;
 + (void)writeLog:(NSString *)message;
 +(UIImage *)drawImageWithImage:( UIImage * ) image atIsHorizontalMirror:( BOOL ) isHorizontalMirror atIsVerticalMirror:( BOOL ) isVerticalMirror;
+
++( void )SoundMusicInterceptWithInputPath:( NSString * ) inputPath atOutPath:( NSString * ) outPath atTime:( float ) fDuration atCallBlock:( void(^)(NSString *musicPath)  ) callBlock;
 @end

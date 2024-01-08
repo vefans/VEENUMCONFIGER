@@ -265,7 +265,7 @@
 
 "正在导出，请稍等..." = "Being export, wait a moment...";
 "时间至少大于0.5秒!" = "Time is at least 0.5 second!";
-"无法添加配音，可添加是时间小于0.5！" = "Cannot add dubbing, but the time is less than 0.5!";
+"无法添加配音，可添加时间小于0.5秒！" = "Cannot add dubbing, because the time is less than 0.5s!";
 "录音中" = "Recording";
 "按住录音" = "Hold to record";
 
@@ -1635,7 +1635,6 @@
 "授权证书" = "Authorization certificate";
 "没有音乐" = "No music yet";
 "音乐提取" = "Extracted";
-"录音中" = "Recording";
 "垂直翻转" = "Vertical";
 "水平翻转" = "Horizontal";
 "AI识别文字中..." = "AI recognizes text...";
@@ -2449,7 +2448,7 @@
 "删除点" = "Delete";
 "批量编辑" = "Batch edit";
 "总共%d条字幕" = "Total %d subtitles";
-"点击或长按进行录音" = "Tap or press and hold to record";
+"点击或长按进行录音" = "Tap or long press to record";
 "点击右边素材库\"\"添加素材，或拖拽素材到下方主轴区域，开始创作" = "Click the material library on the right\"\"to add material, or drag the material to the main axis area below to start creating";
 "点击右边素材库\"\"添加素材" = "Click on the material library on the right\"\"Add material";
 "拖动素材到这里，开始你的创作吧～" = "Drag the material here and start your creation~";
@@ -2735,8 +2734,8 @@
 "Color2" = "Blue";
 "Color3" = "Alpha";
 "line" = "Size";
-"offsetX" = "OffsetH";
-"offsetY" = "OffsetV";
+"offsetY" = "OffsetH";
+"offsetX" = "OffsetV";
 
 "仅画中画" = "Overlay";
 "长按拖动可调整层级" = "Long press and drag to adjust the layer";

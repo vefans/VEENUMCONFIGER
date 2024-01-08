@@ -295,6 +295,7 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KMORPH_DELETE       = 55,//删除边角定位
     kVEVR               = 60, //全景
     kVEEXPORTFRAME      = 61,//单帧导出
+    kVEEFFECTS2  = 62, //特效2
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -663,9 +664,15 @@ isPhoneX;\
 #define kCoverTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkCoverTemplate/"]
 #define kCoverTemplatePlistPath [kCoverTemplateFolder stringByAppendingPathComponent:@"veNetworkCoverTemplates.plist"]
 
+#define kSpecialEffectFolder2 [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/SpecialEffect2"]
+#define kNewSpecialEffectPlistPath2 [kSpecialEffectFolder2 stringByAppendingPathComponent:@"SpecialEffectList_New2.plist"]
+#define kCollectEffectPlistPath2 [kSpecialEffectFolder2 stringByAppendingPathComponent:@"CollectEffect2.plist"]
+#define kRecentEffectPlistPath2 [kSpecialEffectFolder2 stringByAppendingPathComponent:@"RecentEffect2.plist"]
+
 #define kSpecialEffectFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/SpecialEffect"]
 #define kNewSpecialEffectPlistPath [kSpecialEffectFolder stringByAppendingPathComponent:@"SpecialEffectList_New.plist"]
 #define kCollectEffectPlistPath [kSpecialEffectFolder stringByAppendingPathComponent:@"CollectEffect.plist"]
+#define kRecentEffectPlistPath [kSpecialEffectFolder stringByAppendingPathComponent:@"RecentEffect.plist"]
 
 #define kBoxEffectFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/BoxEffect"]
 #define kNewBoxEffectPlistPath [kBoxEffectFolder stringByAppendingPathComponent:@"BoxEffectList_New.plist"]

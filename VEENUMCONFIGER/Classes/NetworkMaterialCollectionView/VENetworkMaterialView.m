@@ -351,10 +351,6 @@
         if(!cell){
             cell = [[VENetworkMaterialCollectionViewCell alloc] initWithFrame:CGRectMake(self.bounds.size.width*indexPath.row, 0, self.bounds.size.width, self.bounds.size.height)];
         }
-        else
-        {
-            [[SDImageCache sharedImageCache] clearMemory];
-        }
         cell.index = 0;
         [cell.collectionView setContentOffset:CGPointMake(0, 0)];
         

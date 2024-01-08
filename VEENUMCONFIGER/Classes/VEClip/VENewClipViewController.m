@@ -1167,14 +1167,19 @@
 }
 
 -(void)resetButtonClicked{
-    
-    [self setResetButtonEnabled:NO];
-    [self playVideo:NO];
+    _selectFile.rotate = 0;
     _selectFile.isVerticalMirror = NO;
     _selectFile.isHorizontalMirror = NO;
-    _selectFile.rotate = 0;
-    _selectFile.fileScale = 0;
-    [self refreshPlayerFrame];
+    [self playVideo:NO];
+    
+    [self refreshPrewFrame];
+    
+    [self setResetButtonEnabled:NO];
+//    [self playVideo:NO];
+
+//    _selectFile.rotate = 0;
+//    _selectFile.fileScale = 0;
+//    [self refreshPlayerFrame];
 }
 
 -(void)setResetButtonEnabled:(BOOL)isEnabled{

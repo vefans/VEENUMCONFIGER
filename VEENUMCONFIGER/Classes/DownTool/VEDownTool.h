@@ -10,6 +10,7 @@
 @interface VEDownTool : NSObject
 @property (nonatomic,copy) void(^Progress) (float);
 @property (nonatomic,copy) void(^Finish)(NSString *cachePath);
+@property (nonatomic,copy) void(^FailBlock)(NSError *error);
 
 - (instancetype)initWithURLPath:(NSString*)path savePath:(NSString*)savePath;
 //- (void) downWithPath:(NSString*) path

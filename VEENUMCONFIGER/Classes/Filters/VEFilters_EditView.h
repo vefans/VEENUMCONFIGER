@@ -8,6 +8,7 @@
 #import <UIKit/UIKit.h>
 #import <VEENUMCONFIGER/VESlider.h>
 #import "VEFileScrollViewChildItem.h"
+#import <VEENUMCONFIGER/VEDownTool.h>
 
 NS_ASSUME_NONNULL_BEGIN
 @class VEFilters_EditView;
