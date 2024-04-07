@@ -259,6 +259,11 @@
 @property(nonatomic, strong) UIImageView * _Nullable bottomMoveImageView;
 -(CGSize)getMoveImage_ScaleSize;
 -(void)showFourSidesMove:( BOOL ) isMove;
+
+@property(nonatomic, assign) BOOL    isSky;
+@property(nonatomic, assign) CGPoint    skyBeginPoint;
+@property(nonatomic, assign) CGPoint    skyMovePoint;
+@property(nonatomic, assign) UIGestureRecognizerState skyRecognizerState;
 @end
 
 

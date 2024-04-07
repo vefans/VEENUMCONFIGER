@@ -201,6 +201,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) bool isHiddenNetworkMaterial;
 
+/** 是否显示书单网络素材(default false)
+ */
+@property (nonatomic, assign) bool isShowBookNetworkMaterial;
+
 /** 返回媒体类型，默认为ALBUMFILETYPE_MediaInfo
  */
 @property (nonatomic,assign) SELECTALBUMFILETYPE resultFileType;
@@ -306,6 +310,12 @@ NS_ASSUME_NONNULL_BEGIN
 /** 涂抹 (default true)
  */
 @property (nonatomic,assign) bool enableSmear;
+/** 智能裁剪 (default true)
+ */
+@property (nonatomic,assign) bool enableSmartCrop;
+/** 基础属性 (default true)
+ */
+@property (nonatomic,assign) bool enableBasicProperties;
 /** 模糊 (default true)
  */
 @property (nonatomic,assign) bool enableBlurry;
@@ -440,6 +450,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 字幕网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *subtitleResourceURL;
+/** 花字网络资源地址
+ */
+@property (nonatomic,copy,nullable)NSString    *flowerWordResourceURL;
 /** 贴纸网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *effectResourceURL;
@@ -494,6 +507,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 骏证功能是否可用的地址
  */
 @property (nonatomic, copy, nullable) NSString *functionEnablePath;
+/** 放大镜网络资源地址
+ */
+@property (nonatomic,copy,nullable)NSString    *magnifyingGlassURL;
 
 /** MV (default false)
  */
@@ -657,6 +673,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,copy,nullable) void(^clickAlbumShareBlackBlock)(id obj, bool isSavePhoto);
 @property (nonatomic, strong)NSURL   *imagePath;
 @property (nonatomic, assign)BOOL      isJPG;
+
+
+@property (copy,nonatomic)NSString  * sourcesKey;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -17,6 +17,8 @@
 
 -(void)fiveSenses_ValueChanged:(UISlider *) slider atVIew:(VEFiveSensesView *) view;
 
+-(void)fiveSenses_ValueChangEnd;
+
 -(void)fiveSenses_Reset:(NSInteger) type atVIew:(VEFiveSensesView *) view;
 
 -(void)fiveSensesCompare:(NSInteger) type atVIew:(VEFiveSensesView *)view;
@@ -47,6 +49,8 @@
 @property(nonatomic, strong)MediaAsset * currentMedia;
 @property(nonatomic, strong)MediaAsset * orginMedia;
 @property(nonatomic, assign)CGRect currentFaceRect;
+@property(nonatomic, weak)UIButton *compareBtn;
+
 - (void)setDefaultValue;
 
 -(void)resetAdjustment_Btn:( UIButton * ) sender;

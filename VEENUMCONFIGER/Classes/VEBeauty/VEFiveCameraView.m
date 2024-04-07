@@ -34,6 +34,8 @@
 
 @property (nonatomic, strong)  FaceAttribute* faceAttribute;
 
+@property (nonatomic, strong) UIButton * compareBtn;
+@property (nonatomic, strong) UIButton * resetBtn;
 @end
 
 @implementation VEFiveCameraView
@@ -224,30 +226,34 @@
             _beautyView.contentSize = CGSizeMake(contentsWidth, 0);
             
         }
-        
         UIButton *compareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         compareBtn.frame = CGRectMake(self.frame.size.width - (44 + 15), (CGRectGetHeight(self.frame) - 44) - (iPhone_X ? 34 : 0), 44, 44);
-        [compareBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@默认",@"对比"]] forState:UIControlStateNormal];
-        [compareBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@选中",@"对比"]] forState:UIControlStateSelected];
+        [compareBtn setImage:[VEHelp imageNamed:@"VirtualLive/Beauty/skin/对比默认"] forState:UIControlStateNormal];
+        [compareBtn setImage:[VEHelp imageNamed:@"VirtualLive/Beauty/skin/对比选中"] forState:UIControlStateDisabled];
         [compareBtn addTarget:self action:@selector(compareBtnDown:) forControlEvents:UIControlEventTouchDown];
         [compareBtn addTarget:self action:@selector(compareBtnUp:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
         [self addSubview:compareBtn];
+        _compareBtn = compareBtn;
         
         UIButton * resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, compareBtn.frame.origin.y, 80, 44)];
         [resetBtn setImage:[VEHelp imageNamed:@"VirtualLive/美颜重置默认@3x"] forState:UIControlStateNormal];
-        [resetBtn setImage:[VEHelp imageNamed:@"VirtualLive/美颜重置选中@3x"] forState:UIControlStateHighlighted];
+        [resetBtn setImage:[VEHelp imageNamed:@"VirtualLive/美颜重置默认@3x"] forState:UIControlStateHighlighted];
+        [resetBtn setImage:[VEHelp imageNamed:@"VirtualLive/美颜重置选中@3x"] forState:UIControlStateDisabled];
         [resetBtn setTitle:VELocalizedString(@"重置", nil) forState:UIControlStateNormal];
+        [resetBtn setTitleColor:UIColorFromRGB(0x888888) forState:UIControlStateDisabled];
         [resetBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
-        [resetBtn setTitleColor:Main_Color forState:UIControlStateHighlighted];
+        [resetBtn setTitleColor:TEXT_COLOR forState:UIControlStateHighlighted];
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
             [resetBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
-            [resetBtn setTitleColor:Main_Color forState:UIControlStateHighlighted];
+            [resetBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateHighlighted];
         }
         resetBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         resetBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
         [resetBtn addTarget:self action:@selector(resetAdjustment_Btn:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:resetBtn];
-        
+        _resetBtn = resetBtn;
+        _resetBtn.enabled = NO;
+        _compareBtn.enabled = NO;
         _faceAttribute = [FaceAttribute new];
     }
     return self;
@@ -626,6 +632,8 @@
     }
     [self sliderValueChanged:slider];
     _sliderValueLabel.hidden = YES;
+    _resetBtn.enabled = YES;
+    _compareBtn.enabled = YES;
 }
 
 -(void)sliderValueChanged:(VESlider *) slider
@@ -806,6 +814,8 @@
         [_delegate fiveSenses_Reset:_currentType value:value];
     }
 #else
+    _resetBtn.enabled = NO;
+    _compareBtn.enabled = NO;
     _faceAttribute = [FaceAttribute new];
     for (int i = 0;i<_adjustmentSliders.count;i++) {
         VESlider *slider = (VESlider *)_adjustmentSliders[i];

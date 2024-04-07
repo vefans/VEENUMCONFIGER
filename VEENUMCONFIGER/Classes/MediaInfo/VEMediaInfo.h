@@ -94,6 +94,8 @@ typedef NS_ENUM(NSInteger, VECropType){
 
 @interface VEMediaInfo : NSObject<NSCopying, NSMutableCopying>
 
+@property(nonatomic, strong) MediaAsset *BlurCanvaAsset;
+
 @property (nonatomic, strong)NSMutableArray *occlusionStickers;
 @property(nonatomic, strong)NSMutableArray *occlusions;
 @property(nonatomic, strong)NSMutableArray *occlusionImages;
@@ -236,7 +238,8 @@ typedef NS_ENUM(NSInteger, VECropType){
 
 /**视频(或图片)旋转角度
  */
-@property (nonatomic, assign) double rotate;
+@property (nonatomic, assign) float rotate;
+@property (nonatomic, assign) double sourceRotate;
 @property (nonatomic, assign) double templateTemeRotate;
 
 /**是否上下镜像
@@ -251,6 +254,7 @@ typedef NS_ENUM(NSInteger, VECropType){
  */
 @property (nonatomic, assign) CGRect rectInScene;
 @property (nonatomic, assign) CGRect templateTemeRectInScene;
+@property (nonatomic, assign) CGRect rectInView;
 
 /**素材在整个视频中的显示位置的中心坐标 （启用动画时 才会使用）
  */
@@ -573,6 +577,7 @@ typedef NS_ENUM(NSInteger, VECropType){
 @property (nonatomic, strong) NSMutableArray *keyFrameTimeArray;
 
 @property (nonatomic, strong) NSMutableArray *keyFrameRectRotateArray;
+@property (nonatomic, strong) NSMutableArray *keyFrameParameters;
 
 - (instancetype)initWithMediaAsset:(MediaAsset *)asset;
 
@@ -603,4 +608,36 @@ typedef NS_ENUM(NSInteger, VECropType){
 /** 是否为主题中的音乐的标识符
  */
 @property (nonatomic,assign) BOOL isTemplateTheme;
+
+/** 构图，水平矫正，-45 ～ 45.0 ，默认为 0
+ */
+@property (nonatomic , assign) float horizontalDegrees;
+
+/** 构图，垂直矫正，-45 ～ 45.0 ，默认为 0
+ */
+@property (nonatomic , assign) float verticalDegrees;
+
+
+/** 构图，显示位置，默认为CGRectMake(0, 0, 1, 1)
+ */
+@property (nonatomic, assign) CGRect rt;
+ 
+/** 构图，旋转角度
+ */
+@property (nonatomic, assign) float degrees;
+
+/** 构图，保持头部大小不变
+ */
+@property (nonatomic, assign) BOOL isKeep;
+
+/** 构图，适应画布大小
+ */
+@property (nonatomic, assign) BOOL isAdapation;
+/** 媒体内部操作关键帧
+ */
+@property (nonatomic, strong) NSMutableArray<MediaAssetAnimatePosition*>*  compositionAnimate;
+
+@property (nonatomic, assign) float compositionDegrees;
+@property (nonatomic, strong) NSMutableArray *shotTrackArray;
+@property (nonatomic, assign) CGRect trackingAreaRect;
 @end

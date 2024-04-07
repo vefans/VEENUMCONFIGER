@@ -22,9 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)cropViewTouchTopLeftTrackButton;
 - (void)cropViewTouchtopRightTrackButton;
 - (void)cropViewTouchesEndSuperView:(UITapGestureRecognizer *)gesture withInVideo:(BOOL)isInVideo withToucheClipPoint:(CGPoint)clipPoint;
-
-
-
+-(void)PinchGetureRecognizer_endDragCropView:(UIPinchGestureRecognizer *)gesture;
+-(void)PinchGetureRecognizer_End:( UIView * ) cropView;
+-(void)endDragCropView;
 @end
 
 
@@ -53,6 +53,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong)VETrackButton * bottomRightTrackButton;
 @property(nonatomic,assign)VECropViewTrackType cropViewTrackType;
 @property(nonatomic,weak)id<VECropViewDelegate> delegate;
+@property(nonatomic, weak) UIView   * videoCropView;
+@property(nonatomic, assign) BOOL isDrawCroprectview;
+@property(nonatomic, assign) float  fMaxHeight;
+
+@property (nonatomic, assign) BOOL   isModificationCrop;
+
+@property(nonatomic, weak) UIView   * videoView;
+
+@property(nonatomic, assign) CGPoint    lastLocation;
 
 @property(nonatomic,assign)float cropRatio;
 
@@ -67,6 +76,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 -(void)trackButton_hidden:(  BOOL ) isHidden;
 
+-(void)trackButtonAdjustmentPosition;
+-(void)buttonAlpha:( float ) alpha;
+
+@property(nonatomic,assign) CGFloat cropWidth;
+@property(nonatomic,assign) CGFloat cropHeight;
+@property(nonatomic,assign) CGFloat croporiginX;
+@property(nonatomic,assign) CGFloat croporiginY;
+
+-(void)convertView:( UIView * ) view atDestinationView:( UIView * ) destinationView atInView:( UIView * ) inView;
 @end
 
 NS_ASSUME_NONNULL_END

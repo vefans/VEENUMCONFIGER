@@ -35,6 +35,7 @@
 "请稍候,正在应用到所有!" = "Wait a moment, applying to all!";
 
 "素材库" = "Stock videos";
+"Book Material" = "Book";
 "虚拟直播间" = "VirtualLive";
 "请添加音乐" = "Add Music";
 "从文件导入" = "Import";
@@ -129,6 +130,7 @@
 "音    量"= "Volume";
 
 "点击输入文字" = "Enter text";
+"输入文字" = "Enter text...";
 "没有输入文字哟!" = "No text input!";
 "视频编辑" = "Video edit";
 "请选择需要删除的字幕" = "Please select the subtitle for delete";
@@ -1211,7 +1213,6 @@
 "长按(所有的应用到全部)" = "Long press (apply to all)";
 "视频和背景一样大小,会盖住背景" = "The video is the same size as the background and will cover the background";
 "媒体" = "Media";
-"输入文字" = "Enter text";
 "继续添加画中画会导致预览卡顿" = "Continuing to add overlay will cause the preview to freeze";
 "已自动保存草稿" = "Drafts have been automatically saved";
 "AI识别仅限于有声视频" = "AI recognition is limited to audio video";
@@ -1557,6 +1558,7 @@
 "字 幕" = "Subtitles";
 "贴 纸" = "Sticker";
 "特 效" = "Effect";
+"Effect" = "特效";
 "MV" = "MV";
 "背 景" = "Background";
 "封 面" = "Cover";
@@ -2115,6 +2117,7 @@
 "抠图" = "Cutout";
 "去雾" = "Defog";
 "消除笔" = "Eraser";
+"消除笔2" = "Eraser2";
 "图层合并" = "Layer merging";
 "合并" = "merging";
 "图层调整" = "Layer adjust";
@@ -2922,3 +2925,57 @@
 "TTS_Book" = "TTS";
 "Drag here to delete" = "Delete";
 "Release to delete" = "Delete";
+"调整起始时间" = "Adjust time";
+"X-axis" = "X";
+"Y-axis" = "Y";
+"基础属性" = "Basic Properties";
+"矫正" = "Correction";
+"添加字幕文件" = "Add subtitle file";
+"镜头追踪" = "Lens tracking";
+"请选择追踪对象" = "Please select who to track";
+"开始" = "Start";
+"头" = "head";
+"身体" = "Body";
+"手" = "hand";
+"正在生成镜头追踪效果0%" = "Generating lens tracking effect 0%";
+"正在生成镜头追踪效果%0.1f%%" = "Creating lens tracking %0.1f%%";
+"镜头追踪成功" = "Camera tracking success";
+"追踪对象消失，可从当前帧开始继续进行追踪" = "Tracking object disappears, can continue tracking from the current frame";
+"重新追踪" = "Retrace";
+"清除" = "Clear";
+"当前片段已处理过跟踪效果，点击后将重新开始跟踪，是否继续？" = "The current clip has processed the tracking effect, click will restart the tracking, do you want to continue?";
+"镜头摇晃强度" = "Camera shake intensity";
+"适应画布大小" = "Fit canvas size";
+"保持头部大小不变" = "Keep the head size the same";
+"画布模糊" = "Blur";
+"点击后会清除当前镜头追踪效果，是否确认" = "Click will clear the current lens tracking effect, whether to confirm";
+"清除效果" = "Clear effect";
+"当前位置已有镜头追踪效果，请从未覆盖位置继续" = "Lens tracking effect has been applied to the current position, please continue with the uncovered position";
+
+"框选出需要消除的文字，支持多个选框" = "Select the text that needs to be eliminated, and support multiple box selections";
+"添加选框" = "Add checkbox";
+"手动涂抹" = "Manual";
+"复制修补" = "Repair";
+"范围" = "Range";
+"消除区域" = "Area";
+"融合" = "Blend";
+"应用或取消当前操作后，可再次涂抹哦" = "After applying or canceling\nthe current operation, you\ncan swipe it again!";
+"请先涂抹消除区域再融合哦" = "Swipe the erased area\nbefore using Blend.";
+"请先涂抹消除区域再羽化哦" = "Swipe the erased area\nbefore using Feathering.";
+"请先涂抹消除区域再旋转哦" = "Swipe the erased area\nbefore using Rotate.";
+"请先涂抹消除区域再翻转哦" = "Swipe the erased area\nbefore using Flip.";
+"应用" = "Apply";
+"Go to Settings" = "Settings";
+"张" = "";
+
+"导入文案" = "Import copy";
+"请先输入文本" = "Please enter text first";
+"本地草稿" = "Local"
+
+"添加放大镜" = "Add Magnifier";
+"仅放大镜" = "Only Magnifier";
+"放大镜" = "Magnifier";
+"放大镜%d" = "Magnifier%d";
+"跟踪处理中0%" = "Tracking 0%";
+"跟踪处理中%0.1f%%" = "Tracking %0.1f%%";
+"智能裁剪" = "Smart Crop";

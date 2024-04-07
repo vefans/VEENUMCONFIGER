@@ -14,6 +14,10 @@
 - (instancetype)init{
     self = [super init];
     if(self){
+        _horizontalDegrees = 0.0;
+        _verticalDegrees = 0.0;
+        _rt = CGRectMake(0, 0, 1, 1);
+        _degrees = 0.0;
         _sceneIdentifier = [NSString stringWithFormat:@"scene_%@", [VEHelp getMediaIdentifier]];
         _mediaIdentifier = [NSString stringWithFormat:@"media_%@", [VEHelp getMediaIdentifier]];
         _chromaColor = nil;
@@ -41,6 +45,7 @@
         _transitionIndex = -1;
         _maskThickColorIndex = 11;
         _pitch = 1.0;
+        _sourceRotate = 0;
         _adjustments = [[ToningInfo alloc] init];
         _eq = [NSMutableArray new];
         _blur = [Blur new];
@@ -127,6 +132,7 @@
     copy.customOtherAnimate = _customOtherAnimate;
     copy.isSelfieSegmentation = _isSelfieSegmentation;
     copy.animate = _animate;
+    copy.sourceRotate = _sourceRotate;
     
     if(  (_keyFrameTimeArray) && (_keyFrameTimeArray.count > 0)  )
     {
@@ -155,6 +161,7 @@
     copy.backgroundFile = [_backgroundFile mutableCopy];
     copy.backgroundStyle = _backgroundStyle;
     copy.backgroundBlurIntensity = _backgroundBlurIntensity;
+    copy.blur = _blur;
     copy.imageInVideoTimeRange = _imageInVideoTimeRange;
     copy.rectInFile = _rectInFile;
     copy.rectInScale    = _rectInScale;
@@ -194,6 +201,10 @@
     copy.reverseDurationTime     = _reverseDurationTime;
     copy.crop                    = _crop;
     copy.rotate                  = _rotate;
+    copy.degrees                 = _degrees;
+    copy.rt                      = _rt;
+    copy.verticalDegrees         = _verticalDegrees;
+    copy.horizontalDegrees       = _horizontalDegrees;
     copy.isReverse               = _isReverse;
     copy.isVerticalMirror        = _isVerticalMirror;
     copy.isHorizontalMirror      = _isHorizontalMirror;
@@ -326,6 +337,24 @@
     copy.panorama = [_panorama mutableCopy];
     copy.replaceType = _replaceType;
     
+    // 镜头追踪 关键帧
+    if ( _compositionAnimate && (_compositionAnimate.count > 0)) {
+        NSMutableArray<MediaAssetAnimatePosition*>*  tempAnimate = [NSMutableArray new];
+        [_compositionAnimate enumerateObjectsUsingBlock:^(MediaAssetAnimatePosition * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            MediaAssetAnimatePosition * speedPoint = [obj copy];
+            [tempAnimate addObject:speedPoint];
+        }];
+        copy.compositionAnimate = [NSMutableArray arrayWithArray:tempAnimate];
+    }
+    copy.isKeep = _isKeep;
+    copy.isAdapation = _isAdapation;
+    copy.compositionDegrees = _compositionDegrees;
+    copy.shotTrackArray = [[NSMutableArray alloc] initWithArray:_shotTrackArray];
+    copy.trackingAreaRect = _trackingAreaRect;
+    if( _BlurCanvaAsset )
+        copy.BlurCanvaAsset = [_BlurCanvaAsset copy];
+    copy.rectInView = _rectInView;
+    
     return copy;
 }
 
@@ -338,6 +367,15 @@
     NSDictionary *dic = [asset veCore_yy_modelToJSONObject];
     if (dic) {
         self = [VEMediaInfo veCore_yy_modelWithDictionary:dic];
+        
+        _compositionAnimate = asset.compositionAnimate;
+        _isKeep = asset.isKeep;
+        _isAdapation = asset.isAdapation;
+        _compositionDegrees = asset.compositionDegrees;
+        _shotTrackArray = asset.shotTrackArray;
+        _trackingAreaRect = asset.trackingAreaRect;
+        _BlurCanvaAsset = asset.BlurCanvaAsset;
+        
         _videoVolume = asset.volume;
         _backgroundAlpha = asset.alpha;
         _backgroundBlurIntensity = asset.blurIntensity;
@@ -366,7 +404,7 @@
         _videoActualTimeRange = asset.videoActualTimeRange;
         self.contentURL = asset.url;
         _thumbImage = [VEHelp getThumbImageWithUrl:_contentURL];
-        if ([VEHelp isImageUrl:_contentURL]) {
+        if ([VEHelp isImageUrl:_contentURL] || asset.type == MediaAssetTypeImage) {
             _fileType = kFILEIMAGE;
             _imageDurationTime = asset.timeRange.duration;
             _imageTimeRange = asset.timeRange;
@@ -735,11 +773,8 @@
     }
 }
 
-- (void)setRotate:(double)rotate {
+- (void)setRotate:(float)rotate {
     _rotate = rotate;
-    if (_rotate < 0) {
-        _rotate += 360;
-    }
 }
 
 - (MediaAsset *)getMedia {

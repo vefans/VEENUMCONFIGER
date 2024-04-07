@@ -83,9 +83,18 @@
     for (int i = 0; i < self.baifenbiArr.count; i++) {
         UIView *cycleView = [[UIView alloc] init];
         [self.cycleViewArrM addObject:cycleView];
-        cycleView.layer.cornerRadius = cycleViewWidth * 0.5;
         cycleView.layer.masksToBounds = YES;
         cycleView.frame = CGRectMake((spanwidth + cycleViewWidth) * i + 20, ((CGRectGetHeight(self.frame) - 15) - cycleViewWidth)/2.0, cycleViewWidth, cycleViewWidth);
+        if(_hideBaifenbi){
+            CGRect rect = cycleView.frame;
+            CGPoint center = cycleView.center;
+            rect.size.width = 2 * i + cycleViewWidth;
+            rect.size.height = 2 * i + cycleViewWidth;
+            rect.origin.x = center.x - rect.size.width/2.0;
+            rect.origin.y = center.y - rect.size.height/2.0;
+            cycleView.frame = rect;
+        }
+        cycleView.layer.cornerRadius = CGRectGetWidth(cycleView.frame) * 0.5;
         cycleView.backgroundColor = self.normalBgColor;
         [self insertSubview:cycleView belowSubview:self.currentCycleView];
         UILabel *indexLb = [[UILabel alloc] init];
@@ -93,6 +102,7 @@
         indexLb.font = systemFont(11);
         indexLb.textColor = UIColorFromRGB(0x727272);
         indexLb.text = self.baifenbiArr[i];
+        indexLb.hidden = _hideBaifenbi;
         indexLb.textAlignment = NSTextAlignmentCenter;
         indexLb.frame = CGRectMake(0, CGRectGetHeight(self.frame) - 15, 40, 15);
         indexLb.center = CGPointMake(cycleView.center.x, indexLb.center.y);
@@ -209,6 +219,9 @@
             cycleView.backgroundColor = _selectedBgColor;
         }
     }
+    if(_changeSliderCallback){
+        _changeSliderCallback(_currentCycleView.center.x/self.cycleViewArrM.lastObject.center.x);
+    }
 //    if(_selectedIndexCallback){
 //        _selectedIndexCallback(_currentIndex,self.baifenbiArr[_currentIndex]);
 //    }
@@ -216,6 +229,13 @@
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     CGPoint point = [[touches anyObject] locationInView:self];
+    if(point.x <= self.cycleViewArrM.firstObject.center.x){
+        point.x  = self.cycleViewArrM.firstObject.center.x;
+    }
+    
+    if(point.x >= self.cycleViewArrM.lastObject.center.x){
+        point.x  = self.cycleViewArrM.lastObject.center.x;
+    }
     float spanwidth = (self.frame.size.width - 8 * self.baifenbiArr.count  - 40)/ (self.baifenbiArr.count - 1);
     for (UIView *cycleView in self.cycleViewArrM) {
         if((point.x > CGRectGetMinX(cycleView.frame) - spanwidth/2.0) && (point.x < CGRectGetMaxX(cycleView.frame) + spanwidth/2.0)){

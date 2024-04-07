@@ -597,8 +597,14 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 //    [_alignBtn addTarget:self action:@selector(alignBtnAction:) forControlEvents:UIControlEventTouchUpInside];
     _alignBtn.hidden = NO;
     [self addSubview:_alignBtn];
+    
     _alignBtn.transform =  CGAffineTransformMakeScale(1, 1);
     _alignBtn.transform =  CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+    if(rotateView){
+        CGPoint center = _alignBtn.center;
+        _alignBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
+        _alignBtn.center = center;
+    }
 }
 
 - (UIButton *)mirrorBtn {
@@ -976,6 +982,10 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         return;
     
     
+    if(_isSky){
+        NSLog(@"recognizer.rotation");
+        return;
+    }
     touchLocation = [rotation locationInView:self.superview];
     
     switch (rotation.state) {
@@ -1068,6 +1078,14 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     
     if( _isCutout )
     {
+        return;
+    }
+    if(_isSky){
+        NSLog(@"recognizer.scale:%f",recognizer.scale);
+        self.skyRecognizerState = recognizer.state;
+        if([_delegate respondsToSelector:@selector(pasterViewSizeScale: atValue:)]){
+            [_delegate pasterViewSizeScale:self atValue:recognizer.scale];
+        }
         return;
     }
     CGPoint center = CGRectGetCenter(self.frame);
@@ -1248,7 +1266,22 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 - (void) moveGesture:(UIGestureRecognizer *) recognizer{
     if( self.isMainPicture || self.isPuzzle)
         return;
-    
+    if(_isSky){
+        CGPoint point = [((UIPanGestureRecognizer*)recognizer) translationInView:_syncContainer];
+        if (recognizer.state == UIGestureRecognizerStateBegan){
+            NSLog(@"point:%@",NSStringFromCGPoint(point));
+            _skyBeginPoint = point;
+            _skyMovePoint = point;
+        }else if (recognizer.state == UIGestureRecognizerStateChanged){
+            NSLog(@"point:%@",NSStringFromCGPoint(point));
+            _skyMovePoint = point;
+        }
+        _skyRecognizerState = recognizer.state;
+        if([_delegate respondsToSelector:@selector(pasterViewMoved:)]){
+            [_delegate pasterViewMoved:self];
+        }
+        return;
+    }
     if( recognizer.numberOfTouches == 2 )
     {
         return;
@@ -1646,8 +1679,6 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     _textEditBtn.transform = CGAffineTransformMakeScale(1/value, 1/value);
     
     if (rotateView) {
-        rotateView.transform =  CGAffineTransformMakeScale(1, 1);
-        rotateView.transform = CGAffineTransformMakeScale(1/value, 1/value);
         CGPoint center = rotateView.center;
         rotateView.frame = CGRectMake(0, 0,  globalInset*3/value,  globalInset*3/value);
         rotateView.center = center;
@@ -1656,9 +1687,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     if( _closeBtn )
     {
         CGPoint center = _closeBtn.center;
-        if(rotateView){
-            _closeBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
-        }
+        _closeBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
         _closeBtn.center = center;
     }
     
@@ -1669,25 +1698,23 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         _textEditBtn.center = center;
     }
     
-//    if( rotateView )
-//    {
-//        rotateView.frame = CGRectMake(self.bounds.size.width - globalInset/2.0*3.0/value, self.bounds.size.height - globalInset/2.0*3.0/value, rotateView.frame.size.width, rotateView.frame.size.height);
-//        
-//    }
-    
-    
-    [self refreshTextEidtFrameEx];
-//    [self refreshTextEidtFrameEx];
+    if( _alignBtn )
+    {
+        CGPoint center = _alignBtn.center;
+        _alignBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
+        _alignBtn.center = center;
+        
+    }
 }
 
 - (void) setFramescale:(float)value{
     [self frameScale_Value:value];
     
     float deltaAngle  = - CGAffineTransformGetAngle(self.transform);
+    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1.0, 1.0);
     
     if( _leftMoveImageView )
     {
-        self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1.0, 1.0);
         {
             _leftMoveImageView.transform =  CGAffineTransformMakeScale(1, 1);
             _leftMoveImageView.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
@@ -1716,8 +1743,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             _bottomMoveImageView.frame = CGRectMake(self.frame.size.width/2.0 - _bottomMoveImageView.frame.size.width/2.0, self.frame.size.height - _bottomMoveImageView.frame.size.height - 0.0, _bottomMoveImageView.frame.size.width, _bottomMoveImageView.frame.size.height);
             _bottomMoveImageView.center = center;
         }
-        self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-deltaAngle), value, value);
     }
+    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-deltaAngle), value, value);
 }
 
 - (float) getFramescale{
@@ -2593,7 +2620,7 @@ static VEPasterTextView *lastTouchedView;
     
     _TextEditBtn.hidden = NO;
     
-//    [self setFramescale:_selfScale];
+    [self setFramescale:_selfScale];
     
     if( _isCoverText )
     {
@@ -2747,13 +2774,6 @@ static VEPasterTextView *lastTouchedView;
         rotateView = nil;
     }
     
-    if( rotateView )
-    {
-        rotateView.image = nil;
-        [rotateView removeFromSuperview];
-        rotateView = nil;
-    }
-    
     if( selectImageView )
     {
         selectImageView.image = nil;
@@ -2773,12 +2793,6 @@ static VEPasterTextView *lastTouchedView;
         _alignBtn = nil;
     }
     
-    if( _closeBtn )
-    {
-        [_closeBtn removeFromSuperview];
-        _closeBtn = nil;
-    }
-    
     if( _mirrorBtn )
     {
         [_mirrorBtn removeFromSuperview];
@@ -2795,12 +2809,6 @@ static VEPasterTextView *lastTouchedView;
     {
         [_shadowLbl removeFromSuperview];
         _shadowLbl = nil;
-    }
-    
-    if( _closeBtn )
-    {
-        [_closeBtn removeFromSuperview];
-        _closeBtn = nil;
     }
     
     if( _cutout_MagnifierView )
@@ -2834,12 +2842,18 @@ static VEPasterTextView *lastTouchedView;
 //        [_closeBtn setImage:[VEHelp imageNamed:@"jianji/fenge/剪辑_删除素材_"] forState:UIControlStateNormal];
 //    CGSize scale = CGAffineTransformGetScale(self.superview.transform);
 
-    _textEditBtn.transform = CGAffineTransformMakeScale(1, 1);
-    _textEditBtn.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
     [_textEditBtn setImage:[VEHelp imageNamed:@"next_jianji/剪辑_文字编辑_"] forState:UIControlStateNormal];
     _editTextAction = @selector(text_Edit);
     [_textEditBtn addTarget:self action:_editTextAction forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_textEditBtn];
+    
+    _textEditBtn.transform = CGAffineTransformMakeScale(1, 1);
+    _textEditBtn.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+    if(rotateView){
+        CGPoint center = _textEditBtn.center;
+        _textEditBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
+        _textEditBtn.center = center;
+    }
 }
 
 -(void)text_Edit
@@ -3039,6 +3053,9 @@ static VEPasterTextView *lastTouchedView;
 
 -(void)refreshTextEidtFrameEx
 {
+    if (_captionSubtitle && _captionSubtitle.type != CaptionExTypeTemplate) {
+        return;
+    }
     [_textEditBtnLayerArrary enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSMutableArray *array = (NSMutableArray*)obj;
         [array enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {

@@ -41,12 +41,13 @@ typedef NS_ENUM(NSUInteger, CameraCollocationPositionType) {
 };
 
 typedef NS_ENUM(NSUInteger, CameraType) {
-    CameraType_CutSameStyle  =  0,//全部
-    CameraType_RecordPhoto  = 1,//录制 拍照
-    CameraType_Video             = 2,//录制
+    CameraType_CutSameStyle     = 0,//全部
+    CameraType_RecordPhoto      = 1,//录制 拍照
+    CameraType_Video            = 2,//录制
     CameraType_Photo            = 3,//拍照
     CameraType_CreativeVideo    = 4,//模板拍摄
-    CameraType_IDPhoto   = 5,//证件照拍摄
+    CameraType_IDPhoto          = 5,//证件照拍摄
+    CameraType_SlowMo           = 6,//慢动作
 };
 
 typedef NS_ENUM(NSUInteger, CameraModelType) {

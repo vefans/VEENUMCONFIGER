@@ -201,7 +201,8 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_Delete            = 72,   //删除
     VEAdvanceEditType_Dehaze            = 73,   //去雾
     VEAdvanceEditType_AutoCaptions      = 74,   //识别字幕
-    
+    VEAdvanceEditType_EraseRepair       = 75,   //消除和修补
+    VEAdvanceEditType_MagnifyingGlass    = 76,   //放大镜
 };
 
 /*
@@ -295,7 +296,14 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     KMORPH_DELETE       = 55,//删除边角定位
     kVEVR               = 60, //全景
     kVEEXPORTFRAME      = 61,//单帧导出
-    kVEEFFECTS2  = 62, //特效2
+    kVEEFFECTS2         = 62, //特效2
+    kBasicProperties    = 63,//基础属性
+    KCorrection         = 64,//矫正
+    KLensTracking     = 65,//镜头追踪
+    KLensTracking_Reset     = 66,//镜头追踪_重置
+    KLensTracking_Adjustment     = 67,//镜头追踪_调整
+    KLensTracking_Cancel     = 68,//镜头追踪_取消
+    KSmartCrop          = 69,//智能裁剪
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -387,6 +395,9 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     KPIP_Bind               =71,//绑定
     KPIP_Record             =72,//record
     KPIP_TextImage            =73,//文字
+    kPIP_BasicProperties    = 74,//基础属性
+    kPIP_Correction           =  75,//矫正
+    kPIP_LensTracking       = 76,//镜头追踪
 };
 
 /*
@@ -402,6 +413,7 @@ typedef NS_ENUM(NSInteger, VEMaterialEditType){
     VEMaterialEditType_Rect        = 6,//调整位置
     VEMaterialEditType_Keyframe    = 7,//关键帧
     VEMaterialEditType_Hierarchy    = 8,//层级
+    VEMaterialEditType_BasicProperties = 9,//基础属性
 };
 
 //去水印类型
@@ -659,6 +671,10 @@ isPhoneX;\
 #define kBookTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkBookTemplate/"]
 #define kBookTemplatePlistPath [kBookTemplateFolder stringByAppendingPathComponent:@"veNetworkBookTemplates.plist"]
 
+#define kMusicAlbumTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkMusicAlbumTemplate/"]
+#define kMusicAlbumTemplatePlistPath [kBookTemplateFolder stringByAppendingPathComponent:@"veNetworkMusicAlbumTemplates.plist"]
+
+
 #define kFragmentAPITemplatePlistPath [kAPITemplateFolder stringByAppendingPathComponent:@"veNetworkFragmentApiTemplates.plist"]//test
 
 #define kCoverTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkCoverTemplate/"]
@@ -679,9 +695,6 @@ isPhoneX;\
 
 #define kSuperposiEffectFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/SuperposiEffect"]
 #define kNewSuperposiEffectPlistPath [kSuperposiEffectFolder stringByAppendingPathComponent:@"SuperposiEffectList_New.plist"]
-
-#define kFlowerEffectFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/FlowerEffect"]
-#define kNewFlowerEffectPlistPath [kFlowerEffectFolder stringByAppendingPathComponent:@"FlowerEffectList_New.plist"]
 
 #define kTransitionFolder [kVEDirectory stringByAppendingPathComponent:@"transitionFiles"]
 #define kTransitionPlistPath [kTransitionFolder stringByAppendingPathComponent:@"TransitionList.plist"]
@@ -725,6 +738,11 @@ isPhoneX;\
 #define kSubtitlePlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleListType.plist"]
 #define kSubtitleIconPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleIconList.plist"]
 #define kSubtitleCategoryPlistPath [kSubtitleFolder stringByAppendingPathComponent:@"SubtitleCategoryListType.plist"]
+
+//放大镜
+#define kMagnifyingGlassFolder [kVEDirectory stringByAppendingPathComponent:@"magnifyingGlass"]
+#define kMagnifyingGlassEffectFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/Magnifier"]
+#define kMagnifyingGlassPlistPath [kMagnifyingGlassFolder stringByAppendingPathComponent:@"magnifyingGlassListType.plist"]
 
 //自定义贴纸
 #define kCustomStickerFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/CustomStickerFolder/"]
@@ -770,6 +788,9 @@ isPhoneX;\
 #define kFontType @"font_family_2"
 #define kPESDKFontType @"font"
 #define kDefaultFontPath [VEEditResourceBundle pathForResource:@"New_EditVideo/text_sample/PingFang-SC-Regular" ofType:@"otf"]
+
+#define kFlowerWordFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"FlowerWord"]
+#define kFlowerWordPlistPath [kFlowerWordFolder stringByAppendingPathComponent:@"FlowerWord.plist"]
 
 #define kFontLiteFolder [kSubtitleEffectFolder stringByAppendingPathComponent:@"FontLite"]
 #define kFontLitePlistPath [kFontFolder stringByAppendingPathComponent:@"fontLiteList.plist"]
@@ -862,12 +883,6 @@ isPhoneX;\
 #define kCollageCategoryPlist [kFlowCollageFolder stringByAppendingPathComponent:@"CollageCategory.plist"]
 #define kNewCollagePlistPath [kFlowCollageFolder stringByAppendingPathComponent:@"CollageTypeList.plist"]
 
-#pragma mark-图片流动音乐
-#define kFlowMusicFolder [kVEDirectory stringByAppendingPathComponent:@"FlowMusics"]
-#define kMusicCategoryPlist [kFlowMusicFolder stringByAppendingPathComponent:@"MusicCategory.plist"]
-#define kNewMusicPlistPath [kFlowMusicFolder stringByAppendingPathComponent:@"MusicTypeList.plist"]
-
-
 #define kTemplateRecordFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/TemplateRecord"]
 #define kTemplateRecordPlist [kTemplateRecordFolder stringByAppendingPathComponent:@"TemplateRecord.plist"]
 #define kCollectRecordTemplatePlistPath [kTemplateRecordFolder stringByAppendingPathComponent:@"CollectRecordTemplate.plist"]
@@ -888,6 +903,11 @@ isPhoneX;\
 #define KCloudVideoFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/CloudVideo"]
 #define kCloudVideoPath [KCloudVideoFolder stringByAppendingPathComponent:@"CloudVideoPath.plist"]
 #define kNewCloudVideoCategoryPlistPath [KCloudVideoFolder stringByAppendingPathComponent:@"CloudVideoCategoryPlistList.plist"]
+
+#pragma mark- 书单网络素材库
+#define KBookCloudMaterialFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/BookCloudMaterial"]
+#define kBookCloudMaterialPlistPath [KBookCloudMaterialFolder stringByAppendingPathComponent:@"BookCloudMaterialPath.plist"]
+#define kBookCloudMaterialCategoryPlistPath [KBookCloudMaterialFolder stringByAppendingPathComponent:@"BookCloudMaterialCategoryList.plist"]
 
 #define kVERecordSet @"VERecordSet"
 #define kVEProportionIndex  @"VEProportionIndex"    //视频比例
@@ -931,3 +951,20 @@ isPhoneX;\
 #define kPictureTextToVideoMaterialsFolder [kPictureTextToVideoFolder stringByAppendingPathComponent:@"AIMatchMaterials"]
 
 #define kSkyISHorizontal 1
+
+#define kPERepairCustomMaskPath [kVEDirectory stringByAppendingPathComponent:@"PERepairCustomMask"]
+
+#define kDefaultSubtitleText VELocalizedString(@"输入文字...", nil)
+
+#define kPERepairTempPath [kVEDirectory stringByAppendingPathComponent:@"PERepairTempImages"]
+
+
+#pragma mark- 贴纸动画
+#define KStickerAnimationFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/StickerAnimation"]
+#define kStickerAnimationPath [KStickerAnimationFolder stringByAppendingPathComponent:@"StickerAnimationPath.plist"]
+#define kStickerAnimationIconFolder [KStickerAnimationFolder stringByAppendingPathComponent:@"AnimationIconFolder"]
+
+#define kIsLoadedStickerResource @"isLoadedStickerResource"
+#define kIsLoadedFaceShieldResource @"isLoadedFaceShieldResource"//智能挡脸
+#define kIsLoadedFlowerWordResource @"isLoadedFlowerWordResource"
+#define kIsLoadedTextTemplateResource @"isLoadedTextTemplateResource"

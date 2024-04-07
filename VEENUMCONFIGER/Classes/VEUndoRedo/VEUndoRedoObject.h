@@ -173,6 +173,7 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_DoodlePen_Copy,//复制
     VEUndoRedoEditType_DoodlePen_Delete,//删除
     VEUndoRedoEditType_DoodlePen_Trim,//截取
+    VEUndoRedoEditType_EraseRepair_Add, // 添加消除笔的修补
 };
 
 

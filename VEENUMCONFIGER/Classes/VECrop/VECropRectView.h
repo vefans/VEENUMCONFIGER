@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 -(instancetype)initWithFrame:(CGRect)frame withVideoCropType:(VEVideoCropType)videoCropType;
 
+@property(nonatomic, assign) float  scale;
+
 @end
 
 NS_ASSUME_NONNULL_END

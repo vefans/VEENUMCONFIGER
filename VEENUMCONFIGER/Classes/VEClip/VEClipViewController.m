@@ -2244,7 +2244,7 @@
 {
     float scale = [self.pasterTextView getFramescale];
     CGRect rect = CGRectMake(0, 0, 1, 1);
-    double rotate = 0;
+    float rotate = 0;
     [self pasterView_Rect:&rect atRotate:&rotate];
     
     CGRect rectInFile = CGRectMake(self.pasterTextView.frame.origin.x/self.pasterTextView.frame.size.width, self.pasterTextView.frame.origin.y/self.pasterTextView.frame.size.height, self.pasterTextView.frame.size.width/self.pasterTextView.frame.size.width, self.pasterTextView.frame.size.height/self.pasterTextView.frame.size.height);
@@ -2498,7 +2498,7 @@
     CGRect rectInScene = CGRectMake(0, 0, 1, 1);
 //    self.isCanvasFirst = false;
     
-    double rotate = 0;//file.rotate;
+    float rotate = 0;//file.rotate;
     if (_cutMmodeType == kCropTypeFixed
         && _isCropTypeViewHidden
         && _selectFile.fileType == kFILEIMAGE && !_selectFile.isGif
@@ -2635,7 +2635,7 @@
     [self svae_PaterText];
 }
 
--(void)pasterView_Rect:(  CGRect * ) rect atRotate:( double * ) rotate
+-(void)pasterView_Rect:(  CGRect * ) rect atRotate:( float * ) rotate
 {
     CGPoint point = CGPointMake(self.pasterTextView.center.x/self.syncContainerView.frame.size.width, self.pasterTextView.center.y/self.syncContainerView.frame.size.height);
     float scale = [self.pasterTextView getFramescale];
@@ -2645,10 +2645,10 @@
     (*rect).size = CGSizeMake(fwidth,fheight);
     (*rect).origin = CGPointMake(point.x - (*rect).size.width/2.0, point.y - (*rect).size.height/2.0);
     
-    CGFloat radius = atan2f(self.pasterTextView.transform.b, self.pasterTextView.transform.a);
+    float radius = atan2f(self.pasterTextView.transform.b, self.pasterTextView.transform.a);
     (*rotate) = -radius * (180 / M_PI);
-    if ((*rotate) < 0) {
-        (*rotate) += 360;
+    if ((*rotate) > 0) {
+        (*rotate) -= 360;
     }
 }
 

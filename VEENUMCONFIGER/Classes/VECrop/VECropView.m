@@ -19,14 +19,11 @@
 
 
 @interface VECropView()
+@property (nonatomic, assign) BOOL  isInitialPoint;
+@property (nonatomic, assign) CGPoint initialCenter;
+@property (nonatomic, assign) CGFloat initialDistance;
 
 @property(nonatomic,assign)BOOL isTrackButtonHidden;
-
-@property(nonatomic,assign) CGFloat cropWidth;
-@property(nonatomic,assign) CGFloat cropHeight;
-@property(nonatomic,assign) CGFloat croporiginX;
-@property(nonatomic,assign) CGFloat croporiginY;
-
 
 @property(nonatomic,assign) CGPoint cropPointTopLeft; //裁剪区上左边顶点
 @property(nonatomic,assign) CGPoint cropPointTopRight;//裁剪区上右边顶点
@@ -43,9 +40,6 @@
 @property(nonatomic,assign) CGFloat ratio;
 @property(nonatomic,assign) CGPoint changePointTemp;//
 
-
-
-
 @end
 
 @implementation VECropView
@@ -57,10 +51,8 @@
 -(instancetype)initWithFrame:(CGRect)frame withVideoCropType:(VEVideoCropType)videoCropType{
     self = [super initWithFrame:frame];
     if (self) {
-        
         self.videoCropType = videoCropType;
         self.cropType = VE_VECROPTYPE_FREE;
-        
         
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:([VEConfigManager sharedManager].iPad_HD ? 0.0 : 0.5)];
         
@@ -115,12 +107,69 @@
             //给self.view添加一个手势监测；
             [self addGestureRecognizer:singleRecognizer];
         }
-        
-        
-        
-        
+
     }
     return self;
+}
+
+- (void)setDelegate:(id<VECropViewDelegate>)delegate
+{
+    _delegate = delegate;
+}
+
+- (void)setVideoView:(UIView *)videoView
+{
+    _videoView = videoView;
+    if( _videoView )
+    {
+        [_videoView setUserInteractionEnabled:true];
+        UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinch:)];
+        [_videoView addGestureRecognizer:pinchGesture];
+    }
+}
+
+- (void)setVideoCropView:(UIView *)videoCropView
+{
+    _videoCropView = videoCropView;
+}
+
+- (void)handlePinch:(UIPinchGestureRecognizer *)gesture {
+    if (gesture.numberOfTouches == 2) {
+        _isModificationCrop = true;
+        self.cropViewTrackType = VE_TRACK_SCALING;
+        if( self.delegate && [self.delegate respondsToSelector:@selector(PinchGetureRecognizer_endDragCropView:)] )
+        {
+            [self.delegate PinchGetureRecognizer_endDragCropView:gesture];
+        }
+        _isDrawCroprectview = true;
+        [self setNeedsDisplay];
+    }
+    
+    if( gesture.state == UIGestureRecognizerStateEnded )
+    {
+        _isDrawCroprectview = false;
+        _isModificationCrop = false;
+        self.cropViewTrackType = VE_TRACK_CROPRECTVIEW;
+        [self convertView:self.cropRectView atDestinationView:self atInView:_videoView];
+//        self.videoFrame = _videoFrame;
+        _trackingRect = CGRectMake(_videoFrame.origin.x, _videoFrame.origin.y, _videoFrame.size.width,_videoFrame.size.height);
+        
+        self.trackingRectPointTopLeft = CGPointMake(_trackingRect.origin.x, _trackingRect.origin.y);
+        
+        self.trackingRectPointTopRight = CGPointMake(_trackingRect.origin.x + _trackingRect.size.width, _trackingRect.origin.y);
+        
+        self.trackingRectPointBottomLeft = CGPointMake(_trackingRect.origin.x , _trackingRect.origin.y+ _trackingRect.size.height);
+        
+        self.trackingRectPointBottomRight = CGPointMake(_trackingRect.origin.x +  _trackingRect.size.width, _trackingRect.origin.y+ _trackingRect.size.height);
+        
+        if( self.delegate && [self.delegate respondsToSelector:@selector(PinchGetureRecognizer_End:)] )
+        {
+            [self needsUpdateCropRect];
+            [self.delegate PinchGetureRecognizer_End:self];
+            [self.cropRectView setNeedsDisplay];
+            [self setNeedsDisplay];
+        }
+    }
 }
 
 -(void)setWithCropWidth:(CGFloat)cropWidth WithCropHeight:(CGFloat)CropHeight{
@@ -439,6 +488,16 @@
     
 }
 
+-(void)needsUpdateCropRect
+{
+    self.croporiginX = self.cropRectView.frame.origin.x;
+    self.croporiginY = self.cropRectView.frame.origin.y;
+    self.cropWidth = self.cropRectView.frame.size.width;
+    self.cropHeight = self.cropRectView.frame.size.height;
+    
+    [self needsUpdateCropPoints];
+}
+
 -(void)needsUpdateCropPoints{
     
     self.cropPointTopLeft = CGPointMake(self.croporiginX, self.croporiginY);
@@ -457,50 +516,61 @@
 -(void)drawRect:(CGRect)rect{
     [super drawRect:rect];
     
-    
-    if ((self.videoCropType == VEVideoCropType_Crop)
-        || (VEVideoCropType_FixedCrop == self.videoCropType )) {
-        
-        [self.cropRectView setFrame:CGRectMake(self.croporiginX, self.croporiginY, self.cropWidth, self.cropHeight)];
+    if ( _isDrawCroprectview )
+    {
+        _isDrawCroprectview = false;
         //透明区域
         [[UIColor clearColor] setFill];
-        UIRectFill(CGRectMake(self.croporiginX, self.croporiginY, self.cropWidth, self.cropHeight));
-        
-        [self.topTrackButton setFrame:CGRectMake(self.croporiginX + (self.cropWidth - VE_TRACK_HEIGHT)/2, self.croporiginY-VE_TRACK_WIDTH,VE_TRACK_HEIGHT , VE_TRACK_WIDTH)];
-        
-        [self.bottomTrackButton setFrame:CGRectMake(self.croporiginX + (self.cropWidth - VE_TRACK_HEIGHT)/2, self.croporiginY +self.cropHeight, VE_TRACK_HEIGHT, VE_TRACK_WIDTH)];
-        
-        [self.leftTrackButton setFrame:CGRectMake(self.croporiginX -VE_TRACK_WIDTH, self.croporiginY + (self.cropHeight-VE_TRACK_HEIGHT)/2, VE_TRACK_WIDTH, VE_TRACK_HEIGHT)];
-        
-        [self.rightTrackButton setFrame:CGRectMake(self.croporiginX + self.cropWidth, self.croporiginY + (self.cropHeight-VE_TRACK_HEIGHT)/2, VE_TRACK_WIDTH, VE_TRACK_HEIGHT)];
-        
-        [self.topLeftTrackButton setFrame:CGRectMake(self.croporiginX -VE_TRACK_WIDTH, self.croporiginY - VE_TRACK_WIDTH, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH)];
-                               
-        [self.topRightTrackButton setFrame:CGRectMake((self.croporiginX+ self.cropWidth) -VE_TRACK_HEIGHT*1/2, self.croporiginY - VE_TRACK_WIDTH, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH)];
-        
-        
-        [self.bottomLeftTrackButton setFrame:CGRectMake(self.croporiginX -VE_TRACK_WIDTH, self.croporiginY+self.cropHeight - VE_TRACK_HEIGHT*1/2, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH)];
-        
-        [self.bottomRightTrackButton setFrame:CGRectMake(self.croporiginX+self.cropWidth -VE_TRACK_HEIGHT*1/2, self.croporiginY+self.cropHeight -VE_TRACK_HEIGHT*1/2, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH)];
-        
-        
+        // 获取源控件上的 CGRect
+        CGRect rectInSourceView = self.cropRectView.frame;
+        // 将源控件上的 CGRect 转换到窗口坐标系中
+        CGRect rectInWindow = [_videoView convertRect:rectInSourceView toView:nil];
+        // 将窗口坐标系中的 CGRect 转换回目标控件上
+        CGRect rectInDestinationView = [self convertRect:rectInWindow fromView:nil];
+        UIRectFill(CGRectMake(rectInDestinationView.origin.x, rectInDestinationView.origin.y, rectInDestinationView.size.width, rectInDestinationView.size.height));
     }else{
-        
-        [self.cropRectView setFrame:CGRectMake(self.croporiginX, self.croporiginY, self.cropWidth, self.cropHeight)];
-        //透明区域
-        [[UIColor clearColor] setFill];
-        UIRectFill(CGRectMake(self.croporiginX, self.croporiginY, self.cropWidth, self.cropHeight));
-        
-        
-        [self.topLeftTrackButton setFrame:CGRectMake(self.croporiginX -VE_TRACK_HEIGHT_DEWATERMARK/2, self.croporiginY - VE_TRACK_HEIGHT_DEWATERMARK/2, VE_TRACK_HEIGHT_DEWATERMARK , VE_TRACK_HEIGHT_DEWATERMARK)];
-                               
-        [self.topRightTrackButton setFrame:CGRectMake((self.croporiginX+ self.cropWidth) -VE_TRACK_HEIGHT_DEWATERMARK*1/2, self.croporiginY - VE_TRACK_HEIGHT_DEWATERMARK/2, VE_TRACK_HEIGHT_DEWATERMARK , VE_TRACK_HEIGHT_DEWATERMARK)];
-        
-        [self.bottomRightTrackButton setFrame:CGRectMake(self.croporiginX+self.cropWidth -VE_TRACK_HEIGHT_DEWATERMARK*1/2, self.croporiginY+self.cropHeight -VE_TRACK_HEIGHT_DEWATERMARK*1/2, VE_TRACK_HEIGHT_DEWATERMARK , VE_TRACK_HEIGHT_DEWATERMARK)];
-        
+        if ((self.videoCropType == VEVideoCropType_Crop)
+            || (VEVideoCropType_FixedCrop == self.videoCropType )) {
+            
+            [self.cropRectView setFrame:CGRectMake(self.croporiginX, self.croporiginY, self.cropWidth, self.cropHeight)];
+            //透明区域
+            [[UIColor clearColor] setFill];
+            UIRectFill(CGRectMake(self.croporiginX, self.croporiginY, self.cropWidth, self.cropHeight));
+            
+            [self.topTrackButton setFrame:CGRectMake(self.croporiginX + (self.cropWidth - VE_TRACK_HEIGHT)/2, self.croporiginY-VE_TRACK_WIDTH,VE_TRACK_HEIGHT , VE_TRACK_WIDTH)];
+            
+            [self.bottomTrackButton setFrame:CGRectMake(self.croporiginX + (self.cropWidth - VE_TRACK_HEIGHT)/2, self.croporiginY +self.cropHeight, VE_TRACK_HEIGHT, VE_TRACK_WIDTH)];
+            
+            [self.leftTrackButton setFrame:CGRectMake(self.croporiginX -VE_TRACK_WIDTH, self.croporiginY + (self.cropHeight-VE_TRACK_HEIGHT)/2, VE_TRACK_WIDTH, VE_TRACK_HEIGHT)];
+            
+            [self.rightTrackButton setFrame:CGRectMake(self.croporiginX + self.cropWidth, self.croporiginY + (self.cropHeight-VE_TRACK_HEIGHT)/2, VE_TRACK_WIDTH, VE_TRACK_HEIGHT)];
+            
+            [self.topLeftTrackButton setFrame:CGRectMake(self.croporiginX -VE_TRACK_WIDTH, self.croporiginY - VE_TRACK_WIDTH, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH)];
+            
+            [self.topRightTrackButton setFrame:CGRectMake((self.croporiginX+ self.cropWidth) -VE_TRACK_HEIGHT*1/2, self.croporiginY - VE_TRACK_WIDTH, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH)];
+            
+            
+            [self.bottomLeftTrackButton setFrame:CGRectMake(self.croporiginX -VE_TRACK_WIDTH, self.croporiginY+self.cropHeight - VE_TRACK_HEIGHT*1/2, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH)];
+            
+            [self.bottomRightTrackButton setFrame:CGRectMake(self.croporiginX+self.cropWidth -VE_TRACK_HEIGHT*1/2, self.croporiginY+self.cropHeight -VE_TRACK_HEIGHT*1/2, VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH , VE_TRACK_HEIGHT*1/2 +VE_TRACK_WIDTH)];
+            
+            
+        }else{
+            
+            [self.cropRectView setFrame:CGRectMake(self.croporiginX, self.croporiginY, self.cropWidth, self.cropHeight)];
+            //透明区域
+            [[UIColor clearColor] setFill];
+            UIRectFill(CGRectMake(self.croporiginX, self.croporiginY, self.cropWidth, self.cropHeight));
+            
+            
+            [self.topLeftTrackButton setFrame:CGRectMake(self.croporiginX -VE_TRACK_HEIGHT_DEWATERMARK/2, self.croporiginY - VE_TRACK_HEIGHT_DEWATERMARK/2, VE_TRACK_HEIGHT_DEWATERMARK , VE_TRACK_HEIGHT_DEWATERMARK)];
+            
+            [self.topRightTrackButton setFrame:CGRectMake((self.croporiginX+ self.cropWidth) -VE_TRACK_HEIGHT_DEWATERMARK*1/2, self.croporiginY - VE_TRACK_HEIGHT_DEWATERMARK/2, VE_TRACK_HEIGHT_DEWATERMARK , VE_TRACK_HEIGHT_DEWATERMARK)];
+            
+            [self.bottomRightTrackButton setFrame:CGRectMake(self.croporiginX+self.cropWidth -VE_TRACK_HEIGHT_DEWATERMARK*1/2, self.croporiginY+self.cropHeight -VE_TRACK_HEIGHT_DEWATERMARK*1/2, VE_TRACK_HEIGHT_DEWATERMARK , VE_TRACK_HEIGHT_DEWATERMARK)];
+            
+        }
     }
-    
-    
 }
 
 #pragma mark - 2.Setting View and Style
@@ -508,6 +578,8 @@
 
 - (void)setVideoFrame:(CGRect)videoFrame{
     _videoFrame = videoFrame;
+    if( _isModificationCrop )
+        return;
     _trackingRect = CGRectMake(_videoFrame.origin.x, _videoFrame.origin.y, _videoFrame.size.width,_videoFrame.size.height);
     
     self.trackingRectPointTopLeft = CGPointMake(_trackingRect.origin.x, _trackingRect.origin.y);
@@ -550,8 +622,8 @@
 
     v_r.origin.x = r.origin.x/self.videoSize.width;
     v_r.origin.y = r.origin.y/self.videoSize.height;
-    v_r.size.width = r.size.width/self.videoSize.width;
-    v_r.size.height = r.size.height/self.videoSize.height;
+    v_r.size.width = ((int)(r.size.width))/self.videoSize.width;
+    v_r.size.height = ((int)(r.size.height))/self.videoSize.height;
 
     return v_r;
     
@@ -615,24 +687,36 @@
     }
 }
 
-#pragma mark - 5.DataSource and Delegate
+-(void)convertView:( UIView * ) view atDestinationView:( UIView * ) destinationView atInView:( UIView * ) inView
+{
+    // 获取源控件上的 CGRect
+    CGRect rectInSourceView = view.frame;
+    // 将源控件上的 CGRect 转换到窗口坐标系中
+    CGRect rectInWindow = [inView convertRect:rectInSourceView toView:nil];
+    // 将窗口坐标系中的 CGRect 转换回目标控件上
+    CGRect rectInDestinationView = [destinationView convertRect:rectInWindow fromView:nil];
+    view.frame = rectInDestinationView;
+    [destinationView addSubview:view];
+}
 
+#pragma mark - 5.DataSource and Delegate
 -(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
     
+    float hitTestWidth = 44.0;
     // 当前控件上的点转换到chatView上
     // 判断下点在不在chatView上
     CGRect topTrackBounds = self.topTrackButton.bounds;
     //若原热区小于44x44，则放大热区，否则保持原大小不变
-    CGFloat topTrackwidthDelta = MAX(44.0 - topTrackBounds.size.width, 0);
-    CGFloat topTrackheightDelta = MAX(44.0 - topTrackBounds.size.height, 0);
+    CGFloat topTrackwidthDelta = MAX(hitTestWidth - topTrackBounds.size.width, 0);
+    CGFloat topTrackheightDelta = MAX(hitTestWidth - topTrackBounds.size.height, 0);
     topTrackBounds = CGRectInset(self.topTrackButton.frame, -0.5 * topTrackwidthDelta, -0.5 * topTrackheightDelta);
     
     
     // 判断下点在不在chatView上
     CGRect bottomTrackBounds = self.bottomTrackButton.bounds;
     //若原热区小于44x44，则放大热区，否则保持原大小不变
-    CGFloat bottomTrackWidthDelta = MAX(44.0 - bottomTrackBounds.size.width, 0);
-    CGFloat bottomTrackHeightDelta = MAX(44.0 - bottomTrackBounds.size.height, 0);
+    CGFloat bottomTrackWidthDelta = MAX(hitTestWidth - bottomTrackBounds.size.width, 0);
+    CGFloat bottomTrackHeightDelta = MAX(hitTestWidth - bottomTrackBounds.size.height, 0);
     bottomTrackBounds = CGRectInset(self.bottomTrackButton.frame, -0.5 * bottomTrackWidthDelta, -0.5 * bottomTrackHeightDelta);
     
     
@@ -640,46 +724,46 @@
     // 判断下点在不在chatView上
     CGRect leftTrackBounds = self.leftTrackButton.bounds;
     //若原热区小于44x44，则放大热区，否则保持原大小不变
-    CGFloat leftTrackWidthDelta = MAX(44.0 - leftTrackBounds.size.width, 0);
-    CGFloat leftTrackHeightDelta = MAX(44.0 - leftTrackBounds.size.height, 0);
+    CGFloat leftTrackWidthDelta = MAX(hitTestWidth - leftTrackBounds.size.width, 0);
+    CGFloat leftTrackHeightDelta = MAX(hitTestWidth - leftTrackBounds.size.height, 0);
     leftTrackBounds = CGRectInset(self.leftTrackButton.frame, -0.5 * leftTrackWidthDelta, -0.5 * leftTrackHeightDelta);
     
     
     // 判断下点在不在chatView上
     CGRect rightTrackBounds = self.rightTrackButton.bounds;
     //若原热区小于44x44，则放大热区，否则保持原大小不变
-    CGFloat rightTrackWidthDelta = MAX(44.0 - rightTrackBounds.size.width, 0);
-    CGFloat rightTrackHeightDelta = MAX(44.0 - rightTrackBounds.size.height, 0);
+    CGFloat rightTrackWidthDelta = MAX(hitTestWidth - rightTrackBounds.size.width, 0);
+    CGFloat rightTrackHeightDelta = MAX(hitTestWidth - rightTrackBounds.size.height, 0);
     rightTrackBounds = CGRectInset(self.rightTrackButton.frame, -0.5 * rightTrackWidthDelta, -0.5 * rightTrackHeightDelta);
     
     
     // 判断下点在不在chatView上
     CGRect topLeftTrackBounds = self.topLeftTrackButton.bounds;
     //若原热区小于44x44，则放大热区，否则保持原大小不变
-    CGFloat topLeftTrackWidthDelta = MAX(44.0 - topLeftTrackBounds.size.width, 0);
-    CGFloat topLeftTrackHeightDelta = MAX(44.0 - topLeftTrackBounds.size.height, 0);
+    CGFloat topLeftTrackWidthDelta = MAX(hitTestWidth - topLeftTrackBounds.size.width, 0);
+    CGFloat topLeftTrackHeightDelta = MAX(hitTestWidth - topLeftTrackBounds.size.height, 0);
     topLeftTrackBounds = CGRectInset(self.topLeftTrackButton.frame, -0.5 * topLeftTrackWidthDelta, -0.5 * topLeftTrackHeightDelta);
     
     
     // 判断下点在不在chatView上
     CGRect topRightTrackBounds = self.topRightTrackButton.bounds;
     //若原热区小于44x44，则放大热区，否则保持原大小不变
-    CGFloat topRightTrackWidthDelta = MAX(44.0 - topRightTrackBounds.size.width, 0);
-    CGFloat topRightTrackHeightDelta = MAX(44.0 - topRightTrackBounds.size.height, 0);
+    CGFloat topRightTrackWidthDelta = MAX(hitTestWidth - topRightTrackBounds.size.width, 0);
+    CGFloat topRightTrackHeightDelta = MAX(hitTestWidth - topRightTrackBounds.size.height, 0);
     topRightTrackBounds = CGRectInset(self.topRightTrackButton.frame, -0.5 * topRightTrackWidthDelta, -0.5 * topRightTrackHeightDelta);
     
     // 判断下点在不在chatView上
     CGRect bottomLeftTrackBounds = self.bottomLeftTrackButton.bounds;
     //若原热区小于44x44，则放大热区，否则保持原大小不变
-    CGFloat bottomLeftTrackWidthDelta = MAX(44.0 - bottomLeftTrackBounds.size.width, 0);
-    CGFloat bottomLeftTrackHeightDelta = MAX(44.0 - bottomLeftTrackBounds.size.height, 0);
+    CGFloat bottomLeftTrackWidthDelta = MAX(hitTestWidth - bottomLeftTrackBounds.size.width, 0);
+    CGFloat bottomLeftTrackHeightDelta = MAX(hitTestWidth - bottomLeftTrackBounds.size.height, 0);
     bottomLeftTrackBounds = CGRectInset(self.bottomLeftTrackButton.frame, -0.5 * bottomLeftTrackWidthDelta, -0.5 * bottomLeftTrackHeightDelta);
     
     // 判断下点在不在chatView上
     CGRect bottomRightTrackBounds = self.bottomRightTrackButton.bounds;
     //若原热区小于44x44，则放大热区，否则保持原大小不变
-    CGFloat bottomRightTrackWidthDelta = MAX(44.0 - bottomRightTrackBounds.size.width, 0);
-    CGFloat bottomRightTrackHeightDelta = MAX(44.0 - bottomRightTrackBounds.size.height, 0);
+    CGFloat bottomRightTrackWidthDelta = MAX(hitTestWidth - bottomRightTrackBounds.size.width, 0);
+    CGFloat bottomRightTrackHeightDelta = MAX(hitTestWidth - bottomRightTrackBounds.size.height, 0);
     bottomRightTrackBounds = CGRectInset(self.bottomRightTrackButton.frame, -0.5 * bottomRightTrackWidthDelta, -0.5 * bottomRightTrackHeightDelta);
     
     
@@ -731,16 +815,26 @@
         self.cropViewTrackType = VE_TRACK_BOTTOMRIGHT;
         return  self.bottomRightTrackButton.superview;
     }else if (CGRectContainsPoint(cropRectViewBounds,point)){
-        self.cropViewTrackType = VE_TRACK_CROPRECTVIEW;
+        if( _videoCropView )
+        {
+            if( (VE_TRACK_CROPRECTVIEW != self.cropViewTrackType) && (self.cropViewTrackType != VE_TRACK_SCALING) )
+                self.cropViewTrackType = VE_TRACK_CROPRECTVIEW;
+        }
+        else
+            self.cropViewTrackType = VE_TRACK_CROPRECTVIEW;
         return  self.cropRectView.superview;
-        
     }else{
         NSLog(@"动不动");
-        self.cropViewTrackType = VE_TRACK_CROPRECTVIEW;
+        if( _videoView )
+        {
+            if( (VE_TRACK_CROPRECTVIEW != self.cropViewTrackType) && (self.cropViewTrackType != VE_TRACK_SCALING) )
+                self.cropViewTrackType = VE_TRACK_CROPRECTVIEW;
+        }
+        else{
+            self.cropViewTrackType = VE_TRACK_CROPRECTVIEW;
+        }
         return [super hitTest:point withEvent:event];
     }
-    
-    
 }
 -(BOOL) beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event{
     CGPoint pointTemp = [touch locationInView:self];
@@ -774,27 +868,57 @@
     }else if (self.cropViewTrackType == VE_TRACK_BOTTOMRIGHT){
         NSLog(@"开始拖动右下方");
         return YES;
-    }else if (self.cropViewTrackType == VE_TRACK_CROPRECTVIEW){
+    }else if(self.cropViewTrackType == VE_TRACK_CROPRECTVIEW){
         NSLog(@"裁切");
+        if( _videoCropView )
+        {
+            self.isInitialPoint = false;
+            self.lastLocation = pointTemp;
+            [self convertView:self.cropRectView atDestinationView:_videoView atInView:self];
+        }
         return YES;
-        
     }
     return YES;
-    
 }
 
 -(BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event{
     CGPoint pointTemp = [touch locationInView:self];
-    [self needsUpdateCropPoints];
+    
+    if( _videoCropView )
+    {
+        CGPoint viewPoint = [self convertPoint:pointTemp toView:_videoView];
+        if( viewPoint.y > self.fMaxHeight )
+        {
+            viewPoint = CGPointMake(viewPoint.x, self.fMaxHeight);
+            pointTemp = [_videoView convertPoint:viewPoint toView:self];
+        }
+        
+        if( self.cropViewTrackType != VE_TRACK_SCALING )
+        {
+            if(  (self.cropViewTrackType == VE_TRACK_CROPRECTVIEW) && _videoCropView)
+            {
+                
+            }
+            else
+                [self needsUpdateCropPoints];
+        }
+    }
+    else{
+        [self needsUpdateCropPoints];
+    }
 //    NSLog(@"pointTemp %f", pointTemp.x);
+    
+    float cropSizeMinWith = self.cropSizeMin.width;
+    float cropSizeMinHeight = self.cropSizeMin.height;
+    
     if (self.cropViewTrackType == VE_TRACK_TOP) {
         
         float distance = fabs(self.cropPointBottomLeft.y - pointTemp.y);
-        if (self.cropPointBottomLeft.y - pointTemp.y > self.cropSizeMin.height && pointTemp.y >= self.trackingRectPointTopLeft.y) {
+        if (self.cropPointBottomLeft.y - pointTemp.y > cropSizeMinHeight && pointTemp.y >= self.trackingRectPointTopLeft.y) {
             self.croporiginY = pointTemp.y;
             self.cropHeight = distance;
         }else{
-            if (self.cropPointBottomLeft.y - pointTemp.y > self.cropSizeMin.height) {
+            if (self.cropPointBottomLeft.y - pointTemp.y > cropSizeMinHeight) {
                 self.croporiginY = self.trackingRectPointTopLeft.y;
                 self.cropHeight = fabs(self.cropPointBottomLeft.y - self.trackingRectPointTopLeft.y);
             }
@@ -808,10 +932,10 @@
     else if (self.cropViewTrackType == VE_TRACK_BOTTOM){
         
         float distance = fabs(pointTemp.y - self.cropPointTopLeft.y );
-        if (pointTemp.y - self.cropPointTopLeft.y> self.cropSizeMin.height && pointTemp.y <= self.trackingRectPointBottomLeft.y) {
+        if (pointTemp.y - self.cropPointTopLeft.y> cropSizeMinHeight && pointTemp.y <= self.trackingRectPointBottomLeft.y) {
             self.cropHeight = distance;
         }else{
-            if (pointTemp.y - self.cropPointTopLeft.y > self.cropSizeMin.height) {
+            if (pointTemp.y - self.cropPointTopLeft.y > cropSizeMinHeight) {
                 self.cropHeight = fabs(self.trackingRectPointBottomLeft.y - self.cropPointTopLeft.y );
             }
         }
@@ -822,11 +946,11 @@
     else if (self.cropViewTrackType == VE_TRACK_LEFT) {
         
         float distance = fabs(self.cropPointTopRight.x - pointTemp.x);
-        if (fabs(self.cropPointTopRight.x - pointTemp.x)> self.cropSizeMin.width && pointTemp.x > self.trackingRectPointTopLeft.x && pointTemp.x <= self.cropPointTopRight.x - self.cropSizeMin.width) {
+        if (fabs(self.cropPointTopRight.x - pointTemp.x)> cropSizeMinWith && pointTemp.x > self.trackingRectPointTopLeft.x && pointTemp.x <= self.cropPointTopRight.x - cropSizeMinWith) {
             self.croporiginX = pointTemp.x;
             self.cropWidth = distance;
         }else{
-            if ( self.cropPointTopRight.x- pointTemp.x  > self.cropSizeMin.width) {
+            if ( self.cropPointTopRight.x- pointTemp.x  > cropSizeMinWith) {
                 self.croporiginX = self.trackingRectPointTopLeft.x;
                 self.cropWidth = self.cropPointTopRight.x - self.trackingRectPointTopLeft.x;
                 
@@ -840,11 +964,11 @@
     else if (self.cropViewTrackType == VE_TRACK_RIGHT){
         
         float distance = fabs(pointTemp.x - self.cropPointTopLeft.x);
-        if (fabs(pointTemp.x - self.cropPointTopLeft.x)> self.cropSizeMin.width && pointTemp.x < self.trackingRectPointTopRight.x) {
+        if (fabs(pointTemp.x - self.cropPointTopLeft.x)> cropSizeMinWith && pointTemp.x < self.trackingRectPointTopRight.x) {
             
             self.cropWidth = distance;
         }else{
-            if ( pointTemp.x - self.cropPointTopLeft.x  > self.cropSizeMin.width) {
+            if ( pointTemp.x - self.cropPointTopLeft.x  > cropSizeMinWith) {
                 self.cropWidth = self.trackingRectPointTopRight.x - self.cropPointTopLeft.x;
             }
         }
@@ -864,34 +988,34 @@
 
             if (pointTemp.x >= self.trackingRectPointTopLeft.x && pointTemp.y >= self.trackingRectPointTopLeft.y){
 
-                if (self.cropPointTopRight.x - pointTemp.x > self.cropSizeMin.width && pointTemp.x <= self.cropPointTopRight.x - self.cropSizeMin.width) {
+                if (self.cropPointTopRight.x - pointTemp.x > cropSizeMinWith && pointTemp.x <= self.cropPointTopRight.x - cropSizeMinWith) {
                     self.croporiginX = pointTemp.x;
                     self.cropWidth = distanceWidth;
                 }else {
-                    self.croporiginX = self.cropPointTopRight.x - self.cropSizeMin.width;
-                    self.cropWidth = self.cropSizeMin.width;
+                    self.croporiginX = self.cropPointTopRight.x - cropSizeMinWith;
+                    self.cropWidth = cropSizeMinWith;
                 }
 
-                if (self.cropPointBottomLeft.y - pointTemp.y > self.cropSizeMin.height && pointTemp.y <= self.cropPointBottomLeft.y - self.cropSizeMin.height) {
+                if (self.cropPointBottomLeft.y - pointTemp.y > cropSizeMinHeight && pointTemp.y <= self.cropPointBottomLeft.y - cropSizeMinHeight) {
                     self.croporiginY = pointTemp.y;
                     self.cropHeight = distanceHeight;
                 }else{
-                    self.croporiginY = self.cropPointBottomLeft.y - self.cropSizeMin.height;
-                    self.cropHeight = self.cropSizeMin.height;
+                    self.croporiginY = self.cropPointBottomLeft.y - cropSizeMinHeight;
+                    self.cropHeight = cropSizeMinHeight;
                 }
 
             }else{
 
-                if (pointTemp.x < self.cropPointBottomRight.x  && pointTemp.x >= self.cropPointBottomRight.x- self.cropSizeMin.width ) {
+                if (pointTemp.x < self.cropPointBottomRight.x  && pointTemp.x >= self.cropPointBottomRight.x- cropSizeMinWith ) {
 
-                    self.croporiginX = self.cropPointBottomRight.x- self.cropSizeMin.width ;
+                    self.croporiginX = self.cropPointBottomRight.x- cropSizeMinWith ;
                     self.croporiginY =self.trackingRectPointTopLeft.y;
-                    self.cropWidth = self.cropSizeMin.width;
+                    self.cropWidth = cropSizeMinWith;
                     self.cropHeight = fabs(self.cropPointBottomLeft.y - self.trackingRectPointTopLeft.y);
 
                 }
 
-                if (pointTemp.x < self.cropPointBottomRight.x- self.cropSizeMin.width && pointTemp.x > self.trackingRectPointTopLeft.x) {
+                if (pointTemp.x < self.cropPointBottomRight.x- cropSizeMinWith && pointTemp.x > self.trackingRectPointTopLeft.x) {
 
                     self.croporiginX = pointTemp.x;
                     self.croporiginY = self.trackingRectPointTopLeft.y;
@@ -901,17 +1025,17 @@
                 }
 
 
-                if (pointTemp.y < self.cropPointBottomLeft.y && pointTemp.y > self.cropPointBottomLeft.y -self.cropSizeMin.height) {
+                if (pointTemp.y < self.cropPointBottomLeft.y && pointTemp.y > self.cropPointBottomLeft.y -cropSizeMinHeight) {
 
                     self.croporiginX = self.trackingRectPointTopLeft.x;
-                    self.croporiginY = self.cropPointBottomLeft.y - self.cropSizeMin.height;
+                    self.croporiginY = self.cropPointBottomLeft.y - cropSizeMinHeight;
                     self.cropWidth = self.cropPointBottomRight.x -self.trackingRectPointTopLeft.x;
-                    self.cropHeight = self.cropSizeMin.height;
+                    self.cropHeight = cropSizeMinHeight;
 
 
                 }
 
-                if (pointTemp.y < self.cropPointBottomLeft.y -self.cropSizeMin.height && pointTemp.y > self.trackingRectPointTopLeft.y) {
+                if (pointTemp.y < self.cropPointBottomLeft.y -cropSizeMinHeight && pointTemp.y > self.trackingRectPointTopLeft.y) {
 
                     self.croporiginX = self.trackingRectPointTopLeft.x;
                     self.croporiginY = pointTemp.y;
@@ -949,7 +1073,7 @@
                 newCropHeight = newCropWidth / self.ratio;
             }
             
-            if (newCropWidth < self.cropSizeMin.width || newCropHeight < self.cropSizeMin.height) {
+            if (newCropWidth < cropSizeMinWith || newCropHeight < cropSizeMinHeight) {
                 return YES;
             }
             
@@ -998,10 +1122,10 @@
                 
             }
             
-            if (newCroporiginX >= self.cropPointBottomRight.x - self.cropSizeMin.width  && newCroporiginY >= self.cropPointBottomLeft.y - self.cropSizeMin.height) {
+            if (newCroporiginX >= self.cropPointBottomRight.x - cropSizeMinWith  && newCroporiginY >= self.cropPointBottomLeft.y - cropSizeMinHeight) {
 
-                newCroporiginX = self.cropPointBottomRight.x - self.cropSizeMin.width;
-                newCropWidth = self.cropSizeMin.width;
+                newCroporiginX = self.cropPointBottomRight.x - cropSizeMinWith;
+                newCropWidth = cropSizeMinWith;
                 
                 if (self.ratio > 1.0) {
                     newCropHeight = newCropWidth / self.ratio;
@@ -1034,7 +1158,7 @@
             if (pointTemp.x < self.trackingRectPointTopRight.x && pointTemp.y > self.trackingRectPointTopRight.y){
                 
                 
-                if ((pointTemp.x > self.cropPointBottomLeft.x + self.cropSizeMin.width &&  pointTemp.y < self.cropPointBottomLeft.y - self.cropSizeMin.height) ) {
+                if ((pointTemp.x > self.cropPointBottomLeft.x + cropSizeMinWith &&  pointTemp.y < self.cropPointBottomLeft.y - cropSizeMinHeight) ) {
 
                     self.croporiginY = pointTemp.y;
                     self.cropWidth = distanceWidth;
@@ -1042,43 +1166,43 @@
                     
                 }
                 
-                if (pointTemp.x <= self.cropPointBottomLeft.x +  self.cropSizeMin.width && pointTemp.y < self.cropPointBottomLeft.y - self.cropSizeMin.height){
+                if (pointTemp.x <= self.cropPointBottomLeft.x +  cropSizeMinWith && pointTemp.y < self.cropPointBottomLeft.y - cropSizeMinHeight){
                     
                     self.croporiginY = pointTemp.y;
-                    self.cropWidth = self.cropSizeMin.width;
+                    self.cropWidth = cropSizeMinWith;
                     self.cropHeight = distanceHeight;
                     
                     
                 }
                 
-                if(pointTemp.y >= self.cropPointBottomLeft.y - self.cropSizeMin.height && pointTemp.x > self.cropPointBottomLeft.x +  self.cropSizeMin.width){
+                if(pointTemp.y >= self.cropPointBottomLeft.y - cropSizeMinHeight && pointTemp.x > self.cropPointBottomLeft.x +  cropSizeMinWith){
                     
-                    self.croporiginY = self.cropPointBottomLeft.y - self.cropSizeMin.height;
+                    self.croporiginY = self.cropPointBottomLeft.y - cropSizeMinHeight;
                     self.cropWidth = distanceWidth;
-                    self.cropHeight = self.cropSizeMin.height;
+                    self.cropHeight = cropSizeMinHeight;
                     
                     
                 }
                 
-                if (pointTemp.x <= self.cropPointBottomLeft.x +  self.cropSizeMin.width &&  pointTemp.x >= self.cropPointBottomLeft.y - self.cropSizeMin.height) {
+                if (pointTemp.x <= self.cropPointBottomLeft.x +  cropSizeMinWith &&  pointTemp.x >= self.cropPointBottomLeft.y - cropSizeMinHeight) {
                     
-                    self.croporiginY = self.cropPointBottomLeft.y - self.cropSizeMin.height;
-                    self.cropWidth = self.cropSizeMin.width;
-                    self.cropHeight = self.cropSizeMin.height;
+                    self.croporiginY = self.cropPointBottomLeft.y - cropSizeMinHeight;
+                    self.cropWidth = cropSizeMinWith;
+                    self.cropHeight = cropSizeMinHeight;
                 }
                 
             }else{
                 
                 //超出拖动区域异常处理
-                if (pointTemp.x <= self.cropPointBottomLeft.x +  self.cropSizeMin.width && pointTemp.y <= self.trackingRectPointTopRight.y) {
+                if (pointTemp.x <= self.cropPointBottomLeft.x +  cropSizeMinWith && pointTemp.y <= self.trackingRectPointTopRight.y) {
                     
                     self.croporiginY = self.trackingRectPointTopRight.y;
-                    self.cropWidth = self.cropSizeMin.width;
+                    self.cropWidth = cropSizeMinWith;
                     self.cropHeight = fabs(self.cropPointBottomLeft.y - self.trackingRectPointTopRight.y) ;
                     
                 }
                 
-                if (pointTemp.x >= self.cropPointBottomLeft.x +  self.cropSizeMin.width &&  pointTemp.y<= self.trackingRectPointTopRight.y && pointTemp.x <= self.trackingRectPointTopRight.x) {
+                if (pointTemp.x >= self.cropPointBottomLeft.x +  cropSizeMinWith &&  pointTemp.y<= self.trackingRectPointTopRight.y && pointTemp.x <= self.trackingRectPointTopRight.x) {
                     
                     self.croporiginY = self.trackingRectPointTopRight.y;
                     self.cropWidth = distanceWidth;
@@ -1086,15 +1210,15 @@
                     
                 }
                 
-                if (pointTemp.y >= self.cropPointBottomLeft.y - self.cropSizeMin.height && pointTemp.x >= self.trackingRectPointTopRight.x) {
+                if (pointTemp.y >= self.cropPointBottomLeft.y - cropSizeMinHeight && pointTemp.x >= self.trackingRectPointTopRight.x) {
                     
-                    self.croporiginY = self.cropPointBottomLeft.y - self.cropSizeMin.height;
+                    self.croporiginY = self.cropPointBottomLeft.y - cropSizeMinHeight;
                     self.cropWidth = self.trackingRectPointTopRight.x - self.cropPointBottomLeft.x;
-                    self.cropHeight = self.cropSizeMin.height ;
+                    self.cropHeight = cropSizeMinHeight ;
                     
                 }
                 
-                if (pointTemp.y < self.cropPointBottomLeft.y - self.cropSizeMin.height && pointTemp.x >= self.trackingRectPointTopRight.x && pointTemp.y >= self.trackingRectPointTopRight.y) {
+                if (pointTemp.y < self.cropPointBottomLeft.y - cropSizeMinHeight && pointTemp.x >= self.trackingRectPointTopRight.x && pointTemp.y >= self.trackingRectPointTopRight.y) {
                     
                     self.croporiginY = pointTemp.y;
                     self.cropWidth = fabs(self.trackingRectPointTopRight.x - self.cropPointBottomLeft.x);
@@ -1120,13 +1244,13 @@
             CGFloat newCroporiginY = 0.0;
             CGFloat newCropWidth = self.cropWidth + croporiginX;
             NSLog(@"newCropWidth%f",newCropWidth);
-            NSLog(@"elf.cropSizeMin.width%f",self.cropSizeMin.width);
+            NSLog(@"elf.cropSizeMin.width%f",cropSizeMinWith);
             CGFloat newCropHeight = 0.0;
             
             newCroporiginY  = self.croporiginY - (croporiginX / self.ratio);
             newCropHeight = newCropWidth / self.ratio;
             
-            if (newCropWidth < self.cropSizeMin.width || newCropHeight < self.cropSizeMin.height) {
+            if (newCropWidth < cropSizeMinWith || newCropHeight < cropSizeMinHeight) {
                 return YES;
             }
             
@@ -1145,12 +1269,12 @@
                 newCroporiginY = self.cropPointBottomLeft.y - newCropHeight;
             }
 
-            if (newCropWidth < self.cropSizeMin.width  ||  newCropHeight <= self.cropSizeMin.height) {
+            if (newCropWidth < cropSizeMinWith  ||  newCropHeight <= cropSizeMinHeight) {
                 
                 
                 NSLog(@"------------>异常3 1");
-                newCropWidth = self.cropSizeMin.width;
-                newCropHeight = self.cropSizeMin.height;
+                newCropWidth = cropSizeMinWith;
+                newCropHeight = cropSizeMinHeight;
                 newCroporiginY = self.cropPointBottomLeft.y - newCropHeight;
                 
                 NSLog(@"------------>异常 %f",self.cropPointBottomLeft.y);
@@ -1176,24 +1300,24 @@
             
             if (pointTemp.x > self.trackingRectPointBottomLeft.x && pointTemp.y < self.trackingRectPointBottomLeft.y && pointTemp.x <self.cropPointTopRight.x && pointTemp.y > self.cropPointTopRight.y) {
                 
-                if (pointTemp.x > self.trackingRectPointTopRight.x && pointTemp.x <= self.cropPointTopRight.x - self.cropSizeMin.width && pointTemp.y < self.cropPointTopRight.y + self.cropSizeMin.height){
+                if (pointTemp.x > self.trackingRectPointTopRight.x && pointTemp.x <= self.cropPointTopRight.x - cropSizeMinWith && pointTemp.y < self.cropPointTopRight.y + cropSizeMinHeight){
                     
                     self.croporiginX = pointTemp.x;
                     self.cropWidth = distanceWidth;
-                    self.cropHeight = self.cropSizeMin.height;
+                    self.cropHeight = cropSizeMinHeight;
                     
                     
                 }
                 
-                if (pointTemp.x > self.cropPointTopRight.x - self.cropSizeMin.width && pointTemp.y > self.cropPointTopRight.y + self.cropSizeMin.height &&  pointTemp.y < self.trackingRectPointBottomLeft.y) {
+                if (pointTemp.x > self.cropPointTopRight.x - cropSizeMinWith && pointTemp.y > self.cropPointTopRight.y + cropSizeMinHeight &&  pointTemp.y < self.trackingRectPointBottomLeft.y) {
                     
-                    self.croporiginX = self.cropPointTopRight.x - self.cropSizeMin.width;
-                    self.cropWidth = self.cropSizeMin.width;
+                    self.croporiginX = self.cropPointTopRight.x - cropSizeMinWith;
+                    self.cropWidth = cropSizeMinWith;
                     self.cropHeight = distanceHeight;
                     
                 }
                 
-                if (pointTemp.x >=  self.trackingRectPointTopLeft.x && pointTemp.x <=  self.cropPointTopRight.x - self.cropSizeMin.width  && pointTemp.y >= self.cropPointTopRight.y + self.cropSizeMin.height && pointTemp.y <= self.trackingRectPointBottomLeft.y) {
+                if (pointTemp.x >=  self.trackingRectPointTopLeft.x && pointTemp.x <=  self.cropPointTopRight.x - cropSizeMinWith  && pointTemp.y >= self.cropPointTopRight.y + cropSizeMinHeight && pointTemp.y <= self.trackingRectPointBottomLeft.y) {
                     
                     self.croporiginX = pointTemp.x;
                     self.cropWidth = distanceWidth;
@@ -1202,15 +1326,15 @@
                 }
                 
             }else{
-                if (pointTemp.x < self.trackingRectPointBottomLeft.x && pointTemp.y < self.cropPointTopRight.y + self.cropSizeMin.height) {
+                if (pointTemp.x < self.trackingRectPointBottomLeft.x && pointTemp.y < self.cropPointTopRight.y + cropSizeMinHeight) {
                     
                     self.croporiginX = self.trackingRectPointBottomLeft.x;
                     self.cropWidth = fabs(self.trackingRectPointBottomLeft.x - self.cropPointTopRight.x);
-                    self.cropHeight = self.cropSizeMin.height;
+                    self.cropHeight = cropSizeMinHeight;
                     
                 }
                 
-                if (pointTemp.x < self.trackingRectPointBottomLeft.x && pointTemp.y >= self.cropPointTopRight.y + self.cropSizeMin.height && pointTemp.y < self.trackingRectPointBottomLeft.y) {
+                if (pointTemp.x < self.trackingRectPointBottomLeft.x && pointTemp.y >= self.cropPointTopRight.y + cropSizeMinHeight && pointTemp.y < self.trackingRectPointBottomLeft.y) {
                     
                     self.croporiginX = self.trackingRectPointBottomLeft.x;
                     self.cropWidth = fabs(self.cropPointTopRight.x - self.trackingRectPointBottomLeft.x);
@@ -1218,14 +1342,14 @@
                     
                 }
                 
-                if (pointTemp.x >= self.cropPointTopRight.x - self.cropSizeMin.width  && pointTemp.x < self.cropPointTopRight.x && pointTemp.y >  self.trackingRectPointBottomLeft.y) {
+                if (pointTemp.x >= self.cropPointTopRight.x - cropSizeMinWith  && pointTemp.x < self.cropPointTopRight.x && pointTemp.y >  self.trackingRectPointBottomLeft.y) {
                     
-                    self.croporiginX = fabs(self.cropPointTopRight.x - self.cropSizeMin.width);
-                    self.cropWidth = self.cropSizeMin.width;
+                    self.croporiginX = fabs(self.cropPointTopRight.x - cropSizeMinWith);
+                    self.cropWidth = cropSizeMinWith;
                     self.cropHeight = fabs(self.trackingRectPointBottomLeft.y - self.cropPointTopRight.y);
                 }
                 
-                if ( pointTemp.x <= self.cropPointTopRight.x - self.cropSizeMin.width && pointTemp.x > self.trackingRectPointBottomLeft.x && pointTemp.y >  self.trackingRectPointBottomLeft.y) {
+                if ( pointTemp.x <= self.cropPointTopRight.x - cropSizeMinWith && pointTemp.x > self.trackingRectPointBottomLeft.x && pointTemp.y >  self.trackingRectPointBottomLeft.y) {
                     
                     
                     self.croporiginX = pointTemp.x;
@@ -1257,7 +1381,7 @@
                 newCropHeight = newCropWidth / self.ratio;
             }
             
-            if (newCropWidth < self.cropSizeMin.width || newCropHeight < self.cropSizeMin.height) {
+            if (newCropWidth < cropSizeMinWith || newCropHeight < cropSizeMinHeight) {
                 return YES;
             }
             
@@ -1288,10 +1412,10 @@
                 newCroporiginX = self.cropPointTopRight.x - newCropWidth;
                 
             }
-            if (self.cropPointTopRight.y +newCropHeight <= self.cropPointTopRight.y +self.cropSizeMin.height  && self.cropPointTopRight.x +newCropWidth >= self.cropPointTopRight.x - self.cropSizeMin.width) {
+            if (self.cropPointTopRight.y +newCropHeight <= self.cropPointTopRight.y +cropSizeMinHeight  && self.cropPointTopRight.x +newCropWidth >= self.cropPointTopRight.x - cropSizeMinWith) {
 
-                newCroporiginX = self.cropPointTopRight.x - self.cropSizeMin.width;
-                newCropWidth = self.cropSizeMin.width;
+                newCroporiginX = self.cropPointTopRight.x - cropSizeMinWith;
+                newCropWidth = cropSizeMinWith;
 
                 if (self.ratio > 1.0) {
                     newCropHeight = newCropWidth / self.ratio;
@@ -1320,47 +1444,47 @@
           
             if (pointTemp.x < self.trackingRectPointBottomRight.x && pointTemp.y < self.trackingRectPointBottomRight.y && pointTemp.x > self.cropPointTopLeft.x && pointTemp.y > self.cropPointTopLeft.y) {
                 
-                if (pointTemp.x < (self.cropPointTopLeft.x + self.cropSizeMin.width) && pointTemp.y > self.cropPointTopLeft.y + self.cropSizeMin.height ) {
+                if (pointTemp.x < (self.cropPointTopLeft.x + cropSizeMinWith) && pointTemp.y > self.cropPointTopLeft.y + cropSizeMinHeight ) {
                     
-                    self.cropWidth = self.cropSizeMin.width;
+                    self.cropWidth = cropSizeMinWith;
                     self.cropHeight = distanceHeight;
                     
                 }
                 
-                if (pointTemp.x > (self.cropPointTopLeft.x + self.cropSizeMin.width) && pointTemp.y < self.cropPointTopLeft.y + self.cropSizeMin.height ) {
+                if (pointTemp.x > (self.cropPointTopLeft.x + cropSizeMinWith) && pointTemp.y < self.cropPointTopLeft.y + cropSizeMinHeight ) {
                     
                     self.cropWidth = distanceWidth;
-                    self.cropHeight = self.cropSizeMin.height;
+                    self.cropHeight = cropSizeMinHeight;
                 }
                 
-                if (pointTemp.x >= (self.cropPointTopLeft.x + self.cropSizeMin.width) && pointTemp.y >= self.cropPointTopLeft.y + self.cropSizeMin.height) {
+                if (pointTemp.x >= (self.cropPointTopLeft.x + cropSizeMinWith) && pointTemp.y >= self.cropPointTopLeft.y + cropSizeMinHeight) {
                     self.cropWidth = distanceWidth;
                     self.cropHeight = distanceHeight;
                 }
             }else{
               
-                if (pointTemp.x >=  self.trackingRectPointBottomRight.x && pointTemp.y <= self.cropPointTopLeft.y + self.cropSizeMin.height) {
+                if (pointTemp.x >=  self.trackingRectPointBottomRight.x && pointTemp.y <= self.cropPointTopLeft.y + cropSizeMinHeight) {
                     NSLog(@"------->0");
                     self.cropWidth = fabs(self.trackingRectPointBottomRight.x - self.cropPointTopLeft.x);
-                    self.cropHeight = self.cropSizeMin.height;
+                    self.cropHeight = cropSizeMinHeight;
                 }
                 
                 
-                if (pointTemp.x >=  self.trackingRectPointBottomRight.x && pointTemp.y > self.cropPointTopLeft.y + self.cropSizeMin.height && pointTemp.y < self.trackingRectPointBottomRight.y) {
+                if (pointTemp.x >=  self.trackingRectPointBottomRight.x && pointTemp.y > self.cropPointTopLeft.y + cropSizeMinHeight && pointTemp.y < self.trackingRectPointBottomRight.y) {
                     NSLog(@"------->1");
                     self.cropWidth = fabs(self.trackingRectPointBottomRight.x - self.cropPointTopLeft.x);
                     self.cropHeight = distanceHeight;
                 }
                 
                 
-                if (pointTemp.x >=  self.cropPointTopLeft.x && pointTemp.x <= self.cropPointTopLeft.x + self.cropSizeMin.width && pointTemp.y >= self.trackingRectPointBottomRight.y) {
+                if (pointTemp.x >=  self.cropPointTopLeft.x && pointTemp.x <= self.cropPointTopLeft.x + cropSizeMinWith && pointTemp.y >= self.trackingRectPointBottomRight.y) {
                     NSLog(@"------->2");
-                    self.cropWidth = self.cropSizeMin.width;
+                    self.cropWidth = cropSizeMinWith;
                     self.cropHeight = fabs(self.trackingRectPointBottomRight.y - self.cropPointTopLeft.y);
                 }
                 
                 
-                if (pointTemp.x >=  self.cropPointTopLeft.x + self.cropSizeMin.width  && pointTemp.x <= self.trackingRectPointBottomRight.x &&
+                if (pointTemp.x >=  self.cropPointTopLeft.x + cropSizeMinWith  && pointTemp.x <= self.trackingRectPointBottomRight.x &&
                     pointTemp.y > self.trackingRectPointBottomRight.y) {
                     NSLog(@"------->3");
                     self.cropWidth = fabs(pointTemp.x - self.cropPointTopLeft.x);
@@ -1373,10 +1497,10 @@
                     self.cropHeight = fabs(self.trackingRectPointBottomRight.y - self.cropPointTopLeft.y);
                 }
                 
-                if (pointTemp.x <= self.cropPointTopLeft.x + self.cropSizeMin.width && pointTemp.y <= self.cropPointTopLeft.y + self.cropSizeMin.height) {
+                if (pointTemp.x <= self.cropPointTopLeft.x + cropSizeMinWith && pointTemp.y <= self.cropPointTopLeft.y + cropSizeMinHeight) {
                     
-                    self.cropWidth = self.cropSizeMin.width;
-                    self.cropHeight = self.cropSizeMin.height;
+                    self.cropWidth = cropSizeMinWith;
+                    self.cropHeight = cropSizeMinHeight;
                     
                 }
             }
@@ -1398,7 +1522,7 @@
                 newCropHeight = newCropWidth / self.ratio;
             }
             
-            if (newCropWidth < self.cropSizeMin.width || newCropHeight < self.cropSizeMin.height) {
+            if (newCropWidth < cropSizeMinWith || newCropHeight < cropSizeMinHeight) {
                 return YES;
             }
             
@@ -1429,8 +1553,8 @@
 
 
             }
-            if (self.cropPointTopLeft.x +newCropWidth <= self.cropPointTopLeft.x + self.cropSizeMin.width  && self.cropPointTopLeft.y +newCropHeight <= self.cropPointTopLeft.y + self.cropSizeMin.height) {
-                newCropWidth = self.cropSizeMin.width;
+            if (self.cropPointTopLeft.x +newCropWidth <= self.cropPointTopLeft.x + cropSizeMinWith  && self.cropPointTopLeft.y +newCropHeight <= self.cropPointTopLeft.y + cropSizeMinHeight) {
+                newCropWidth = cropSizeMinWith;
 
                 if (self.ratio > 1.0) {
                     newCropHeight = newCropWidth / self.ratio;
@@ -1442,46 +1566,100 @@
             }
             self.cropWidth = newCropWidth;
             self.cropHeight = newCropHeight;
-            
-            
         }
         [self setNeedsDisplay];
         NSLog(@"拖动右下方");
-        
-        
         return YES;
     }else if (self.cropViewTrackType == VE_TRACK_CROPRECTVIEW){
-        
         CGFloat croporiginX = pointTemp.x - self.changePointTemp.x;
         CGFloat croporiginY = pointTemp.y - self.changePointTemp.y;
-        self.changePointTemp = CGPointMake(self.changePointTemp.x +croporiginX, self.changePointTemp.y +croporiginY);
-        CGFloat newCroporiginX = self.croporiginX + croporiginX;
-        CGFloat newCroporiginY = self.croporiginY + croporiginY;
-        if (newCroporiginX <= self.trackingRectPointTopLeft.x) {
-            newCroporiginX = self.trackingRectPointTopLeft.x;
+        if( _videoCropView )
+        {
+//            NSSet *touches = [event allTouches];
+//            if (touches.count == 2) {
+//                self.cropViewTrackType = VE_TRACK_SCALING;
+//                _isDrawCroprectview = true;
+//                return YES;
+//            }
+//            else
+            {
+                CGFloat deltaX = pointTemp.x - self.lastLocation.x;
+                CGFloat deltaY = pointTemp.y - self.lastLocation.y;
+                
+                CGPoint center =  CGPointMake(_videoCropView.center.x + deltaX, _videoCropView.center.y + deltaY);
+                
+                CGRect rectInSourceView = self.cropRectView.frame;
+                float  startX = (center.x - _videoCropView.frame.size.width/2.0)+ self.videoFrame.origin.x;
+                float restrictionsStartX = rectInSourceView.origin.x;
+                float endX = center.x + _videoCropView.frame.size.width/2.0 - ( _videoCropView.frame.size.width - (self.videoFrame.origin.x + self.videoFrame.size.width) );
+                float restrictionsEndX = rectInSourceView.origin.x + rectInSourceView.size.width;
+                
+                float  startY = center.y - _videoCropView.frame.size.height/2.0 + self.videoFrame.origin.y;
+                float restrictionsStartY = rectInSourceView.origin.y;
+                float endY = center.y + _videoCropView.frame.size.height/2.0 - ( _videoCropView.frame.size.height - (self.videoFrame.origin.y + self.videoFrame.size.height) );
+                float restrictionsEndY = rectInSourceView.origin.y + rectInSourceView.size.height ;
+                
+                if( restrictionsStartX < startX )
+                {
+                    center.x = restrictionsStartX + _videoCropView.frame.size.width/2.0 - self.videoFrame.origin.x;
+                }
+                else if( restrictionsEndX > endX )
+                {
+                    center.x = restrictionsEndX - _videoCropView.frame.size.width/2.0 + (_videoCropView.frame.size.width - (self.videoFrame.origin.x + self.videoFrame.size.width));
+                }
+                
+                if( restrictionsStartY < startY )
+                {
+                    center.y = restrictionsStartY + _videoCropView.frame.size.height/2.0 - self.videoFrame.origin.y;
+                }
+                else if( restrictionsEndY > endY  )
+                {
+                    center.y = restrictionsEndY - _videoCropView.frame.size.height/2.0 + (_videoCropView.frame.size.height - (self.videoFrame.origin.y + self.videoFrame.size.height));
+                }
+                _videoCropView.center = center;
+                _isDrawCroprectview = true;
+                [self setNeedsDisplay];
+            }
         }
-        if (newCroporiginX >= self.trackingRectPointTopRight.x - self.cropWidth) {
-            newCroporiginX = self.trackingRectPointTopRight.x - self.cropWidth;
+        else
+        {
+            if( !_videoCropView )
+                    self.changePointTemp = CGPointMake(self.changePointTemp.x +croporiginX, self.changePointTemp.y +croporiginY);
+            CGFloat newCroporiginX = self.croporiginX + croporiginX;
+            CGFloat newCroporiginY = self.croporiginY + croporiginY;
+            if (newCroporiginX <= self.trackingRectPointTopLeft.x) {
+                newCroporiginX = self.trackingRectPointTopLeft.x;
+            }
+            if (newCroporiginX >= self.trackingRectPointTopRight.x - self.cropWidth) {
+                newCroporiginX = self.trackingRectPointTopRight.x - self.cropWidth;
+            }
+            if (newCroporiginY <= self.trackingRectPointTopLeft.y) {
+                newCroporiginY = self.trackingRectPointTopLeft.y;
+            }
+            if (newCroporiginY >= self.trackingRectPointBottomLeft.y - self.cropHeight) {
+                newCroporiginY = self.trackingRectPointBottomLeft.y - self.cropHeight;
+            }
+            self.croporiginX = newCroporiginX;
+            self.croporiginY = newCroporiginY;
+            [self setNeedsDisplay];
         }
-        if (newCroporiginY <= self.trackingRectPointTopLeft.y) {
-            newCroporiginY = self.trackingRectPointTopLeft.y;
-        }
-        if (newCroporiginY >= self.trackingRectPointBottomLeft.y - self.cropHeight) {
-            newCroporiginY = self.trackingRectPointBottomLeft.y - self.cropHeight;
-        }
-        self.croporiginX = newCroporiginX;
-        self.croporiginY = newCroporiginY;
-        [self setNeedsDisplay];
-        
-        
     }
-    [self needsUpdateCropPoints];
-    
+    if( _videoCropView )
+    {
+        if( self.cropViewTrackType != VE_TRACK_SCALING )
+        {
+            if ( (self.cropViewTrackType == VE_TRACK_CROPRECTVIEW) && _videoCropView)
+            {
+                
+            }
+            else
+                [self needsUpdateCropPoints];
+        }
+    }
+    else{
+        [self needsUpdateCropPoints];
+    }
     return YES;
-
-    
-    
-    
 }
 -(void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event{
     if (self.cropViewTrackType == VE_TRACK_TOP) {
@@ -1502,12 +1680,86 @@
         NSLog(@"结束拖动右下方");
     }else if (self.cropViewTrackType == VE_TRACK_CROPRECTVIEW){
 //        NSLog(@"结束剪切区域拖动");
+        if( _videoCropView )
+        {
+            [self convertView:self.cropRectView atDestinationView:self atInView:_videoView];
+//            {
+//                // 获取源控件上的 CGRect
+//                CGRect rectInSourceView = self.cropRectView.frame;
+//                // 将源控件上的 CGRect 转换到窗口坐标系中
+//                CGRect rectInWindow = [_videoView convertRect:rectInSourceView toView:nil];
+//                // 将窗口坐标系中的 CGRect 转换回目标控件上
+//                CGRect rectInDestinationView = [self convertRect:rectInWindow fromView:nil];
+//                self.cropRectView.frame = rectInDestinationView;
+//            }
+//            [self addSubview:self.cropRectView];
+            
+            self.croporiginX = self.cropRectView.frame.origin.x;
+            self.croporiginY = self.cropRectView.frame.origin.y;
+            self.cropWidth = self.cropRectView.frame.size.width;
+            self.cropHeight = self.cropRectView.frame.size.height;
+            
+            _isDrawCroprectview = false;
+            [self setNeedsDisplay];
+        }
     }
-    [self needsUpdateCropPoints];
-    
-   
+    else if(self.cropViewTrackType == VE_TRACK_SCALING)
+    {
+        if( _videoCropView )
+        {
+            return;
+//            [self convertView:self.cropRectView atDestinationView:self atInView:_videoView];
+//            self.croporiginX = self.cropRectView.frame.origin.x;
+//            self.croporiginY = self.cropRectView.frame.origin.y;
+//            self.cropWidth = self.cropRectView.frame.size.width;
+//            self.cropHeight = self.cropRectView.frame.size.height;
+//            
+//            _isDrawCroprectview = false;
+//            [self setNeedsDisplay];
+        }
+    }
+  
+    if( self.cropViewTrackType != VE_TRACK_SCALING )
+    {
+        [self needsUpdateCropPoints];
+        if( self.delegate && [self.delegate respondsToSelector:@selector(endDragCropView)] )
+        {
+            [self.delegate endDragCropView];
+        }
+    }
 }
-
+- (void)cancelTrackingWithEvent:(nullable UIEvent *)event
+{
+    if (self.cropViewTrackType == VE_TRACK_CROPRECTVIEW){
+        if( _videoCropView )
+        {
+            {
+                // 获取源控件上的 CGRect
+                CGRect rectInSourceView = self.cropRectView.frame;
+                // 将源控件上的 CGRect 转换到窗口坐标系中
+                CGRect rectInWindow = [_videoView convertRect:rectInSourceView toView:nil];
+                // 将窗口坐标系中的 CGRect 转换回目标控件上
+                CGRect rectInDestinationView = [self convertRect:rectInWindow fromView:nil];
+                self.cropRectView.frame = rectInDestinationView;
+            }
+            [self addSubview:self.cropRectView];
+            
+            self.croporiginX = self.cropRectView.frame.origin.x;
+            self.croporiginY = self.cropRectView.frame.origin.y;
+            self.cropWidth = self.cropRectView.frame.size.width;
+            self.cropHeight = self.cropRectView.frame.size.height;
+            
+            _isDrawCroprectview = false;
+            [self setNeedsDisplay];
+            
+            [self needsUpdateCropPoints];
+            if( self.delegate && [self.delegate respondsToSelector:@selector(endDragCropView)] )
+            {
+                [self.delegate endDragCropView];
+            }
+        }
+    }
+}
 
 #pragma mark - 6.Set & Get
 
@@ -1523,9 +1775,9 @@
     
     self.cropWidth =  crop.size.width;
     self.cropHeight  =  crop.size.height;
+    
+    [self needsUpdateCropPoints];
     [self setNeedsDisplay];
-    
-    
 }
 
 -(CGRect)crop{
@@ -1682,6 +1934,118 @@
     }
     return _cropRectView;
 }
+
+-(void)buttonAlpha:( float ) alpha
+{
+   if( self.topTrackButton.hidden != YES)
+   {
+       self.topTrackButton.alpha = alpha;
+   }
+    if( self.bottomTrackButton.hidden != YES)
+    {
+        self.bottomTrackButton.alpha = alpha;
+    }
+    if( self.leftTrackButton.hidden != YES)
+    {
+        self.leftTrackButton.alpha = alpha;
+    }
+    if( self.rightTrackButton.hidden != YES)
+    {
+        self.rightTrackButton.alpha = alpha;
+    }
+    if( self.topLeftTrackButton.hidden != YES)
+    {
+        self.topLeftTrackButton.alpha = alpha;
+    }
+    if( self.topRightTrackButton.hidden != YES)
+    {
+        self.topRightTrackButton.alpha = alpha;
+    }
+    if( self.bottomLeftTrackButton.hidden != YES)
+    {
+        self.bottomLeftTrackButton.alpha = alpha;
+    }
+    if( self.bottomRightTrackButton.hidden != YES)
+    {
+        self.bottomRightTrackButton.alpha = alpha;
+    }
+}
+
+-(void)trackButtonAdjustmentPosition
+{
+   if( self.topTrackButton.hidden != YES)
+   {
+//       [self button:self.topTrackButton atScale:scale];
+       CGRect rect =  self.topTrackButton.frame;
+       rect.origin = CGPointMake(self.cropRectView.frame.origin.x + (self.cropRectView.frame.size.width - VE_TRACK_HEIGHT)/2, self.cropRectView.frame.origin.y-VE_TRACK_WIDTH);
+       self.topTrackButton.frame = rect;
+       
+   }
+    if( self.bottomTrackButton.hidden != YES)
+    {
+        //   [self button:self.bottomTrackButton atScale:scale];
+        
+        CGRect rect =  self.bottomTrackButton.frame;
+        rect.origin = CGPointMake(self.cropRectView.frame.origin.x + (self.cropRectView.frame.size.width - VE_TRACK_HEIGHT)/2, self.cropRectView.frame.origin.y +self.cropRectView.frame.size.height);
+        self.bottomTrackButton.frame = rect;
+    }
+    if( self.leftTrackButton.hidden != YES)
+    {
+        // [self button:self.leftTrackButton atScale:scale];
+        
+        CGRect rect =  self.leftTrackButton.frame;
+        rect.origin = CGPointMake(self.cropRectView.frame.origin.x -VE_TRACK_WIDTH, self.cropRectView.frame.origin.y + (self.cropRectView.frame.size.height-VE_TRACK_HEIGHT)/2);
+        self.leftTrackButton.frame = rect;
+    }
+    if( self.rightTrackButton.hidden != YES)
+    {
+        // [self button:self.rightTrackButton atScale:scale];
+        
+        CGRect rect =  self.rightTrackButton.frame;
+        rect.origin = CGPointMake(self.cropRectView.frame.origin.x + self.cropRectView.frame.size.width, self.cropRectView.frame.origin.y + (self.cropRectView.frame.size.height-VE_TRACK_HEIGHT)/2);
+        self.rightTrackButton.frame = rect;
+    }
+    
+    if( self.topLeftTrackButton.hidden != YES)
+    {
+        //    [self button:self.topLeftTrackButton atScale:scale];
+        
+        CGRect rect =  self.topLeftTrackButton.frame;
+        rect.origin = CGPointMake(self.cropRectView.frame.origin.x -VE_TRACK_WIDTH, self.cropRectView.frame.origin.y - VE_TRACK_WIDTH);
+        self.topLeftTrackButton.frame = rect;
+    }
+    if( self.topRightTrackButton.hidden != YES)
+    {
+        //  [self button:self.topRightTrackButton atScale:scale];
+        
+        CGRect rect =  self.topRightTrackButton.frame;
+        rect.origin = CGPointMake((self.cropRectView.frame.origin.x+ self.cropRectView.frame.size.width) -VE_TRACK_HEIGHT*1/2, self.cropRectView.frame.origin.y - VE_TRACK_WIDTH);
+        self.topRightTrackButton.frame = rect;
+    }
+    if( self.bottomLeftTrackButton.hidden != YES)
+    {
+        //   [self button:self.bottomLeftTrackButton atScale:scale];
+        
+        CGRect rect =  self.bottomLeftTrackButton.frame;
+        rect.origin = CGPointMake(self.cropRectView.frame.origin.x -VE_TRACK_WIDTH, self.cropRectView.frame.origin.y+self.cropRectView.frame.size.height - VE_TRACK_HEIGHT*1/2);
+        self.bottomLeftTrackButton.frame = rect;
+    }
+    if( self.bottomRightTrackButton.hidden != YES)
+    {
+        //  [self button:self.bottomRightTrackButton atScale:scale];
+        
+        CGRect rect =  self.bottomRightTrackButton.frame;
+        rect.origin = CGPointMake(self.cropRectView.frame.origin.x+self.cropRectView.frame.size.width -VE_TRACK_HEIGHT*1/2, self.cropRectView.frame.origin.y+self.cropRectView.frame.size.height -VE_TRACK_HEIGHT*1/2);
+        self.bottomRightTrackButton.frame = rect;
+    }
+    [self.cropRectView setNeedsDisplay];
+}
+
+//-(void)button:( VETrackButton * ) button atScale:( float ) scale
+//{
+//    button.transform =  CGAffineTransformMakeScale(1.0, 1.0);
+//    button.transform = CGAffineTransformMakeScale(1.0/scale, 1.0/scale);
+//}
 
 -(void)trackButton_hidden:(  BOOL ) isHidden
 {

@@ -145,7 +145,7 @@
         _textView = [[VECustomTextView alloc] initWithFrame:self.bounds];
         _textView.backgroundColor = [UIColor clearColor];
         _textView.font = [UIFont systemFontOfSize:13];
-        _textView.textColor = [UIColor whiteColor];
+        _textView.textColor = TEXT_COLOR;
         if([VEConfigManager sharedManager].backgroundStyle== UIBgStyleDarkContent){
             _textView.textColor = UIColorFromRGB(0x131313);
         }
@@ -171,7 +171,7 @@
         if([VEConfigManager sharedManager].backgroundStyle== UIBgStyleDarkContent){
             _textView.textColor = UIColorFromRGB(0x131313);
         }
-        _placeholderTextView.text = VELocalizedString(@"点击输入文字", nil);
+        _placeholderTextView.text = kDefaultSubtitleText;
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.alignment = NSTextAlignmentLeft;
         paragraphStyle.lineSpacing = 5; // 行间距

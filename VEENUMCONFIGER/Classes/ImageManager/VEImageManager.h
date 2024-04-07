@@ -47,6 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)requestAuthorizationWithCompletion:(void (^ __nullable)(void))completion;
 
 /// Get Album 获得相册/相册数组
+- (NSMutableArray <PHAssetCollection *> *)getSystemAllAlbum;
 - (void)getCameraRollAlbum:(BOOL)allowPickingVideo allowPickingImage:(BOOL)allowPickingImage needFetchAssets:(BOOL)needFetchAssets completion:(void (^)(VETZAlbumModel *model))completion;
 - (void)getAllAlbums:(BOOL)allowPickingVideo allowPickingImage:(BOOL)allowPickingImage needFetchAssets:(BOOL)needFetchAssets completion:(void (^)(NSArray<VETZAlbumModel *> *models))completion;
 

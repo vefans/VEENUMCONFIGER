@@ -158,6 +158,8 @@
         _enableLockAngleSize = true;
         _enableHiddenMedia = true;
         _isOnlyFragmentEdit = false;
+        _enableBasicProperties = true;
+        _enableSmartCrop = true;
     }
     
     return self;
@@ -167,6 +169,7 @@
     //相册界面
     copy.enableCloudDraft = _enableCloudDraft;
     copy.isHiddenNetworkMaterial = _isHiddenNetworkMaterial;
+    copy.isShowBookNetworkMaterial = _isShowBookNetworkMaterial;
     copy.resultFileType = _resultFileType;
     copy.thumbDisable = _thumbDisable;
     copy.isShowSplitScreen = _isShowSplitScreen;
@@ -224,6 +227,7 @@
     copy.enableProportion                = _enableProportion ;
     copy.enableReverseVideo              = _enableReverseVideo;
     copy.proportionType                  = _proportionType;
+    copy.enableBasicProperties           = _enableBasicProperties;
     //编辑导出预设
     copy.enableMV               = _enableMV;
     copy.enableSubtitle         = _enableSubtitle;
@@ -269,6 +273,7 @@
     copy.newmusicAuthorizationUrl       = _newmusicAuthorizationUrl;
     copy.filterResourceURL              = _filterResourceURL;
     copy.subtitleResourceURL            = _subtitleResourceURL;
+    copy.flowerWordResourceURL          = _flowerWordResourceURL;
     copy.effectResourceURL              = _effectResourceURL;
     copy.specialEffectResourceURL       = _specialEffectResourceURL;
     copy.fontResourceURL                = _fontResourceURL;
@@ -321,6 +326,9 @@
     copy.enableTransparency = _enableTransparency;
     copy.enableEqualizer = _enableEqualizer;
     copy.enableNoise = _enableNoise;
+    copy.sourcesKey = _sourcesKey;
+    copy.enableSmartCrop = _enableSmartCrop;
+    
     return copy;
 }
 

@@ -24,3 +24,8 @@ typedef NS_ENUM(NSUInteger, VEButtonEdgeInsetsStyle) {
 
 @end
 
+@interface VEDebounceButton : UIButton
+
+@property (nonatomic, assign) NSTimeInterval debounceInterval;
+
+@end

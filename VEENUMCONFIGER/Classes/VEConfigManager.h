@@ -9,7 +9,9 @@
 #import <VEENUMCONFIGER/VECameraConfiguration.h>
 #import <VEENUMCONFIGER/VEEditConfiguration.h>
 #import <VEENUMCONFIGER/VEExportConfiguration.h>
+#import "AIConfiguration.h"
 #import "VEMediaInfo.h"
+
 typedef NS_ENUM(NSInteger, UIBgStyle) {
     UIBgStyleLightContent = 0, // Light content, for use on dark backgrounds
     UIBgStyleDarkContent  =1, // Dark content, for use on light backgrounds
@@ -104,7 +106,7 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
                            isRotateEnable:(BOOL)isRotateEnable
                                  trimType:(TRIMMODE)trimType
               trimDuration_OneSpecifyTime:(double)trimDuration_OneSpecifyTime
-                        completionHandler:(void (^)(float rotate, CMTimeRange trimTimeRange))completionHandler;
+                        completionHandler:(void (^)(VEMediaInfo *trimFile, CMTimeRange trimTimeRange))completionHandler;
 
 /** 显示裁剪图片界面
  *  Display Cropping Picture Interface.
@@ -206,6 +208,8 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property (nonatomic,strong) VEEditConfiguration     *peEditConfiguration;
 @property (nonatomic,strong) VECameraConfiguration   *peCameraConfiguration;
 
+@property (nonatomic,strong) AIConfiguration *aiConfiguration;
+
 @property (nonatomic, assign) BOOL  isAndroidTemplate;
 
 /**视频输出路径
@@ -232,6 +236,10 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property (copy,nonatomic)NSString  * appKey;
 @property (copy,nonatomic)NSString  * licenceKey;
 @property (copy,nonatomic)NSString  * appSecret;
+/** 默认为：false
+ */
+@property (nonatomic, assign) BOOL hasInit;
+
 /** 视频抠像功能的appKey
  */
 @property (copy,nonatomic)NSString *videoMattingAppKey;
@@ -252,6 +260,8 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property(nonatomic,copy) VECloudBackupCompletionHandler cloudBackupCompletionHandler;
 @property(nonatomic,copy) VEPrepareExportHandler prepareExportHandler;
 @property(nonatomic,copy) VEExporTemplate  exporTemplate;   //导出模版
+
+@property(nonatomic, copy) void(^enterMusicAlbumTempCompletionHandler) (NSDictionary * itemDic,NSInteger selectTypeIndex,NSInteger index, UIViewController *controller);
 
 //草稿增删 刷新
 @property (nonatomic, copy) void (^refreshDraftView)(void);
@@ -354,4 +364,9 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 - (void)startExportWithMinWH:(int)minWH;
 
 @property (nonatomic, assign) BOOL       iPad_HD;
+
+@property (nonatomic, copy) void (^likeNoLoginBlock)(UIViewController *viewController);
+
+
+@property (nonatomic, strong) NSArray *selectedTypeColors;
 @end

@@ -34,6 +34,10 @@
         folderPath = kFontLiteFolder;
         plistPath = kFontLitePlistPath;
     }
+    else if ([type isEqualToString:VENetworkResourceType_FlowerWord]) {
+        folderPath = kFlowerWordFolder;
+        plistPath = kFlowerWordPlistPath;
+    }
     NSMutableArray *categorys;
     VEReachability *lexiu = [VEReachability reachabilityForInternetConnection];
     if([lexiu currentReachabilityStatus] == VEReachabilityStatus_NotReachable
@@ -51,7 +55,7 @@
         }
         return;
     }
-    NSString *appKey = [VEConfigManager sharedManager].appKey;
+    NSString *appKey = [VEConfigManager sharedManager].editConfiguration.sourcesKey;
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     if (appKey.length > 0) {
         [params setObject:appKey forKey:@"appkey"];
@@ -157,10 +161,14 @@
         folderPath = kFontLiteFolder;
         plistPath = kFontLitePlistPath;
     }
+    else if ([type isEqualToString:VENetworkResourceType_FlowerWord]) {
+        folderPath = kFlowerWordFolder;
+        plistPath = kFlowerWordPlistPath;
+    }
     if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
         [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
-    NSString *appKey = [VEConfigManager sharedManager].appKey;
+    NSString *appKey = [VEConfigManager sharedManager].editConfiguration.sourcesKey;
     
     NSMutableDictionary *paramArray = [NSMutableDictionary dictionary];
     if (appKey.length > 0) {
@@ -237,7 +245,7 @@
         [VEWindow showMessage:VELocalizedString(@"无可用的网络", nil) duration:2.0];
         return speechVoices;
     }
-    NSString *appKey = [VEConfigManager sharedManager].appKey;
+    NSString *appKey = [VEConfigManager sharedManager].editConfiguration.sourcesKey;
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     if (appKey.length > 0) {
         [params setObject:appKey forKey:@"appkey"];
@@ -304,7 +312,7 @@
 }
 
 + (NSArray *)getSpeechVoicesWithCategoryId:(NSString *)categoryId {
-    NSString *appKey = [VEConfigManager sharedManager].appKey;
+    NSString *appKey = [VEConfigManager sharedManager].editConfiguration.sourcesKey;
     
     NSMutableDictionary *paramArray = [NSMutableDictionary dictionary];
     if (appKey.length > 0) {

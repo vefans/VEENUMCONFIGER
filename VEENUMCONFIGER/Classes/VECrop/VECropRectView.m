@@ -13,7 +13,7 @@
 -(instancetype)initWithFrame:(CGRect)frame withVideoCropType:(VEVideoCropType)videoCropType{
     self = [super initWithFrame:frame];
     if (self) {
-        
+        self.scale = 1.0;
         self.videoCropType = videoCropType;
         self.backgroundColor = Color(0,0,0,0.5);
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
@@ -41,6 +41,7 @@
         for (int i = 0; i < 2; i++) {
             float verticalLineWidth = self.frame.size.width/3;
             UIBezierPath *verticalLinePath = [UIBezierPath bezierPath];
+            verticalLinePath.lineWidth = 1.0/self.scale;
             CGFloat dash[] = {3.0, 3.0};
             [verticalLinePath setLineDash:dash count:2 phase:0.0];
             [verticalLinePath moveToPoint: CGPointMake(verticalLineWidth*(i+1), 0)];
@@ -52,6 +53,7 @@
         for (int i = 0; i< 2; i++) {
             float horizontalLineHeight = self.frame.size.height/3;
             UIBezierPath *horizontalLinePath = [UIBezierPath bezierPath];
+            horizontalLinePath.lineWidth = 1.0/self.scale;
             CGFloat dash[] = {3.0, 3.0};
             [horizontalLinePath setLineDash:dash count:2 phase:0.0];
             [horizontalLinePath moveToPoint: CGPointMake(0, horizontalLineHeight*(i+1))];
@@ -64,6 +66,11 @@
    
     
     
+}
+
+- (void)setFrame:(CGRect)frame
+{
+    [super setFrame:frame];
 }
 
 #pragma mark - 2.Setting View and Style

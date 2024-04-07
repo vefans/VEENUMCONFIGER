@@ -10,7 +10,15 @@
 NSString *const VEStartExportNotification = @"VEStartExportNotification";
 
 @implementation VEConfigManager
-
+- (void)setAppKey:(NSString *)appKey{
+    _appKey = appKey;
+    if(![VEConfigManager sharedManager].editConfiguration.sourcesKey){
+        [VEConfigManager sharedManager].editConfiguration.sourcesKey = _appKey;
+    }
+    if(![VEConfigManager sharedManager].peEditConfiguration.sourcesKey){
+        [VEConfigManager sharedManager].peEditConfiguration.sourcesKey = _appKey;
+    }
+}
 + (instancetype)sharedManager
 {
     static VEConfigManager *singleOjbect = nil;
@@ -41,6 +49,7 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
         _peEditConfiguration = [[VEEditConfiguration alloc] init];
         _peCameraConfiguration = [[VECameraConfiguration alloc] init];
         _peExportConfiguration = [[VEExportConfiguration alloc] init];
+        _aiConfiguration = [[AIConfiguration alloc] init];
         _mainColor = UIColorFromRGB(0xffd500);
         _exportButtonTitleColor = _iPad_HD ? VIEW_IPAD_COLOR : [UIColor blackColor];
         _exportButtonBackgroundColor = _iPad_HD ? UIColorFromRGB(0x3c3d3d) : [UIColor whiteColor];
@@ -53,6 +62,7 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
         //_toolsTitleColor = UIColorFromRGB(0xcccccc);
         _backgroundStyle = UIBgStyleLightContent;
         _isSelectFaces = NO;
+        _hasInit = true;
     }
     return self;
 }
@@ -82,8 +92,7 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
 
 - (void)startExportWithMinWH:(int)minWH {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:VEStartExportNotification object:[NSNumber numberWithInt:minWH]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:VEStartExportNotification object:[NSNumber numberWithInt:minWH]];
     });
 }
 

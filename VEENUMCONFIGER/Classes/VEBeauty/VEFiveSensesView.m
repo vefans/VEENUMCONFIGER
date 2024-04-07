@@ -11,6 +11,7 @@
 #import "VESlider.h"
 
 @interface VEFiveSensesView()<UIScrollViewDelegate>
+
 @property(nonatomic, weak)UILabel * sliderValueLabel;
 @end
 @implementation VEFiveSensesView
@@ -209,10 +210,11 @@
         
         UIButton *compareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         compareBtn.frame = CGRectMake(CGRectGetMaxX(((VEPlaySlider *)(_adjustmentSliders.firstObject)).frame) + 10, (CGRectGetHeight(self.frame) - 44) - 10 , 40, 44);
-        [compareBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@默认",@"对比"]] forState:UIControlStateNormal];
-        [compareBtn setImage:[VEHelp imageNamed:[NSString stringWithFormat:@"VirtualLive/Beauty/skin/%@选中",@"对比"]] forState:UIControlStateSelected];
+        [compareBtn setImage:[VEHelp imageNamed:@"VirtualLive/Beauty/skin/对比默认"] forState:UIControlStateNormal];
+        [compareBtn setImage:[VEHelp imageNamed:@"VirtualLive/Beauty/skin/对比选中"] forState:UIControlStateDisabled];
         [compareBtn addTarget:self action:@selector(compareBtnDown:) forControlEvents:UIControlEventTouchDown];
         [compareBtn addTarget:self action:@selector(compareBtnUp:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside | UIControlEventTouchCancel];
+        _compareBtn = compareBtn;
         [self addSubview:compareBtn];
         
 //        UIButton * resetBtn = [[UIButton alloc] initWithFrame:CGRectMake(15,(CGRectGetHeight(self.frame) - 44) - 10, 70, 44)];
@@ -662,7 +664,9 @@
                 value = faceAttribute.faceWidth;
             }
             [_adjustmentSliders[0] setValue:value];
-            [self sliderValueChanged:_adjustmentSliders[0]];
+            if (value != 0) {
+                [self sliderValueChanged:_adjustmentSliders[0]];
+            }
         }
             break;
         case 1://MARK: 下巴
@@ -1022,6 +1026,10 @@
     }
     [self sliderValueChanged:slider];
     _sliderValueLabel.hidden = YES;
+    _compareBtn.enabled = YES;
+    if (_delegate && [_delegate respondsToSelector:@selector(fiveSenses_ValueChangEnd)]) {
+        [_delegate fiveSenses_ValueChangEnd];
+    }
 }
 
 -(void)sliderValueChanged:(VESlider *) slider
@@ -1078,6 +1086,7 @@
 
 -(void)resetAdjustment_Btn:( UIButton * ) sender
 {
+    _compareBtn.enabled = NO;
 #if 0
     if(![VEConfigManager sharedManager].iPad_HD || _currentType < KBeauty_BlurIntensity){
         [self setDefaultValue];

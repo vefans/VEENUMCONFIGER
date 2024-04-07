@@ -82,7 +82,7 @@ NSString * _netMaterialTypeURL;
     }
     _globalFilters = [NSMutableArray array];
     _originalGlobalFilters = [NSMutableArray new];
-    NSString *appKey = [VEConfigManager sharedManager].appKey;
+    NSString *appKey = [VEConfigManager sharedManager].editConfiguration.sourcesKey;
     
     WeakSelf(self);
     if([lexiu currentReachabilityStatus] != VEReachabilityStatus_NotReachable && filterResourceURL.length>0)
@@ -166,7 +166,7 @@ NSString * _netMaterialTypeURL;
                     if(dic2 && [[dic2 objectForKey:@"code"] integerValue] == 0)
                     {
                         NSMutableArray * currentFilterList = [dic2 objectForKey:@"data"];
-                        if( _filter_newFiltersNameSortArray )
+                        if( _filter_newFiltersNameSortArray && currentFilterList.count > 0)
                         {
                             [_filter_newFiltersNameSortArray addObject:currentFilterList];
                             [_filtersName addObjectsFromArray:currentFilterList];
@@ -703,6 +703,7 @@ NSString * _netMaterialTypeURL;
                  }
             }];
             NSInteger selectIndex = MAX(_selectFilterIndex - currentFilterIndex,0);
+            if(selectIndex > 0)
             [_filterCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:selectIndex inSection:(currentlabelFilter + 1)] atScrollPosition:UICollectionViewScrollPositionNone animated:YES];
         }
     }

@@ -998,6 +998,7 @@
 "无法访问麦克风!" = "Can not access mic!";
 "请在“设置-隐私-麦克风”中开启" = "Please open in “Setting-Privacy-Microphone”";
 "用户拒绝访问相册,请在<隐私>中开启" = "User reject to access album, please open in <Privacy>";
+"用户拒绝访问相册,请前往设置中开启" = "User reject to access album, please open in <Sets>";
 "无法访问相册!" = "Can not access album!";
 "您还未选择视频或图片哦!" = "No video/picture selected!";
 "单次选择媒体数不能超过%d个" = "Number of media can not exceed %d in once selection";

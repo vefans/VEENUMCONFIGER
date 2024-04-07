@@ -9,6 +9,7 @@ typedef NSString *VENetworkResourceType NS_STRING_ENUM;
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CardMusic;//卡点音乐
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CloudMusic;//配乐
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_OnlineAlbum;//在线相册
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_OnlineBook;//书单样式
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_SoundEffect;//音效
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_MediaAnimation;//媒体动画
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Text;//文字
@@ -34,6 +35,8 @@ FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_BookTemplate
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_TTS;
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Theme;//主题
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_ScreenEffect2;//图片流动-特效
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_FlowerWord;//花字
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_MusicAlbumTemplate;//音乐相册
 
 //亮度
 extern float const VEAdjust_MinValue_Brightness;
@@ -156,6 +159,9 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSString *)getBoxCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 + (NSString *)getNetworkResourceCachedPathWithFolderPath:(NSString *)folderPath networkResourcePath:(NSString *)networkResourcePath updatetime:(NSString *)updatetime;
 +(id)objectForData:(NSData *)data;
+
++(NSMutableArray *)setCustomMultipleFilterUniformParamsWithCustomMultipleFilter:( CustomMultipleFilter * ) multipleFilter atKeyArray:( NSMutableArray * ) keyArray atOutlineColor:( UIColor * ) outlineColor atSize:( float ) size atRadius:( float ) radius atScale:( float ) scale atAngle:( float ) angle atIsKey:( BOOL ) isKey;
++(void)setKeyAnimationUniformParamWith_keyFilterAnimations:( NSMutableArray * ) keyAnimations atArray:( NSMutableArray * ) array;
 
 + (BOOL)isSystemPhotoPath:(NSString *)path;
 + (NSString *) system;
@@ -311,14 +317,11 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSMutableArray *)getFilterArrayWithListArray:(NSMutableArray *)listArray;
 
 + (NSString *)getMaskDownloadPathWithDic:(NSDictionary *)itemDic;
-+ (NSString *)getchangeHairDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getFilterDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getlocalFileMusicPathWithDic:(NSString *)filename;
 + (NSString *)getScaleDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getMusicDownloadPathWithDic:(NSDictionary *)itemDic;
-+ (NSString *)getMusicDownloadFolderWithDic:(NSDictionary *)itemDic;
 + (NSString *)getMediaIdentifier;
-+ (NSString *)getCollageDownloadPathWithDic:(NSDictionary *)itemDic;
 + (NSString *)getCoverTemplateDownloadFolderWithDic:(NSDictionary *)itemDic;
 
 + (NSMutableArray *)getMaskArray;
@@ -362,6 +365,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (CGSize)getEditOrginSizeWithFile:(VEMediaInfo *)file ;
 + (CGSize)getEditSizeWithFile:(VEMediaInfo *)file;
 
++(UIView *)initAgainTrackView:(  UIViewController * ) viewController atTitle:( NSString * ) title atConfirm:(SEL) confirm atCancel:(SEL) cancel atConfirmStr:( NSString * ) confirmStr atCancelStr:( NSString * ) cancelStr;
 +(UIView *)initAgainTrackView:(  UIViewController * ) viewController atTitle:( NSString * ) title atConfirm:(SEL) confirm atCancel:(SEL) cancel;
 +(UIView *)initReversevideoProgress:(  UIViewController * ) viewController atLabelTag:(int *) labelTag atCancel:(SEL)cancel;
 +(UIView *)initReversevideoProgressView:(  UIView * ) reverseView atLabelTag:(int *) labelTag atCancel:(SEL)cancel;
@@ -386,6 +390,9 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 +(UIImage *)getSystemPhotoImage:( NSURL * ) url;
 
++ (UIImage *)cropImage:(UIImage *)image rect:(CGRect) rect;
+//rect传在Image中的相对位置（0-1）
++ (UIImage *)clipImage:(UIImage *)image rect:(CGRect) rect;
 + (UIImage *)image:(UIImage *)image rotation:(float)rotation cropRect:(CGRect)cropRect;
 
 +(CustomFilter *)getAnimateCustomFilter:(NSString *) path;
@@ -665,7 +672,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSString *)getTemplateThemeFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 
 + (NSString *)getConfigPathWithFolderPath:(NSString *)folderPath;
-
++ (NSString *)getFlowerTextConfigPathWithFolderPath:(NSString *)folderPath;
 +(void)getTextAndPhotoWith:( MediaAsset * ) asset atTextList:( NSMutableArray * ) textList atGettingImage:(void(^)(UIImage *image))gettingImage;
 +(void)getTextAndPhotoWithFile:( VEMediaInfo * ) file atTextList:( NSMutableArray * ) textList atGettingImage:(void(^)(UIImage *image))gettingImage;
 +(void)drawTextAndPhotoWith:(void(^)(NSMutableArray * textLists))gettingImage;
@@ -753,4 +760,17 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(UIImage *)drawImageWithImage:( UIImage * ) image atIsHorizontalMirror:( BOOL ) isHorizontalMirror atIsVerticalMirror:( BOOL ) isVerticalMirror;
 
 +( void )SoundMusicInterceptWithInputPath:( NSString * ) inputPath atOutPath:( NSString * ) outPath atTime:( float ) fDuration atCallBlock:( void(^)(NSString *musicPath)  ) callBlock;
+
++(CVPixelBufferRef)getAssetURL_pixelBufferTime:( NSURL * ) asssetURL atTime:( CMTime ) time;
+
++(void)frameCaptire_URL:( NSURL * ) assetURL atStartTime:( CMTime ) startTime atEndTime:( CMTime ) endTime atPixelBufferCallback:( void (^)(CVPixelBufferRef pixelBuffer,  CMTime currentTime) ) pixelBufferCallback atIsStopCall:( BOOL (^)(void) ) isStopCall;
++ (NSString *)getkVEDraftDirectory;
+
++ (NSString *)likeAPITemplatePlistPath;
++ (NSString *)likeMusicAlbumPlistPath;
+
++ (NSMutableDictionary *)likeMusicAlbumList;
++ (NSMutableDictionary *)likeAPITemplateList;
+#pragma mark- 将多颜色转换成渐变色
++ (UIColor *)colorWithColors:(NSArray *)colors bounds:(CGRect)bounds;
 @end

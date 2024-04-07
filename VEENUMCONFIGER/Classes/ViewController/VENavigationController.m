@@ -60,7 +60,7 @@
             return _ipadInterfaceOrientation;
         }else{
             if(self.ipadInterfaceOrientation != UIInterfaceOrientationLandscapeRight){
-                self.ipadInterfaceOrientation = UIInterfaceOrientationLandscapeLeft;
+                self.ipadInterfaceOrientation = UIInterfaceOrientationLandscapeRight;
             }
             return _ipadInterfaceOrientation;
         }

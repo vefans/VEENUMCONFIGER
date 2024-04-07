@@ -21,8 +21,7 @@ typedef NS_ENUM(NSInteger, VECropViewTrackType){
     VE_TRACK_CROPRECTVIEW = 8,      //剪切区域
     VE_TRACK_Dewatermark = 9,      //去水印按钮
     VE_TRACK_OTHER = 10,      //右下角
-    
-
+    VE_TRACK_SCALING = 11,      //缩放操作
 };
 
 @interface VETrackButton : UIButton
