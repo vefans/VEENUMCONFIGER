@@ -287,6 +287,7 @@
         }
     }
     [currentCell.collectionView setContentOffset:contentOffset animated:animated];
+    [currentCell addSubview:currentCell.collectionView];
 }
 
 #pragma mark- UICollectionViewDelegate/UICollectViewdataSource

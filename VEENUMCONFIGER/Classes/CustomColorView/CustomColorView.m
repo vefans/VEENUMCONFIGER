@@ -20,7 +20,7 @@
 }
 
 - (UIView *)selectedView{
-    if(!_selectedView){
+    if(!_selectedView && !_isNoSelected){
         _selectedView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, self.frame.size.width - 4, self.frame.size.height - 4)];
         _selectedView.layer.borderColor = UIColorFromRGB(0x111111).CGColor;
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){

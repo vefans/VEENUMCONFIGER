@@ -202,7 +202,9 @@ typedef NS_ENUM(NSInteger, VEAdvanceEditType){
     VEAdvanceEditType_Dehaze            = 73,   //去雾
     VEAdvanceEditType_AutoCaptions      = 74,   //识别字幕
     VEAdvanceEditType_EraseRepair       = 75,   //消除和修补
-    VEAdvanceEditType_MagnifyingGlass    = 76,   //放大镜
+    VEAdvanceEditType_MagnifyingGlass   = 76,   //放大镜
+    VEAdvanceEditType_SmartCrop         = 77,   //智能裁剪
+    VEAdvanceEditType_RemoveSmartCrop   = 78,   //移除智能裁剪
 };
 
 /*
@@ -219,6 +221,9 @@ typedef NS_ENUM(NSInteger, PESubtitleEditType){
     PESubtitleEditType_FancyWord   = 10007,//花字
     PESubtitleEditType_Font        = 10008,//字体
     PESubtitleEditType_FineTun     = 10009,//微调
+    PESubtitleEditType_Template    = 10010,//文字模板
+    PESubtitleEditType_AddTemplate = 10011,//添加模板
+    PESubtitleEditType_Animation   = 10012,//动画
 };
 
 /*
@@ -670,6 +675,9 @@ isPhoneX;\
 #define kAPITemplatePlistPath [kAPITemplateFolder stringByAppendingPathComponent:@"veNetworkApiTemplates.plist"]
 #define kBookTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkBookTemplate/"]
 #define kBookTemplatePlistPath [kBookTemplateFolder stringByAppendingPathComponent:@"veNetworkBookTemplates.plist"]
+
+#define kPlayscriptTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkPlayscriptTemplate/"]
+#define kPlayscriptTemplatePlistPath [kBookTemplateFolder stringByAppendingPathComponent:@"veNetworkPlayscriptTemplates.plist"]
 
 #define kMusicAlbumTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkMusicAlbumTemplate/"]
 #define kMusicAlbumTemplatePlistPath [kBookTemplateFolder stringByAppendingPathComponent:@"veNetworkMusicAlbumTemplates.plist"]

@@ -37,6 +37,7 @@ FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Theme;//主�
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_ScreenEffect2;//图片流动-特效
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_FlowerWord;//花字
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_MusicAlbumTemplate;//音乐相册
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_PlayscriptTemplate;//台本模版
 
 //亮度
 extern float const VEAdjust_MinValue_Brightness;
@@ -160,7 +161,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSString *)getNetworkResourceCachedPathWithFolderPath:(NSString *)folderPath networkResourcePath:(NSString *)networkResourcePath updatetime:(NSString *)updatetime;
 +(id)objectForData:(NSData *)data;
 
-+(NSMutableArray *)setCustomMultipleFilterUniformParamsWithCustomMultipleFilter:( CustomMultipleFilter * ) multipleFilter atKeyArray:( NSMutableArray * ) keyArray atOutlineColor:( UIColor * ) outlineColor atSize:( float ) size atRadius:( float ) radius atScale:( float ) scale atAngle:( float ) angle atIsKey:( BOOL ) isKey;
++(NSMutableArray *)setCustomMultipleFilterUniformParamsWithCustomMultipleFilter:( CustomMultipleFilter * ) multipleFilter atKeyArray:( NSMutableArray * ) keyArray atOutlineColor:( UIColor * ) outlineColor atSize:( float ) size atRadius:( float ) radius atScale:( float ) scale atAngle:( float ) angle atIsDrawline:( BOOL ) isDrawline atIsKey:( BOOL ) isKey;
 +(void)setKeyAnimationUniformParamWith_keyFilterAnimations:( NSMutableArray * ) keyAnimations atArray:( NSMutableArray * ) array;
 
 + (BOOL)isSystemPhotoPath:(NSString *)path;
@@ -303,9 +304,9 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(MediaAsset *)canvasFile:(VEMediaInfo *) file;
 
 + (void)getNetworkResourcesWithParams:(NSMutableDictionary *)params
-                            urlPath:(NSString *)urlPath
-                  completionHandler:(void (^)(NSArray *listArray))completionHandler
-                      failedHandler:(void (^)(NSError *error))failedHandler;;
+                              urlPath:(NSString *)urlPath
+                    completionHandler:(void (^)(NSArray *listArray))completionHandler
+                        failedHandler:(void (^)(NSError *error))failedHandler;;
 
 + (void)getCategoryMaterialWithType:(VENetworkMaterialType)materialType
                              appkey:(NSString *)appkey
@@ -427,20 +428,20 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 #pragma mark - 多脚本json加载 特效
 + (CustomMultipleFilter *)getCustomMultipleFiler2WithFxId:(NSString *)fxId
-                                           filterFxArray:(NSArray *)filterFxArray
-                                               timeRange:(CMTimeRange)timeRange
-                                 currentFrameTexturePath:(NSString *)currentFrameTexturePath
+                                            filterFxArray:(NSArray *)filterFxArray
+                                                timeRange:(CMTimeRange)timeRange
+                                  currentFrameTexturePath:(NSString *)currentFrameTexturePath
                                                    atPath:( NSString * ) path;
 + (CustomMultipleFilter *)getCustomMultipleFilerWithFxId:(NSString *)fxId
-                             filterFxArray:(NSArray *)filterFxArray
-                                 timeRange:(CMTimeRange)timeRange
+                                           filterFxArray:(NSArray *)filterFxArray
+                                               timeRange:(CMTimeRange)timeRange
                                  currentFrameTexturePath:(NSString *)currentFrameTexturePath
                                                   atPath:( NSString * ) path;
 + (CustomMultipleFilter *)getCustomMultipleFilerWithPath:(NSString *)path
                                               categoryId:(NSString *)categoryId
                                               resourceId:(NSString *)resourceId
                                                timeRange:(CMTimeRange)timeRange
-                                               currentFrameTexturePath:(NSString *)currentFrameTexturePath;
+                                 currentFrameTexturePath:(NSString *)currentFrameTexturePath;
 +(CaptionEffectColorParam *)getShadowStrokes:( NSDictionary * ) obj;
 +(NSDictionary *)getConfig_Dic:( NSString * ) configPath;
 +(NSDictionary *)getCaptionConfig_Dic:( NSString * ) configPath;
@@ -538,10 +539,10 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(void )getOriginaImageCutout:( CVPixelBufferRef  ) originaImage atGrayscaleImage:( unsigned char * ) imgData atSize:( CGSize ) size;
 
 + (NSMutableArray *)getAnimationArrayWithAppkey:(NSString *)appKey
-                             typeUrlPath:(NSString *)typeUrlPath
+                                    typeUrlPath:(NSString *)typeUrlPath
                            specialEffectUrlPath:(NSString *)specialEffectUrlPath;
 + (NSMutableArray *)getStickerAnimationArrayWithAppkey:(NSString *)appKey
-                             typeUrlPath:(NSString *)typeUrlPath
+                                           typeUrlPath:(NSString *)typeUrlPath
                                   specialEffectUrlPath:(NSString *)specialEffectUrlPath;
 + (NSString *)getStickerAnimationFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 + (CustomFilter *)getStickerAnimationCustomFilter:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId atType:(NSInteger) typeIndex atCaption:( CaptionEx *) captionex;
@@ -556,8 +557,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
                 callBack:(void(^)(NSError *error))callBack
              cancelBlock:(void(^)(void))cancelBlock;
 + (void)getNetworkMaterialWithParams:(NSMutableDictionary *)params
-                            appkey:(NSString *)appkey
-                           urlPath:(NSString *)urlPath
+                              appkey:(NSString *)appkey
+                             urlPath:(NSString *)urlPath
                            completed:(void(^)(id result,NSError *))completed;
 
 + (CustomFilter *)getAnimationCustomFilter:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId;
@@ -771,6 +772,13 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 + (NSMutableDictionary *)likeMusicAlbumList;
 + (NSMutableDictionary *)likeAPITemplateList;
++ (NSMutableDictionary *)likeBookVideoAPITemplateList;
++ (NSString *)likeBookVideoAPITemplatePlistPath;
 #pragma mark- 将多颜色转换成渐变色
 + (UIColor *)colorWithColors:(NSArray *)colors bounds:(CGRect)bounds;
+
++ (NSString *)likePlayscriptAPITemplatePlistPath;
++ (NSMutableDictionary *)likePlayscriptAPITemplateList;
+
++ (NSString *)getMagnifyingGlassCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 @end

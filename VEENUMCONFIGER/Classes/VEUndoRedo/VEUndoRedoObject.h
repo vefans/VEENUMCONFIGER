@@ -174,6 +174,11 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
     VEUndoRedoEditType_DoodlePen_Delete,//删除
     VEUndoRedoEditType_DoodlePen_Trim,//截取
     VEUndoRedoEditType_EraseRepair_Add, // 添加消除笔的修补
+    
+    VEUndoRedoEditType_MagnifyingGlass_Add,//滤镜添加
+    VEUndoRedoEditType_MagnifyingGlass_Edit,//编辑
+    VEUndoRedoEditType_MagnifyingGlass_substitution,//替换
+    VEUndoRedoEditType_MagnifyingGlass_Delete,//删除
 };
 
 
@@ -195,6 +200,7 @@ typedef NS_ENUM(NSInteger, VEUndoRedoEditType){
 @property (nonatomic, strong) NSObject *orOverlay;
 @property (nonatomic, strong) NSObject *dstOverlay;
 @property (nonatomic, strong) NSObject *dstBackgroundOverlay;
+@property (nonatomic, strong) NSObject *dstOverlayFilter;
 
 @property (nonatomic, strong) CaptionEx *orSubtitle;
 @property (nonatomic, strong) CaptionEx *dstSubtitle;

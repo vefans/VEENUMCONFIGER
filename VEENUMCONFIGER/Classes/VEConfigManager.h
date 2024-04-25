@@ -39,6 +39,7 @@ typedef NS_ENUM(NSInteger, AUDIO_SPEECH_Type){
     AUDIO_SPEECH_Type_OfflineModel,            //离线模型
 };
 
+typedef BOOL (^VEEnterAdvancedEditHandler) (UIViewController *viewController);
 //导出前回调
 typedef void(^VEPrepareExportHandler) (UIViewController *viewController);
 
@@ -259,6 +260,7 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 @property(nonatomic,copy) VECloudBackingUpHandler cloudBackingUpHandler;
 @property(nonatomic,copy) VECloudBackupCompletionHandler cloudBackupCompletionHandler;
 @property(nonatomic,copy) VEPrepareExportHandler prepareExportHandler;
+@property(nonatomic,copy) VEEnterAdvancedEditHandler canEnterAdvancedEditHandler;
 @property(nonatomic,copy) VEExporTemplate  exporTemplate;   //导出模版
 
 @property(nonatomic, copy) void(^enterMusicAlbumTempCompletionHandler) (NSDictionary * itemDic,NSInteger selectTypeIndex,NSInteger index, UIViewController *controller);

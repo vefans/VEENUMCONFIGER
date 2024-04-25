@@ -16,9 +16,13 @@
         
         float height = 48;
         float width = 178.0;
+        float offsetY = 0;
+        if (frame.size.height == kHEIGHT) {
+            offsetY = (iPhone_X ? 44 : 0) + 44;
+        }
         
         self.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.6];
-        self.saveBtn = [[UIButton alloc] initWithFrame:CGRectMake( 15.0, (iPhone_X ? 44 : 0) + 44, width, height)];
+        self.saveBtn = [[UIButton alloc] initWithFrame:CGRectMake( 15.0, offsetY, width, height)];
 //        [self.saveBtn setContentCompressionResistancePriority:998.f forAxis:UILayoutConstraintAxisHorizontal];;
         [self addSubview:_saveBtn];
         self.saveBtn.backgroundColor = [UIColor whiteColor];
@@ -33,7 +37,7 @@
             float btnWidth = [VEHelp widthForString:label.text andHeight:height font:label.font] + 70;
             if (btnWidth > width) {
                 width = btnWidth;
-                _saveBtn.frame = CGRectMake( 15.0, (iPhone_X ? 44 : 0) + 44, width, height);
+                _saveBtn.frame = CGRectMake( 15.0, offsetY, width, height);
                 label.frame = CGRectMake(20.0, 0, self.saveBtn.frame.size.width - 15.0*2.0, height);
             }
             UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.saveBtn.frame.size.width - 35.0 - 10.0, (self.saveBtn.frame.size.height - 35.0)/2.0, 35.0, 35.0)];
@@ -47,7 +51,7 @@
         self.saveBtn.layer.cornerRadius =  self.saveBtn.frame.size.height/2.0;
         self.saveBtn.layer.masksToBounds = true;
         
-        self.noSaveBtn = [[UIButton alloc] initWithFrame:CGRectMake( 15.0, (iPhone_X ? 44 : 0) + 44 + 20 + height, width, height)];
+        self.noSaveBtn = [[UIButton alloc] initWithFrame:CGRectMake( 15.0, CGRectGetMaxY(_saveBtn.frame) + 20, width, height)];
         [self addSubview:_noSaveBtn];
         self.noSaveBtn.backgroundColor = [UIColor whiteColor];
         [self.noSaveBtn addTarget:self action:@selector(noSaveBtn:) forControlEvents:UIControlEventTouchUpInside];
@@ -65,7 +69,7 @@
         self.noSaveBtn.layer.cornerRadius =  self.noSaveBtn.frame.size.height/2.0;
         self.noSaveBtn.layer.masksToBounds = true;
         
-        self.cancelBtn = [[UIButton alloc] initWithFrame:CGRectMake( 15.0, (iPhone_X ? 44 : 0) + 44 + 20 + height + 20 + height, width, height)];
+        self.cancelBtn = [[UIButton alloc] initWithFrame:CGRectMake( 15.0, CGRectGetMaxY(_noSaveBtn.frame) + 20, width, height)];
         [self addSubview:_cancelBtn];
         self.cancelBtn.backgroundColor = [UIColor whiteColor];
         [self.cancelBtn addTarget:self action:@selector(cancelBtn:) forControlEvents:UIControlEventTouchUpInside];

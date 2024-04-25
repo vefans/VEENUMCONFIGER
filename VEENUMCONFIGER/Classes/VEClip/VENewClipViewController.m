@@ -1253,7 +1253,6 @@
             r = CGRectMake(1- crop.size.width - crop.origin.x,1- crop.size.height - crop.origin.y, crop.size.width, crop.size.height);
         }
     }
-    UIImage *rotateNewImage = [VEHelp image:_sourceImage rotation:0 cropRect:r];
     oldselectFile.crop = r;
     oldselectFile.cropRect = cropRect;
     if(_flowPicture){

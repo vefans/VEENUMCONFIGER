@@ -59,7 +59,7 @@
     if (self = [super initWithFrame:frame]) {
         _normalFontSize = 14;
         self.titleLabel.font = [UIFont systemFontOfSize:14.0];
-        [self setTitleColor:UIColorFromRGB(0xa4a4a4) forState:UIControlStateNormal];
+        [self setTitleColor:UIColorFromRGB(0x888888) forState:UIControlStateNormal];
         [self setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
             [self setTitleColor:UIColorFromRGB(0x727272) forState:UIControlStateNormal];
@@ -72,7 +72,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         self.titleLabel.font = [UIFont systemFontOfSize:14.0];
-        [self setTitleColor:UIColorFromRGB(0xa4a4a4) forState:UIControlStateNormal];
+        [self setTitleColor:UIColorFromRGB(0x888888) forState:UIControlStateNormal];
         [self setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
             [self setTitleColor:UIColorFromRGB(0x727272) forState:UIControlStateNormal];

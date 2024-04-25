@@ -63,6 +63,7 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
         _backgroundStyle = UIBgStyleLightContent;
         _isSelectFaces = NO;
         _hasInit = true;
+        
     }
     return self;
 }

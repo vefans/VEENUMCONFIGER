@@ -24,7 +24,7 @@
 @property(nonatomic,weak)UILabel *label;
 @property(nonatomic,weak)UILabel *moveTitleLabel;
 @property(nonatomic,assign)float propor;
-@property(nonatomic,assign)BOOL isDown;
+@property(nonatomic,assign)BOOL isDownloading;
 @property(nonatomic,assign)NSInteger section;
 @property(nonatomic,assign)NSInteger row;
 

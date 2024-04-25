@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ColorButton : UIButton
 @property (nonatomic,strong)UIView *selectedView;
+@property (nonatomic, assign) BOOL isNoSelected;
 @end
 
 @class CustomColorView;
@@ -48,6 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (UIColor *) RedoColorWithHexString:(NSString *)strColor;
 - (void)setSelectDragColor:(UIColor *)color;
 - (void)setSelectColor:(UIColor *) color;
+
 @end
 
 NS_ASSUME_NONNULL_END

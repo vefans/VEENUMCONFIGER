@@ -670,7 +670,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**点击相册界面相机按钮回调
  */
-@property (nonatomic,copy,nullable) void(^clickAlbumShareBlackBlock)(id obj, bool isSavePhoto);
+@property (nonatomic,copy,nullable) void(^clickAlbumShareBlackBlock)(id obj, bool isSavePhoto, UIViewController *vc);
 @property (nonatomic, strong)NSURL   *imagePath;
 @property (nonatomic, assign)BOOL      isJPG;
 

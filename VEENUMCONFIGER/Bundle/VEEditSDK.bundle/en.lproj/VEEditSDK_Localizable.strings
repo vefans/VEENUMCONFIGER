@@ -1509,8 +1509,10 @@
 "音乐相册" = "Music Album";
 "缩略图" = "Thumbnail";
 "图片编辑" = "Picture editing";
-"左右" = "Left right";
-"上下" = "Up Down";
+"左右" = "Horizontal";
+"上下" = "Vertical";
+"向左90\u00B0" = "Left 90\u00B0";
+"向右90\u00B0" = "Right 90\u00B0";
 "高亮" = "Highlight";
 "色域" = "Color Gamut";
 "重置" = "Reset";
@@ -1917,7 +1919,6 @@
 "收起" = "Collapse";
 "编辑内容" = "Edit";
 "拒绝" = "Reject";
-"排列" = "Arrangement";
 "字号" = "Font size";
 "最多输入%d个字" = "Enter at most %d texts";
 "当前时间点已有字幕，无法添加" = "Subtitles already exist at the current time point and cannot be added";
@@ -2049,8 +2050,8 @@
 "请输入文字"  = "Enter text";
 "文本" = "Text";
 "标签" = "Canvas";
-"粗斜体"  = "Bold italic";
-"排列" = "Array";
+"粗斜体"  = "Bold Italic";
+"排列" = "Align";
 "半径" = "Radius";
 "粗体" = "Bold";
 "斜体" = "Italic";
@@ -2784,7 +2785,7 @@
 "段文字" = " texts";
 "图片：%ld，文字：%d" = "Photos: %ld, Texts:%d";
 "单张" = "Leaflet";
-"解锁更多功能" = "Unlock more features";
+"解锁草稿" = "Unlock Draft";
 "混合" = "Blend";
 "回力镖" = "Boomerang";
 "荧光" = "Fluorescent";
@@ -2979,3 +2980,11 @@
 "跟踪处理中0%" = "Tracking 0%";
 "跟踪处理中%0.1f%%" = "Tracking %0.1f%%";
 "智能裁剪" = "Smart Crop";
+"移除智能裁剪" = "Remove Smart Crop";
+
+"自定义台本" = "Custom Script";
+"去拍摄" = "Go to shoot";
+"编辑内容" = "Editorial content";
+"请输入台本标题" = "Please enter the title of the script";
+"请输入台词内容" = "Please enter the lines";
+"%d/1500字" = "%d/1500 words";

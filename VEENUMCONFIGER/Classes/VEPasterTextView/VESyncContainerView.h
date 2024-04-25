@@ -12,9 +12,18 @@
 -(void)selectePasterTextView:( UITapGestureRecognizer * ) tapGesture atView:( VESyncContainerView * ) view;
 -(void)cancel_selectePasterTextView:( VESyncContainerView * ) view;
 -(void)oldSelectePasterTextView:( UIView * ) oldPasterTextView;
+
+-(void)magnifyingGlassTrack_Move:( UIPanGestureRecognizer * ) recognizer;
+-(void)magnifyingGlassTrack_Angle:( UIRotationGestureRecognizer * ) recognizer;
+-(void)magnifyingGlassTrack_Scale:( UIPinchGestureRecognizer * ) recognizer;
+-(void)magnifyingGlassTrack_Click:( UITapGestureRecognizer * ) tapGesture;
 @end
 
 @interface VESyncContainerView : UIView
+
+@property(nonatomic, weak) UIImageView *trackAreaImageView;
+
+@property(nonatomic, assign)BOOL isMagnifyingGlassTrack;
 
 @property(nonatomic,strong)UIPanGestureRecognizer* moveGesture;
 @property(nonatomic,strong)UIPinchGestureRecognizer *gestureRecognizer;
@@ -48,4 +57,10 @@
 -(CGRect)getFrame;
 @property(nonatomic, assign)BOOL isMask;
 @property(nonatomic, assign)BOOL               isSplice;
+
+-(void)releaseTrackArea;
+
+#pragma mark- 放大镜
+@property(nonatomic, weak) UIView *magnifyingGlassCenterView;
+@property(nonatomic, weak) UIView *magnifyingGlassMaskCenterView;
 @end

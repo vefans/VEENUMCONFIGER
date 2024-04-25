@@ -20,6 +20,11 @@
 
 -(void)setCurrentPasterTextView:(UIView *)currentPasterTextView
 {
+    if( _isMagnifyingGlassTrack )
+    {
+        return;
+    }
+    
     if(currentPasterTextView == nil){
         
     }else{
@@ -59,6 +64,13 @@
 
 - (void)contentTapped:(UITapGestureRecognizer*)tapGesture
 {
+    if( _isMagnifyingGlassTrack )
+    {
+        if( self.delegate && [self.delegate respondsToSelector:@selector(magnifyingGlassTrack_Click:)] )
+            [self.delegate magnifyingGlassTrack_Click:tapGesture];
+        return;
+    }
+    
     if( _isMask )
         return;
     
@@ -73,6 +85,15 @@
 
 - (void)pinchGestureRecognizer:(UIPinchGestureRecognizer *)recognizer
 {
+    if( _isMagnifyingGlassTrack )
+    {
+        if( _delegate && [_delegate respondsToSelector:@selector(magnifyingGlassTrack_Scale:)] )
+        {
+            [_delegate magnifyingGlassTrack_Scale:recognizer];
+        }
+        return;
+    }
+    
     if( _isMask )
         return;
     
@@ -98,6 +119,15 @@
 
 -(void)moveGesture:(UIGestureRecognizer *) recognizer
 {
+    if( _isMagnifyingGlassTrack )
+    {
+        if( _delegate && [_delegate respondsToSelector:@selector(magnifyingGlassTrack_Move:)] )
+        {
+            [_delegate magnifyingGlassTrack_Move:recognizer];
+        }
+        return;
+    }
+    
     if( _isMask )
         return;
     
@@ -124,6 +154,15 @@
 
 -(void)imageViewroRotation:(UIRotationGestureRecognizer *)rotation
 {
+    if( _isMagnifyingGlassTrack )
+    {
+        if( _delegate && [_delegate respondsToSelector:@selector(magnifyingGlassTrack_Angle:)] )
+        {
+            [_delegate magnifyingGlassTrack_Angle:rotation];
+        }
+        return;
+    }
+    
     if( _isMask )
         return;
     
@@ -301,5 +340,12 @@
 -(CGRect)getPreImageViewBounds
 {
     return _picturePreImageView.bounds;
+}
+
+-(void)releaseTrackArea
+{
+    self.trackAreaImageView.image = nil;
+    [self.trackAreaImageView removeFromSuperview];
+    self.trackAreaImageView = nil;
 }
 @end
