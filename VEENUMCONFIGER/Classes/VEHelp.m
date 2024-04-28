@@ -16958,6 +16958,53 @@ static OSType help_inputPixelFormat(){
     return color;
 }
 
++ (UIColor *)color1WithColors:(NSArray *)colors bounds:(CGRect)bounds {
+    CALayer *layer = [CALayer layer];
+    layer.bounds = bounds;
+
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    gradientLayer.frame = bounds;
+    gradientLayer.colors = colors;
+    gradientLayer.startPoint = CGPointMake(0.0, 0.0);
+    gradientLayer.endPoint = CGPointMake(1.0, 1.0);
+
+    UIGraphicsBeginImageContext(bounds.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    if (context == NULL) {
+        return [UIColor whiteColor];
+    }
+    
+    [gradientLayer renderInContext:context];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    UIColor *color = [UIColor colorWithPatternImage:image];
+    return color;
+}
++ (UIColor *)color2WithColors:(NSArray *)colors bounds:(CGRect)bounds {
+    CALayer *layer = [CALayer layer];
+    layer.bounds = bounds;
+
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    gradientLayer.frame = bounds;
+    gradientLayer.colors = colors;
+    gradientLayer.startPoint = CGPointMake(0.0, 0.0);
+    gradientLayer.endPoint = CGPointMake(1.0, 0.0);
+
+    UIGraphicsBeginImageContext(bounds.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    if (context == NULL) {
+        return [UIColor whiteColor];
+    }
+    
+    [gradientLayer renderInContext:context];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    UIColor *color = [UIColor colorWithPatternImage:image];
+    return color;
+}
+
 + (NSString *)getMagnifyingGlassCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
     NSString *cachedFilePath = [kMagnifyingGlassEffectFolder stringByAppendingPathComponent:[VEHelp cachedFileNameForKey:urlPath]];
     cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];

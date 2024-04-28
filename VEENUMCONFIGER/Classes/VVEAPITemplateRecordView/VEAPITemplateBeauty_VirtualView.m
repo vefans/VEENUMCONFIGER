@@ -54,6 +54,11 @@
 
 @implementation VEAPITemplateBeauty_VirtualView
 
+-(void)setBeautyConfirmBtnHidden:( BOOL ) isHidden
+{
+    _beautyConfirmBtn.hidden = isHidden;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];

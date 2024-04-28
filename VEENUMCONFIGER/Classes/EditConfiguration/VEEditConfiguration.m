@@ -8,7 +8,9 @@
 #import "VEEditConfiguration.h"
 
 @implementation VEEditConfiguration
-
+- (void)setDefaultFunction:(int)defaultFunction{
+    _defaultFunction = defaultFunction;
+}
 - (void)setIsSingletrack:(bool)isSingletrack{
     _isSingletrack = isSingletrack;
     if(_isSingletrack){
@@ -84,6 +86,7 @@
         _enableEqualizer = true;
         _enableTemplateDraft = true;
         _enableEffectAccessObject = true;
+        _enableMusicAlbumDraft = false;
         //编辑导出预设
         _enableMV           = false;
         _enableSubtitle     = true;

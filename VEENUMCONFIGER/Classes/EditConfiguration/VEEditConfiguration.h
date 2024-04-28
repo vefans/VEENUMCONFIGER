@@ -384,6 +384,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 模板草稿 (default true)
  */
 @property (nonatomic,assign) bool enableTemplateDraft;
+/** 音乐相册草稿 (default false)
+ */
+@property (nonatomic,assign) bool enableMusicAlbumDraft;
 
 /** 不显示草稿按钮 (default false)
  */

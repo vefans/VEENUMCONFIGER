@@ -3,6 +3,7 @@
 #import <Photos/Photos.h>
 #import <VEENUMCONFIGER/VEMediaInfo.h>
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
+#import <VEENUMCONFIGER/VEDefines.h>
 
 typedef NSString *VENetworkResourceType NS_STRING_ENUM;
 
@@ -776,7 +777,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSString *)likeBookVideoAPITemplatePlistPath;
 #pragma mark- 将多颜色转换成渐变色
 + (UIColor *)colorWithColors:(NSArray *)colors bounds:(CGRect)bounds;
-
++ (UIColor *)color1WithColors:(NSArray *)colors bounds:(CGRect)bounds;
++ (UIColor *)color2WithColors:(NSArray *)colors bounds:(CGRect)bounds;
 + (NSString *)likePlayscriptAPITemplatePlistPath;
 + (NSMutableDictionary *)likePlayscriptAPITemplateList;
 

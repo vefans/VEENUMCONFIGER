@@ -78,6 +78,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,assign)float                        filterStrength;
 @property(nonatomic,strong)CustomMultipleFilter       *oldFilters;
 
+@property(nonatomic, weak) UIButton *noButton;
+
 -(void)scrollViewIndex:(int) fileterindex;
 
 //滤镜强度

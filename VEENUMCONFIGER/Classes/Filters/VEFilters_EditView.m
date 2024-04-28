@@ -798,6 +798,7 @@ NSString * _netMaterialTypeURL;
         }
         noBtn.tag = 100;
         [noBtn addTarget:self action:@selector(noBtn_onclik) forControlEvents:UIControlEventTouchUpInside];
+        _noButton = noBtn;
         [_fileterNewView addSubview:noBtn];
         
         _fileterLabelNewScroView.contentSize = CGSizeMake(contentWidth+20, 0);

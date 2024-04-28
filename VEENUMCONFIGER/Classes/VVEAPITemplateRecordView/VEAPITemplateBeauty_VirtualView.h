@@ -35,6 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, weak)id<VEAPITemplateBeauty_VirtualViewDelegate>   delegate;
 
+-(void)setBeautyConfirmBtnHidden:( BOOL ) isHidden;
+
 @end
 
 NS_ASSUME_NONNULL_END
