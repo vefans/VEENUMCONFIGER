@@ -90,7 +90,7 @@
         editLabel.font = [UIFont systemFontOfSize:9];
         editLabel.textColor = [UIColor whiteColor];
         
-        editLabel.text = @"更换画笔";
+        editLabel.text = VELocalizedString(@"Paint", nil);
         editLabel.textAlignment = NSTextAlignmentCenter;
         [fxItemBtn.editView addSubview:editLabel];
         editView.hidden = YES;

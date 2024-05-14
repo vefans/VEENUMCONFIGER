@@ -1838,6 +1838,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return str;
 }
 
++ (NSString *)getDeluxeLocalizedString:(NSString *)key{
+    return [VEHelp getLocalizedString:key];
+}
 + (CGFloat)getAnglesWithThreePoint:(CGPoint)pointA pointB:(CGPoint)pointB pointC:(CGPoint)pointC {
     //    CGFloat x1 = pointA.x - pointB.x;
     //    CGFloat y1 = pointA.y - pointB.y;
@@ -3135,7 +3138,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         pathExtension =  [pathExtension substringWithRange:NSMakeRange(0, range.location)];
     }
     
-    NSString *itemPath = [[folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", itemDic[@"ufid"]]] stringByAppendingPathExtension:pathExtension];
+    NSString *itemPath = [[folderPath stringByAppendingPathComponent:itemDic[@"ufid"]] stringByAppendingPathExtension:pathExtension];
     
     return itemPath;
 }
@@ -5305,7 +5308,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         label.text = title;
         label.textAlignment = NSTextAlignmentCenter;
         //下面两行设置UILabel多行显示
-        label.lineBreakMode = NSLineBreakByCharWrapping;
+        label.lineBreakMode = NSLineBreakByWordWrapping;
         label.numberOfLines = 0;
         //设置大小自适应
         [label sizeToFit];
@@ -10592,6 +10595,53 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }];
 }
 
++(CGRect)pasterView_RectinScene:(CGSize) size atRect:(CGRect) rect atSyncContainerSize:(CGSize) syncContainerSize atScale:(float *) scale atOtherSyncontainerSize:(CGSize) otherSyncContainerSize atMediaType:( VEAdvanceEditType ) type
+{
+    //    float scale;
+    float width;
+    float height;
+    if( type == VEAdvanceEditType_Collage )
+    {
+        CGSize mediaSize =  [VEHelp getMediaDefaultSizeWithSyncContainerSize:syncContainerSize mediaSize:size mediaType:VEAdvanceEditType_Collage];
+        width = mediaSize.width;
+        height = mediaSize.height;
+    }
+    else{
+        if (syncContainerSize.width == syncContainerSize.height) {
+            width = syncContainerSize.width/4.0;
+            height = width / (size.width / size.height);
+        }else if (syncContainerSize.width < syncContainerSize.height) {
+            width = syncContainerSize.width/2.0;
+            height = width / (size.width / size.height);
+        }else {
+            height = syncContainerSize.height/2.0;
+            width = height * (size.width / size.height);
+        }
+    }
+    
+    
+    float fwidth = otherSyncContainerSize.width*rect.size.width/(*scale);
+    float fheight = otherSyncContainerSize.height*rect.size.height/(*scale);
+    
+    CGPoint point = CGPointMake(rect.origin.x +  rect.size.width/2.0, rect.origin.y + rect.size.height/2.0);
+    
+    if( fwidth > fheight )
+    {
+        (*scale) = rect.size.width*syncContainerSize.width/width;
+        rect.size = CGSizeMake(rect.size.width, height*(*scale)/ syncContainerSize.height);
+    }
+    else{
+        (*scale) = rect.size.height*syncContainerSize.height/height;
+        rect.size = CGSizeMake(width*(*scale)/ syncContainerSize.width, rect.size.height);
+    }
+    rect.origin = CGPointMake(point.x - rect.size.width/2.0, point.y - rect.size.height/2.0);
+    //    CGPoint point = CGPointMake(rect.origin.x +  rect.size.width/2.0, rect.origin.y + rect.size.height/2.0);
+    //
+    //    rect.size = CGSizeMake(width*scale/syncContainerSize.width, height*scale / syncContainerSize.height);
+    //    rect.origin = CGPointMake(point.x - rect.size.width/2.0, point.y - rect.size.height/2.0);
+    return rect;
+}
+
 +(NSMutableArray *)setCustomMultipleFilterUniformParamsWithCustomMultipleFilter:( CustomMultipleFilter * ) multipleFilter atKeyArray:( NSMutableArray * ) keyArray atOutlineColor:( UIColor * ) outlineColor atSize:( float ) size atRadius:( float ) radius atScale:( float ) scale atAngle:( float ) angle atIsDrawline:( BOOL ) isDrawline atIsKey:( BOOL ) isKey
 {
     NSString *configPath = [VEHelp getConfigPathWithFolderPath:multipleFilter.filterArray.firstObject.folderPath];
@@ -14982,7 +15032,13 @@ static OSType help_inputPixelFormat(){
             phAsset = nil;
         }else{
             @try {
-                [[PHImageManager defaultManager] requestImageForAsset:[phAsset firstObject] targetSize:CGSizeZero contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                CGSize targetSize;
+                if (@available(iOS 13.0, *)) {
+                    targetSize = CGSizeZero;
+                }else {
+                    targetSize = CGSizeMake(asset.pixelWidth, asset.pixelHeight);//20240513 iOS 12及更早版本中，如果targetSize为CGSizeZero，系统会默认返回一个1x1像素的占位图。
+                }
+                [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
                     
                     image = result;
                     result = nil;
@@ -17009,6 +17065,22 @@ static OSType help_inputPixelFormat(){
     NSString *cachedFilePath = [kMagnifyingGlassEffectFolder stringByAppendingPathComponent:[VEHelp cachedFileNameForKey:urlPath]];
     cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
     return cachedFilePath;
+}
+
+
++ (NSString *)getYearMonthDayS{
+    NSDate *date =[NSDate date];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+
+    [formatter setDateFormat:@"yyyy"];
+    NSInteger currentYear=[[formatter stringFromDate:date] integerValue];
+    [formatter setDateFormat:@"MM"];
+    NSInteger currentMonth=[[formatter stringFromDate:date]integerValue];
+    [formatter setDateFormat:@"dd"];
+    NSInteger currentDay=[[formatter stringFromDate:date] integerValue];
+    [formatter setDateFormat:@"ss"];
+    NSInteger semdy = [[formatter stringFromDate:date] integerValue];
+    return [NSString stringWithFormat:@"%ld%ld%ld%ld",(long)currentYear,(long)currentMonth,(long)currentDay,(long)semdy];
 }
 
 @end

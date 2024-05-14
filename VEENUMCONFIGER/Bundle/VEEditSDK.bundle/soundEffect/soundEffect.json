@@ -12,7 +12,7 @@
     "id": 3
 }, {
     "name_zh": "非电声音乐",
-    "name_en": "Non_electroacousticMusic",
+    "name_en": "Non_Electronic",
     "id": 4
 }, {
     "name_zh": "钢琴曲",
@@ -76,7 +76,7 @@
     "id": 19
 }, {
     "name_zh": "语音增强",
-    "name_en": "SpeechEnhancement",
+    "name_en": "Speech Boost",
     "id": 20
 }, {
     "name_zh": "杂音降低",

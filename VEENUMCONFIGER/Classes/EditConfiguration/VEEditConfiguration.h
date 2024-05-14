@@ -160,7 +160,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (assign, nonatomic)SUPPORTFILETYPE supportFileType;
 /** 相册是否禁止显示实况照片 (default false)
  */
-@property (assign, nonatomic) BOOL isLivePhotoDisable;;
+@property (assign, nonatomic) BOOL isLivePhotoDisable;
 
 #pragma mark-相册界面
 /** 默认选中视频还是图片

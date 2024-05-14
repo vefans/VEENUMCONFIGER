@@ -1033,7 +1033,7 @@ NSString * _netMaterialTypeURL;
         
         //        [NSMutableDictionary new];
         //        [filterCollectionPlists setObject:@"showchang" forKey:@"id"];
-        //        [filterCollectionPlists setObject:VELocalizedString(@"收藏", nil) forKey:@"name"];
+        //        [filterCollectionPlists setObject:VELocalizedString(@"Collect", nil) forKey:@"name"];
         //        [filterCollectionPlists setObject:[NSMutableDictionary arra] forKey:@"data"];
         BOOL success = [array writeToFile:kFilterCollectionPlist atomically:NO];
         if (!success) {

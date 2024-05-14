@@ -168,7 +168,7 @@
 "选择音效" = "Selecionar efeito";
 "选择媒体资源" = "Selecionar mídia";
 "无法下载" = "Falha no download";
-"加载中...." = "Carregando...";
+"加载中..." = "Carregando...";
 "正在存入草稿箱...." = "Depositando em uma caixa de esboço...";
 "长按并拖动可调整顺序哟" = "Pressione prolongadamente e arraste para ajustar a organização";
 "请选择视频文件" = "Por favor, selecione um arquivo de vídeo";
@@ -897,7 +897,6 @@
 "滤镜强度" = "Ajustar";
 "色温" = "Equilíbrio branco";
 "应用到所有" = "Aplicar a tudo";
-"当前时间不能定格" = "O tempo atual não pode ser congelado";
 "文字板" = "Caixa de texto";
 "旋转角度" = "Ângulo";
 "原始" = "Efeito original";

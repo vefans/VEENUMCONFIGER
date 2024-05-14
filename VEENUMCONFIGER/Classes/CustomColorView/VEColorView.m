@@ -299,6 +299,11 @@
     }
 }
 
+- (void)hiddenEyedropperBgView {
+    _eyedropperBgView.hidden = YES;
+    _eyedropperBtn.selected = NO;
+}
+
 - (void)refreshSelectedColorBtn {
     float x;
     if (_currentCustomColor) {

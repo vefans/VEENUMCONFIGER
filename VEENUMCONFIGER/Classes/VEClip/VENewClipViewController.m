@@ -430,14 +430,14 @@
         }
     }
     if (_cutMmodeType == kCropTypeNone || _isCropTypeViewHidden) {
-        float width = (_toolView.frame.size.width - 40) / 4.0;
+        float width = _toolView.frame.size.width / 4.0;
         float y = (_toolView.frame.size.height - 44) / 2.0;
         if (_cutMmodeType == kCropTypeNone) {
             y = (_cropType == VE_VECROPTYPE_FIXEDRATIO ? ((_toolView.frame.size.height - 70 - 30)/2.0 + 70) : 70);
         }
         for (int i = 0; i < 4; i++) {
             UIButton *rotateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-            rotateBtn.frame = CGRectMake(20 + width * i, y, width, 44);
+            rotateBtn.frame = CGRectMake(width * i, y, width, 44);
             NSString * imagePath = nil;
             if (i == 0) {
                 imagePath = @"/New_EditVideo/scrollViewChildImage/剪辑_剪辑上下翻转默认_";
@@ -461,7 +461,8 @@
             if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
                 [rotateBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
             }
-            rotateBtn.titleLabel.font = [UIFont systemFontOfSize:12.0];
+            rotateBtn.titleLabel.font = [UIFont systemFontOfSize:10.0];
+            [rotateBtn layoutButtonWithEdgeInsetsStyle:VEButtonEdgeInsetsStyleLeft imageTitleSpace:-5];
             [rotateBtn addTarget:self action:@selector(rotateBtnAction:) forControlEvents:UIControlEventTouchUpInside];
             rotateBtn.tag = i + 1;
             [_toolView addSubview:rotateBtn];
@@ -965,7 +966,29 @@
     scene.transition.type   = TransitionTypeNone;
     scene.transition.duration = 0.0;
     vvasset.rotate = _selectFile.rotate;
-    vvasset.rectInVideo = CGRectMake(0, 0, 1, 1);
+    if(_cropType == VE_VECROPTYPE_FIXEDRATIO){
+        if (vvasset.rotate == 90 || vvasset.rotate == 270) {
+            float imageAsp = _sourceImageSize.height / _sourceImageSize.width;
+            float previewAsp = _videoBgView.frame.size.width /_videoBgView.frame.size.height;
+            if (imageAsp == previewAsp) {
+                vvasset.rectInVideo = CGRectMake(0, 0, 1, 1);
+            }
+            else if (imageAsp > 1.0) {
+                float width = 1.0;
+                float height = imageAsp;
+                vvasset.rectInVideo = CGRectMake(0, (1.0 - height) / 2.0, width, height);
+            }
+            else {
+                float height = 1.0;
+                float width = 1.0 / imageAsp;
+                vvasset.rectInVideo = CGRectMake((1.0 - width) / 2.0, (1.0 - height) / 2.0, width, height);
+            }
+        }else {
+            vvasset.rectInVideo = CGRectMake(0, 0, 1, 1);
+        }
+    }else {
+        vvasset.rectInVideo = CGRectMake(0, 0, 1, 1);
+    }
     vvasset.crop = CGRectMake(0, 0, 1, 1);
     vvasset.isVerticalMirror = _selectFile.isVerticalMirror;
     vvasset.isHorizontalMirror = _selectFile.isHorizontalMirror;
@@ -1320,7 +1343,16 @@
     {
         _editVideoForOnceFinishFiltersAction(oldselectFile.crop,oldselectFile.cropRect,oldselectFile.isVerticalMirror,oldselectFile.isHorizontalMirror,oldselectFile.rotate,_cropType,oldselectFile.filterIndex);
     }
-    
+    else if (_clipCompletionHandler) {
+        _clipCompletionHandler(NO,
+                               r,
+                               crop,
+                               cropRect,
+                               oldselectFile.isVerticalMirror,
+                               oldselectFile.isHorizontalMirror,
+                               oldselectFile.rotate,
+                               _cropType);
+    }
 }
 
 
@@ -1746,50 +1778,65 @@
     
     float cropAsp = imageSize.width/imageSize.height;
     
-    if(self.cropType ==VE_VECROPTYPE_ORIGINAL ){//原比例
-        cropAsp = imageSize.width/imageSize.height;
-    }else if(self.cropType ==VE_VECROPTYPE_FREE ){////自由
-        cropAsp = imageSize.width/imageSize.height;
-    }else if(self.cropType ==VE_VECROPTYPE_9TO16 ){////9:16
-        cropAsp = 9.0/16.0;
-    }else if(self.cropType ==VE_VECROPTYPE_16TO9 ){////16:9
-        cropAsp = 16.0/9.0;
-    }else if(self.cropType ==VE_VECROPTYPE_1TO1 ){////1:1
-        cropAsp = 1.0;
-    }else if(self.cropType ==VE_VECROPTYPE_6TO7 ){////6:7
-        cropAsp = 6.0/7.0;
-    }else if(self.cropType ==VE_VECROPTYPE_5TO8 ){////5.8"
-        cropAsp = 5.0/8.0;
-    }else if(self.cropType ==VE_VECROPTYPE_4TO5 ){////4:5
-        cropAsp = 4.0/5.0;
-    }else if(self.cropType ==VE_VECROPTYPE_4TO3 ){////4:3
-        cropAsp = 4.0/3.0;
-    }else if(self.cropType ==VE_VECROPTYPE_3TO5 ){////3:5
-        cropAsp = 3.0/5.0;
-    }else if(self.cropType ==VE_VECROPTYPE_3TO4 ){////3:4
-        cropAsp = 3.0/4.0;
-    }else if(self.cropType ==VE_VECROPTYPE_3TO2 ){////3:2
-        cropAsp = 3.0/2.0;
-    }else if(self.cropType ==VE_VECROPTYPE_235TO1 ){////2.35:1
-        cropAsp = 2.35;
-    }else if(self.cropType ==VE_VECROPTYPE_2TO3 ){////2:3
-        cropAsp = 2.0/3.0;
-    }else if(self.cropType ==VE_VECROPTYPE_2TO1 ){////2:1
-        cropAsp = 2.0;
-    }else if(self.cropType ==VE_VECROPTYPE_185TO1 ){////1.85:1
-        cropAsp = 1.85;
-    }else if(self.cropType ==VE_VECROPTYPE_FIXEDRATIO){///**< 固定比例裁切*/
-        cropAsp = (imageSize.width *_fixedMaxCrop.size.width)/(imageSize.height *_fixedMaxCrop.size.height);
-//        if((_selectFile.rotate > 45 && _selectFile.rotate < 90 + 45) || (_selectFile.rotate > 270 - 45 && _selectFile.rotate < 270 + 45)){
-//            cropAsp = (image.size.height *_fixedMaxCrop.size.height)/(image.size.width *_fixedMaxCrop.size.width);
-//        }
-    }else if(self.cropType ==VE_VECROPTYPE_1TO2 ){////1:2
-        cropAsp = 1.0/2.0;
+    switch (_cropType) {
+        case VE_VECROPTYPE_ORIGINAL://原比例
+        case VE_VECROPTYPE_FREE://自由
+            cropAsp = imageSize.width/imageSize.height;
+            break;
+        case VE_VECROPTYPE_9TO16:
+            cropAsp = 9.0/16.0;
+            break;
+        case VE_VECROPTYPE_16TO9:
+            cropAsp = 16.0/9.0;
+            break;
+        case VE_VECROPTYPE_1TO1:
+            cropAsp = 1.0;
+            break;
+        case VE_VECROPTYPE_6TO7:
+            cropAsp = 6.0/7.0;
+            break;
+        case VE_VECROPTYPE_5TO8://5.8"
+            cropAsp = 5.0/8.0;
+            break;
+        case VE_VECROPTYPE_4TO5:
+            cropAsp = 4.0/5.0;
+            break;
+        case VE_VECROPTYPE_4TO3:
+            cropAsp = 4.0/3.0;
+            break;
+        case VE_VECROPTYPE_3TO5:
+            cropAsp = 3.0/5.0;
+            break;
+        case VE_VECROPTYPE_3TO4:
+            cropAsp = 3.0/4.0;
+            break;
+        case VE_VECROPTYPE_3TO2:
+            cropAsp = 3.0/2.0;
+            break;
+        case VE_VECROPTYPE_235TO1://2.35:1
+            cropAsp = 2.35;
+            break;
+        case VE_VECROPTYPE_2TO3:
+            cropAsp = 2.0/3.0;
+            break;
+        case VE_VECROPTYPE_2TO1:
+            cropAsp = 2.0;
+            break;
+        case VE_VECROPTYPE_185TO1://1.85:1
+            cropAsp = 1.85;
+            break;
+        case VE_VECROPTYPE_1TO2:
+            cropAsp = 1.0/2.0;
+            break;
+        case VE_VECROPTYPE_FIXEDRATIO://**< 固定比例裁切*/
+            cropAsp = (imageSize.width *_fixedMaxCrop.size.width)/(imageSize.height *_fixedMaxCrop.size.height);
+            break;
+            
+        default:
+            break;
     }
     
-    _videoCoreSDK.delegate = self;
-    [_videoCoreSDK.view removeFromSuperview];
-    _videoCoreSDK = nil;
+    [self deletePlayer];
     if(_videoPrewView){
         [_videoPrewView removeFromSuperview];
         _videoPrewView = nil;
@@ -1815,46 +1862,37 @@
         
         CGRect playerRect = CGRectMake((rect.size.width - w)/2.0, (rect.size.height - h)/2.0 + (iPhone_X ? 44 : 0), w, h);
         _videoBgView = [[UIScrollView alloc] initWithFrame:playerRect];
-        
         _videoBgView.backgroundColor = UIColorFromRGB(0x000000);
         _videoBgView.minimumZoomScale = 1;
         _videoBgView.maximumZoomScale = 6;
         _videoBgView.layer.borderColor = [UIColor whiteColor].CGColor;
         _videoBgView.layer.borderWidth = 2.0;
+        _videoBgView.showsVerticalScrollIndicator = NO;
+        _videoBgView.showsHorizontalScrollIndicator = NO;
+        _videoBgView.bounces = NO;
         _videoBgView.delegate = self;
         _videoBgView.hidden = YES;
         [_bgView addSubview:_videoBgView];
-        
-        
-        float v_w = playerRect.size.width;
-        if(self.cropType ==VE_VECROPTYPE_FIXEDRATIO){
-            if((_selectFile.rotate > 45 && _selectFile.rotate < 90 + 45) || (_selectFile.rotate > 270 - 45 && _selectFile.rotate < 270 + 45)){
-                v_w = v_w/_fixedMaxCrop.size.height;
-            }else{
-                v_w = v_w/_fixedMaxCrop.size.width;
-            }
-        }
+                
         UIImage *image = [VEHelp image:_sourceImage rotation:_selectFile.rotate cropRect:CGRectMake(0, 0, 1, 1)];
         imageSize = image.size;
         _editVideoSize = imageSize;
         
-        float v_h = v_w * (image.size.height/image.size.width);
-        float previewAsp = image.size.width/image.size.height;
-        if(previewAsp > playerRect.size.width /playerRect.size.height){
-            v_h = playerRect.size.height;
-            if(self.cropType ==VE_VECROPTYPE_FIXEDRATIO){
-                if((_selectFile.rotate > 45 && _selectFile.rotate < 90 + 45) || (_selectFile.rotate > 270 - 45 && _selectFile.rotate < 270 + 45)){
-                    v_h = v_h/_fixedMaxCrop.size.width;
-                }else{
-                    v_h = v_h/_fixedMaxCrop.size.height;
-                }
-            }
-            if(v_h > playerRect.size.height){
+        float v_w = playerRect.size.width;
+        float v_h = playerRect.size.height;
+        if (playerRect.size.width > playerRect.size.height) {
+            v_h = v_w / (image.size.width/image.size.height);
+            if (v_h < playerRect.size.height) {
                 v_h = playerRect.size.height;
+                v_w = v_h * (image.size.width/image.size.height);
             }
+        } else {
             v_w = v_h * (image.size.width/image.size.height);
+            if (v_w < playerRect.size.width) {
+                v_w = playerRect.size.width;
+                v_h = v_w / (image.size.width/image.size.height);
+            }
         }
-        
         _videoPrewRect = CGRectMake(0, 0, v_w, v_h);
         _editVideoSize = CGSizeMake(_editVideoSize.width, _editVideoSize.width * (v_h/v_w));
         [self initPlayer];
@@ -1894,46 +1932,64 @@
     image = [VEHelp rescaleImage:image size:imageSize];
     self.cropType = cropTypeModel.cropType;
     float cropAsp = image.size.width/image.size.height;
-    if(self.cropType ==VE_VECROPTYPE_ORIGINAL ){//原比例
-        cropAsp = image.size.width/image.size.height;
-    }else if(self.cropType ==VE_VECROPTYPE_FREE ){////自由
-        cropAsp = image.size.width/image.size.height;
-    }else if(self.cropType ==VE_VECROPTYPE_9TO16 ){////9:16
-        cropAsp = 9.0/16.0;
-    }else if(self.cropType ==VE_VECROPTYPE_16TO9 ){////16:9
-        cropAsp = 16.0/9.0;
-    }else if(self.cropType ==VE_VECROPTYPE_1TO1 ){////1:1
-        cropAsp = 1.0;
-    }else if(self.cropType ==VE_VECROPTYPE_6TO7 ){////6:7
-        cropAsp = 6.0/7.0;
-    }else if(self.cropType ==VE_VECROPTYPE_5TO8 ){////5.8"
-        cropAsp = 5.0/8.0;
-    }else if(self.cropType ==VE_VECROPTYPE_4TO5 ){////4:5
-        cropAsp = 4.0/5.0;
-    }else if(self.cropType ==VE_VECROPTYPE_4TO3 ){////4:3
-        cropAsp = 4.0/3.0;
-    }else if(self.cropType ==VE_VECROPTYPE_3TO5 ){////3:5
-        cropAsp = 3.0/5.0;
-    }else if(self.cropType ==VE_VECROPTYPE_3TO4 ){////3:4
-        cropAsp = 3.0/4.0;
-    }else if(self.cropType ==VE_VECROPTYPE_3TO2 ){////3:2
-        cropAsp = 3.0/2.0;
-    }else if(self.cropType ==VE_VECROPTYPE_235TO1 ){////2.35:1
-        cropAsp = 2.35;
-    }else if(self.cropType ==VE_VECROPTYPE_2TO3 ){////2:3
-        cropAsp = 2.0/3.0;
-    }else if(self.cropType ==VE_VECROPTYPE_2TO1 ){////2:1
-        cropAsp = 2.0;
-    }else if(self.cropType ==VE_VECROPTYPE_185TO1 ){////1.85:1
-        cropAsp = 1.85;
-    }else if(self.cropType ==VE_VECROPTYPE_FIXEDRATIO ){///**< 固定比例裁切*/
-        cropAsp = _fixedMaxCrop.size.width/_fixedMaxCrop.size.height;
-    }else if(self.cropType ==VE_VECROPTYPE_1TO2 ){////1:2
-        cropAsp = 1.0/2.0;
+    switch (_cropType) {
+        case VE_VECROPTYPE_ORIGINAL://原比例
+        case VE_VECROPTYPE_FREE://自由
+            cropAsp = imageSize.width/imageSize.height;
+            break;
+        case VE_VECROPTYPE_9TO16:
+            cropAsp = 9.0/16.0;
+            break;
+        case VE_VECROPTYPE_16TO9:
+            cropAsp = 16.0/9.0;
+            break;
+        case VE_VECROPTYPE_1TO1:
+            cropAsp = 1.0;
+            break;
+        case VE_VECROPTYPE_6TO7:
+            cropAsp = 6.0/7.0;
+            break;
+        case VE_VECROPTYPE_5TO8://5.8"
+            cropAsp = 5.0/8.0;
+            break;
+        case VE_VECROPTYPE_4TO5:
+            cropAsp = 4.0/5.0;
+            break;
+        case VE_VECROPTYPE_4TO3:
+            cropAsp = 4.0/3.0;
+            break;
+        case VE_VECROPTYPE_3TO5:
+            cropAsp = 3.0/5.0;
+            break;
+        case VE_VECROPTYPE_3TO4:
+            cropAsp = 3.0/4.0;
+            break;
+        case VE_VECROPTYPE_3TO2:
+            cropAsp = 3.0/2.0;
+            break;
+        case VE_VECROPTYPE_235TO1://2.35:1
+            cropAsp = 2.35;
+            break;
+        case VE_VECROPTYPE_2TO3:
+            cropAsp = 2.0/3.0;
+            break;
+        case VE_VECROPTYPE_2TO1:
+            cropAsp = 2.0;
+            break;
+        case VE_VECROPTYPE_185TO1://1.85:1
+            cropAsp = 1.85;
+            break;
+        case VE_VECROPTYPE_1TO2:
+            cropAsp = 1.0/2.0;
+            break;
+        case VE_VECROPTYPE_FIXEDRATIO://**< 固定比例裁切*/
+            cropAsp = _fixedMaxCrop.size.width/_fixedMaxCrop.size.height;
+            break;
+            
+        default:
+            break;
     }
-    _videoCoreSDK.delegate = self;
-    [_videoCoreSDK.view removeFromSuperview];
-    _videoCoreSDK = nil;
+    [self deletePlayer];
     
     {
         [_videoBgView removeFromSuperview];

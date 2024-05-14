@@ -353,7 +353,6 @@
 "当前功能暂不可用" = "当前功能暂不可用";
 "视频" = "视频";
 "照片" = "照片";
-"全部" = "全部";
 "相机胶卷" = "相机胶卷";
 "视频:%d, 图片:%d" = "视频:%d, 图片:%d";
 "视频:%d" = "视频:%d";
@@ -475,7 +474,6 @@
 "选择音效" = "选择音效";
 "选择媒体资源" = "选择媒体资源";
 "无法下载" = "无法下载";
-"加载中...." = "加载中....";
 "正在存入草稿箱...." = "正在存入草稿箱....";
 "长按并拖动可调整顺序哟" = "长按并拖动可调整顺序哟";
 "请选择视频文件" = "请选择视频文件";
@@ -1125,7 +1123,6 @@
 "滤镜强度" = "滤镜强度";
 "色温" = "色温";
 "应用到所有" = "应用到所有";
-"当前时间不能定格" = "当前时间不能定格";
 "文字板" = "文字板";
 "旋转角度" = "旋转角度";
 "原始" = "原始";
@@ -1560,7 +1557,7 @@
 "Duration Page Tilte" = "分页时长";
 "Apply to all pages" = "应用到全部分页";
 "Search language" = "输入搜索的语种";
-"Original volume" = "模板原声";
+"Template volume" = "模板原声";
 "Music：" = "配乐：";
 "Delete" = "删除";
 "Music volume" = "配乐音量";
@@ -1589,7 +1586,6 @@
 "Save Draft and Exit" = "保存草稿并退出";
 "Do not save" = "不保存";
 "Finish" = "完成";
-"Word Say" = "字说";
 "Large" = "大";
 "Small" = "小";
 "Classics" = "经典";
@@ -1653,3 +1649,20 @@
 "Smart Crop is being applied %0.1f%%" = "智能裁剪效果正在应用 %0.1f%%";
 "Apply %@? Doing so will remove %@ applied to this video." = "应用%@会移除当前%@效果，是否确认操作？";
 "The current media ratio is consistent with the virtual video ratio." = "当前媒体的比例与虚拟视频比例已经一致";
+"Custom Size" = "自定义尺寸";
+"Preset Size" = "尺寸预设";
+"Please enter a size greater than 1.06 cm and not exceeding 108.37 cm" = "请输入大于 1.06 cm 且不超过108.37 cm的尺寸";
+"Please enter a size greater than 40 px and not exceeding 4096 px" = "请输入大于 40 px 且不超过4096 px的尺寸";
+"Drafts" = "草稿";
+"Search for sound effects" = "搜你感兴趣的音效";
+"Search for musics" = "大家都在搜";
+"Nothing was found" = "什么也没找到";
+"Extracted music %@_%ld" = "提取音乐%@_%ld";
+"Paint" = "更换画笔";
+"Default" = "默认";
+"Please select tracking object" = "请选择跟踪物体";
+"Face shield" = "画面遮挡";
+"Offset" = "偏移";
+"Album selection" = "相册选择";
+"Direct shooting" = "直接拍摄";
+"Saved to album" = "已保存到相册";

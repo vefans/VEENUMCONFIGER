@@ -53,6 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,assign)CGRect           frameRect;
 
 @property (nonatomic,copy) void (^editVideoForOnceFinishAction)(BOOL useToAll,CGRect crop,CGRect cropRect,BOOL verticalMirror,BOOL horizontalMirror,float rotation, VECropType cropmodeType);
+@property (nonatomic,copy) void (^clipCompletionHandler)(BOOL useToAll,CGRect crop,CGRect beforeConvertCrop,CGRect cropRect,BOOL verticalMirror,BOOL horizontalMirror,float rotation, VECropType cropmodeType);
 
 @property (nonatomic,copy) void (^editVideoForOnce_timeFinishAction)(BOOL useToAll,CGRect crop,CGRect cropRect,BOOL verticalMirror,BOOL horizontalMirror,float rotation, CMTimeRange timeRange, VECropType cropmodeType);
 

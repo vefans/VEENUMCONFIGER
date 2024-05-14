@@ -79,7 +79,7 @@
 "磨皮" = "Smooth";
 "美白" = "Whiten";
 "瘦脸" = "Thin";
-"大眼" = "Enlarge eyes";
+"大眼" = "Eye size";
 "亮肤" = "Bright";
 "红润" = "Rosy";
 "细节" = "Detail";
@@ -247,7 +247,6 @@
 "无配乐" = "None";
 "本地" = "Local";
 "云音乐" = "Cloud";
-"剪辑" = "Local";
 "短视频" = "Shorts";
 "副本" = "copy";
 "画布颜色" = "Color";
@@ -272,6 +271,7 @@
 "按住录音" = "Hold to record";
 
 "点击输入文字..." = "Tap to add text...";
+"输入文字..." = "Input text...";
 "停止输入" = "Stop input";
 "文字板" = "Textboard";
 
@@ -1038,7 +1038,7 @@
 "选择音效" = "Select effect";
 "选择媒体资源" = "Select media";
 "无法下载" = "Unable to download";
-"加载中...." = "Loading....";
+"加载中..." = "Loading...";
 "正在存入草稿箱...." = "Depositing in a draft box....";
 "长按并拖动可调整顺序哟" = "Long press and drag to adjust the sorting";
 "请选择视频文件" = "Please select a video file";
@@ -2167,7 +2167,6 @@
 "模型加载中..." = "Loading model...";
 "请耐心等待..." = "Please wait...";
 
-"加载中...." = "Loading....";
 "正在加载" = "Loading";
 "正在处理" = "Processing";
 
@@ -2292,7 +2291,6 @@
 "恢复模板中..." = "Template recovering...";
 "替换资源中..." = "Resource replacing...";
 "图片编辑" = "Image edit";
-"剪辑草稿" = "Edit draft";
 
 
 "拍摄" = "Camera";
@@ -2466,7 +2464,7 @@
 "基础画笔" = "Basic";
 "素材笔" = "Material Brush";
 "相册导入" = "Upload";
-"封面模板" = "Use Template";
+"封面模板" = "Template";
 "导出封面" = "Export";
 "左右拖动选择封面" = "Drag left and right to select cover";
 
@@ -2763,7 +2761,6 @@
 "特效-%@" = "Effects-%@";
 "调节%ld" = "Adjust%ld";
 
-"全部轨道" = "All orbits";
 "调整参数" = "Adjust";
 "Adjust parameters" = "Adjust";
 "绑定" = "Bind";
@@ -2868,7 +2865,7 @@
 " iTunes没有发现音乐" = "iTunes found no music";
 
 "导出文案" = "Export copy";
-"更多主播" = "More anchors";
+"更多主播" = "More";
 
 "文案素材" = "Material";
 
@@ -2890,8 +2887,6 @@
 "点击输入文字，可以导入文档、输入粘贴文字，或从文本模板中选择或修改文案。支持切换主播、背景音乐，调整播放效果。调整完成后，支持试听和保存音频。" = "Click Enter text to import the document, enter paste text, or select or modify the text from the text template. Support switching anchor, background music, adjust the playback effect. After the adjustment is completed, it supports listening and saving the audio.";
 "试听中" = "In audition";
 "暂停中" = "In pause";
-
-"文案素材" = "Copy material";
 
 "生成音频失败" = "Failed to generate audio";
 "请先选择需要停顿的位置" = "Please select the position to pause first.";
@@ -2971,7 +2966,7 @@
 
 "导入文案" = "Import copy";
 "请先输入文本" = "Please enter text first";
-"本地草稿" = "Local"
+"本地草稿" = "Local";
 
 "添加放大镜" = "Add Magnifier";
 "仅放大镜" = "Only Magnifier";
@@ -2984,7 +2979,18 @@
 
 "自定义台本" = "Custom Script";
 "去拍摄" = "Go to shoot";
-"编辑内容" = "Editorial content";
 "请输入台本标题" = "Please enter the title of the script";
 "请输入台词内容" = "Please enter the lines";
 "%d/1500字" = "%d/1500 words";
+"取消智能抠像" = "Revoke";
+"倍数" = "Scale";
+"调节参数" = "Adjust";
+"Template volume" = "Original";
+"Music volume" = "Volume";
+"Album selection" = "Album";
+"Direct shooting" = "Record";
+"使用中" = "In use";
+"立即使用" = "Use";
+"导出音频%.f%%" = "Exporting audio %. f%%";
+"Complete Edit" = "Complete";
+"截取音乐" = "Trim music";

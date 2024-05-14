@@ -244,8 +244,7 @@
             }
             [self.toobarView addSubview:self.verticalCorrectionBtn];
             
-            self.LateralDirectionBtn = [[UIButton alloc] initWithFrame:CGRectMake( self.toobarView.frame.size.width/2.0 + 30, (self.toobarView.frame.size.height - kToolbarHeight - 75)/2.0 + 75/2.0
-                                                                                  , 55, 75)];
+            self.LateralDirectionBtn = [[UIButton alloc] initWithFrame:CGRectMake( self.toobarView.frame.size.width/2.0 + 30, (self.toobarView.frame.size.height - kToolbarHeight - 75)/2.0 + 75/2.0, 60, 75)];
             {
                 UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.LateralDirectionBtn.frame.size.width, self.LateralDirectionBtn.frame.size.width)];
                 imageView.tag  = 2;

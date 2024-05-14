@@ -152,6 +152,17 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
                           completionHandler:(void (^)(MusicInfo *music))completionHandler
                               cancelHandler:(VECancelHandler)cancelHandler;
 
+- (void)veEnterSoundEffectsView:(CGRect)frame
+                      superView:(UIView *)superView
+            superViewController:( UIViewController * ) superViewController
+              categoryResources:(NSMutableDictionary *)categoryResources
+              completionHandler:( void(^)(MusicInfo *music) ) completionHandler
+                  cancelHandler:( void(^)(void) ) cancelHandler;
+
+- (UIViewController *)veEnterCloudMusicViewController:(CGRect)frame
+                                    completionHandler:( void(^)(MusicInfo *music) ) completionHandler
+                                        cancelHandler:( void(^)(void) ) cancelHandler;
+
 /** 开始直播推流
  */
 - (void)startLivePush;
@@ -366,9 +377,14 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 - (void)startExportWithMinWH:(int)minWH;
 
 @property (nonatomic, assign) BOOL       iPad_HD;
-
+@property (nonatomic, assign) BOOL       enableBtnLikeTemp;
 @property (nonatomic, copy) void (^likeNoLoginBlock)(UIViewController *viewController);
 
 
 @property (nonatomic, strong) NSArray *selectedTypeColors;
+
+/** 音乐界面布局样式 (default 0)
+ */
+@property (nonatomic, assign) int musicViewLayoutStyle;
+
 @end

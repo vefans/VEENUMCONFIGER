@@ -29,5 +29,6 @@
 @property (nonatomic, weak) id<VEColorViewDelegate> delegate;
 
 - (void)setCurrentColor:(UIColor *)color;
+- (void)hiddenEyedropperBgView;
 
 @end

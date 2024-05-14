@@ -99,6 +99,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (UIEdgeInsets) safeAreaInsets;
 +(NSString *)pathFontForURL:(NSURL *)aURL;
 
++(CGRect)pasterView_RectinScene:(CGSize) size atRect:(CGRect) rect atSyncContainerSize:(CGSize) syncContainerSize atScale:(float *) scale atOtherSyncontainerSize:(CGSize) otherSyncContainerSize atMediaType:( VEAdvanceEditType ) type;
+
 + (void)createLocalGifStickerWithFile:(VEMediaInfo *)file captionEx:(CaptionEx *)captionEx;
 
 + (CGSize)getEditOrginSizeCropWithFile:(VEMediaInfo *)file;
@@ -250,6 +252,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSBundle *)getRecordBundle;
 + (NSBundle *)getDemoUseBundle;
 + (NSString *)getLocalizedString:(NSString *)key;
++ (NSString *)getDeluxeLocalizedString:(NSString *)key;
 
 +(void)getStickerAnimation:( NSString * ) path atCaption:( Caption * ) caption atCustomFiler:( CustomFilter * ) customFilter;
 /**
@@ -617,6 +620,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 +(NSString *)pathAssetVideoForURL:(NSURL *)aURL;
 
++ (NSString *)returnEditorVideoPath;
+
 + (CGSize )getVideoSizeForTrack:(AVURLAsset *)asset;
 
 + (CGSize)trackSize:(NSURL *)contentURL rotate:(float)rotate;
@@ -783,4 +788,6 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSMutableDictionary *)likePlayscriptAPITemplateList;
 
 + (NSString *)getMagnifyingGlassCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
+
++ (NSString *)getYearMonthDayS;
 @end

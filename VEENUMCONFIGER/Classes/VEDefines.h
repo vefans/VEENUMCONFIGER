@@ -976,3 +976,5 @@ isPhoneX;\
 #define kIsLoadedFaceShieldResource @"isLoadedFaceShieldResource"//智能挡脸
 #define kIsLoadedFlowerWordResource @"isLoadedFlowerWordResource"
 #define kIsLoadedTextTemplateResource @"isLoadedTextTemplateResource"
+
+#define kVEEnableChangeColorAnimateId @"1012384"
