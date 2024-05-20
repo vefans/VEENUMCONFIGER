@@ -7,6 +7,8 @@
 
 #import "VEConfigManager.h"
 #import <LibVECore/Common.h>
+#import <SDWebImage/SDWebImage.h>
+
 NSString *const VEStartExportNotification = @"VEStartExportNotification";
 
 @implementation VEConfigManager
@@ -35,6 +37,8 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
         if( singleOjbect.peEditConfiguration.isSingletrack == NO )
             singleOjbect.peEditConfiguration.isSingletrack = YES;
     }
+    [[SDImageCache sharedImageCache] config].maxMemoryCost = 50 * 1024 * 1024;
+    [[SDImageCache sharedImageCache] config].maxMemoryCount = 50;
     
     return singleOjbect;
 }

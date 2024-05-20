@@ -9,6 +9,7 @@ typedef NSString *VENetworkResourceType NS_STRING_ENUM;
 
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CardMusic;//卡点音乐
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CloudMusic;//配乐
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CloudMusic2;//配乐2
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_OnlineAlbum;//在线相册
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_OnlineBook;//书单样式
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_SoundEffect;//音效
@@ -219,6 +220,9 @@ extern float const VEAdjust_DefaultValue_Exposure;
 /**从URL获取缩率图照片
  */
 + (UIImage * )getThumbImageWithUrl:(NSURL * )url;
+/** 获取相册视频/图片缩略图，maxSize 为0，表示返回原图大小
+ */
++ (UIImage *)getAlbumThumbnailImage:(NSURL *)url maxSize:(float)maxSize;
 + (UIImage * )getThumbImageWithPath:(NSString *)path;
 +(NSString * )getMaterialThumbnail:(NSURL * ) fileUrl;
 +(NSString *)getMaterialWebmMp3:(NSURL *) fileUrl;

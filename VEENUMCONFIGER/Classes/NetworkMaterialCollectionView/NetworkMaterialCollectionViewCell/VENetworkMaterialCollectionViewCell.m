@@ -300,7 +300,8 @@
     if ([btnCell.btnCollectBtn isKindOfClass:[VEAddItemButton class]]) {
         VEAddItemButton *btn = (VEAddItemButton *)btnCell.btnCollectBtn;
         [btn.thumbnailIV long_stopAnimating];
-    }    
+        [btn.thumbnailIV sd_cancelCurrentImageLoad];
+    }
 }
 
 -(void)setIsNotMove:(bool)isNotMove

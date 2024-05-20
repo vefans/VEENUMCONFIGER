@@ -1666,3 +1666,7 @@
 "Album selection" = "相册选择";
 "Direct shooting" = "直接拍摄";
 "Saved to album" = "已保存到相册";
+"Only supports SRT file format!" = "字幕文件只支持srt文件格式！";
+"Subtitle file parsing..." = "字幕文件解析中...";
+"Only supports UTF-8 encoding" = "只支持UTF-8编码";
+"This bubble does not support line breaks" = "该气泡不支持换行";

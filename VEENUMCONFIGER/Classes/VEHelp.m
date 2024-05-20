@@ -24,9 +24,11 @@
 #import <DocX/DocX.h>
 #import <CoreImage/CoreImage.h>
 #import <VEENUMCONFIGER/VEFrameCapture.h>
+
 @import Vision;
 VENetworkResourceType const VENetworkResourceType_CardMusic = @"cardpoint_music";//卡点音乐
 VENetworkResourceType const VENetworkResourceType_CloudMusic = @"cloud_music";//配乐
+VENetworkResourceType const VENetworkResourceType_CloudMusic2 = @"music2";//配乐2
 VENetworkResourceType const VENetworkResourceType_OnlineAlbum = @"cloud_video";//在线相册
 VENetworkResourceType const VENetworkResourceType_OnlineBook = @"bg_books";//书单样式
 VENetworkResourceType const VENetworkResourceType_SoundEffect = @"audio";//音效
@@ -598,37 +600,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 //从URL获取缩率图照片
 + (UIImage *)getThumbImageWithUrl:(NSURL *)url{
-    if([self isSystemPhotoUrl:url]){//[self isSystemPhotoUrl:url]
-        __block UIImage *image;
-        PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-        options.synchronous = YES;
-        options.resizeMode = PHImageRequestOptionsResizeModeExact;
-        options.networkAccessAllowed = YES;//解决草稿箱获取不到缩略图的问题
-        PHFetchResult *phAsset = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
-        PHAsset * asset = [phAsset firstObject];
-        if(!asset){
-            NSData *data = [NSData dataWithContentsOfURL:url];
-            if(data){
-                image = [UIImage imageWithData:data];
-                if (!image) {
-                    image = [self assetGetThumImage:0.0 url:url urlAsset:nil];
-                }
-                data = nil;
-                options = nil;
-                phAsset = nil;
-            }
-        }else{
-            [[PHImageManager defaultManager] requestImageForAsset:[phAsset firstObject] targetSize:CGSizeMake(100*[UIScreen mainScreen].scale, 100*[UIScreen mainScreen].scale) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                image = result;
-                result  = nil;
-                info = nil;
-            }];
-        }
-        
-        
-        options = nil;
-        phAsset = nil;
-        return image;
+    if([self isSystemPhotoUrl:url]){
+        return [self getAlbumThumbnailImage:url maxSize:(100 * [UIScreen mainScreen].scale)];
     }else{
         if([self isImageUrl:url]){
             NSData *imagedata = [NSData dataWithContentsOfURL:url];
@@ -665,39 +638,70 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
 }
 
++ (UIImage *)getAlbumThumbnailImage:(NSURL *)url maxSize:(float)maxSize
+{
+    if (!url) {
+        return nil;
+    }
+    __block UIImage *image;
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    options.synchronous = YES;
+    options.resizeMode = PHImageRequestOptionsResizeModeExact;
+    options.networkAccessAllowed = YES;//解决草稿箱获取不到缩略图的问题
+    PHFetchResult *phAsset = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
+    PHAsset * asset = [phAsset firstObject];
+    if(!asset){
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        if(data){
+            image = [UIImage imageWithData:data];
+            if (!image) {
+                image = [self assetGetThumImage:0.0 url:url urlAsset:nil];
+            }
+            data = nil;
+            options = nil;
+            phAsset = nil;
+        }
+    }else{
+        /** 20240516 如果targetSize 太小，且与图片比例不一致,如CGSizeMake(100 * [UIScreen mainScreen].scale, 100 * [UIScreen mainScreen].scale))，获取到的图片会有空白，导致显示有问题
+         bug现象：iPhone12 截屏，选择这张截屏进入编辑，再选择这张添加画中画，UI 选中框有空白
+         */
+        CGSize targetSize = PHImageManagerMaximumSize;
+        if (maxSize > 0) {
+            float width = maxSize;
+            float height = maxSize;
+            float ratio = asset.pixelWidth / (float)asset.pixelHeight;
+            if (ratio > 1.0) {
+                height = width / ratio;
+                if (height < maxSize) {
+                    height = maxSize;
+                    width = height * ratio;
+                }
+            }
+            else if (ratio < 1.0) {
+                width = height * ratio;
+                if (width < maxSize) {
+                    width = maxSize;
+                    height = width / ratio;
+                }
+            }
+            targetSize = CGSizeMake(width, height);
+        }
+        [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            image = result;
+            result  = nil;
+            info = nil;
+        }];
+    }
+    
+    options = nil;
+    phAsset = nil;
+    return image;
+}
+
 + (UIImage *)getThumbImageWithPath:(NSString *)path {
     NSURL *url;
     if([self isSystemPhotoPath:path]){
-        url = [NSURL URLWithString:path];
-        __block UIImage *image;
-        PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-        options.synchronous = YES;
-        options.resizeMode = PHImageRequestOptionsResizeModeExact;
-        options.networkAccessAllowed = YES;//解决草稿箱获取不到缩略图的问题
-        PHFetchResult *phAsset = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
-        PHAsset * asset = [phAsset firstObject];
-        if(!asset){
-            NSData *data = [NSData dataWithContentsOfURL:url];
-            if(data){
-                image = [UIImage imageWithData:data];
-                if (!image) {
-                    image = [self assetGetThumImage:0.0 url:url urlAsset:nil];
-                }
-                data = nil;
-                options = nil;
-                phAsset = nil;
-            }
-        }else{
-            [[PHImageManager defaultManager] requestImageForAsset:[phAsset firstObject] targetSize:CGSizeMake(100*[UIScreen mainScreen].scale, 100*[UIScreen mainScreen].scale) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                image = result;
-                result  = nil;
-                info = nil;
-            }];
-        }
-        
-        options = nil;
-        phAsset = nil;
-        return image;
+        return [self getAlbumThumbnailImage:url maxSize:(100 * [UIScreen mainScreen].scale)];
     }else{
         url = [NSURL fileURLWithPath:path];
         if([self isImageUrl:url]){
@@ -6540,6 +6544,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     [params setObject:type forKey:@"type"];
     if (appkey.length > 0) {
         [params setObject:appkey forKey:@"appkey"];
+    }
+    if([type isEqualToString:@"music2"]){
+        [params setObject:@"1" forKey:@"hasInit"];
+    }
+    else{
+        [params setObject:([VEConfigManager sharedManager].hasInit ? @"1": @"0") forKey:@"hasInit"];
     }
     [params setObject:@"ios" forKey:@"os"];
     return [self updateInfomation:params andUploadUrl:urlPath];
