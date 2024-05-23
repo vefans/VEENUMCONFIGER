@@ -2977,11 +2977,11 @@
 "智能裁剪" = "Smart Crop";
 "移除智能裁剪" = "Remove Smart Crop";
 
-"自定义台本" = "Custom Script";
-"去拍摄" = "Go to shoot";
+"自定义台本" = "Custom";
+"去拍摄" = "shoot";
 "请输入台本标题" = "Please enter the title of the script";
 "请输入台词内容" = "Please enter the lines";
-"%d/1500字" = "%d/1500 words";
+"%d/%d字" = "%d/%d words";
 "取消智能抠像" = "Revoke";
 "倍数" = "Scale";
 "调节参数" = "Adjust";
@@ -2994,3 +2994,15 @@
 "导出音频%.f%%" = "Exporting audio %. f%%";
 "Complete Edit" = "Complete";
 "截取音乐" = "Trim music";
+"推荐" = "Recommend";
+"裁切最少" = "Minimal cutting";
+"最稳定" = "Most stable";
+"Sound Effects" = "Effects";
+"Import Music" = "Import";
+"粘贴链接"  = "Pasting links";
+"智能语速" = "Intelligence";
+"滚动速度" = "Speed of roll";
+"文字颜色" = "Text color";
+"导入剪辑" = "Importing clips";
+"重拍" = "Beat down";
+"保存本地" = "Save locally";

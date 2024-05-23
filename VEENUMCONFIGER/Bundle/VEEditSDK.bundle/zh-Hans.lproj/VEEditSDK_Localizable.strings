@@ -1670,3 +1670,7 @@
 "Subtitle file parsing..." = "字幕文件解析中...";
 "Only supports UTF-8 encoding" = "只支持UTF-8编码";
 "This bubble does not support line breaks" = "该气泡不支持换行";
+"Music" = "音乐";
+"Sound Effects" = "音效";
+"Import Music" = "导入音乐";
+"Favorite" = "收藏";

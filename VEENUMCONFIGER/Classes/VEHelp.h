@@ -794,4 +794,9 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSString *)getMagnifyingGlassCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
 
 + (NSString *)getYearMonthDayS;
+
++ (UIImage *)multiColorGradientImageWithView:( UIView * ) view colors:(NSArray<UIColor *> *)colors atColorProportions:( NSArray * ) colorProportions;
+
++ (void)centerButtonInScrollView:(UIButton *)sender scrollView:(UIScrollView *)scrollView;
+
 @end

@@ -15801,32 +15801,19 @@ static OSType help_inputPixelFormat(){
 //获取音频文件所有数据
 + (NSMutableData *)getAudioDataWithAssetReader_Customization:( NSURL * ) url atTimeRange:( CMTimeRange ) timeRange atSampleRate:( int ) sampleRate  atChannels:( NSInteger ) channels atBit:( NSInteger ) bit atIsFloat:( BOOL ) isFloat
 {
-    AVAssetReader *audioReader = [self getAudioAssetReader_Customization:url atTimeRange:timeRange atSampleRate:sampleRate atChannels:channels atBit:bit atIsFloat:isFloat];
-    if( audioReader == nil )
-        return nil;
-    
     NSMutableData *audioData = nil;
-    BOOL isGET = true;
-    for (;isGET;) {
-        //判断是否开启解码
-        if (audioReader && audioReader.status == AVAssetReaderStatusUnknown) {
-            [audioReader startReading];
-        }
-        //判断是否解码完成
-        if(audioReader && (audioReader.status == AVAssetReaderStatusCompleted || audioReader.status == AVAssetReaderStatusFailed))
-        {
-            if(audioReader)
-            {
-                [audioReader cancelReading];
-                audioReader = nil;
+    @autoreleasepool {
+        AVAssetReader *audioReader = [self getAudioAssetReader_Customization:url atTimeRange:timeRange atSampleRate:sampleRate atChannels:channels atBit:bit atIsFloat:isFloat];
+        if( audioReader == nil )
+            return nil;
+        BOOL isGET = true;
+        for (;isGET;) {
+            //判断是否开启解码
+            if (audioReader && audioReader.status == AVAssetReaderStatusUnknown) {
+                [audioReader startReading];
             }
-            isGET = false;
-        }
-        //判断是否正在解码
-        if (audioReader && audioReader.status == AVAssetReaderStatusReading) {
-            
-            CMSampleBufferRef sampleBuffer = [audioReader.outputs.firstObject copyNextSampleBuffer];
-            if(!sampleBuffer && audioReader.status == AVAssetReaderStatusReading)
+            //判断是否解码完成
+            if(audioReader && (audioReader.status == AVAssetReaderStatusCompleted || audioReader.status == AVAssetReaderStatusFailed))
             {
                 if(audioReader)
                 {
@@ -15834,26 +15821,41 @@ static OSType help_inputPixelFormat(){
                     audioReader = nil;
                 }
                 isGET = false;
-                //                NSValue *audioTimeValue = [NSValue valueWithCMTimeRange:timeRange];
-                //                [audioReader.outputs.firstObject resetForReadingTimeRanges:@[audioTimeValue]];
-                //                 sampleBuffer = [audioReader.outputs.firstObject copyNextSampleBuffer];
             }
-            //保存音频数据
-            if( sampleBuffer )
-            {
-                size_t lengthAtOffsetOutput, totalLengthOutput;
-                char *dataPointer;
-                CMBlockBufferRef blockBUfferRef = CMSampleBufferGetDataBuffer(sampleBuffer);//取出数据
-                CMBlockBufferGetDataPointer(blockBUfferRef, 0, &lengthAtOffsetOutput, &totalLengthOutput, &dataPointer);
-                if( audioData == nil )
+            //判断是否正在解码
+            if (audioReader && audioReader.status == AVAssetReaderStatusReading) {
+                
+                CMSampleBufferRef sampleBuffer = [audioReader.outputs.firstObject copyNextSampleBuffer];
+                if(!sampleBuffer && audioReader.status == AVAssetReaderStatusReading)
                 {
-                    audioData  = [NSMutableData new];
+                    if(audioReader)
+                    {
+                        [audioReader cancelReading];
+                        audioReader = nil;
+                    }
+                    isGET = false;
+                    //                NSValue *audioTimeValue = [NSValue valueWithCMTimeRange:timeRange];
+                    //                [audioReader.outputs.firstObject resetForReadingTimeRanges:@[audioTimeValue]];
+                    //                 sampleBuffer = [audioReader.outputs.firstObject copyNextSampleBuffer];
                 }
-                [audioData appendBytes:dataPointer length:totalLengthOutput];
+                //保存音频数据
+                if( sampleBuffer )
+                {
+                    size_t lengthAtOffsetOutput, totalLengthOutput;
+                    char *dataPointer;
+                    CMBlockBufferRef blockBUfferRef = CMSampleBufferGetDataBuffer(sampleBuffer);//取出数据
+                    CMBlockBufferGetDataPointer(blockBUfferRef, 0, &lengthAtOffsetOutput, &totalLengthOutput, &dataPointer);
+                    if( audioData == nil )
+                    {
+                        audioData  = [NSMutableData new];
+                    }
+                    [audioData appendBytes:dataPointer length:totalLengthOutput];
+                    
+                    CFRelease(sampleBuffer); // 释放内存
+                }
             }
         }
-    }
-    
+    };
     return audioData;
 }
 
@@ -15896,7 +15898,8 @@ static OSType help_inputPixelFormat(){
 #pragma mark- PrivateCloud  私有云
 +(NSString *)getUploadToken
 {
-    return [VECore getToken_AI:[VEConfigManager sharedManager].editConfiguration.sourcesKey];
+    
+    return [VECore getToken_AI:[VEConfigManager sharedManager].appKey];
 }
 
 +(NSString *)getPrivateCloud_UploadAudioFile:(NSString *)audioFilePath atToken:( NSString * ) token atURL:( NSString * ) url
@@ -15917,7 +15920,7 @@ static OSType help_inputPixelFormat(){
     {
         NSMutableDictionary *param = [NSMutableDictionary dictionary];
         [param setObject:@"appkey" forKey:@"key"];
-        [param setObject:[VEConfigManager sharedManager].editConfiguration.sourcesKey forKey:@"value"];
+        [param setObject:[VEConfigManager sharedManager].appKey forKey:@"value"];
         [param setObject:@"text" forKey:@"type"];
         [params addObject:param];
     }
@@ -17091,6 +17094,56 @@ static OSType help_inputPixelFormat(){
     [formatter setDateFormat:@"ss"];
     NSInteger semdy = [[formatter stringFromDate:date] integerValue];
     return [NSString stringWithFormat:@"%ld%ld%ld%ld",(long)currentYear,(long)currentMonth,(long)currentDay,(long)semdy];
+}
+
++ (UIImage *)multiColorGradientImageWithView:( UIView * ) view colors:(NSArray<UIColor *> *)colors atColorProportions:( NSArray * ) colorProportions {
+    //创建渐变层对象
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    //设置渐变层的frame等同于titleLabel属性的frame（这里高度有个小误差，补上就可以了）
+    gradientLayer.frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height + 3);
+    //将存储的渐变色数组（UIColor类）转变为CAGradientLayer对象的colors数组，并设置该数组为CAGradientLayer对象的colors属性
+    NSMutableArray *gradientColors = [NSMutableArray array];
+    for (UIColor *colorItem in colors) {
+        [gradientColors addObject:(id)colorItem.CGColor];
+    }
+    gradientLayer.colors = [NSArray arrayWithArray:gradientColors];
+//    gradientLayer.locations = @[@0.35, @0.5, @0.65];
+    gradientLayer.locations = [[NSArray alloc] initWithArray:colorProportions];;
+    gradientLayer.startPoint = CGPointMake(0, 0);
+    gradientLayer.endPoint = CGPointMake(1, 1);
+    //下一步需要将CAGradientLayer对象绘制到一个UIImage对象上，以便使用这个UIImage对象来填充按钮的字体
+    UIImage *gradientImage = [VEHelp imageFromLayer:gradientLayer];
+    
+    return gradientImage;
+}
+
+//将一个CALayer对象绘制到一个UIImage对象上，并返回这个UIImage对象
++ (UIImage *)imageFromLayer:(CALayer *)layer {
+    UIGraphicsBeginImageContextWithOptions(layer.frame.size, layer.opaque, 0);
+    [layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *outputImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return outputImage;
+}
+
++ (void)centerButtonInScrollView:(UIButton *)sender scrollView:(UIScrollView *)scrollView {
+    if (scrollView.contentSize.width <= scrollView.frame.size.width) {
+        return;
+    }
+    float margin = scrollView.frame.origin.x / 2.0;
+    CGFloat offSetX = sender.center.x - scrollView.bounds.size.width * 0.5 + margin;
+    CGFloat offsetX1 = (scrollView.contentSize.width - sender.center.x) - scrollView.bounds.size.width * 0.5 - 5;
+    CGPoint offset = CGPointZero;
+    if (offSetX > 0 && offsetX1 > 0) {
+        offset = CGPointMake(offSetX, 0);
+    }
+    else if(offSetX < 0){
+        offset = CGPointZero;
+    }
+    else if (offsetX1 < 0){
+        offset = CGPointMake(scrollView.contentSize.width - scrollView.bounds.size.width, 0);
+    }
+    [scrollView setContentOffset:offset animated:YES];
 }
 
 @end
