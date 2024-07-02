@@ -304,11 +304,13 @@ typedef NS_ENUM(NSInteger, VECustomizationFunctionType){
     kVEEFFECTS2         = 62, //特效2
     kBasicProperties    = 63,//基础属性
     KCorrection         = 64,//矫正
-    KLensTracking     = 65,//镜头追踪
-    KLensTracking_Reset     = 66,//镜头追踪_重置
-    KLensTracking_Adjustment     = 67,//镜头追踪_调整
-    KLensTracking_Cancel     = 68,//镜头追踪_取消
+    KLensTracking       = 65,//镜头追踪
+    KLensTracking_Reset = 66,//镜头追踪_重置
+    KLensTracking_Adjustment = 67,//镜头追踪_调整
+    KLensTracking_Cancel = 68,//镜头追踪_取消
     KSmartCrop          = 69,//智能裁剪
+    kExtractFrames      = 70, //抽帧
+    kMotionflow         = 71, //补帧
 };
 
 typedef NS_ENUM(NSInteger, VESDKErrorCode) {
@@ -403,6 +405,8 @@ typedef NS_ENUM(NSInteger, VEPIPFunctionType){
     kPIP_BasicProperties    = 74,//基础属性
     kPIP_Correction           =  75,//矫正
     kPIP_LensTracking       = 76,//镜头追踪
+    kPIP_ExtractFrames      = 77,//抽帧
+    kPIP_Motionflow         = 78,//补帧
 };
 
 /*
@@ -813,9 +817,9 @@ isPhoneX;\
 
 #define kStickerIconPlistPath [kStickerFolder stringByAppendingPathComponent:@"EffectIconList.plist"]
 
-#define kScaleFolder [kVEDirectory stringByAppendingPathComponent:@"scales"];
+#define kScaleFolder [kVEDirectory stringByAppendingPathComponent:@"scales"]
 
-#define kLocalMusicFolder [kVEDirectory stringByAppendingPathComponent:@"localFileMusics"];
+#define kLocalMusicFolder [kVEDirectory stringByAppendingPathComponent:@"localFileMusics"]
 
 #define kMusicSearchFolder [kVEDirectory stringByAppendingPathComponent:@"MusicSearch"]
 #define kMusicSearchHistoryPath [kMusicSearchFolder stringByAppendingPathComponent:@"MusicSearchList.plist"]
@@ -978,3 +982,11 @@ isPhoneX;\
 #define kIsLoadedTextTemplateResource @"isLoadedTextTemplateResource"
 
 #define kVEEnableChangeColorAnimateId @"1012384"
+
+#define KScriptFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/Script"]
+
+#define kScriptPath [KScriptFolder stringByAppendingPathComponent:@"scriptDraft.plist"]
+
+#define kScriptPropsRecordPlist [KScriptFolder stringByAppendingPathComponent:@"scriptPropsRecord.plist"]
+
+#define PHOTO_ALBUM_NAME @"VEDemo"

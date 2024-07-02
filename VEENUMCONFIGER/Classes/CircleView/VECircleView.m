@@ -87,6 +87,11 @@
         CGContextSetLineWidth(context, self.progressWidth);
         CGContextStrokePath(context);
     }
+    if(_isShowNumber){
+        NSString *text = [NSString stringWithFormat:@"%.lf%%",_percent * 100];
+        CGSize size = [text sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]}];
+        [text drawInRect:CGRectMake((self.frame.size.width - size.width)/2.0, (self.frame.size.height - size.height)/2.0, size.width, size.height) withAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]}];
+    }
 }
 
 - (void)setPercent:(float)percent

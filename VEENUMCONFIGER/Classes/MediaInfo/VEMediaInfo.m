@@ -354,6 +354,8 @@
     if( _BlurCanvaAsset )
         copy.BlurCanvaAsset = [_BlurCanvaAsset copy];
     copy.rectInView = _rectInView;
+    copy.frameExtractionURL = _frameExtractionURL;
+    copy.motionflowURL = _motionflowURL;
     
     return copy;
 }
@@ -712,6 +714,8 @@
             _videoActualTimeRange = [VECore getActualTimeRange:contentURL];
             if (CMTimeCompare(_videoActualTimeRange.duration, kCMTimeZero) == 1) {
                 _videoDurationTime = _videoActualTimeRange.duration;
+                _videoTimeRange = _videoActualTimeRange;
+                _reverseVideoTimeRange = _videoActualTimeRange;
             }
         }
     }
@@ -719,6 +723,8 @@
         _videoActualTimeRange = [VECore getActualTimeRange:contentURL];
         if (CMTimeCompare(_videoActualTimeRange.duration, kCMTimeZero) == 1) {
             _videoDurationTime = _videoActualTimeRange.duration;
+            _videoTimeRange = _videoActualTimeRange;
+            _reverseVideoTimeRange = _videoActualTimeRange;
         }
     }
 }

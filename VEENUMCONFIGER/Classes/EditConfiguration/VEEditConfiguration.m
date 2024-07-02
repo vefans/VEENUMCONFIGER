@@ -163,6 +163,8 @@
         _isOnlyFragmentEdit = false;
         _enableBasicProperties = true;
         _enableSmartCrop = true;
+        _enableExtractFrames = true;
+        _enableMotionflow = true;
     }
     
     return self;
@@ -331,6 +333,10 @@
     copy.enableNoise = _enableNoise;
     copy.sourcesKey = _sourcesKey;
     copy.enableSmartCrop = _enableSmartCrop;
+    copy.getMusicFromLinkPath = _getMusicFromLinkPath;
+    copy.musicResourcesConfigPath = _musicResourcesConfigPath;
+    copy.enableExtractFrames = _enableExtractFrames;
+    copy.enableMotionflow = _enableMotionflow;
     
     return copy;
 }

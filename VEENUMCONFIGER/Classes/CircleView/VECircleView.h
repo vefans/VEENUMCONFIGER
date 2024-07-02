@@ -14,5 +14,6 @@
 @property (nonatomic, assign) CGFloat progressWidth; /**< 进度条宽度 默认3*/
 @property (nonatomic, assign) float percent; /**< 进度条进度 0-1*/
 @property (nonatomic, assign) BOOL clockwise; /**< 0顺时针 1逆时针*/
+@property (nonatomic, assign) Boolean isShowNumber; /**是否显示百分比*/
 
 @end

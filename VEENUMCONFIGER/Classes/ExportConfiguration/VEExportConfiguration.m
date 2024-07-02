@@ -20,7 +20,9 @@
 @end
 
 @implementation VEExportConfiguration
-
+- (void)setEnableExportTemplate:(_Bool)enableExportTemplate{
+    _enableExportTemplate = enableExportTemplate;
+}
 - (instancetype)init
 {
     self = [super init];
@@ -39,7 +41,7 @@
         _watermarkPosition = VEWatermarkPosition_leftBottom;
         _enableSetExportParams = true;
         _isCanDeleteWatermark = true;
-        
+        _useProfessionalEdition = true;
         _exportFileType = ExportFileTypeDefault;
     }
     return self;
@@ -95,6 +97,7 @@
     copy.userUniqueId = _userUniqueId;
     copy.enableSetExportParams = _enableSetExportParams;
     copy.isDefaultExportGif = _isDefaultExportGif;
+    copy.useProfessionalEdition = _useProfessionalEdition;
     
     return copy;
 }
@@ -134,7 +137,7 @@
     copy.userUniqueId = _userUniqueId;
     copy.enableSetExportParams = _enableSetExportParams;
     copy.isDefaultExportGif = _isDefaultExportGif;
-    
+    copy.useProfessionalEdition = _useProfessionalEdition;
     return copy;
     
 }

@@ -298,6 +298,9 @@
             [self.confirmationBtn setImage:nil forState:UIControlStateNormal];
             //[self.finishToolBarBtn setTitle:VELocalizedString(@"完成", nil) forState:UIControlStateNormal];
             [self.confirmationBtn setImage:[VEHelp imageNamed:([VEConfigManager sharedManager].iPad_HD ? @"ipad/剪辑_勾_" : @"剪辑_勾_")] forState:UIControlStateNormal];
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                [self.confirmationBtn setImage:[VEHelp imageNamed:([VEConfigManager sharedManager].iPad_HD ? @"ipad/剪辑_勾_" : @"音量勾")] forState:UIControlStateNormal];
+            }
             [self.confirmationBtn setTitleColor:UIColorFromRGB(0x31d065) forState:UIControlStateNormal];
             
             [self.confirmationBtn addTarget:self action:@selector(finishToolBarButtonClicked) forControlEvents:UIControlEventTouchUpInside];

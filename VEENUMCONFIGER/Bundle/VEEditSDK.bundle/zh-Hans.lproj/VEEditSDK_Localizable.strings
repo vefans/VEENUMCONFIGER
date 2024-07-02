@@ -8,7 +8,6 @@
 
 "调整" = "调整";
 "描边透明度" = "描边透明度";
-"透明度" = "透明度";
 "粗" = "粗";
 "描边:细" = "描边:细";
 "粗体" = "粗体";
@@ -193,7 +192,7 @@
 "title-enableFragmentedit" = "照片";
 
 
-
+"模板" = "模板";
 "正在导出，请稍等..." = "正在导出，请稍等...";
 "时间至少大于0.5秒!" = "时间至少大于0.5秒!";
 
@@ -387,7 +386,7 @@
 "粗体" = "粗体";
 "斜体" = "斜体";
 "阴影" = "阴影";
-"透明度" = "透明度";
+"Opacity" = "透明度";
 "细" = "细";
 "粗" = "粗";
 "画布对齐" = "画布对齐";
@@ -888,6 +887,7 @@
 "竖屏" = "竖屏";
 "自动" = "自动";
 "添加文字" = "添加文字";
+"模板" = "模板";
 "切换转场" = "切换转场";
 "随机转场" = "随机转场";
 "应用于全部" = "应用于全部";
@@ -1447,7 +1447,8 @@
 "My" = "我的";
 "Language Settings" = "语言设置";
 "Out of safe zone" = "超出安全区域";
-"No drafts backup to cloud" = "暂未有内容备份到云草稿";
+"No uploaded drafts yet" = "暂未有内容备份到云草稿";
+"Back Up Now" = "立即备份";
 "Auto HDR" = "智能HDR";
 "Enable the function, it will intelligently convert into HDR videos based on the materials." = "开启功能后，会根据素材内容智能转化为HDR视频。";
 
@@ -1497,13 +1498,13 @@
 "Bitrate(kbps)" = "码率（kbps）";
 "Using volume keys to record" = "使用音量键拍摄";
 "Grid" = "网格";
-"Prompter" = "提词面板";
+"Teleprompter " = "提词面板";
 "Library" = "题词库";
 "15s" = "15秒";
 "30s" = "30秒";
 "60s" = "60秒";
 "300s" = "300秒";
-"Please enter or paste the text to enable the prompter feature.(Click on the blank area keyboard to disappear)" = "将想说的话提前输入或粘贴在这里，方便录音(点击空白区键盘消失)";
+"Please enter or paste the text to enable the teleprompter feature.(Click on the blank area keyboard to disappear)" = "将想说的话提前输入或粘贴在这里，方便录音(点击空白区键盘消失)";
 "Anchor:" = "主播：";
 "Next" = "下一步";
 "TTS" = "字说";
@@ -1614,7 +1615,7 @@
 "View recording" = "查看录制内容";
 "Done" = "完成";
 "Cannot add dubbing, because the time is less than 0.5s!" = "无法添加配音，可添加时间小于0.5秒！";
-"Tap or long press to record" = "点击或长按进行录音";
+"Tap or press and hold to record" = "点击或长按进行录音";
 "Recording" = "录音中";
 "Recording time must be at least 0.5 seconds!" = "录音时间至少大于0.5秒!";
 "Clear" = "清除";
@@ -1674,3 +1675,45 @@
 "Sound Effects" = "音效";
 "Import Music" = "导入音乐";
 "Favorite" = "收藏";
+"Link Download" = "链接下载";
+"Extract" = "提取音乐";
+"From Files" = "来自文件";
+"iTunes" = "资料库";
+"Tiktok" = "抖音";
+"Paste the video/music link shared by Tiktok" = "粘贴抖音分享的视频/音乐链接";
+"How to download" = "如何下载";
+"Share the video/music link in Tiktok,  \npaste it into the input box above, then click to download music" = "在抖音分享视频/音乐链接，\n粘贴到上方输入框中，即可点击下载音乐";
+"Start parsing" = "开始解析";
+"Parsing failed" = "解析失败";
+"Extract From Album" = "去提取视频中的音乐";
+"Import From File" = "从文件中导入";
+"Audio already exists" = "音频已存在";
+"Resource loading %.f%" = "资源加载中%.f%";
+"No music" = "暂无音乐数据";
+"Import from iTunes and sync to iPhone." = "可通过iTunes在电脑导入音乐并同步至手机";
+"Are you sure to delete this music?" = "确认删除该音乐？";
+"Percentage" = "百分比抽帧";
+"Manual Input" = "手动输入";
+"Unchange duration, only change frame rate" = "视频时长不变，仅改变帧数";
+"percent" = "分之一";
+"Input frame rate" = "手动输入帧数";
+"Remaining after extraction" = "抽取后剩余";
+"frame rate" = "帧";
+"Keep at least one frame" = "至少保留一帧";
+"Frame extracting %0.1f%%" = "抽帧中%0.1f%%";
+"Cannot exceed the total frame rate (%ld)" = "不能超出总帧数（%ld）";
+"Media %ld frames in total" = "媒体共%ld帧";
+"Please enter a number greater than 0" = "请输入大于0的数字";
+"Frame rate: %.2f, Duration:%.2fs" = "媒体原帧率为%.2f，时长为%.2fs";
+"Cannot exceed media duration (%. f)" = "不能超过媒体时长 (%.f)";
+"Cannot exceed the current total frame rate of the media (% ld)" = "不能超过媒体当前总帧数 (%ld)";
+"Target frame rate:" = "目标帧率:";
+"Optical flow framing %d%%" = "补帧中%d%%";
+
+"Corner radius" = "圆角程度";
+"Height" = "高度";
+"Width" = "宽度";
+"Y-offset" = "上下偏移";
+"X-offset" = "左右偏移";
+
+"VR" = "全景";

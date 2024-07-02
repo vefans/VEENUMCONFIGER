@@ -10,6 +10,7 @@
 #import <SDWebImage/SDWebImage.h>
 
 NSString *const VEStartExportNotification = @"VEStartExportNotification";
+NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermarkNotification";
 
 @implementation VEConfigManager
 - (void)setAppKey:(NSString *)appKey{
@@ -99,6 +100,12 @@ NSString *const VEStartExportNotification = @"VEStartExportNotification";
 - (void)startExportWithMinWH:(int)minWH {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:VEStartExportNotification object:[NSNumber numberWithInt:minWH]];
+    });
+}
+
+- (void)removeDefaultWatermark {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:VERemoveDefaultWatermarkNotification object:nil];
     });
 }
 

@@ -294,7 +294,7 @@ NSString * _netMaterialTypeURL;
             }
             else
             {
-                [_filterCollectionView setContentOffset:CGPointMake( 0 , 0) animated:NO];
+                [_filterCollectionView setContentOffset:CGPointZero animated:NO];
                 _isSelect = true;
                 [self filterLabelBtn:[_fileterLabelNewScroView viewWithTag:0]];
                 _isSelect = NO;
@@ -495,26 +495,7 @@ NSString * _netMaterialTypeURL;
         }
         if (_selectFilterIndex > 0) {
             [_filterCollectionView performBatchUpdates:^{
-                UICollectionView *collectionView = _filterCollectionView;
-                if (collectionView.contentSize.width > collectionView.frame.size.width) {
-                    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)collectionView.collectionViewLayout;
-                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(_selectFilterIndex - 1) inSection:0];
-                    float x = indexPath.row * (layout.itemSize.width + layout.minimumLineSpacing) + 35 * currentlabelFilter;//35 :FooterWidth
-                    float centerX = x + layout.itemSize.width / 2.0;
-                    CGFloat offSetX = centerX - collectionView.bounds.size.width * 0.5;
-                    CGFloat offsetX1 = (collectionView.contentSize.width - centerX) - collectionView.bounds.size.width * 0.5;
-                    CGPoint offset = CGPointZero;
-                    if (offSetX > 0 && offsetX1 > 0) {
-                        offset = CGPointMake(offSetX, 0);
-                    }
-                    else if(offSetX < 0){
-                        offset = CGPointMake(-collectionView.contentInset.left, 0);
-                    }
-                    else if (offsetX1 < 0){
-                        offset = CGPointMake(collectionView.contentSize.width - collectionView.bounds.size.width + collectionView.contentInset.right, 0);
-                    }
-                    [collectionView setContentOffset:offset animated:YES];
-                }
+                [VEHelp centerButtonInCollectionView:_selectFilterIndex collectionView:_filterCollectionView];
             } completion:nil];
         }
     }
@@ -627,22 +608,7 @@ NSString * _netMaterialTypeURL;
     self.fileterScrollView.hidden = NO;
     
     btn.selected = YES;
-    
-    float margin = _fileterLabelNewScroView.frame.origin.x / 2.0;
-    CGFloat offSetX = btn.center.x - _fileterLabelNewScroView.bounds.size.width * 0.5 + margin;
-    CGFloat offsetX1 = (_fileterLabelNewScroView.contentSize.width - btn.center.x) - _fileterLabelNewScroView.bounds.size.width * 0.5;
-    CGPoint offset = CGPointZero;
-    if (offSetX > 0 && offsetX1 > 0) {
-        offset = CGPointMake(offSetX, 0);
-    }
-    else if(offSetX < 0){
-        offset = CGPointZero;
-    }
-    else if (offsetX1 < 0){
-        offset = CGPointMake(_fileterLabelNewScroView.contentSize.width - _fileterLabelNewScroView.bounds.size.width, 0);
-    }
-    
-    [_fileterLabelNewScroView setContentOffset:offset animated:( (oldBtn.frame.origin.x > _fileterLabelNewScroView.contentOffset.x) || ( oldBtn.frame.origin.x <  (_fileterLabelNewScroView.contentOffset.x + _fileterLabelNewScroView.frame.size.width)) )?NO:YES];
+    [VEHelp centerButtonInScrollView:btn];
     
     if( _filterCollectionView && ( !_isSelect ) )
     {
@@ -659,7 +625,7 @@ NSString * _netMaterialTypeURL;
         }
         else
         {
-            [_filterCollectionView setContentOffset:CGPointMake(0, 0) animated:false];
+            [_filterCollectionView setContentOffset:CGPointZero animated:false];
             [_filterCollectionView reloadData];
         }
     }
@@ -1124,24 +1090,8 @@ NSString * _netMaterialTypeURL;
                 UIButton *noBtn = [_fileterNewView viewWithTag:100];
                 noBtn.selected = NO;
                 
-                if ([item.superview.superview isKindOfClass:[UICollectionView class]] && ![VEConfigManager sharedManager].iPad_HD) {
-                    UICollectionView *collectionView = (UICollectionView *)item.superview.superview;
-                    if (collectionView.contentSize.width > collectionView.frame.size.width) {
-                        float centerX = item.superview.center.x;
-                        CGFloat offSetX = centerX - collectionView.bounds.size.width * 0.5;
-                        CGFloat offsetX1 = (collectionView.contentSize.width - centerX) - collectionView.bounds.size.width * 0.5;
-                        CGPoint offset = CGPointZero;
-                        if (offSetX > 0 && offsetX1 > 0) {
-                            offset = CGPointMake(offSetX, 0);
-                        }
-                        else if(offSetX < 0){
-                            offset = CGPointMake(-collectionView.contentInset.left, 0);
-                        }
-                        else if (offsetX1 < 0){
-                            offset = CGPointMake(collectionView.contentSize.width - collectionView.bounds.size.width + collectionView.contentInset.right, 0);
-                        }
-                        [collectionView setContentOffset:offset animated:YES];
-                    }
+                if (![VEConfigManager sharedManager].iPad_HD) {
+                    [VEHelp centerButtonInCollectionView:_selectFilterIndex collectionView:item.superview.superview];
                 }
                 
                 _selectFilterIndex = item.tag-1;

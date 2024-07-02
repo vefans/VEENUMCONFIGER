@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, AUDIO_SPEECH_Type){
     AUDIO_SPEECH_Type_OfflineModel,            //离线模型
 };
 
-typedef BOOL (^VEEnterAdvancedEditHandler) (UIViewController *viewController);
+typedef BOOL (^VEEnterAdvancedEditHandler) (UIViewController *viewController,int type/*1：无水印导出，2：移除界面水印*/);
 //导出前回调
 typedef void(^VEPrepareExportHandler) (UIViewController *viewController);
 
@@ -58,6 +58,7 @@ typedef void(^VEExporTemplate) (UIViewController * view);
 
 
 UIKIT_EXTERN NSString * const VEStartExportNotification;
+UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 
 @protocol VESDKDelegate <NSObject>
 
@@ -375,7 +376,9 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
  @param minWH 视频分辨率宽高的最小值；例导出720P视频，则设置为720
  */
 - (void)startExportWithMinWH:(int)minWH;
-
+/** 移除默认水印
+ */
+- (void)removeDefaultWatermark;
 @property (nonatomic, assign) BOOL       iPad_HD;
 @property (nonatomic, assign) BOOL       enableBtnLikeTemp;
 @property (nonatomic, copy) void (^likeNoLoginBlock)(UIViewController *viewController);
@@ -386,5 +389,6 @@ UIKIT_EXTERN NSString * const VEStartExportNotification;
 /** 音乐界面布局样式 (default 0)
  */
 @property (nonatomic, assign) int musicViewLayoutStyle;
+@property (nonatomic, strong) id exportDraft;
 
 @end

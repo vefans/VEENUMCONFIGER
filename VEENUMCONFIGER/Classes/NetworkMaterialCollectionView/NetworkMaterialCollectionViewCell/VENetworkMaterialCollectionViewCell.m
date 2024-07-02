@@ -10,6 +10,7 @@
 #import "VENetworkMaterialBtn_Cell.h"
 #import "VENetworkMaterialView.h"
 #import <SDWebImage/SDImageCache.h>
+#import <SDWebImage/UIView+WebCache.h>
 #import <VEENUMCONFIGER/LongCacheImageView.h>
 @implementation VECell_CollectionView
 

@@ -22,7 +22,7 @@
 "animation_滚动" = "Scroll";
 "animation_淡入" = "Fade";
 "样式" = "Styles";
-"动画" = "Animate";
+"动画" = "Animation";
 "字幕_动画" = "Anim";
 "边框" = "Frames";
 "颜色" = "Color";
@@ -77,8 +77,8 @@
 "选择视频不能大于%.1fs" = "The selected video cannot be greater than %.1fs";
 "美颜" = "Beauty";
 "磨皮" = "Smooth";
-"美白" = "Whiten";
-"瘦脸" = "Thin";
+"美白" = "Brighten";
+"瘦脸" = "Slim";
 "大眼" = "Eye size";
 "亮肤" = "Bright";
 "红润" = "Rosy";
@@ -271,7 +271,7 @@
 "按住录音" = "Hold to record";
 
 "点击输入文字..." = "Tap to add text...";
-"输入文字..." = "Input text...";
+"输入文字..." = "Enter text...";
 "停止输入" = "Stop input";
 "文字板" = "Textboard";
 
@@ -590,7 +590,7 @@
 "视频(至少%d个):%lu" = "Video(At least %d):%d";
 "图片(至少%d张):%lu" = "Photo(At least %d):%d";
 "素材(至少%d个):%lu" = "Material(At least %d):%d";
-"剪同款" = "Template";
+"剪同款" = "Try";
 "免费试用" = "Use for Free";
 "成为VIP" = "付费：Free for VIP";
 "可修改文案" = "Editable text";
@@ -697,7 +697,7 @@
 "分辨率:  %dx%d" = "Resolution:%dx%d";
 "分辨率" = "Resolution";
 "普通清晰度，内存占用小，适合分享" = "Normal resolution, small memory usage, suitable for sharing";
-"带给你更流畅的播放体验" = "Brings you a smoother playback experience";
+"带给你更流畅的播放体验" = "Smoother playback";
 "大小:  %.2fMB" = "Size:%.2fMB";
 "压缩后大小：%.2fMB" = "Compressed size: %.2fMB";
 "如何还原最优的视频清晰度？" = "How to restore the optimal video resolution?";
@@ -794,6 +794,7 @@
 "试听效果"  = "Audition effect";
 "取消选择"  = "Cancel Selection";
 "视频音乐"  = "Video music";
+"模板" = "Template";
 
 "请先添加片头图片" = "Please add a head image first";
 "请先添加片尾图片" = "Please add a ending image first";
@@ -841,15 +842,15 @@
 "无滤镜" = "No filter";
 
 "变暗" = "Darken";
-"滤色" = "Color filter";
+"滤色" = "Filter";
 "叠加" = "Overlay";
-"正片叠底" = "Multiply blend";
-"变亮" = "Brighten";
-"强光" = "Glare";
-"柔光" = "Soft light";
-"线性加深" = "Linear deepen";
-"颜色加深" = "Color deepen";
-"颜色减淡" = "Color dodge";
+"正片叠底" = "Slide";
+"变亮" = "Lighten";
+"强光" = "Hard";
+"柔光" = "Soft";
+"线性加深" = "Burn";
+"颜色加深" = "Color burn";
+"颜色减淡" = "Dodge";
 "混合模式" = "Blend";
 "抠像"    = "Cutout";
 "撤销抠像" = "Undo matt";
@@ -899,12 +900,12 @@
 "没有音乐" = "No music";
 "通过iTunes将电脑上的歌曲同步到您的设备上" = "Syncing songs from your computer to your device via iTunes";
 "片尾不能进行背景编辑！" = "Cannot edit the background of the credits!";
-"羽化" = "Feathering";
+"羽化" = "Feather";
 "蒙版" = "Mask";
-"反转" = "Reversal";
+"反转" = "Invert";
 "线性" = "Split";
 "镜面" = "Filmstrip";
-"圆形" = "Round";
+"圆形" = "Circle";
 "矩形" = "Rectangle";
 "五角星" = "Star";
 "爱心" = "Heart";
@@ -921,11 +922,12 @@
 "花字" = "Effects";
 "%@：画中画 %@" = "%@：Overlay %@";
 "音频" = "Audio";
-
-
+"撤销删除" = "Undo delete";
+"恢复删除" = "Redo delete";
 // 2020.11.16 add
-
-
+"撤销调整" = "Undo adjust";
+"恢复调整" = "Redo adjust";
+"应用所有图片时长" = "Apply all picture duration";
 "快速扫描" = "Quick scan";
 "自定义扫描" = "Custom scan";
 "正常" = "None";
@@ -1521,7 +1523,6 @@
 "尖锐" = "Sharp";
 "大光圈" = "Large aperture";
 "线型" = "Linear";
-"多格视频" = "Splice";
 "使用上次样式" = "Choose the Last Style";
 "应用到全部" = "Apply to All";
 "应用到当前" = "Apply to the Current One";
@@ -1548,7 +1549,7 @@
 
 "设置" = "Settings";
 "录制" = "Record";
-"多格视频" = "Splice";
+"多格视频" = "Collage";
 "视频编辑" = "Edit Video";
 "相册视频" = "Album Video";
 "压缩" = "Compress";
@@ -1617,6 +1618,7 @@
 "修改封面" = "Cover";
 "+ 添加音频" = "+ Add audio";
 "添加片尾" = "Add ending";
+"删除片尾" = "Delete ending";
 "排序" = "Order";
 "提取" = "Extracted";
 "添加调色" = "Toning";
@@ -1867,8 +1869,6 @@
 "请等待草稿备份完成后再进行操作" = "Please wait for the backup of the draft to be completed before proceeding";
 "该草稿已下载到本地，你可以到草稿箱中进行编辑" = "The draft has been downloaded, you can edit it in the draft box";
 "前往编辑" = "Go to edit";
-"立即备份" = "Backup Now";
-"暂未有内容备份到云草稿" = "You haven't backed up the draft yet";
 "标记" = "Mark";
 "添加标记" = "Add Mark";
 "草稿不存在" = "The draft does not exist";
@@ -1879,7 +1879,7 @@
 "优化抠像中：" = "Optimizing Cutout:";
 "跟踪处理完成" = "Tracking completion";
 "跟踪" = "Tracking";
-"开始跟踪" = "Start track";
+"开始跟踪" = "Start tracking";
 "跟踪处理中" = "Tracking in progress";
 "AI识别到%d人，请选择一位进行跟踪！" = "AI recognized %d people, please choose one to track!";
 "AI识别到多人，请选择一位进行美颜！" = "AI recognizes multiple people, please choose one to beautify!";
@@ -1924,8 +1924,8 @@
 "当前时间点已有字幕，无法添加" = "Subtitles already exist at the current time point and cannot be added";
 "当前时间点无法添加" = "Cannot add the current time point";
 "基础" = "Basic";
-"文字识别中..." = "Text recognition...";
-"字幕识别中..." = "In speech recognition...";
+"文字识别中..." = "Create auto captions...";
+"字幕识别中..." = "Create auto captions...";
 "① 其它文字样式和我一样" = "① Style apply to all ";
 "② 其它文字上下位置和我对齐" = "② Position apply to all";
 "③ 水平对齐画面" = "③ Align apply to all";
@@ -2064,7 +2064,8 @@
 "轻移" = "Nudge";
 
 "循环" = "Loop";
-"色温" = "Temperature";
+//"色温" = "Temperature";
+"色温" = "Temp";
 "暗角" = "Vignette";
 "高光" = "Highlight";
 "阴影" = "Shadow";
@@ -2192,7 +2193,7 @@
 "脸宽" = "Width";
 "下颌" = "Jaw";
 "额头高" = "Forehead Height";
-"嘴宽" = "Mouth Length";
+"嘴宽" = "Mouth Width";
 "下巴宽" = "Chin width";
 "下巴高" = "Chin height";
 "额头" = "Forehead";
@@ -2214,17 +2215,6 @@
 
 "压缩中 %.1f" = "Compressing %.1f";
 "压缩中\n%.1f (%d/%d)" = "Compressing\n%.1f (%d/%d)";
-
-"滤色" = "Color filter";
-"变暗" = "Darken";
-"叠加" = "Overlay";
-"正片叠放" = "Multiply";
-"变亮" = "Lighten";
-"强光" = "Strong light";
-"柔光" = "Soft light";
-"线性加深" = "Linear deepen";
-"颜色加深" = "Color deepen";
-"颜色减淡" = "Color dodge";
 
 "取消抠图" = "Cancel cutout";
 "抠像1" = "Cutout1";
@@ -2302,9 +2292,9 @@
 "同时清空已有字幕" = "Clear all captions";
 "请先开启音量或添加音频，再进行识别" = "Please turn on the volume or add a audio before recognizing";
 "条纹" = "Strip";
-"视频轨道" = "Video track";
-"音频轨道" = "Audio track";
-"录音轨道" = "Record track";
+"视频轨道" = "From video";
+"音频轨道" = "From audio";
+"录音轨道" = "Voiceover";
 "开始识别" = "Start";
 "资源未初始化。" = "Assets are not installed.";
 "Siri 或听写功能已禁用。" = "Siri or Dictation is disabled.";
@@ -2424,9 +2414,9 @@
 "历史搜索" = "History Search";
 "时长：%.1fs" = "Duration：%.1fs";
 
-"鼻宽" = "Nose Narrow";
-"鼻高" = "Nose Length";
-"眼宽" = "Eye Length";
+"鼻宽" = "Nose Width";
+"鼻高" = "Nose Height";
+"眼宽" = "Eye Width";
 "眼高" = "Eye Size";
 "眼距" = "Eye Distance";
 "倾斜" = "Eye Slant";
@@ -2450,7 +2440,7 @@
 "删除点" = "Delete";
 "批量编辑" = "Batch edit";
 "总共%d条字幕" = "Total %d subtitles";
-"点击或长按进行录音" = "Tap or long press to record";
+"点击或长按进行录音" = "Tap or press and hold to record";
 "点击右边素材库\"\"添加素材，或拖拽素材到下方主轴区域，开始创作" = "Click the material library on the right\"\"to add material, or drag the material to the main axis area below to start creating";
 "点击右边素材库\"\"添加素材" = "Click on the material library on the right\"\"Add material";
 "拖动素材到这里，开始你的创作吧～" = "Drag the material here and start your creation~";
@@ -2496,11 +2486,11 @@
 "请输入宽高比（例如：16:9）" = "Enter ratio（e.g：16:9）";
 "输入自定义比例" = "Enter custom ratio";
 "请输入正确的宽高比（例如：16:9）" = "Enter right ratio（e.g：16:9）";
-"请输入或粘贴文稿，开启提词器功能～" = "Please enter or paste the text to enable the prompter feature ~";
+"请输入或粘贴文稿，开启提词器功能～" = "Please enter or paste the text to enable the teleprompter feature ~";
 "请输入正确的宽高比（例如：16:9）" = "Enter right ratio（e.g：16:9）";
 "防抖" = "Stabilize";
 "防抖转换中..." = "Anti-shake transitioning...";
-"防抖转换中%0.1f%%" = "Anti-shake transitioning %0.1f%%";
+"防抖转换中%0.1f%%" = "Stabilize %0.1f%%";
 "音频卡点" = "Audio Card Point";
 "去选图" = "Album";
 "自动卡点" = "Automatic";
@@ -2528,11 +2518,11 @@
 "边角定位文本示例" = "Sample corner positioning text";
 "手动变形" = "Manual";
 "导入数据" = "Import";
-"提词器" = "Prompter";
+"提词器" = "Teleprompter ";
 "曝光" = "Exposure";
 "主视频" = "Main video";
 "主媒体" = "Main";
-"声音变调" = "Tone";
+"声音变调" = "Pitch";
 "您确定要删除此草稿吗？" = "Do you sure delete this draft?";
 "您确定要删除此画板吗？" = "Do you sure delete this draft?";
 "您确定要清除画板吗？" = "Are you sure you want to clear the drawing board?";
@@ -2611,7 +2601,7 @@
 "色彩方案" = "Color scheme";
 "基本调整" = "Basic adjustment";
 "曲线" = "Curve";
-"色调分离" = "Separation";
+"色调分离" = "Split tone";
 "高光色调" = "Highlight";
 "阴影色调" = "Shadow";
 "清晰度" = "Clarity";
@@ -2831,7 +2821,7 @@
 "竖屏" = "Portrait";
 
 "努力导出中..." = "Exporting...";
-"请保持屏幕点亮，不要锁屏或切换程序" = "Please keep the screen lit, do not lock the screen or switch programs";
+"请保持屏幕点亮，不要锁屏或切换程序" = "Please don't lock the screen or switch APP";
 "Before compression" = "Before";
 "After compression" = "After";
 "Clarity Priority" = "Clarity";
@@ -2924,10 +2914,10 @@
 "调整起始时间" = "Adjust time";
 "X-axis" = "X";
 "Y-axis" = "Y";
-"基础属性" = "Basic Properties";
-"矫正" = "Correction";
+"基础属性" = "Basic";
 "添加字幕文件" = "Add subtitle file";
 "镜头追踪" = "Lens tracking";
+"镜头追踪_参数调整" = "Lens tracking - Parameter adjustment";
 "请选择追踪对象" = "Please select who to track";
 "开始" = "Start";
 "头" = "head";
@@ -2974,7 +2964,8 @@
 "放大镜%d" = "Magnifier%d";
 "跟踪处理中0%" = "Tracking 0%";
 "跟踪处理中%0.1f%%" = "Tracking %0.1f%%";
-"智能裁剪" = "Smart Crop";
+//"智能裁剪" = "Smart Crop";
+"智能裁剪" = "Auto reframe";
 "移除智能裁剪" = "Remove Smart Crop";
 
 "自定义台本" = "Custom";
@@ -2995,7 +2986,7 @@
 "Complete Edit" = "Complete";
 "截取音乐" = "Trim music";
 "推荐" = "Recommend";
-"裁切最少" = "Minimal cutting";
+"裁切最少" = "Minimal cropping";
 "最稳定" = "Most stable";
 "Sound Effects" = "Effects";
 "Import Music" = "Import";
@@ -3006,3 +2997,35 @@
 "导入剪辑" = "Importing clips";
 "重拍" = "Beat down";
 "保存本地" = "Save locally";
+"Link Download" = "Link";
+"欢迎使用提词器,你的视频拍摄小助手" = "Welcome to the Epigraph, your little assistant for video shooting";
+"先用示例台词试试吧～\n嗨，我是提词器，帮你轻松记住所有台词的小助手。提词器窗口的编辑按钮支持对文字内容进行二次调整，设置按钮支持对文字滚动速度、字号大小和字体颜色的调整。还能移动提词器窗口至屏幕任意位置奥～调整到适合的参数，即可尝试跟着提词器边拍边读。下面开始你的第一个作品吧！" = "Hi, I'm the Teleprompter, your little assistant to help you remember all your lines easily. The Edit button of the teleprompter window supports secondary adjustment of the text content, and the Settings button supports adjustment of the text scroll speed, font size and font color. You can also move the teleprompter window to any position on the screen to adjust the appropriate parameters, you can try to follow the teleprompter while filming and reading. Let's get started with your first project!";
+"抽帧" = "Frame extraction";
+"移动后，跟踪效果会移除" = "After moving, the tracking effect is removed";
+"间隔抽帧" = "Frame extraction";
+"取消抽帧" = "Cancel frame extraction";
+"补帧" = "Motion flow";
+"取消补帧" = "Cancel motion flow";
+<<<<<<< HEAD
+"立即跟拍" = "Shoot Immediately";
+"选择内容" = "Selecting Content";
+"字幕获取中" = "In caption acquisition";
+"等待时长与网络状态及文件大小有关请耐心等待" = "Wait time depends on network status and file size. Please be patient";
+"取消字幕" = "Cancel subtitles";
+"智能剪辑" = "Intelligent Editing";
+"保存并上传" = "Save and upload";
+=======
+"左右镜像" = "mirror";
+"上下镜像" = "mirror";
+"应用所有滤镜" = "Apply to all filters";
+"层级调整" = "Layer adjust";
+"调整位置大小" = "adjust rect";
+"替换贴纸" = "Replace sticker";
+"水印位置调整" = "Watermark position adjust";
+"删除水印" = "delete watermark";
+"水印替换" = "replace watermark";
+"水印调整" = "adjust watermark";
+"调整显示" = "adjust position";
+"蒙版关键帧" = "Mask keyframes";
+"贴纸编辑" = "edit sticker";
+>>>>>>> 407559f019e68f809ad629abb14bcd0531963ce2

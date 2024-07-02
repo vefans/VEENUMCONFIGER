@@ -712,7 +712,7 @@
             [sender addTarget:self action:@selector(cropType_Btn:) forControlEvents:UIControlEventTouchUpInside];
         }
         [self.cropTypeScrollView setContentSize:CGSizeMake(contWidth + 5, self.cropTypeScrollView.frame.size.height)];
-        [self.cropTypeScrollView setContentOffset:CGPointMake(0, 0)];
+        [self.cropTypeScrollView setContentOffset:CGPointZero];
         self.cropTypeScrollView.showsVerticalScrollIndicator = NO;
         self.cropTypeScrollView.showsHorizontalScrollIndicator = NO;
         

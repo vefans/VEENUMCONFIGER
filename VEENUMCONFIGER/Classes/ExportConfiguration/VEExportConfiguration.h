@@ -40,7 +40,9 @@ typedef NS_ENUM(NSInteger, ExportFileType) {
 @end
 
 @interface VEExportConfiguration : NSObject<NSMutableCopying,NSCopying>
-
+/** 是否使用专业版
+ */
+@property (nonatomic,assign)bool    useProfessionalEdition;
 #pragma mark- 设置视频水印和码率
 
 /** 设置视频输出最大时长 (单位是秒) 不限制则传0，默认不限制

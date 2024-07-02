@@ -344,6 +344,12 @@ NS_ASSUME_NONNULL_BEGIN
 /** 默认视频输出方式（自动，横屏，1 ：1）
  */
 @property (nonatomic,assign) VEPORTIONTYPE  proportionType;
+/** 抽帧 (default true)
+ */
+@property (nonatomic,assign) bool enableExtractFrames;
+/** 补帧 (default true)
+ */
+@property (nonatomic,assign) bool enableMotionflow;
 /** 倒放 (default true)
  */
 @property (nonatomic,assign) bool enableReverseVideo;
@@ -513,6 +519,12 @@ NS_ASSUME_NONNULL_BEGIN
 /** 放大镜网络资源地址
  */
 @property (nonatomic,copy,nullable)NSString    *magnifyingGlassURL;
+/** 获取分享的网络地址的音乐信息
+ */
+@property (nonatomic,copy,nullable)NSString    *getMusicFromLinkPath;
+/** 音乐资源配置地址
+ */
+@property (nonatomic,copy,nullable)NSString    *musicResourcesConfigPath;
 
 /** MV (default false)
  */

@@ -159,6 +159,28 @@ float const VEAdjust_DefaultValue_Exposure = 0.0;
     
     return isLowDevice;
 }
++ (BOOL)isSupport4K {
+    NSString* machine = [VEHelp system];
+    BOOL isSupport = YES;
+    if ([machine hasPrefix:@"iPhone"]) {
+        if ([machine hasPrefix:@"iPhone3"]
+            || [machine hasPrefix:@"iPhone4"]
+            || [machine hasPrefix:@"iPhone5"]
+            || [machine hasPrefix:@"iPhone6"]
+            || [machine hasPrefix:@"iPhone7"]
+            || [machine hasPrefix:@"iPhone8"])
+        {
+            isSupport = NO;
+        }
+    }else {//iPad运行内存小于等于3个G的都算低配
+        if([self totalMemory] < 1024 * 2){
+            isSupport = NO;
+        }
+    }
+    
+    return isSupport;
+}
+
 + (double)totalMemory {
     // Find the total amount of memory
     @try {
@@ -701,6 +723,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (UIImage *)getThumbImageWithPath:(NSString *)path {
     NSURL *url;
     if([self isSystemPhotoPath:path]){
+        url = [NSURL URLWithString:path];
         return [self getAlbumThumbnailImage:url maxSize:(100 * [UIScreen mainScreen].scale)];
     }else{
         url = [NSURL fileURLWithPath:path];
@@ -1251,7 +1274,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 {
     NSString *imagePath = nil;
     if([[path pathExtension] length] > 0){
-        imagePath = [bundle pathForResource:[NSString stringWithFormat:@"%@",path]  ofType:@""];
+        imagePath = [bundle pathForResource:path  ofType:@""];
     }
     UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
     if(image){
@@ -1295,7 +1318,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         data = nil;
         return image;
     }
-    imagePath = [bundle pathForResource:[NSString stringWithFormat:@"%@",path] ofType:@"png"];
+    imagePath = [bundle pathForResource:path ofType:@"png"];
     //data = [NSData dataWithContentsOfFile:imagePath];
     //image = [UIImage imageWithData:data];
     image = [UIImage imageWithContentsOfFile:imagePath];
@@ -1907,7 +1930,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:NSTemporaryDirectory()];
     CGFloat freeSize = 0;
     if (@available(iOS 11.0, *)) {
-        NSDictionary *results = [fileURL resourceValuesForKeys:@[NSURLVolumeAvailableCapacityForImportantUsageKey] error:nil];
+        NSError *error = nil;
+        NSDictionary *results = [fileURL resourceValuesForKeys:@[NSURLVolumeAvailableCapacityForImportantUsageKey] error:&error];
         // 这里拿到的值的单位是bytes，iOS11是这样算的1000MB = 1，1000进制算的
         // bytes->KB->MB->G
         
@@ -2598,6 +2622,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if ([videoTracks count] > 0)
         videoTrack = [videoTracks objectAtIndex:0];
     
+    NSArray *audioTracks = [urlAsset tracksWithMediaType:AVMediaTypeAudio];
+    float audioBitrate = 0;
+    if (audioTracks.count > 0) {
+        AVAssetTrack *audioTrack = audioTracks.firstObject;
+        audioBitrate = audioTrack.estimatedDataRate;
+    }
     int width = videoSize.width;
     int height = videoSize.height;
     
@@ -2608,8 +2638,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         @"width":@(width),
         @"height":@(height),
         @"fps":@(frameRate),
-        @"bitrate":@(bitrate)};
-    
+        @"bitrate":@(bitrate),
+        @"timeRange":[NSValue valueWithCMTimeRange:videoTrack.timeRange],
+        @"audioBitrate":@(audioBitrate)};
 }
 
 + (CGSize )getVideoSizeForTrack:(AVURLAsset *)asset{
@@ -4360,6 +4391,32 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return [image resizableImageWithCapInsets:UIEdgeInsetsMake(cornerRadius, cornerRadius, cornerRadius, cornerRadius)];
 }
 
++ (UIImage *)gradientRightToLeftImageWithColors:(NSArray *)colors size:(CGSize)size cornerRadius:(CGFloat)cornerRadius {
+    CGRect rect = CGRectMake(0, 0, ceilf(size.width), ceilf(size.height));
+    
+    NSMutableArray *gradientColors = [NSMutableArray array];
+    for (UIColor *color in colors) {
+        [gradientColors addObject:(id)(color.CGColor)];
+    }
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    gradientLayer.frame = rect;
+    gradientLayer.colors = [NSArray arrayWithArray: gradientColors];
+    gradientLayer.startPoint = CGPointMake(1, 0.5);
+    gradientLayer.endPoint = CGPointMake(0, 0.5);
+    
+    UIBezierPath *roundedRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:cornerRadius];
+    roundedRect.lineWidth = 0;
+    
+    UIGraphicsBeginImageContextWithOptions(gradientLayer.frame.size, gradientLayer.opaque, 0);
+    [roundedRect fill];
+    [roundedRect stroke];
+    [roundedRect addClip];
+    [gradientLayer renderInContext:UIGraphicsGetCurrentContext()] ;
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return [image resizableImageWithCapInsets:UIEdgeInsetsMake(cornerRadius, cornerRadius, cornerRadius, cornerRadius)];
+}
+
 + (BOOL)exportSlomoVideoFile:(VEMediaInfo *)file
 {
     __block BOOL isSuccess = YES;
@@ -4531,6 +4588,45 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     else if([self isSystemPhotoUrl:url]){//
         UIImage * image = [VEHelp getSystemPhotoImage:url];
+        return image;
+    }else{
+        if([self isImageUrl:url]){
+            UIImage * image = [self imageWithContentOfPathFull:url.path];
+            return image;
+        }else{
+            return [self assetGetThumImage:0.0 url:url urlAsset:nil];
+        }
+    }
+}
+
++ (UIImage *)getFullImageWithUrl:(NSURL *)url maxWidth:(float)maxWidth {
+    NSString* filePath = [url path];
+    NSString *fileExtension = [filePath pathExtension];
+    //检查是否为webm文件
+    if([fileExtension caseInsensitiveCompare:@"webm"] == NSOrderedSame)
+    {
+        CMTime time = CMTimeMakeWithSeconds(0.1, TIMESCALE);
+        WebmMediaInfo *mediaInfo = [VECore getWebmInfo:url.path];
+        float scale = 1.0;
+        if( (mediaInfo.videoTrack.width > 480) || ( mediaInfo.videoTrack.height > 480 ) )
+        {
+            if( mediaInfo.videoTrack.width > mediaInfo.videoTrack.height )
+                scale = 480.0/(float)mediaInfo.videoTrack.width;
+            else
+                scale = 480.0/(float)mediaInfo.videoTrack.height;
+        }
+        int iTime  = (int)CMTimeGetSeconds(time);
+        if( (CMTimeGetSeconds(time) - ((float)iTime)) >= 0.5 )
+        {
+            iTime++;
+        }
+        NSString *patch = [VEHelp getMaterialThumbnail:url];
+        patch = [NSString stringWithFormat:@"%@/%d.png", patch, iTime];
+        UIImage *image =  [VEHelp imageWithContentOfPathFull:patch];
+        return image;
+    }
+    else if([self isSystemPhotoUrl:url]){//
+        UIImage * image = [VEHelp getSystemPhotoImage:url maxWidth:maxWidth];
         return image;
     }else{
         if([self isImageUrl:url]){
@@ -5507,6 +5603,25 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return [dateformater stringFromDate:date_];
 }
 
++ (NSString *)getCurrentTimeToString{
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
+    [formatter setDateFormat:@"YYYY.MM.dd HH:mm"];
+    //设置时区,这个对于时间的处理有时很重要
+    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
+    [formatter setTimeZone:timeZone];
+    //    NSDate *datenow = [NSDate date];//现在时间,你可以输出来看下是什么格式
+    //    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]*1000];
+    
+    NSDate *date_ = [NSDate date];
+    NSDateFormatter *dateformater = [[NSDateFormatter alloc] init];
+    [dateformater setDateFormat:@"YYYY.MM.dd HH:mm"];
+    return [dateformater stringFromDate:date_];
+}
+
 + (NSString *)getNowShareTimeToString{
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
@@ -5565,8 +5680,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     return  [VEHelp getFileUrlWithFolderPath:folder fileName:[NSString stringWithFormat:@"%@.png",[self getFileNameForNowTime]]].path;
 }
-
-+(UIImage *)getSystemPhotoImage:( NSURL * ) url
++(UIImage *)getSystemPhotoImage:( NSURL * ) url{
+    return [self getSystemPhotoImage:url maxWidth:2048];
+}
++(UIImage *)getSystemPhotoImage:( NSURL * ) url maxWidth:(float)maxWidth
 {
     __block UIImage *image;
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
@@ -5594,7 +5711,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         phAsset = nil;
     }else{
         @try {
-            [[PHImageManager defaultManager] requestImageForAsset:[phAsset firstObject] targetSize:CGSizeMake(2048, 2048) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            [[PHImageManager defaultManager] requestImageForAsset:[phAsset firstObject] targetSize:CGSizeMake(maxWidth, maxWidth) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
                 
                 image = result;
                 result = nil;
@@ -6347,9 +6464,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 +(NSMutableDictionary *)jsonToObject:( NSString * ) jsonStr
 {
     
-    if(jsonStr){
-        NSLog(@"have");
-    }else{
+    if(jsonStr.length == 0){
         NSLog(@"nohave");
         return [NSMutableDictionary new];
     }
@@ -6374,9 +6489,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     NSString *path = configPath;
     NSFileManager *manager = [[NSFileManager alloc] init];
-    if([manager fileExistsAtPath:path]){
-        NSLog(@"have");
-    }else{
+    if(![manager fileExistsAtPath:path]){
         NSLog(@"nohave");
     }
     NSData *data = [[NSData alloc] initWithContentsOfFile:path];
@@ -6398,9 +6511,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 {
     NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
     NSFileManager *manager = [[NSFileManager alloc] init];
-    if([manager fileExistsAtPath:path]){
-        NSLog(@"have");
-    }else{
+    if(![manager fileExistsAtPath:path]){
         NSLog(@"nohave");
     }
     NSData *data = [[NSData alloc] initWithContentsOfFile:path];
@@ -6422,9 +6533,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 {
     NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
     NSFileManager *manager = [[NSFileManager alloc] init];
-    if([manager fileExistsAtPath:path]){
-        NSLog(@"have");
-    }else{
+    if(![manager fileExistsAtPath:path]){
         NSLog(@"nohave");
     }
     NSData *data = [[NSData alloc] initWithContentsOfFile:path];
@@ -6693,9 +6802,39 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (UIImage *)drawImage:(UIImage *)image bgImage:(UIImage *)bgImage
 {
     @autoreleasepool {
-        UIGraphicsBeginImageContext(CGSizeMake(((int)bgImage.size.width), ((int)bgImage.size.height)));
-        [bgImage drawInRect:CGRectMake(0, 0, ((int)bgImage.size.width), ((int)bgImage.size.height))];
-        [image drawInRect:CGRectMake((bgImage.size.width - image.size.width)/2.0, (bgImage.size.height - image.size.height)/2.0, ((int)image.size.width), ((int)image.size.height))];
+        return [self drawImage:image bgImage:bgImage size:bgImage.size];
+    }
+}
+
++ (UIImage *)drawImage:(UIImage *)image bgImage:(UIImage *)bgImage size:(CGSize) size
+{
+//    @autoreleasepool {
+//        UIGraphicsBeginImageContext(CGSizeMake(((int)size.width), ((int)size.height)));
+//        [bgImage drawInRect:CGRectMake((size.width - bgImage.size.width)/2.0, (size.height - bgImage.size.height)/2.0, ((int)bgImage.size.width), ((int)bgImage.size.height))];
+//        [image drawInRect:CGRectMake((size.width - image.size.width)/2.0, (size.height - image.size.height)/2.0, ((int)image.size.width), ((int)image.size.height))];
+//        UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+//        UIGraphicsEndImageContext();
+//        return scaledImage;
+//    }
+    @autoreleasepool {
+        CGRect videoRect = AVMakeRectWithAspectRatioInsideRect(size, CGRectMake(0, 0, bgImage.size.width, bgImage.size.height));
+        bgImage = [VEHelp cropImage:bgImage rect:videoRect];
+        UIGraphicsBeginImageContext(size);
+        [bgImage drawInRect:CGRectMake(0, 0, size.width, size.height)]; // 将背景图片绘制到整个画布上
+        CGFloat aspectFitWidth, aspectFitHeight;
+        CGFloat bgAspect = bgImage.size.width / bgImage.size.height;
+        CGFloat imageAspect = image.size.width / image.size.height;
+
+        if (bgAspect > imageAspect) {
+            aspectFitWidth = size.width;
+            aspectFitHeight = size.width / imageAspect;
+        } else {
+            aspectFitHeight = size.height;
+            aspectFitWidth = size.height * imageAspect;
+        }
+
+        CGRect imageRect = CGRectMake((size.width - aspectFitWidth) / 2.0, (size.height - aspectFitHeight) / 2.0, aspectFitWidth, aspectFitHeight);
+        [image drawInRect:imageRect]; // 将要绘制的图片按比例放大居中绘制在背景图片上
         UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         return scaledImage;
@@ -9273,9 +9412,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     @try {
         NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
         NSFileManager *manager = [[NSFileManager alloc] init];
-        if([manager fileExistsAtPath:path]){
-            NSLog(@"have");
-        }else{
+        if(![manager fileExistsAtPath:path]){
             NSLog(@"nohave");
         }
         NSData *data = [[NSData alloc] initWithContentsOfFile:path];
@@ -9303,9 +9440,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     @try {
         NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingPathComponent:@"config.json"];
         NSFileManager *manager = [[NSFileManager alloc] init];
-        if([manager fileExistsAtPath:path]){
-            NSLog(@"have");
-        }else{
+        if(![manager fileExistsAtPath:path]){
             NSLog(@"nohave");
             NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:configPath error:nil];
             NSString *folderName;
@@ -10088,9 +10223,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
     NSFileManager *manager = [[NSFileManager alloc] init];
-    if([manager fileExistsAtPath:path]){
-        NSLog(@"have");
-    }else{
+    if(![manager fileExistsAtPath:path]){
         NSLog(@"nohave");
     }
     
@@ -10148,9 +10281,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         {
             NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
             NSFileManager *manager = [[NSFileManager alloc] init];
-            if([manager fileExistsAtPath:path]){
-                NSLog(@"have");
-            }else{
+            if(![manager fileExistsAtPath:path]){
                 NSLog(@"nohave");
             }
             NSData *data = [[NSData alloc] initWithContentsOfFile:path];
@@ -10250,9 +10381,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         {
             NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
             NSFileManager *manager = [[NSFileManager alloc] init];
-            if([manager fileExistsAtPath:path]){
-                NSLog(@"have");
-            }else{
+            if(![manager fileExistsAtPath:path]){
                 NSLog(@"nohave");
             }
             NSData *data = [[NSData alloc] initWithContentsOfFile:path];
@@ -12817,6 +12946,20 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     
     return  customFilter;
+}
+
++ (CustomFilter *)getStickerAnimationWithFolderPath:(NSString *)folderPath atCaptionEx:(CaptionEx *)captionEx atCopyAnimate:(CustomFilter *)copyAnimate
+{
+    CustomFilter *animate = [[CustomFilter alloc] init];
+    animate.animateType = copyAnimate.animateType;
+    [VEHelp getStickerAnimation:folderPath atCaption:captionEx atCustomFiler:animate];
+    animate.timeRange = copyAnimate.timeRange;
+    animate.cycleDuration = copyAnimate.cycleDuration;
+    animate.networkCategoryId = copyAnimate.networkCategoryId;
+    animate.networkResourceId = copyAnimate.networkResourceId;
+    animate.animateType = copyAnimate.animateType;
+    
+    return animate;
 }
 
 + (CustomFilter *)getStickerAnimationCustomFilter:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId atType:(NSInteger) typeIndex atCaption:( CaptionEx *) captionex
@@ -17126,10 +17269,11 @@ static OSType help_inputPixelFormat(){
     return outputImage;
 }
 
-+ (void)centerButtonInScrollView:(UIButton *)sender scrollView:(UIScrollView *)scrollView {
-    if (scrollView.contentSize.width <= scrollView.frame.size.width) {
++ (void)centerButtonInScrollView:(UIButton *)sender {
+    if (![sender.superview isKindOfClass:[UIScrollView class]] || ((UIScrollView *)sender.superview).contentSize.width <= sender.superview.frame.size.width) {
         return;
     }
+    UIScrollView *scrollView = (UIScrollView *)sender.superview;
     float margin = scrollView.frame.origin.x / 2.0;
     CGFloat offSetX = sender.center.x - scrollView.bounds.size.width * 0.5 + margin;
     CGFloat offsetX1 = (scrollView.contentSize.width - sender.center.x) - scrollView.bounds.size.width * 0.5 - 5;
@@ -17146,4 +17290,55 @@ static OSType help_inputPixelFormat(){
     [scrollView setContentOffset:offset animated:YES];
 }
 
++ (void)centerButtonInCollectionView:(NSInteger)index collectionView:(UICollectionView *)collectionView {
+    if (![collectionView isKindOfClass:[UICollectionView class]] || collectionView.contentSize.width <= collectionView.frame.size.width) {
+        return;
+    }
+    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)collectionView.collectionViewLayout;
+    float x = index * (layout.itemSize.width + layout.minimumLineSpacing);
+    float centerX = x + layout.itemSize.width / 2.0;
+    float margin = collectionView.frame.origin.x / 2.0;
+    CGFloat offSetX = centerX - collectionView.bounds.size.width * 0.5 + margin;
+    CGFloat offsetX1 = (collectionView.contentSize.width - centerX) - collectionView.bounds.size.width * 0.5;
+    CGPoint offset = CGPointZero;
+    if (offSetX > 0 && offsetX1 > 0) {
+        offset = CGPointMake(offSetX, 0);
+    }
+    else if(offSetX < 0){
+        offset = CGPointMake(-collectionView.contentInset.left, 0);
+    }
+    else if (offsetX1 < 0){
+        offset = CGPointMake(collectionView.contentSize.width - collectionView.bounds.size.width + collectionView.contentInset.right, 0);
+    }
+    [collectionView setContentOffset:offset animated:YES];
+}
+
++(void)script_SaveDraftlines:( NSMutableArray * ) array
+{
+    return;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:KScriptFolder]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:KScriptFolder withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    BOOL suc = [array writeToFile:kScriptPath atomically:YES];
+    if (!suc) {
+        NSLog(@"写入失败");
+    }
+}
+
++(void)script_SaveDraftDic:( NSMutableDictionary * ) dictionary
+{
+    return;
+    NSMutableArray * array = [VEHelp script_GetDraftlines];
+    [array addObject:dictionary];
+    [VEHelp script_SaveDraftlines:array];
+}
+
++(NSMutableArray *)script_GetDraftlines
+{
+//    if ([[NSFileManager defaultManager] fileExistsAtPath:KScriptFolder]) {
+//        return [[NSMutableArray alloc] initWithArray:[NSArray arrayWithContentsOfFile:kScriptPath]];
+//    }
+//    else
+        return nil;
+}
 @end

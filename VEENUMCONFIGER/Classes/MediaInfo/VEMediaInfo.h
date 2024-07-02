@@ -174,6 +174,14 @@ typedef NS_ENUM(NSInteger, VECropType){
  */
 @property (nonatomic,copy  ) NSURL *reverseVideoURL;
 
+/**视频抽帧地址
+ */
+@property (nonatomic,copy  ) NSURL *frameExtractionURL;
+
+/**视频补帧地址
+ */
+@property (nonatomic,copy  ) NSURL *motionflowURL;
+
 /**倒序视频总时长
  */
 @property (nonatomic, assign) CMTime reverseDurationTime;

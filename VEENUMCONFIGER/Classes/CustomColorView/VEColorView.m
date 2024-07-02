@@ -245,25 +245,7 @@
     _selectedColor = sender.backgroundColor;
     _selectedColorIndex = sender.tag - kVEColorViewBtnTag;
     sender.selected = YES;
-    
-    if ([sender.superview isKindOfClass:[UIScrollView class]]) {
-        UIButton *itemBtn = sender;
-        UIScrollView *scrollView = (UIScrollView *)itemBtn.superview;
-        float margin = scrollView.frame.origin.x / 2.0;
-        CGFloat offSetX = itemBtn.center.x - scrollView.bounds.size.width * 0.5 + margin;
-        CGFloat offsetX1 = (scrollView.contentSize.width - itemBtn.center.x) - scrollView.bounds.size.width * 0.5;
-        CGPoint offset = CGPointZero;
-        if (offSetX > 0 && offsetX1 > 0) {
-            offset = CGPointMake(offSetX, 0);
-        }
-        else if(offSetX < 0){
-            offset = CGPointZero;
-        }
-        else if (offsetX1 < 0){
-            offset = CGPointMake(scrollView.contentSize.width - scrollView.bounds.size.width, 0);
-        }
-        [scrollView setContentOffset:offset animated:YES];
-    }
+    [VEHelp centerButtonInScrollView:sender];
     if (_delegate && [_delegate respondsToSelector:@selector(changeColor:)]) {
         [_delegate changeColor:_selectedColor];
     }

@@ -171,6 +171,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (BOOL)isSystemPhotoPath:(NSString *)path;
 + (NSString *) system;
 + (BOOL)isLowDevice;
++ (BOOL)isSupport4K;
 + (double)totalMemory;
 /**进入系统设置
  */
@@ -361,13 +362,14 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (void)setApngCaptionFrameArrayWithImagePath:(NSString *)path jsonDic:(NSMutableDictionary *)jsonDic;
 + (UIImage *) imageWithColor:(UIColor *)color size:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
 + (UIImage *)gradientImageWithColors:(NSArray *)colors size:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
++ (UIImage *)gradientRightToLeftImageWithColors:(NSArray *)colors size:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
 + (BOOL)exportSlomoVideoFile:(VEMediaInfo *)file;
 + (BOOL)createSaveTmpFileFolder;
 
 +(CGSize)getPEexpSize:(NSMutableArray *) peMediaInfos;
 + (UIImage *)getFullScreenImageWithUrl:(NSURL *)url;
 + (UIImage *)getFullImageWithUrl:(NSURL *)url;
-
++ (UIImage *)getFullImageWithUrl:(NSURL *)url maxWidth:(float)maxWidth;
 #pragma mark- 居中处理，计算对应的Crop
 + (CGRect)getFixedRatioCropWithMediaSize:(CGSize)mediaSize newSize:(CGSize)newSize;
 
@@ -396,6 +398,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSString *)getNowShareTimeToString;
 //获取
 +(NSString *)getPEImagePathForNowTime;
+
++ (NSString *)getCurrentTimeToString;
 
 +(UIImage *)getSystemPhotoImage:( NSURL * ) url;
 
@@ -457,6 +461,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(Caption *)getCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atType:(NSInteger) captionType;
 
 + (UIImage *)drawImage:(UIImage *)image bgImage:(UIImage *)bgImage;
++ (UIImage *)drawImage:(UIImage *)image bgImage:(UIImage *)bgImage size:(CGSize) size;
 + (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize;
 + (UIImage *)rescaleImage:(UIImage *)image size:(CGSize)size;
 
@@ -553,6 +558,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
                                            typeUrlPath:(NSString *)typeUrlPath
                                   specialEffectUrlPath:(NSString *)specialEffectUrlPath;
 + (NSString *)getStickerAnimationFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime;
++ (CustomFilter *)getStickerAnimationWithFolderPath:(NSString *)folderPath atCaptionEx:(CaptionEx *)captionEx atCopyAnimate:(CustomFilter *)copyAnimate;
 + (CustomFilter *)getStickerAnimationCustomFilter:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId atType:(NSInteger) typeIndex atCaption:( CaptionEx *) captionex;
 + (CustomFilter *)getOverlayAnimationCustomFilter:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId atType:(NSInteger) typeIndex atCaption:( Overlay *) overlay;
 + (CustomFilter *)getOverlayAnimationCustomFilterWithPath:(NSString *) path typeIndex:(NSInteger)typeIndex atCaption:( Overlay *) overlay;
@@ -797,6 +803,10 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 + (UIImage *)multiColorGradientImageWithView:( UIView * ) view colors:(NSArray<UIColor *> *)colors atColorProportions:( NSArray * ) colorProportions;
 
-+ (void)centerButtonInScrollView:(UIButton *)sender scrollView:(UIScrollView *)scrollView;
++ (void)centerButtonInScrollView:(UIButton *)sender;
++ (void)centerButtonInCollectionView:(NSInteger)index collectionView:(UICollectionView *)collectionView;
 
++(void)script_SaveDraftlines:( NSMutableArray * ) array;
++(void)script_SaveDraftDic:( NSMutableDictionary * ) dictionary;
++(NSMutableArray *)script_GetDraftlines;
 @end

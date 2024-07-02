@@ -588,22 +588,8 @@
     sender.selected = YES;
     _currentBtn = sender;
     
-    if ([sender.superview isKindOfClass:[UIScrollView class]] && ![VEConfigManager sharedManager].iPad_HD) {
-        UIScrollView *scrollView = (UIScrollView *)sender.superview;
-        float margin = scrollView.frame.origin.x / 2.0;
-        CGFloat offSetX = sender.center.x - scrollView.bounds.size.width * 0.5 + margin;
-        CGFloat offsetX1 = (scrollView.contentSize.width - sender.center.x) - scrollView.bounds.size.width * 0.5;
-        CGPoint offset = CGPointZero;
-        if (offSetX > 0 && offsetX1 > 0) {
-            offset = CGPointMake(offSetX, 0);
-        }
-        else if(offSetX < 0){
-            offset = CGPointZero;
-        }
-        else if (offsetX1 < 0){
-            offset = CGPointMake(scrollView.contentSize.width - scrollView.bounds.size.width, 0);
-        }
-        [scrollView setContentOffset:offset animated:YES];
+    if (![VEConfigManager sharedManager].iPad_HD) {
+        [VEHelp centerButtonInScrollView:sender];
     }
 }
 
