@@ -2627,9 +2627,9 @@
 "speed" = "Speed";
 "rateintensity" = "Speed";
 
-"alphaFactor" = "Transparency";
-"minAlpha" = "Transparency";
-"alpha" = "Transparency";
+"alphaFactor" = "Opacity";
+"minAlpha" = "Opacity";
+"alpha" = "Opacity";
 
 "param_3d_color_offset" = "Color Offset";
 "colorOffset" = "Color Offset";

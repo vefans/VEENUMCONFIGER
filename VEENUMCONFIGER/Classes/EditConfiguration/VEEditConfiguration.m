@@ -11,6 +11,9 @@
 - (void)setDefaultFunction:(int)defaultFunction{
     _defaultFunction = defaultFunction;
 }
+- (void)setSupportFileType:(SUPPORTFILETYPE)supportFileType{
+    _supportFileType = supportFileType;
+}
 - (void)setIsSingletrack:(bool)isSingletrack{
     _isSingletrack = isSingletrack;
     if(_isSingletrack){
@@ -23,6 +26,7 @@
     if(self = [super init]){
         //相册界面
         _resultFileType = ALBUMFILETYPE_MediaInfo;
+        _enableMagnifyingClass = true;
         _enableCloudDraft = true;
         _isShowSplitScreen = YES;
         _enableTemplateTheme = true;

@@ -10441,6 +10441,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     captionItem.angle = 0;
                     captionEx.texts = [NSMutableArray<CaptionItem *> new];
                     captionEx.singleLine = [subtitleEffectConfig[@"singleLine"] boolValue];
+                    if ([captionEx.imageName isEqualToString:@"text_sample"]) {
+                        captionEx.singleLine = NO;
+                    }
                     captionEx.isStretch = [[subtitleEffectConfig objectForKey:@"stretchability"] boolValue];
                     if (captionEx.isStretch) {
                         NSArray *borderPadding = subtitleEffectConfig[@"borderPadding"];
@@ -17270,32 +17273,94 @@ static OSType help_inputPixelFormat(){
 }
 
 + (void)centerButtonInScrollView:(UIButton *)sender {
-    if (![sender.superview isKindOfClass:[UIScrollView class]] || ((UIScrollView *)sender.superview).contentSize.width <= sender.superview.frame.size.width) {
+    if (![sender.superview isKindOfClass:[UIScrollView class]] ) {
         return;
     }
     UIScrollView *scrollView = (UIScrollView *)sender.superview;
-    float margin = scrollView.frame.origin.x / 2.0;
-    CGFloat offSetX = sender.center.x - scrollView.bounds.size.width * 0.5 + margin;
-    CGFloat offsetX1 = (scrollView.contentSize.width - sender.center.x) - scrollView.bounds.size.width * 0.5 - 5;
-    CGPoint offset = CGPointZero;
-    if (offSetX > 0 && offsetX1 > 0) {
-        offset = CGPointMake(offSetX, 0);
+    if (scrollView.contentSize.width > scrollView.frame.size.width) {
+        float margin = scrollView.frame.origin.x / 2.0;
+        CGFloat offSetX = sender.center.x - scrollView.bounds.size.width * 0.5 + margin;
+        CGFloat offsetX1 = (scrollView.contentSize.width - sender.center.x) - scrollView.bounds.size.width * 0.5 - 5;
+        CGPoint offset = CGPointZero;
+        if (offSetX > 0 && offsetX1 > 0) {
+            offset = CGPointMake(offSetX, 0);
+        }
+        else if(offSetX < 0){
+            offset = CGPointZero;
+        }
+        else if (offsetX1 < 0){
+            offset = CGPointMake(scrollView.contentSize.width - scrollView.bounds.size.width, 0);
+        }
+        [scrollView setContentOffset:offset animated:YES];
     }
-    else if(offSetX < 0){
-        offset = CGPointZero;
+    else if (scrollView.contentSize.height > scrollView.frame.size.height) {
+        CGFloat offSetY = sender.center.y - scrollView.bounds.size.height * 0.5;
+        CGFloat offsetY1 = (scrollView.contentSize.height - sender.center.y) - scrollView.bounds.size.height * 0.5 - 5;
+        CGPoint offset = CGPointZero;
+        if (offSetY > 0 && offsetY1 > 0) {
+            offset = CGPointMake(0, offSetY);
+        }
+        else if(offSetY < 0){
+            offset = CGPointZero;
+        }
+        else if (offsetY1 < 0){
+            offset = CGPointMake(0, scrollView.contentSize.height - scrollView.bounds.size.height);
+        }
+        [scrollView setContentOffset:offset animated:YES];
     }
-    else if (offsetX1 < 0){
-        offset = CGPointMake(scrollView.contentSize.width - scrollView.bounds.size.width, 0);
-    }
-    [scrollView setContentOffset:offset animated:YES];
 }
 
 + (void)centerButtonInCollectionView:(NSInteger)index collectionView:(UICollectionView *)collectionView {
-    if (![collectionView isKindOfClass:[UICollectionView class]] || collectionView.contentSize.width <= collectionView.frame.size.width) {
+    if (![collectionView isKindOfClass:[UICollectionView class]]) {
         return;
     }
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)collectionView.collectionViewLayout;
-    float x = index * (layout.itemSize.width + layout.minimumLineSpacing);
+    if (layout.scrollDirection == UICollectionViewScrollDirectionVertical) {
+        if (collectionView.contentSize.height > collectionView.frame.size.height) {
+            float y = index * (layout.itemSize.height + layout.minimumLineSpacing);
+            float centerY = y + layout.itemSize.height / 2.0;
+            CGFloat offSetY = centerY - collectionView.bounds.size.height * 0.5;
+            CGFloat offsetY1 = (collectionView.contentSize.height - centerY) - collectionView.bounds.size.height * 0.5;
+            CGPoint offset = CGPointZero;
+            if (offSetY > 0 && offsetY1 > 0) {
+                offset = CGPointMake(0, offSetY);
+            }
+            else if(offSetY < 0){
+                offset = CGPointMake(0, -collectionView.contentInset.top);
+            }
+            else if (offsetY1 < 0){
+                offset = CGPointMake(0, collectionView.contentSize.height - collectionView.bounds.size.height + collectionView.contentInset.bottom);
+            }
+            [collectionView setContentOffset:offset animated:YES];
+        }
+    }
+    else if (collectionView.contentSize.width > collectionView.frame.size.width) {
+        float x = index * (layout.itemSize.width + layout.minimumLineSpacing);
+        float centerX = x + layout.itemSize.width / 2.0;
+        float margin = collectionView.frame.origin.x / 2.0;
+        CGFloat offSetX = centerX - collectionView.bounds.size.width * 0.5 + margin;
+        CGFloat offsetX1 = (collectionView.contentSize.width - centerX) - collectionView.bounds.size.width * 0.5;
+        CGPoint offset = CGPointZero;
+        if (offSetX > 0 && offsetX1 > 0) {
+            offset = CGPointMake(offSetX, 0);
+        }
+        else if(offSetX < 0){
+            offset = CGPointMake(-collectionView.contentInset.left, 0);
+        }
+        else if (offsetX1 < 0){
+            offset = CGPointMake(collectionView.contentSize.width - collectionView.bounds.size.width + collectionView.contentInset.right, 0);
+        }
+        [collectionView setContentOffset:offset animated:YES];
+    }
+}
+
++ (void)centerButtonInCollectionView:(UICollectionView *)collectionView selectedCellX:(float)cellX{
+    if (![collectionView isKindOfClass:[UICollectionView class]] || collectionView.contentSize.width <= collectionView.frame.size.width) {
+        return;
+    }
+    
+    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)collectionView.collectionViewLayout;
+    float x = cellX;
     float centerX = x + layout.itemSize.width / 2.0;
     float margin = collectionView.frame.origin.x / 2.0;
     CGFloat offSetX = centerX - collectionView.bounds.size.width * 0.5 + margin;
@@ -17340,5 +17405,14 @@ static OSType help_inputPixelFormat(){
 //    }
 //    else
         return nil;
+}
+
++(void)setSliderCurrentLabelCenterWidthLabel:( UILabel * ) label atSlider:( UISlider * ) slider
+{
+    UIImageView *sliderImageView = [slider valueForKey:@"_thumbView"];
+    CGFloat x = slider.frame.origin.x + ((slider.value - slider.minimumValue) / (slider.maximumValue - slider.minimumValue)) * slider.frame.size.width - ((slider.value - slider.minimumValue) / (slider.maximumValue - slider.minimumValue))*(sliderImageView.frame.size.width) + sliderImageView.frame.size.width - label.frame.size.width/2.0 + (label.frame.size.width - sliderImageView.frame.size.width)/2.0;
+    label.center = CGPointMake(x, slider.frame.origin.y - label.frame.size.height + 3);
+    int  value = slider.value * 100.0;
+    label.text = [NSString stringWithFormat:@"%d", value];
 }
 @end

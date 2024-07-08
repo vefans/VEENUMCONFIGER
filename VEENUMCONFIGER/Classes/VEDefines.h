@@ -976,6 +976,9 @@ isPhoneX;\
 #define kStickerAnimationPath [KStickerAnimationFolder stringByAppendingPathComponent:@"StickerAnimationPath.plist"]
 #define kStickerAnimationIconFolder [KStickerAnimationFolder stringByAppendingPathComponent:@"AnimationIconFolder"]
 
+#define kIsMagnifyingGlassOffset @"isMagnifyingGlassOffset"
+#define kIsagnifyingGlassOffsetCenter @"isMagnifyingGlassOffsetCenter"
+
 #define kIsLoadedStickerResource @"isLoadedStickerResource"
 #define kIsLoadedFaceShieldResource @"isLoadedFaceShieldResource"//智能挡脸
 #define kIsLoadedFlowerWordResource @"isLoadedFlowerWordResource"

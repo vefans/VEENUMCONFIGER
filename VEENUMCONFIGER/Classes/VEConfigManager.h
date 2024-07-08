@@ -275,7 +275,7 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 @property(nonatomic,copy) VEEnterAdvancedEditHandler canEnterAdvancedEditHandler;
 @property(nonatomic,copy) VEExporTemplate  exporTemplate;   //导出模版
 
-@property(nonatomic, copy) void(^enterMusicAlbumTempCompletionHandler) (NSDictionary * itemDic,NSInteger selectTypeIndex,NSInteger index, UIViewController *controller);
+@property(nonatomic, copy) void(^enterMusicAlbumTempCompletionHandler) (NSString *categoryId,NSDictionary * itemDic,NSInteger selectTypeIndex,NSInteger index, UIViewController *controller);
 
 //草稿增删 刷新
 @property (nonatomic, copy) void (^refreshDraftView)(void);

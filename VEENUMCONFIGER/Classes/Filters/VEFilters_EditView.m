@@ -1091,7 +1091,7 @@ NSString * _netMaterialTypeURL;
                 noBtn.selected = NO;
                 
                 if (![VEConfigManager sharedManager].iPad_HD) {
-                    [VEHelp centerButtonInCollectionView:_selectFilterIndex collectionView:item.superview.superview];
+                    [VEHelp centerButtonInCollectionView:item.superview.superview selectedCellX:item.superview.frame.origin.x];
                 }
                 
                 _selectFilterIndex = item.tag-1;
@@ -1786,7 +1786,7 @@ NSString * _netMaterialTypeURL;
     flow_Video.headerReferenceSize = CGSizeMake(0,0);
     flow_Video.footerReferenceSize = CGSizeMake(30, width / 0.8);
     
-    _filterCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(15, self.fileterLabelNewScroView.frame.origin.y + self.fileterLabelNewScroView.frame.size.height, self.frame.size.width - 15, width / 0.8) collectionViewLayout:flow_Video];
+    _filterCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, self.fileterLabelNewScroView.frame.origin.y + self.fileterLabelNewScroView.frame.size.height, self.frame.size.width, width / 0.8) collectionViewLayout:flow_Video];
     _filterCollectionView.showsHorizontalScrollIndicator = NO;
     _filterCollectionView.showsVerticalScrollIndicator = NO;
     // 使用类进行注册
@@ -1798,7 +1798,7 @@ NSString * _netMaterialTypeURL;
     _filterCollectionView.tag = 1000000;
     _filterCollectionView.dataSource = self;
     _filterCollectionView.delegate = self;
-    
+    _filterCollectionView.contentInset = UIEdgeInsetsMake(0, 15, 0, 15);
     [_fileterNewView addSubview:_filterCollectionView];
 }
 
@@ -1826,10 +1826,10 @@ NSString * _netMaterialTypeURL;
     }
     else
     {
-        if( section <  _filter_newFiltersNameSortArray.count )
+        if( section <  _filter_newFiltersNameSortArray.count ) {
             return ((NSArray*)_filter_newFiltersNameSortArray[section]).count;
-        else
-            return 0;
+        }
+        return 0;
     }
 }
 
@@ -1895,7 +1895,7 @@ NSString * _netMaterialTypeURL;
                     moveTitleLabel.backgroundColor = UIColorFromRGB(0xefefef);
                     moveTitleLabel.textColor = UIColorFromRGB(0x131313);
                 }
-                moveTitleLabel.font = [UIFont systemFontOfSize:10>0?10:14];
+                moveTitleLabel.font = [UIFont systemFontOfSize:10];
                 moveTitleLabel.textAlignment = NSTextAlignmentCenter;
                 [cubeBtn addSubview:moveTitleLabel];
                 moveTitleLabel.text = VELocalizedString(@"本地cube", nil);

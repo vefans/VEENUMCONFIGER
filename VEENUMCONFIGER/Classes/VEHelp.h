@@ -805,8 +805,10 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 + (void)centerButtonInScrollView:(UIButton *)sender;
 + (void)centerButtonInCollectionView:(NSInteger)index collectionView:(UICollectionView *)collectionView;
++ (void)centerButtonInCollectionView:(UICollectionView *)collectionView selectedCellX:(float)cellX;
 
 +(void)script_SaveDraftlines:( NSMutableArray * ) array;
 +(void)script_SaveDraftDic:( NSMutableDictionary * ) dictionary;
 +(NSMutableArray *)script_GetDraftlines;
++(void)setSliderCurrentLabelCenterWidthLabel:( UILabel * ) label atSlider:( UISlider * ) slider;
 @end

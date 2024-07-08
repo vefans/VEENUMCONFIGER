@@ -575,6 +575,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic,assign) bool enableSticker;
 @property (nonatomic,assign) bool enableEffect DEPRECATED_MSG_ATTRIBUTE("Use enableSticker instead.");
+/** 放大镜 (default true)
+ */
+@property (nonatomic,assign) bool enableMagnifyingClass;
 /** 特效 (default true)
  */
 @property (nonatomic,assign) bool enableEffectsVideo;
