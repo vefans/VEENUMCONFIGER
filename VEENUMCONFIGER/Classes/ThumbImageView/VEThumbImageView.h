@@ -56,6 +56,9 @@
 @property (strong, nonatomic)UILabel        *thumbDurationlabel;
 
 @property (strong, nonatomic)UIButton       *thumbDeletedBtn;
+
+@property (strong, nonatomic)UIButton    *editBtn;
+
 @property (assign, nonatomic) BOOL          isAlbum;
 
 @property (assign, nonatomic) BOOL          selected;
@@ -139,6 +142,7 @@
 - (void)thumbImageViewWaslongLongTap:(VEThumbImageView *)tiv;
 - (void)thumbImageViewWaslongLongTapEnd:(VEThumbImageView *)tiv;
 - (void)thumbDeletedThumbFile:(VEThumbImageView *)tiv;
+//- (void)thumbEditThumbFile:(VEThumbImageView *)tiv;
 - (void)thumbImageViewWasTapped:(VEThumbImageView *)tiv touchUpTiv:(BOOL)isTouchUpTiv;
 - (void)thumbImageViewStartedTracking:(VEThumbImageView *)tiv;
 - (void)thumbImageViewMoved:(VEThumbImageView *)tiv withEvent:(UIEvent *)event;

@@ -8,8 +8,8 @@
 #import "VEClipViewController.h"
 #import <VEENUMCONFIGER/VETrimSlider.h>
 #import <VEENUMCONFIGER/VEPasterTextView.h>
-
-@interface VEClipViewController ()<VEPlaySliderDelegate,VECropTypeDelegate,VECoreDelegate,VEVideoCropDelegte, VECropViewDelegate,VETrimSliderDelegate,VEPasterTextViewDelegate>
+#import "VECutVideoRangeSlider.h"
+@interface VEClipViewController ()<VEPlaySliderDelegate,VECropTypeDelegate,VECoreDelegate,VEVideoCropDelegte, VECropViewDelegate,VETrimSliderDelegate,VEPasterTextViewDelegate,VECutVideoRangeSliderDelegate>
 {
     VEMediaInfo        *oldselectFile;
     CGRect originalvideoCropViewFrame;
@@ -287,7 +287,7 @@
         if(self.cropType != VE_VECROPTYPE_FIXEDRATIO)
             [self.toolView addSubview:self.cropTypeView];
     }
-    else if( _cutMmodeType == kCropTypeFixed ){
+    else if( _cutMmodeType == kCropTypeFixed || _cutMmodeType == kCropTypeFixedRatio){
         if( _selectFile.fileType == kFILEIMAGE && !_selectFile.isGif)
         {
             if( !_isCropTypeViewHidden )
@@ -2124,27 +2124,33 @@
     }else{
         timeRange = _selectFile.videoTrimTimeRange;
     }
+    
     VETrimSlider * trimSlider = [[VETrimSlider alloc] initWithFrame:CGRectMake(0, (_videoView.bounds.size.height - 65 - 50)/2.0, _videoView.bounds.size.width, 50) videoCore:_videoCoreSDK trimDuration_OneSpecifyTime: CMTimeGetSeconds(timeRange.duration)];
     _trimDuration_OneSpecifyTime = CMTimeGetSeconds(timeRange.duration);
     [_videoView addSubview:trimSlider];
     _videoTrimiSlider = trimSlider;
     _videoTrimiSlider.delegate = self;
+
+    
+    
+    
+    
     {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, trimSlider.frame.size.width/6.0, trimSlider.frame.size.height)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _videoTrimiSlider.frame.size.width/6.0, _videoTrimiSlider.frame.size.height)];
         label.alpha = 0.3;
         label.backgroundColor = [UIColor blackColor];
-        [trimSlider addSubview:label];
+        [_videoTrimiSlider addSubview:label];
     }
     {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(trimSlider.frame.size.width - trimSlider.frame.size.width/6.0, 0, trimSlider.frame.size.width/6.0, trimSlider.frame.size.height)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(_videoTrimiSlider.frame.size.width - _videoTrimiSlider.frame.size.width/6.0, 0, _videoTrimiSlider.frame.size.width/6.0, _videoTrimiSlider.frame.size.height)];
         label.alpha = 0.3;
         label.backgroundColor = [UIColor blackColor];
-        [trimSlider addSubview:label];
+        [_videoTrimiSlider addSubview:label];
     }
     
     if( _isCropTypeViewHidden )
     {
-        trimSlider.frame = CGRectMake(0, 30, _videoView.bounds.size.width, 50);
+        _videoTrimiSlider.frame = CGRectMake(0, 30, _videoView.bounds.size.width, 50);
     }
     
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, _videoView.bounds.size.width, 20)];

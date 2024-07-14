@@ -80,7 +80,12 @@
         [_navBar addSubview:_exportNavBarBtn];
         
         self.barline = [[UIView alloc] initWithFrame:CGRectMake(0, _navBar.frame.size.height - 0.5, kWIDTH, 0.5)];
-        self.barline.backgroundColor = UIColorFromRGB(0x272727);//_navBar.backgroundColor;
+        if([VEConfigManager sharedManager].editConfiguration.albumLayoutStyle == ALBUMLAYOUTSTYLE_TWO){
+            self.barline.backgroundColor = self.view.backgroundColor;
+        }
+        else{
+            self.barline.backgroundColor = UIColorFromRGB(0x272727);//_navBar.backgroundColor;
+        }
         [_navBar addSubview:self.barline];
     }
     return _navBar;
@@ -100,6 +105,9 @@
             if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
                 _toolBar.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
                 [VEHelp addShadowToView:_toolBar withColor:nil];
+            }
+            if([VEConfigManager sharedManager].editConfiguration.albumLayoutStyle == ALBUMLAYOUTSTYLE_TWO){
+                _toolBar.backgroundColor = UIColorFromRGB(0x111111);
             }
             [self.view addSubview:_toolBar];
         }
@@ -125,6 +133,9 @@
         if( [VEConfigManager sharedManager].isPictureEditing )
         {
             _toolBar.backgroundColor = UIColorFromRGB(0x1a1a1a);//[UIColor whiteColor];
+            if([VEConfigManager sharedManager].editConfiguration.albumLayoutStyle == ALBUMLAYOUTSTYLE_TWO){
+                _toolBar.backgroundColor = UIColorFromRGB(0x111111);
+            }
             self.titlelab.textColor = PESDKTEXT_COLOR;
             [_finishToolBarBtn setImage:[VEHelp imageNamed:@"/PESDKImage/PESDK_勾@3x" atBundle:[VEHelp getBundleName:@"VEPESDK"]] forState:UIControlStateNormal];
         }

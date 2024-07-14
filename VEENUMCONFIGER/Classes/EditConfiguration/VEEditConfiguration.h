@@ -16,6 +16,13 @@ typedef NS_ENUM(NSInteger, SUPPORTFILETYPE){
     SUPPORT_ALL,             //支持视频和图片
 };
 
+/**相册选择界面的布局方式
+ */
+typedef NS_ENUM(NSInteger, ALBUMLAYOUTSTYLE){
+    ALBUMLAYOUTSTYLE_ONE,      //布局方式一
+    ALBUMLAYOUTSTYLE_TWO,      //布局方式二
+};
+
 /**视频输出方式
  */
 typedef NS_ENUM(NSInteger, VEPORTIONTYPE){
@@ -151,6 +158,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign)BOOL    isShowSplitScreen;
 @property(nonatomic, assign)BOOL    isSplitScreenTypography;
 @property(nonatomic, assign)CGSize  SplitScreenSize;
+/** 相册选择界面的布局方式
+ */
+@property(nonatomic, assign)ALBUMLAYOUTSTYLE    albumLayoutStyle;
+/** 裁剪页固定裁剪大小
+ */
+@property(nonatomic, assign)CGSize cropVideoSize;
 
 /** 向导模式 如果需要自己删除一些功能 则需启用此参数  default false
  */

@@ -346,6 +346,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 /**判断URL是视频还是图片
  */
 + (BOOL)isImageUrl:(NSURL *)url{
+    if (!url) {
+        return NO;
+    }
     NSString *pathExtension = [url.pathExtension lowercaseString];
     //    if([self isSystemPhotoUrl:url]){
     //        pathExtension = [[[[NSString stringWithFormat:@"%@",url] componentsSeparatedByString:@"ext="] lastObject] lowercaseString];
@@ -17414,5 +17417,19 @@ static OSType help_inputPixelFormat(){
     label.center = CGPointMake(x, slider.frame.origin.y - label.frame.size.height + 3);
     int  value = slider.value * 100.0;
     label.text = [NSString stringWithFormat:@"%d", value];
+}
+
+// 传入两个 CMTimeRange 对象：range1 和 range2
++(BOOL)rangesIntersectWithRange:( CMTimeRange ) range atTimeRange:(CMTimeRange) range1 {
+    CMTime end = CMTimeRangeGetEnd(range);
+    CMTime end1 = CMTimeRangeGetEnd(range1);
+
+    // 如果其中一个范围的开始时间大于另一个范围的结束时间，则它们没有交集
+    if (CMTimeCompare(range.start, end1) == 1 || CMTimeCompare(range1.start, end1) == 1) {
+        return NO;
+    }
+
+    // 其他情况都认为有交集
+    return YES;
 }
 @end

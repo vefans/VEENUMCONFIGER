@@ -123,10 +123,34 @@ float VE_DistanceBetweenPoints(CGPoint a, CGPoint b);
          [self.thumbIconView addSubview:self.durationBackView];
          
          [self addSubview:self.thumbDeletedBtn];
+        
+        image = [VEHelp imageNamed:@"编辑素材@3x" atBundle:[VEHelp getBundleName:@"PhotoSDK"]];
+        _editBtn = [[UIButton alloc] init];
+        _editBtn.enabled = NO;
+        _editBtn.frame = CGRectMake((t_size.width - image.size.width)/2.0, (t_size.height - (image.size.height + 20))/2.0, image.size.width, image.size.height + 20);
+        [self.editBtn setImage:image forState:UIControlStateDisabled];
+        [self.editBtn setTitle:VELocalizedString(@"编辑", nil) forState:UIControlStateDisabled];
+        [self.editBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateDisabled];
+        [self.editBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 20, 0)];
+        [self.editBtn setTitleEdgeInsets:UIEdgeInsetsMake(image.size.height, - image.size.width, 0, 0)];
+        
+        [self.editBtn.titleLabel setFont:[UIFont systemFontOfSize:13]];
+        //[_editBtn addTarget:self action:@selector(editBtnThumbFile) forControlEvents:UIControlEventTouchUpInside];
+        _editBtn.hidden = YES;
+         [self addSubview:self.editBtn];
+        
+        
     }
     
     return self;
 }
+//- (void)editBtnThumbFile{
+//    if(delegate){
+//        if([delegate respondsToSelector:@selector(thumbEditThumbFile:)]){
+//            [delegate thumbEditThumbFile:self];
+//        }
+//    }
+//}
 
 - (UIView *)maskView {
     if (!_maskView) {

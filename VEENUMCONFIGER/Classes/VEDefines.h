@@ -992,4 +992,4 @@ isPhoneX;\
 
 #define kScriptPropsRecordPlist [KScriptFolder stringByAppendingPathComponent:@"scriptPropsRecord.plist"]
 
-#define PHOTO_ALBUM_NAME @"VEDemo"
+#define PHOTO_ALBUM_NAME @"拼图匠"//@"星剪"//@"VEDemo"

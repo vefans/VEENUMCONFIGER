@@ -811,4 +811,6 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(void)script_SaveDraftDic:( NSMutableDictionary * ) dictionary;
 +(NSMutableArray *)script_GetDraftlines;
 +(void)setSliderCurrentLabelCenterWidthLabel:( UILabel * ) label atSlider:( UISlider * ) slider;
+
++(BOOL)rangesIntersectWithRange:( CMTimeRange ) range atTimeRange:(CMTimeRange) range1;
 @end

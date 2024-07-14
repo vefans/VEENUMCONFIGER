@@ -7,8 +7,8 @@
 
 #import "VENewClipViewController.h"
 #import <VEENUMCONFIGER/VETrimSlider.h>
-
-@interface VENewClipViewController ()<VEPlaySliderDelegate,VECropTypeDelegate,VECoreDelegate, VETrimSliderDelegate,UIScrollViewDelegate>
+#import "VECutVideoRangeSlider.h"
+@interface VENewClipViewController ()<VEPlaySliderDelegate,VECropTypeDelegate,VECoreDelegate, VETrimSliderDelegate,UIScrollViewDelegate,VECutVideoRangeSliderDelegate>
 {
     VEMediaInfo        *oldselectFile;
     CGRect originalvideoCropViewFrame;
@@ -73,6 +73,9 @@
 @property(nonatomic, weak)UIView            *photoView; //图片界面操作
 
 @property(nonatomic, weak)UIView            *videoView; //视频界面操作
+@property(nonatomic, weak)UILabel            *startLbl;
+@property(nonatomic, weak)UILabel            *trimDurationLbl;
+@property(nonatomic, weak)UILabel            *totalDurationLbl;
 @property(nonatomic, weak)VETrimSlider   *videoTrimiSlider;
 
 @end
@@ -226,8 +229,9 @@
     
     CMTime endTime = CMTimeMakeWithSeconds(_videoCoreSDK.duration, TIMESCALE);
     self.endTimeLabel.text = [NSString stringWithFormat:@"%@",[VEHelp timeToStringFormat:(CMTimeGetSeconds(endTime))]];
-    if( _videoView )
+    if( _videoView || [VEConfigManager sharedManager].editConfiguration.albumLayoutStyle == ALBUMLAYOUTSTYLE_TWO)
     {
+       
         [self initTrimSlider];
     }
     
@@ -236,7 +240,7 @@
     
     
     
-    if( _cutMmodeType == kCropTypeFixed )
+    if( _cutMmodeType == kCropTypeFixed ||  _cutMmodeType == kCropTypeFixedRatio)
     {
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_videoBgRect), self.bgView.frame.size.width, 30)];
         if( _isNeedExport )
@@ -378,7 +382,12 @@
         self.titlelab.text = @"";
     }else{
         self.titlelab.textColor = TEXT_COLOR;
-        self.barline.backgroundColor = UIColorFromRGB(0x1a1a1a);
+        if([VEConfigManager sharedManager].editConfiguration.albumLayoutStyle == ALBUMLAYOUTSTYLE_TWO){
+            self.barline.backgroundColor = UIColorFromRGB(0x111111);
+        }
+        else{
+            self.barline.backgroundColor = UIColorFromRGB(0x1a1a1a);
+        }
         self.titlelab.text = VELocalizedString(@"裁切", nil);
         self.titlelab.font = [UIFont boldSystemFontOfSize:14];
 //        self.titlelab.backgroundColor = UIColorFromRGB(0x1a1a1a);
@@ -410,7 +419,7 @@
         if(self.cropType != VE_VECROPTYPE_FIXEDRATIO)
             [self.toolView addSubview:self.cropTypeView];
     }
-    else if( _cutMmodeType == kCropTypeFixed ){
+    else if( _cutMmodeType == kCropTypeFixed || _cutMmodeType == kCropTypeFixedRatio){
         if( _selectFile.fileType == kFILEIMAGE && !_selectFile.isGif)
         {
             if( !_isCropTypeViewHidden )
@@ -1315,6 +1324,8 @@
     if (_cutMmodeType == kCropTypeFixed) {
         range.duration = CMTimeMakeWithSeconds(_trimDuration_OneSpecifyTime, TIMESCALE);
         range.start = CMTimeMakeWithSeconds( _videoTrimiSlider.progressValue, TIMESCALE);
+    }else if (_cutMmodeType == kCropTypeFixedRatio) {
+        range = _playTimeRange;
     }else {
         range.duration = CMTimeMakeWithSeconds(_trimDuration_OneSpecifyTime/(float)_selectFile.speed, TIMESCALE);
         range.start = CMTimeMakeWithSeconds( _videoTrimiSlider.progressValue/(float)_selectFile.speed, TIMESCALE);
@@ -2082,6 +2093,9 @@
             }else {
                 _toolView.frame = CGRectMake(0, self.toolBar.frame.origin.y - 85 - 60, self.bgView.frame.size.width, 60);
             }
+            if(_cutMmodeType == kCropTypeFixedRatio){
+                _toolView.backgroundColor = UIColorFromRGB(0x111111);
+            }
 //            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
 //                _toolView.backgroundColor = [VEConfigManager sharedManager].viewBackgroundColor;
 //            }else {
@@ -2409,38 +2423,87 @@
     }else{
         timeRange = _selectFile.videoTrimTimeRange;
     }
-    VETrimSlider * trimSlider = [[VETrimSlider alloc] initWithFrame:CGRectMake(0, (_videoView.bounds.size.height - 65 - 50)/2.0, _videoView.bounds.size.width, 50) videoCore:_videoCoreSDK trimDuration_OneSpecifyTime: CMTimeGetSeconds(timeRange.duration)];
-    _trimDuration_OneSpecifyTime = CMTimeGetSeconds(timeRange.duration);
-    [_videoView addSubview:trimSlider];
-    _videoTrimiSlider = trimSlider;
-    _videoTrimiSlider.delegate = self;
-    {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, trimSlider.frame.size.width/6.0, trimSlider.frame.size.height)];
-        label.alpha = 0.3;
-        label.backgroundColor = [UIColor blackColor];
-        [trimSlider addSubview:label];
+    if(_cutMmodeType == kCropTypeFixed){
+        VETrimSlider * trimSlider = [[VETrimSlider alloc] initWithFrame:CGRectMake(0, (_videoView.bounds.size.height - 65 - 50)/2.0, _videoView.bounds.size.width, 50) videoCore:_videoCoreSDK trimDuration_OneSpecifyTime: CMTimeGetSeconds(timeRange.duration)];
+        _trimDuration_OneSpecifyTime = CMTimeGetSeconds(timeRange.duration);
+        [_videoView addSubview:trimSlider];
+        _videoTrimiSlider = trimSlider;
+        _videoTrimiSlider.delegate = self;
+        {
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _videoTrimiSlider.frame.size.width/6.0, _videoTrimiSlider.frame.size.height)];
+            label.alpha = 0.3;
+            label.backgroundColor = [UIColor blackColor];
+            [_videoTrimiSlider addSubview:label];
+        }
+        {
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(_videoTrimiSlider.frame.size.width - _videoTrimiSlider.frame.size.width/6.0, 0, _videoTrimiSlider.frame.size.width/6.0, _videoTrimiSlider.frame.size.height)];
+            label.alpha = 0.3;
+            label.backgroundColor = [UIColor blackColor];
+            [_videoTrimiSlider addSubview:label];
+        }
+        
+        if( _isCropTypeViewHidden )
+        {
+            _videoTrimiSlider.frame = CGRectMake(0, 30, _videoView.bounds.size.width, 50);
+        }
+        
+        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, _videoView.bounds.size.width, 20)];
+        label.text = [NSString stringWithFormat:@"%.1fs", CMTimeGetSeconds(timeRange.duration)];
+        label.font = [UIFont systemFontOfSize:14];
+        label.textAlignment =NSTextAlignmentCenter;
+        label.textColor = [UIColor whiteColor];
+        if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+            label.textColor = UIColorFromRGB(0x131313);
+        }
+        [_videoView addSubview:label];
     }
-    {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(trimSlider.frame.size.width - trimSlider.frame.size.width/6.0, 0, trimSlider.frame.size.width/6.0, trimSlider.frame.size.height)];
-        label.alpha = 0.3;
-        label.backgroundColor = [UIColor blackColor];
-        [trimSlider addSubview:label];
+    else{
+     
+        VECutVideoRangeSlider *_rangeSlider = [[VECutVideoRangeSlider alloc] initWithFrame:CGRectMake(0, (_videoView.bounds.size.height - 65 - 50)/2.0 + 35, _videoView.bounds.size.width, 50) player:self.videoCoreSDK minRangeDuration:1 maxRangeDuration:self.videoCoreSDK.duration];
+        _rangeSlider.delegate = self;
+        _rangeSlider.trimTimeLabel.hidden = YES;
+        [_videoView addSubview:_rangeSlider];
+        
+        {
+            UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(10, CGRectGetMinY(_rangeSlider.frame) - 20, 60, 20)];
+            label.text = [NSString stringWithFormat:@"%@", [VEHelp timeFormat:0]];
+            label.font = [UIFont systemFontOfSize:14];
+            label.textAlignment =NSTextAlignmentLeft;
+            label.textColor = [UIColor whiteColor];
+            [_videoView addSubview:label];
+            _startLbl = label;
+        }
+        {
+            UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake((CGRectGetWidth(_videoView.frame) - 60)/2.0, CGRectGetMinY(_rangeSlider.frame) - 20, 60, 20)];
+            label.text = [NSString stringWithFormat:@"%@", [VEHelp timeFormat:CMTimeGetSeconds(timeRange.duration)]];
+            label.font = [UIFont systemFontOfSize:14];
+            label.textAlignment =NSTextAlignmentCenter;
+            label.textColor = [UIColor whiteColor];
+            [_videoView addSubview:label];
+            _trimDurationLbl = label;
+        }
+        {
+            UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetWidth(_videoView.frame) - 60, CGRectGetMinY(_rangeSlider.frame) - 20, 60, 20)];
+            label.text = [NSString stringWithFormat:@"%@", [VEHelp timeFormat:CMTimeGetSeconds(timeRange.duration)]];
+            label.font = [UIFont systemFontOfSize:14];
+            label.textAlignment =NSTextAlignmentRight;
+            label.textColor = [UIColor whiteColor];
+            [_videoView addSubview:label];
+            _totalDurationLbl = label;
+        }
+        
     }
     
-    if( _isCropTypeViewHidden )
-    {
-        trimSlider.frame = CGRectMake(0, 30, _videoView.bounds.size.width, 50);
-    }
+}
+- (void)rangeSliderChange:(VECutVideoRangeSlider *)slider start:(float)start duration:(float)duration progress:(float)progress{
+    _playTimeRange = CMTimeRangeMake(CMTimeMakeWithSeconds(start, TIMESCALE), CMTimeMakeWithSeconds(duration, TIMESCALE));
+    [_videoCoreSDK seekToTime:_playTimeRange.start toleranceTime:kCMTimeZero completionHandler:nil];
+    if([_videoCoreSDK isPlaying])
+        [self playVideo:NO];
     
-    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, _videoView.bounds.size.width, 20)];
-    label.text = [NSString stringWithFormat:@"%.1fs", CMTimeGetSeconds(timeRange.duration)];
-    label.font = [UIFont systemFontOfSize:14];
-    label.textAlignment =NSTextAlignmentCenter;
-    label.textColor = [UIColor whiteColor];
-    if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
-        label.textColor = UIColorFromRGB(0x131313);
-    }
-    [_videoView addSubview:label];
+    //_selectFile.videoTrimTimeRange = CMTimeRangeMake(CMTimeMakeWithSeconds(start, TIMESCALE), CMTimeMakeWithSeconds(duration, TIMESCALE));
+    _startLbl.text = [NSString stringWithFormat:@"%@", [VEHelp timeFormat:start]];
+    _trimDurationLbl.text = [NSString stringWithFormat:@"%@", [VEHelp timeFormat:duration]];
 }
 
 - (void)loadTrimmerViewThumbImage {

@@ -628,7 +628,7 @@
             
         }else if( exporter.status == AVAssetExportSessionStatusFailed ){
             
-            NSLog(@"保存shibai");
+            NSLog(@"保存失败");
         }
     }];
 }

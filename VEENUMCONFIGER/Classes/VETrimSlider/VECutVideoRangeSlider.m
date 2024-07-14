@@ -7,6 +7,7 @@
 
 #import "VECutVideoRangeSlider.h"
 #import "VEHelp.h"
+#import "VECutVideoRangeSlider.h"
 @implementation UIHitView
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
@@ -92,6 +93,13 @@
         self.leftHandle.layer.cornerRadius = 5;
         self.leftHandle.layer.maskedCorners = kCALayerMinXMinYCorner | kCALayerMinXMaxYCorner;
         [self addSubview:self.leftHandle];
+        {
+            UIHitView *imageView = [[UIHitView alloc] initWithFrame:CGRectMake((self.leftHandle.frame.size.width - 4)/2.0, 4, 4, self.leftHandle.frame.size.height - 8)];
+            imageView.backgroundColor = [UIColorFromRGB(0x272727) colorWithAlphaComponent:0.9];
+            imageView.layer.masksToBounds = YES;
+            imageView.layer.cornerRadius = 2;
+            [self.leftHandle addSubview:imageView];
+        }
         
         self.rightHandle = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMinX(self.rightThumbView.frame), 0, 20, frame.size.height)];
         self.rightHandle.backgroundColor = [UIColor whiteColor];
@@ -99,6 +107,13 @@
         self.rightHandle.layer.cornerRadius = 5;
         self.rightHandle.layer.maskedCorners = kCALayerMaxXMinYCorner | kCALayerMaxXMaxYCorner;
         [self addSubview:self.rightHandle];
+        {
+            UIHitView *imageView = [[UIHitView alloc] initWithFrame:CGRectMake((self.rightHandle.frame.size.width - 4)/2.0, 4, 4, self.rightHandle.frame.size.height - 8)];
+            imageView.backgroundColor = [UIColorFromRGB(0x272727) colorWithAlphaComponent:0.9];
+            imageView.layer.masksToBounds = YES;
+            imageView.layer.cornerRadius = 2;
+            [self.rightHandle addSubview:imageView];
+        }
         
         // 创建视频范围视图
         self.rangeView = [[UIHitView alloc] initWithFrame:CGRectMake(self.leftThumbView.frame.origin.x + self.leftThumbView.frame.size.width, 0, self.rightThumbView.frame.origin.x - self.leftThumbView.frame.origin.x - self.leftThumbView.frame.size.width, frame.size.height)];

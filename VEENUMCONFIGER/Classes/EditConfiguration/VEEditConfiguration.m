@@ -24,7 +24,9 @@
 }
 - (instancetype)init{
     if(self = [super init]){
+        
         //相册界面
+        _albumLayoutStyle = ALBUMLAYOUTSTYLE_ONE;
         _resultFileType = ALBUMFILETYPE_MediaInfo;
         _enableMagnifyingClass = true;
         _enableCloudDraft = true;
@@ -176,6 +178,7 @@
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEEditConfiguration *copy   = [[[self class] allocWithZone:zone] init];
     //相册界面
+    copy.albumLayoutStyle = _albumLayoutStyle;
     copy.enableCloudDraft = _enableCloudDraft;
     copy.isHiddenNetworkMaterial = _isHiddenNetworkMaterial;
     copy.isShowBookNetworkMaterial = _isShowBookNetworkMaterial;
