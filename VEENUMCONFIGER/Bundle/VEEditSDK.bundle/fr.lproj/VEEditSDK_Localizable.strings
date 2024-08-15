@@ -1104,8 +1104,8 @@
 "无可用的网络" = "No available network";
 "允许访问" = "Accessable";
 "禁止访问音乐" = "Music lib access denied";
-"无法访问媒体资料库" = "Media lib can not access";
-"请更改设置，启用媒体资料库权限" = "Please change setting, to enable media lib authority";
+"暂未开启媒体库权限" = "Media lib can not access";
+"请更改设置，开启媒体库权限" = "Please change setting, to enable media lib authority";
 "Amatorka" = "Amatorka";
 "MissEtikate" = "MissEtikate";
 

@@ -24,6 +24,8 @@
 #import <DocX/DocX.h>
 #import <CoreImage/CoreImage.h>
 #import <VEENUMCONFIGER/VEFrameCapture.h>
+#import <Speech/Speech.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 @import Vision;
 VENetworkResourceType const VENetworkResourceType_CardMusic = @"cardpoint_music";//卡点音乐
@@ -228,6 +230,312 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
     if ([[UIApplication sharedApplication] canOpenURL:url]) {
         [[UIApplication sharedApplication] openURL:url];
+    }
+}
+
++ (void)checkSystemAuthorizedForType:(SystemAuthorizationType)type
+               currentViewController:(UIViewController *)viewController
+                   completionHandler:(void (^)(BOOL))handler
+{
+    switch (type) {
+        case SystemAuthorizationType_Album:
+            {
+                PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+                switch (status) {
+                    case PHAuthorizationStatusRestricted:
+                    case PHAuthorizationStatusDenied:
+                    {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"In order to achieve material introduction/export, providing video editing functions,we must obtain album permissions.Otherwise, we will not be able to provide corresponding services",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings",nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
+                                [VEHelp enterSystemSetting];
+                            } atOtherBlock:nil];
+                        });
+                    }
+                        break;
+                    case PHAuthorizationStatusAuthorized:
+                        if (handler) {
+                            handler(true);
+                        }
+                        break;
+                        
+                    default:
+                    {
+                        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                            if (status >= PHAuthorizationStatusAuthorized) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    if (handler) {
+                                        handler(true);
+                                    }
+                                });
+                            }
+                        }];
+                    }
+                        break;
+                }
+            }
+            break;
+            
+        case SystemAuthorizationType_Camera:
+        {
+            AVAuthorizationStatus videoAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+            if (videoAuthStatus == AVAuthorizationStatusNotDetermined) {
+                [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+                    if (granted) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            if (handler) {
+                                handler(true);
+                            }
+                        });
+                    }
+                }];
+            }
+            else if (videoAuthStatus == AVAuthorizationStatusRestricted || videoAuthStatus == AVAuthorizationStatusDenied) {
+                [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"Need to visit your camera to take photos or videos",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings",nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
+                    [VEHelp enterSystemSetting];
+                } atOtherBlock:nil];
+                return;
+            }
+            else if (videoAuthStatus == AVAuthorizationStatusAuthorized) {
+                if (handler) {
+                    handler(true);
+                }
+            }
+        }
+            break;
+            
+        case SystemAuthorizationType_Microphone:
+        {
+            AVAuthorizationStatus audioAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+            if (audioAuthStatus == AVAuthorizationStatusNotDetermined) {
+                [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+                    if (granted) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            if (handler) {
+                                handler(true);
+                            }
+                        });
+                    }
+                }];
+            }
+            else if (audioAuthStatus == AVAuthorizationStatusRestricted || audioAuthStatus == AVAuthorizationStatusDenied) {
+                [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"Need to visit your microphone to recording",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings",nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
+                    [VEHelp enterSystemSetting];
+                } atOtherBlock:nil];
+            }else if (audioAuthStatus == AVAuthorizationStatusAuthorized) {
+                if (handler) {
+                    handler(true);
+                }
+            }
+        }
+            break;
+            
+        case SystemAuthorizationType_CameraAndMic:
+        {
+            AVAuthorizationStatus videoAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+            AVAuthorizationStatus audioAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+            if (videoAuthStatus == AVAuthorizationStatusNotDetermined || (videoAuthStatus == AVAuthorizationStatusAuthorized && audioAuthStatus == AVAuthorizationStatusNotDetermined)) {
+                if (videoAuthStatus == AVAuthorizationStatusNotDetermined) {
+                    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+                        if (granted) {
+                            if (audioAuthStatus == AVAuthorizationStatusNotDetermined) {
+                                [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+                                    if (granted) {
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            if (handler) {
+                                                handler(true);
+                                            }
+                                        });
+                                    }
+                                }];
+                            }else {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    if (handler) {
+                                        handler(true);
+                                    }
+                                });
+                            }
+                        }
+                    }];
+                }else if (audioAuthStatus == AVAuthorizationStatusNotDetermined) {
+                    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+                        if (granted) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                if (handler) {
+                                    handler(true);
+                                }
+                            });
+                        }
+                    }];
+                }
+            }
+            else if (videoAuthStatus == AVAuthorizationStatusRestricted || videoAuthStatus == AVAuthorizationStatusDenied) {
+                [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"Need to visit your camera to take photos or videos",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings",nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
+                    [VEHelp enterSystemSetting];
+                } atOtherBlock:nil];
+                return;
+            }
+            else if (audioAuthStatus == AVAuthorizationStatusRestricted || audioAuthStatus == AVAuthorizationStatusDenied) {
+                [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"Need to visit your microphone to recording",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings",nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
+                    [VEHelp enterSystemSetting];
+                } atOtherBlock:nil];
+            }else if (audioAuthStatus == AVAuthorizationStatusAuthorized && videoAuthStatus == AVAuthorizationStatusAuthorized) {
+                if (handler) {
+                    handler(true);
+                }
+            }
+        }
+            break;
+            
+        case SystemAuthorizationType_SpeechRecognition:
+        {
+            if (@available(iOS 10.0, *)) {
+                SFSpeechRecognizerAuthorizationStatus speechRecogStatus = [SFSpeechRecognizer authorizationStatus];
+                if (speechRecogStatus == SFSpeechRecognizerAuthorizationStatusNotDetermined) {
+                    if (@available(iOS 10.0, *)) {
+                        [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
+                            if (status == SFSpeechRecognizerAuthorizationStatusAuthorized) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    if (handler) {
+                                        handler(true);
+                                    }
+                                });
+                            }
+                        }];
+                    } else {
+                        // Fallback on earlier versions
+                    }
+                }
+                else if (speechRecogStatus == SFSpeechRecognizerAuthorizationStatusRestricted || speechRecogStatus == SFSpeechRecognizerAuthorizationStatusDenied) {
+                    [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"In order to achieve the voice to text function, need to call your voice recognition permission.Otherwise, we will not be able to provide corresponding services",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings", nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
+                        [VEHelp enterSystemSetting];
+                    } atOtherBlock:nil];
+                }
+                else if (handler) {
+                    handler(true);
+                }
+            }
+        }
+            break;
+            
+        case SystemAuthorizationType_SpeechAndMic:
+        {
+            if (@available(iOS 10.0, *)) {
+                AVAuthorizationStatus audioAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+                SFSpeechRecognizerAuthorizationStatus speechRecogStatus = [SFSpeechRecognizer authorizationStatus];
+                if (audioAuthStatus == AVAuthorizationStatusNotDetermined || speechRecogStatus == SFSpeechRecognizerAuthorizationStatusNotDetermined) {
+                    if (audioAuthStatus == AVAuthorizationStatusNotDetermined) {
+                        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+                            if (granted) {
+                                if (speechRecogStatus == SFSpeechRecognizerAuthorizationStatusNotDetermined) {
+                                    if (@available(iOS 10.0, *)) {
+                                        [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
+                                            if (status == SFSpeechRecognizerAuthorizationStatusAuthorized) {
+                                                dispatch_async(dispatch_get_main_queue(), ^{
+                                                    if (handler) {
+                                                        handler(true);
+                                                    }
+                                                });
+                                            }
+                                        }];
+                                    } else {
+                                        // Fallback on earlier versions
+                                    }
+                                }else {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        if (handler) {
+                                            handler(true);
+                                        }
+                                    });
+                                }
+                            }
+                        }];
+                    }else if (speechRecogStatus == SFSpeechRecognizerAuthorizationStatusNotDetermined) {
+                        if (@available(iOS 10.0, *)) {
+                            [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
+                                if (status == SFSpeechRecognizerAuthorizationStatusAuthorized) {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        if (handler) {
+                                            handler(true);
+                                        }
+                                    });
+                                }
+                            }];
+                        } else {
+                            // Fallback on earlier versions
+                        }
+                    }
+                }
+                else if (audioAuthStatus == AVAuthorizationStatusRestricted || audioAuthStatus == AVAuthorizationStatusDenied) {
+                    [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"Need to visit your microphone to recording",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings",nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
+                        [VEHelp enterSystemSetting];
+                    } atOtherBlock:nil];
+                }
+                else if (speechRecogStatus == SFSpeechRecognizerAuthorizationStatusRestricted || speechRecogStatus == SFSpeechRecognizerAuthorizationStatusDenied) {
+                    [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"In order to achieve the voice to text function, need to call your voice recognition permission.Otherwise, we will not be able to provide corresponding services",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings", nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
+                        [VEHelp enterSystemSetting];
+                    } atOtherBlock:nil];
+                }
+                else if (handler) {
+                    handler(true);
+                }
+            }
+        }
+            break;
+            
+        case SystemAuthorizationType_MediaLibrary:
+        {
+            if ( @available(iOS 9.3, *) )
+            {
+                if ( MPMediaLibrary.authorizationStatus == MPMediaLibraryAuthorizationStatusAuthorized)
+                {
+                    if (handler) {
+                        handler(true);
+                    }
+                }
+                else if (MPMediaLibrary.authorizationStatus == MPMediaLibraryAuthorizationStatusNotDetermined) {
+                    [MPMediaLibrary requestAuthorization:^(MPMediaLibraryAuthorizationStatus authorizationStatus)
+                     {
+                        if (authorizationStatus == MPMediaLibraryAuthorizationStatusAuthorized) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                if (handler) {
+                                    handler(true);
+                                }
+                            });
+                        }
+                    }];
+                }else {
+                    [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"暂未开启媒体库权限",nil) message:VELocalizedString(@"请更改设置，开启媒体库权限",nil) cancelButtonTitle:VELocalizedString(@"取消",nil) otherButtonTitles:VELocalizedString(@"设置",nil) atViewController:viewController atCancelBlock:nil atOtherBlock:^{
+                        [VEHelp enterSystemSetting];
+                    }];
+                }
+            }else {
+                AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+                if (status == AVAuthorizationStatusAuthorized) {
+                    if (handler) {
+                        handler(true);
+                    }
+                }
+                else if(status == AVAuthorizationStatusRestricted || status == AVAuthorizationStatusDenied){
+                    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+                        if (granted) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                if (handler) {
+                                    handler(true);
+                                }
+                            });
+                        }
+                    }];
+                }else {
+                    [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"暂未开启媒体库权限",nil) message:VELocalizedString(@"请更改设置，开启媒体库权限",nil) cancelButtonTitle:VELocalizedString(@"取消",nil) otherButtonTitles:VELocalizedString(@"设置",nil) atViewController:viewController atCancelBlock:nil atOtherBlock:^{
+                        [VEHelp enterSystemSetting];
+                    }];
+                }
+            }
+        }
+            break;
+            
+        default:
+            break;
     }
 }
 
@@ -4373,14 +4681,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (UIImage *)gradientImageWithColors:(NSArray *)colors size:(CGSize)size cornerRadius:(CGFloat)cornerRadius {
     CGRect rect = CGRectMake(0, 0, ceilf(size.width), ceilf(size.height));
     
-    NSMutableArray *gradientColors = [NSMutableArray array];
-    for (UIColor *color in colors) {
-        [gradientColors addObject:(id)(color.CGColor)];
-    }
+    
     CAGradientLayer *gradientLayer = [CAGradientLayer layer];
     gradientLayer.frame = rect;
-    gradientLayer.colors = [NSArray arrayWithArray: gradientColors];
-    
+    gradientLayer.colors = [NSArray arrayWithArray: colors];
+    gradientLayer.startPoint = CGPointMake(0, 0);
+    gradientLayer.endPoint = CGPointMake(1.0, 0);
     UIBezierPath *roundedRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:cornerRadius];
     roundedRect.lineWidth = 0;
     
@@ -4397,9 +4703,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (UIImage *)gradientRightToLeftImageWithColors:(NSArray *)colors size:(CGSize)size cornerRadius:(CGFloat)cornerRadius {
     CGRect rect = CGRectMake(0, 0, ceilf(size.width), ceilf(size.height));
     
-    NSMutableArray *gradientColors = [NSMutableArray array];
-    for (UIColor *color in colors) {
-        [gradientColors addObject:(id)(color.CGColor)];
+    NSMutableArray *gradientColors;
+    if ([colors.firstObject isKindOfClass:[UIColor class]]) {
+        gradientColors = [NSMutableArray array];
+        for (UIColor *color in colors) {
+            [gradientColors addObject:(id)(color.CGColor)];
+        }
+    }else {
+        gradientColors = [NSMutableArray arrayWithArray:colors];
     }
     CAGradientLayer *gradientLayer = [CAGradientLayer layer];
     gradientLayer.frame = rect;
@@ -4812,7 +5123,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (UIImage *)imageWithWebP:(NSString *)filePath error:(NSError **)error
 {
     // If passed `filepath` is invalid, return nil to caller and log error in console
-    if(!filePath){
+    if(filePath.length == 0 || ![filePath.pathExtension isEqualToString:@"webp"]){
         return nil;
     }
     NSError *dataError = nil;
@@ -5076,9 +5387,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }else if(file.rotate == -270){
                 rotate = -90;
             }
-            image = [VEHelp imageRotatedByDegrees:image rotation:rotate];
+            if(image){
+                image = [VEHelp imageRotatedByDegrees:image rotation:rotate];
+            }
         }else{
-            image = [VEHelp imageRotatedByDegrees:image rotation:file.rotate];
+            if(image){
+                image = [VEHelp imageRotatedByDegrees:image rotation:file.rotate];
+            }
         }
         editSize = CGSizeMake(image.size.width, image.size.height);
         image = nil;
@@ -14040,7 +14355,7 @@ static OSType help_inputPixelFormat(){
     }else {
         fileName = [NSString stringWithFormat:@"%ld",[url.path hash]];
     }
-    NSString *autoSegmentImagePath = [NSString stringWithFormat:@"%@%@_%@",kAutoSegmentImageFolder,fileName,uuid];
+    NSString *autoSegmentImagePath = [kAutoSegmentImageFolder stringByAppendingPathComponent:uuid];
     if (![[NSFileManager defaultManager] fileExistsAtPath:autoSegmentImagePath]) {
         [[NSFileManager defaultManager] createDirectoryAtPath:autoSegmentImagePath withIntermediateDirectories:YES attributes:nil error:nil];
     }
@@ -14049,31 +14364,7 @@ static OSType help_inputPixelFormat(){
     return autoSegmentImagePath;
 }
 
-+ (NSString *)getAutoSegmentImageFolder_Time:(NSURL *)url  atUUID:( NSString * ) uuid{
-    if (![[NSFileManager defaultManager] fileExistsAtPath:kAutoSegmentImageFolder]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:kAutoSegmentImageFolder withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    NSString *fileName = @"";
-    if ([url.scheme.lowercaseString isEqualToString:@"ipod-library"]
-        || [url.scheme.lowercaseString isEqualToString:@"assets-library"])
-    {
-        NSRange range = [url.absoluteString rangeOfString:@"?id="];
-        if (range.location != NSNotFound) {
-            fileName = [url.absoluteString substringFromIndex:range.length + range.location];
-            range = [fileName rangeOfString:@"&ext"];
-            fileName = [fileName substringToIndex:range.location];
-        }
-    }else {
-        fileName = [NSString stringWithFormat:@"%ld",[url.path hash]];
-    }
-    NSString *autoSegmentImagePath = [NSString stringWithFormat:@"%@%@_%@",kAutoSegmentImageFolder,fileName,uuid];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:autoSegmentImagePath]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:autoSegmentImagePath withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    return autoSegmentImagePath;
-}
-
-+ (NSString *)getAutoSegmentImagePath_Sky:(NSURL *)url {
++ (NSString *)getAutoSegmentImagePath_Sky:(NSURL *)url atUUID:( NSString * ) uuid {
     if (![[NSFileManager defaultManager] fileExistsAtPath:kAutoSegmentImageFolder]) {
         [[NSFileManager defaultManager] createDirectoryAtPath:kAutoSegmentImageFolder withIntermediateDirectories:YES attributes:nil error:nil];
     }
@@ -14091,7 +14382,11 @@ static OSType help_inputPixelFormat(){
         fileName = [NSString stringWithFormat:@"%ld",[url.path hash]];
     }
     fileName = [NSString stringWithFormat:@"%@_Sky",fileName];
-    NSString *autoSegmentImagePath = [[kAutoSegmentImageFolder stringByAppendingPathComponent:fileName] stringByAppendingPathExtension:@"png"];
+    NSString *autoSegmentImagePath = [kAutoSegmentImageFolder stringByAppendingPathComponent:uuid];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:autoSegmentImagePath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:autoSegmentImagePath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    autoSegmentImagePath = [[autoSegmentImagePath stringByAppendingPathComponent:fileName] stringByAppendingPathExtension:@"png"];
     return autoSegmentImagePath;
 }
 
@@ -15645,6 +15940,63 @@ static OSType help_inputPixelFormat(){
     return colorArray;
 }
 
++ (void)checkAlbumAuthorization:(void(^)(BOOL isAuthorized))completionHandler {
+    UIViewController *currentVC = [VEHelp getCurrentViewController];
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    switch (status) {
+        case PHAuthorizationStatusRestricted:
+        case PHAuthorizationStatusDenied:
+        {
+            [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"无法访问相册!",nil)  message:VELocalizedString(@"用户拒绝访问相册,请在<隐私>中开启",nil) cancelButtonTitle:VELocalizedString(@"确定",nil) otherButtonTitles:VELocalizedString(@"取消",nil) atViewController:currentVC atCancelBlock:^{
+                [VEHelp enterSystemSetting];
+            } atOtherBlock:nil];
+        }
+            break;
+        case PHAuthorizationStatusAuthorized:
+            if (completionHandler) {
+                completionHandler(YES);
+            }
+            break;
+            
+        default:
+        {
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                if (status >= PHAuthorizationStatusAuthorized) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (completionHandler) {
+                            completionHandler(YES);
+                        }
+                    });
+                }
+            }];
+        }
+            break;
+    }
+}
+
++(NSMutableArray *)getGradientsColorList
+{
+    NSString *path = [[self getEditBundle] pathForResource:@"GradientsColorList.txt" ofType:@""];
+    NSString *content = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+    NSArray *list = [content componentsSeparatedByString:@"\r\n"];
+    NSMutableArray * colorArray = [NSMutableArray array];
+    for (int i = 0; i<list.count; i++) {
+        NSString *colorStr = list[i];
+        NSMutableArray *objColorArray = [NSMutableArray new];
+        NSArray *colorList = [colorStr componentsSeparatedByString:@"-"];
+        if( colorList.count > 1 )
+        {
+            for (int i = 1; i < colorList.count; i++) {
+                colorStr = colorList[i];
+                UIColor *color = [self colorWithHexString:colorStr];
+                [objColorArray addObject:color];
+            }
+            [colorArray addObject:objColorArray];
+        }
+    }
+    return colorArray;
+}
+
 + (NSArray *)getToningHSLColorArray {
     NSMutableArray * colorArray = [NSMutableArray array];
     [colorArray addObject:UIColorFromRGB(0xff0000)];//红
@@ -17153,74 +17505,92 @@ static OSType help_inputPixelFormat(){
 }
 
 + (UIColor *)colorWithColors:(NSArray *)colors bounds:(CGRect)bounds {
-    CALayer *layer = [CALayer layer];
-    layer.bounds = bounds;
+    if(bounds.size.width > 0.0 && bounds.size.height > 0.0){
+        CALayer *layer = [CALayer layer];
+        layer.bounds = bounds;
 
-    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-    gradientLayer.frame = bounds;
-    gradientLayer.colors = colors;
-    gradientLayer.startPoint = CGPointMake(0, 0.5);
-    gradientLayer.endPoint = CGPointMake(1, 0.5);
+        CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+        gradientLayer.frame = bounds;
+        gradientLayer.colors = colors;
+        gradientLayer.startPoint = CGPointMake(0, 0.5);
+        gradientLayer.endPoint = CGPointMake(1, 0.5);
 
-    UIGraphicsBeginImageContext(bounds.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    if (context == NULL) {
-        return [UIColor whiteColor];
+        UIGraphicsBeginImageContext(bounds.size);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        if (context == NULL) {
+            return [UIColor whiteColor];
+        }
+        
+        [gradientLayer renderInContext:context];
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+
+        UIColor *color = [UIColor colorWithPatternImage:image];
+        return color;
+    }
+    else{
+        return [UIColor clearColor];
     }
     
-    [gradientLayer renderInContext:context];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-
-    UIColor *color = [UIColor colorWithPatternImage:image];
-    return color;
 }
 
 + (UIColor *)color1WithColors:(NSArray *)colors bounds:(CGRect)bounds {
-    CALayer *layer = [CALayer layer];
-    layer.bounds = bounds;
+    if(bounds.size.width > 0.0 && bounds.size.height > 0.0){
+        CALayer *layer = [CALayer layer];
+        layer.bounds = bounds;
 
-    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-    gradientLayer.frame = bounds;
-    gradientLayer.colors = colors;
-    gradientLayer.startPoint = CGPointMake(0.0, 0.0);
-    gradientLayer.endPoint = CGPointMake(1.0, 1.0);
+        CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+        gradientLayer.frame = bounds;
+        gradientLayer.colors = colors;
+        gradientLayer.startPoint = CGPointMake(0.0, 0.0);
+        gradientLayer.endPoint = CGPointMake(1.0, 0.0);
 
-    UIGraphicsBeginImageContext(bounds.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    if (context == NULL) {
-        return [UIColor whiteColor];
+        UIGraphicsBeginImageContext(bounds.size);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        if (context == NULL) {
+            return [UIColor whiteColor];
+        }
+        
+        [gradientLayer renderInContext:context];
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+
+        UIColor *color = [UIColor colorWithPatternImage:image];
+        return color;
+    }
+    else{
+        return [UIColor clearColor];
     }
     
-    [gradientLayer renderInContext:context];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-
-    UIColor *color = [UIColor colorWithPatternImage:image];
-    return color;
 }
 + (UIColor *)color2WithColors:(NSArray *)colors bounds:(CGRect)bounds {
-    CALayer *layer = [CALayer layer];
-    layer.bounds = bounds;
+    if(bounds.size.width > 0.0 && bounds.size.height > 0.0){
+        CALayer *layer = [CALayer layer];
+        layer.bounds = bounds;
 
-    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-    gradientLayer.frame = bounds;
-    gradientLayer.colors = colors;
-    gradientLayer.startPoint = CGPointMake(0.0, 0.0);
-    gradientLayer.endPoint = CGPointMake(1.0, 0.0);
+        CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+        gradientLayer.frame = bounds;
+        gradientLayer.colors = colors;
+        gradientLayer.startPoint = CGPointMake(0.0, 0.0);
+        gradientLayer.endPoint = CGPointMake(1.0, 1.0);
 
-    UIGraphicsBeginImageContext(bounds.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    if (context == NULL) {
-        return [UIColor whiteColor];
+        UIGraphicsBeginImageContext(bounds.size);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        if (context == NULL) {
+            return [UIColor whiteColor];
+        }
+        
+        [gradientLayer renderInContext:context];
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+
+        UIColor *color = [UIColor colorWithPatternImage:image];
+        return color;
+    }
+    else{
+        return [UIColor clearColor];
     }
     
-    [gradientLayer renderInContext:context];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-
-    UIColor *color = [UIColor colorWithPatternImage:image];
-    return color;
 }
 
 + (NSString *)getMagnifyingGlassCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
@@ -17251,11 +17621,17 @@ static OSType help_inputPixelFormat(){
     //设置渐变层的frame等同于titleLabel属性的frame（这里高度有个小误差，补上就可以了）
     gradientLayer.frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height + 3);
     //将存储的渐变色数组（UIColor类）转变为CAGradientLayer对象的colors数组，并设置该数组为CAGradientLayer对象的colors属性
-    NSMutableArray *gradientColors = [NSMutableArray array];
-    for (UIColor *colorItem in colors) {
-        [gradientColors addObject:(id)colorItem.CGColor];
+
+    NSMutableArray *gradientColors;
+    if ([colors.firstObject isKindOfClass:[UIColor class]]) {
+        gradientColors = [NSMutableArray array];
+        for (UIColor *color in colors) {
+            [gradientColors addObject:(id)(color.CGColor)];
+        }
+    }else {
+        gradientColors = [NSMutableArray arrayWithArray:colors];
     }
-    gradientLayer.colors = [NSArray arrayWithArray:gradientColors];
+    gradientLayer.colors = gradientColors;
 //    gradientLayer.locations = @[@0.35, @0.5, @0.65];
     gradientLayer.locations = [[NSArray alloc] initWithArray:colorProportions];;
     gradientLayer.startPoint = CGPointMake(0, 0);
@@ -17264,6 +17640,73 @@ static OSType help_inputPixelFormat(){
     UIImage *gradientImage = [VEHelp imageFromLayer:gradientLayer];
     
     return gradientImage;
+}
+
++ (UIImage *)multiColorGradientImageWithSize:(CGSize)size colors:(NSArray<UIColor *> *)colors atColorProportions:(NSArray *)colorProportions atStartPoint:(CGPoint)startPoint atEndPoint:(CGPoint)endPoint
+{
+    // 检查颜色数组和比例数组的一致性
+    if (colors.count!= colorProportions.count) {
+        NSLog(@"Colors and color proportions arrays have different lengths.");
+        // 可以选择返回一个默认的图像或者采取其他适当的处理方式
+        return nil;
+    }
+
+    // 创建渐变层对象
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    // 设置渐变层的 frame 等同于 titleLabel 属性的 frame（这里高度有个小误差，补上就可以了）
+    gradientLayer.frame = CGRectMake(0, 0, size.width, size.height);
+
+    // 将存储的渐变色数组（UIColor 类）转变为 CAGradientLayer 对象的 colors 数组，并设置该数组为 CAGradientLayer 对象的 colors 属性
+    NSMutableArray *gradientColors;
+    if ([colors.firstObject isKindOfClass:[UIColor class]]) {
+        gradientColors = [NSMutableArray array];
+        for (UIColor *color in colors) {
+            [gradientColors addObject:(id)(color.CGColor)];
+        }
+    }else {
+        gradientColors = [NSMutableArray arrayWithArray:colors];
+    }
+    gradientLayer.colors = gradientColors;
+
+    // 更精细的颜色比例设置
+    NSMutableArray *calculatedColorProportions = [NSMutableArray array];
+    CGFloat step = 1.0 / (colors.count - 1);
+    for (int i = 0; i < colors.count; i++) {
+        [calculatedColorProportions addObject:@(i * step)];
+    }
+    gradientLayer.locations = [NSArray arrayWithArray:calculatedColorProportions];
+
+    gradientLayer.startPoint = startPoint;
+    gradientLayer.endPoint = endPoint;
+
+    // 下一步需要将 CAGradientLayer 对象绘制到一个 UIImage 对象上，以便使用这个 UIImage 对象来填充按钮的字体
+    UIImage *gradientImage = [VEHelp imageFromLayer:gradientLayer];
+
+    return gradientImage;
+}
+
++ (UIImage *)multiColorGradientImageWithView:( UIView * ) view colors:(NSArray<UIColor *> *)colors atColorProportions:( NSArray * ) colorProportions atStartPoint:( CGPoint ) startPoint atEndPoint:( CGPoint ) endPoint{
+    return [VEHelp multiColorGradientImageWithSize:view.frame.size colors:colors atColorProportions:colorProportions atStartPoint:startPoint atEndPoint:endPoint];
+//    //创建渐变层对象
+//    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+//    //设置渐变层的frame等同于titleLabel属性的frame（这里高度有个小误差，补上就可以了）
+//    gradientLayer.frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height + 3);
+//    //将存储的渐变色数组（UIColor类）转变为CAGradientLayer对象的colors数组，并设置该数组为CAGradientLayer对象的colors属性
+//    NSMutableArray *gradientColors = [NSMutableArray array];
+//    for (UIColor *colorItem in colors) {
+//        [gradientColors addObject:(id)colorItem.CGColor];
+//    }
+//    gradientLayer.colors = [NSArray arrayWithArray:gradientColors];
+////    gradientLayer.locations = @[@0.35, @0.5, @0.65];
+//    gradientLayer.locations = [[NSArray alloc] initWithArray:colorProportions];;
+//    gradientLayer.startPoint =  startPoint;
+////    CGPointMake(0, 0);
+//    gradientLayer.endPoint = endPoint;
+////    CGPointMake(1, 1);
+//    //下一步需要将CAGradientLayer对象绘制到一个UIImage对象上，以便使用这个UIImage对象来填充按钮的字体
+//    UIImage *gradientImage = [VEHelp imageFromLayer:gradientLayer];
+//    
+//    return gradientImage;
 }
 
 //将一个CALayer对象绘制到一个UIImage对象上，并返回这个UIImage对象
@@ -17419,6 +17862,89 @@ static OSType help_inputPixelFormat(){
     label.text = [NSString stringWithFormat:@"%d", value];
 }
 
++ (void)showTipViewWithTitle:(NSString *)title
+                     message:(NSString *)message
+          confirmButtonTitle:(NSString *)confirmButtonTitle
+         confirmButtonAction:(SEL)confirmButtonAction
+           cancleButtonTitle:(NSString *)cancleButtonTitle
+          cancleButtonAction:(SEL)cancleButtonAction
+{
+    UIViewController *vc = [self getCurrentVC];
+    UIView *tipView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWIDTH, kHEIGHT)];
+    tipView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.3];
+    if (vc.navigationController) {
+        [vc.navigationController.view addSubview:tipView];
+    }else {
+        [vc.view addSubview:tipView];
+    }
+    
+    UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake((kWIDTH - 266) / 2.0, (kHEIGHT - 214) / 2.0, 266, 214)];
+    CGRect frame = contentView.frame;
+    if (title.length == 0 || message.length == 0) {
+        frame.size.height = 171;
+    }
+    if (confirmButtonTitle.length == 0 || cancleButtonTitle.length == 0) {
+        frame.size.height -= 40;
+    }
+    frame.origin.y = (kHEIGHT - frame.size.height) / 2.0;
+    contentView.frame = frame;
+    contentView.backgroundColor = [UIColor whiteColor];
+    contentView.layer.cornerRadius = 5.0;
+    contentView.layer.masksToBounds = YES;
+    [tipView addSubview:contentView];
+    
+    float y = 30;
+    if (title.length > 0) {
+        UILabel *titleLbl = [[UILabel alloc] initWithFrame:CGRectMake(20, y, contentView.frame.size.width - 40, 20)];
+        titleLbl.text = VELocalizedString(title, nil);
+        titleLbl.textColor = [UIColor blackColor];
+        titleLbl.font = [UIFont boldSystemFontOfSize:15];
+        titleLbl.textAlignment = NSTextAlignmentCenter;
+        [contentView addSubview:titleLbl];
+        
+        y = CGRectGetMaxY(titleLbl.frame) + 15;
+    }
+    
+    if (message.length > 0) {
+        UILabel *messageLbl = [[UILabel alloc] initWithFrame:CGRectMake(20, y, contentView.frame.size.width - 40, 35)];
+        messageLbl.text = VELocalizedString(message, nil);
+        messageLbl.textColor = [UIColor blackColor];
+        messageLbl.font = [UIFont systemFontOfSize:13];
+        messageLbl.textAlignment = NSTextAlignmentCenter;
+        messageLbl.numberOfLines = 0;
+        [contentView addSubview:messageLbl];
+        
+        y = CGRectGetMaxY(messageLbl.frame) + 15;
+    }
+    
+    if (confirmButtonTitle.length > 0) {
+        UIButton *confirmBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        confirmBtn.frame = CGRectMake(30, y, contentView.frame.size.width - 30*2, 40);
+        confirmBtn.backgroundColor = Main_Color;
+        confirmBtn.layer.cornerRadius = 5.0;
+        confirmBtn.layer.masksToBounds = YES;
+        [confirmBtn setTitle:VELocalizedString(confirmButtonTitle, nil) forState:UIControlStateNormal];
+        [confirmBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        confirmBtn.titleLabel.font = [UIFont boldSystemFontOfSize:13];
+        [confirmBtn addTarget:self action:confirmButtonAction forControlEvents:UIControlEventTouchUpInside];
+        confirmBtn.tag = 1;
+        [contentView addSubview:confirmBtn];
+        
+        y = CGRectGetMaxY(confirmBtn.frame) + 15;
+    }
+    
+    if (cancleButtonTitle.length > 0) {
+        UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        cancelBtn.frame = CGRectMake(30, y, contentView.frame.size.width - 30*2, 40);
+        [cancelBtn setTitle:VELocalizedString(cancleButtonTitle, nil) forState:UIControlStateNormal];
+        [cancelBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        cancelBtn.titleLabel.font = [UIFont systemFontOfSize:13];
+        [cancelBtn addTarget:self action:cancleButtonAction forControlEvents:UIControlEventTouchUpInside];
+        cancelBtn.tag = 2;
+        [contentView addSubview:cancelBtn];
+    }
+}
+
 // 传入两个 CMTimeRange 对象：range1 和 range2
 +(BOOL)rangesIntersectWithRange:( CMTimeRange ) range atTimeRange:(CMTimeRange) range1 {
     CMTime end = CMTimeRangeGetEnd(range);
@@ -17431,5 +17957,51 @@ static OSType help_inputPixelFormat(){
 
     // 其他情况都认为有交集
     return YES;
+}
+
++(void)setCloseSceneAnimation_FromTheTopDown:( UIViewController * ) viewController
+{
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.3; // 动画持续时间
+    transition.type = kCATransitionReveal; // 动画类型，这里使用从下往上的效果
+    transition.subtype = kCATransitionFromBottom; // 动画方向，从顶部往下
+    // 将动画添加到导航控制器视图的 layer 上
+    [viewController.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+}
+
++(void)setEnterSceneAnimation_FromTheBottomUp:( UIViewController * ) viewController{
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.3; // 动画持续时间
+    transition.type = kCATransitionMoveIn; // 动画类型，这里使用从下往上的效果
+    transition.subtype = kCATransitionFromTop; // 动画方向，从顶部往下
+    [viewController.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+}
+
++(BOOL)imageWithCutoutColor:( UIColor * ) cutoutColor atPath:( NSString * ) path
+{
+    UIImage *image = [VEHelp imageWithColor:cutoutColor atSize:CGSizeMake(100, 100)];
+    NSURL *url = [NSURL fileURLWithPath:path];
+    NSData *pngData = UIImagePNGRepresentation(image);
+      if (pngData) {
+          [pngData writeToURL:url atomically:YES];
+          NSLog(@"Image saved successfully.");
+          return true;
+      } else {
+          NSLog(@"Error converting image to PNG data.");
+          return false;
+      }
+}
+
++( NSString * ) UIColorToHexString:(UIColor *) color {
+    CGFloat red, green, blue, alpha;
+    [color getRed:&red green:&green blue:&blue alpha:&alpha];
+
+    int r = (int)(red * 255);
+    int g = (int)(green * 255);
+    int b = (int)(blue * 255);
+    int a = (int)(alpha * 255);
+
+    NSString *hexColor = [NSString stringWithFormat:@"0x%02X%02X%02X%02X", a, r, g, b];
+    return hexColor;
 }
 @end

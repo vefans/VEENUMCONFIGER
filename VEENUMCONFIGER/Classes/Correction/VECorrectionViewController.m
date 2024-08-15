@@ -395,7 +395,8 @@
         }];
         return;
     } else {
-        [self.navigationController popViewControllerAnimated:YES];
+        [VEHelp setCloseSceneAnimation_FromTheTopDown:self];
+        [self.navigationController popViewControllerAnimated:NO];
         if( _editVideoForOnceFinishFiltersAction )
         {
             _editVideoForOnceFinishFiltersAction(r, _selectFile.verticalDegrees, _selectFile.horizontalDegrees );

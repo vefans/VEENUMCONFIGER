@@ -34,5 +34,7 @@
 /** Default is NSTextAlignmentCenter .*/
 @property (nonatomic, assign) NSTextAlignment textAlignment;
 
+@property (nonatomic, assign) NSRange selectedRange;
+
 + (instancetype)placeholderTextView;
 @end

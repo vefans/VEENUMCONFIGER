@@ -79,7 +79,7 @@
             _progressLabel.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.1];
             _progressLabel.font = [UIFont boldSystemFontOfSize:24];
             _progressLabel.textColor = UIColorFromRGB(0xFFFFFF);
-            _progressLabel.text = NSLocalizedString(@"0%%", nil);
+            _progressLabel.text = @"0%%";
             [_coverImageView addSubview:_progressLabel];
         }
         
@@ -138,7 +138,7 @@
 
 - (void)setProgress:(double)progress{
     _progress = progress;
-    _progressLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%i%%", nil),(int)(_progress * 100)];
+    _progressLabel.text = [NSString stringWithFormat:@"%i%%",(int)(_progress * 100)];
     float totalWidth = (_coverImageView.frame.size.width + _coverImageView.frame.size.height) * 2 - 6 * 4;
     
     float progressWidth = totalWidth * _progress;

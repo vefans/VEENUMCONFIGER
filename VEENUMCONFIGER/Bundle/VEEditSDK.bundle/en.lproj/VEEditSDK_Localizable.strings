@@ -284,8 +284,8 @@
 "请检查网络，网络连接失败" = "No available network";
 "允许访问" = "Accessable";
 "禁止访问音乐" = "Music lib access denied";
-"无法访问媒体资料库" = "Media lib can not access";
-"请更改设置，启用媒体资料库权限" = "Please change setting, to enable media lib authority";
+"暂未开启媒体库权限" = "Media library permission can not access";
+"请更改设置，开启媒体库权限" = "Please change setting, to enable media library permission";
 "设置" = "Setting";
 //滤镜名称
 "原始" = "Original";
@@ -1813,6 +1813,7 @@
 "编辑模板" = "Edit Template";
 "同一编组素材类型必须一致" = "The material types of the same group must be the same";
 "编组后素材不可以修改类型" = "The material cannot be modified after grouping";
+"锁定后素材不可以修改类型" = "Locked material cannot be modified after grouping";
 "相同标记色片段，建议用相同照片" = "The same color marker fragment, proposes the same photo";
 "已自动填入到相同照片片段" = "Already filled in the same photo fragment automatically";
 "是否也替换到其它需要相同照片的片段？\n(一起替换效果更佳哦～)" = "Do you also replace other clips that require the same photo? \n(The effect of replacing together is better~)";
@@ -1852,6 +1853,7 @@
 "%@个草稿备份中" = "%@ drafts are being backed up";
 "备份列表" = "Backup List";
 "更新于：%@" = "Last update: %@";
+"更新于 %@" = "Last update %@";
 "时长：" = "Duration：";
 "重命名" = "Rename";
 "复制草稿" = "Duplicate";
@@ -2508,6 +2510,7 @@
 "请选择你要提取的音乐" = "Please select the music you want to extract";
 "取色器" = "Color picker";
 "选取颜色" = "Pick Color";
+"标准绿色" = "Green Color";
 "读取图片中,请稍等..." = "Please wait while reading the picture...";
 "读取图片失败!" = "Failed to read the picture!";
 "自动踩点" = "Auto Planting";
@@ -2552,8 +2555,8 @@
 "内半径" = "Radius";
 "换发" = "Hair";
 "在画面中涂抹选择消除的区域" = "Smear the area selected for elimination in the picture";
-"羽化边缘" = "Feathering";
-"边框填充" = "Color";
+"羽化边缘" = "Feather";
+"边框填充" = "Border Color";
 "笔触" = "Strokes";
 "照片比例" = "Ratio";
 "颗粒强度" = "Particle strength";
@@ -2763,6 +2766,7 @@
 "搜你感兴趣的素材" = "Search for material you are interested in";
 "添加音乐" = "Add audio";
 "tip:剪同款在使用时，“未锁定”会被替换" = "Tips: Unlocked material will be replaceable";
+"tip:主题在使用时，“未锁定”会被替换" = "Tips: Unlocked material will be replaceable";
 "tip:第一个连续锁定代表片头，后面锁定后放到片尾，画中画全部循环添加" = "Tip: The first continuous lock will be used as the title of the video, and the last lock will be used as the end of the video, and all overlays will be added circularly";
 "融合度" = "Intensity";
 "云备份" = "Cloud";
@@ -2787,7 +2791,7 @@
 "多格拼图" = "Collage";
 "自由拼" = "DIY Collage";
 "拼长图" = "Spliced Multigraph";
-"九宫格" = "9Photo\nCollage";
+"九宫格" = "Nine-square Grid";
 "九宫格_sub" = "Nine";
 "四宫格_sub" = "Four";
 "水平" = "Horizontal";
@@ -3006,7 +3010,7 @@
 "取消抽帧" = "Cancel frame extraction";
 "补帧" = "Motion flow";
 "取消补帧" = "Cancel motion flow";
-<<<<<<< HEAD
+
 "立即跟拍" = "Shoot Immediately";
 "选择内容" = "Selecting Content";
 "字幕获取中" = "In caption acquisition";
@@ -3014,7 +3018,7 @@
 "取消字幕" = "Cancel subtitles";
 "智能剪辑" = "Intelligent Editing";
 "保存并上传" = "Save and upload";
-=======
+
 "左右镜像" = "mirror";
 "上下镜像" = "mirror";
 "应用所有滤镜" = "Apply to all filters";
@@ -3028,4 +3032,24 @@
 "调整显示" = "adjust position";
 "蒙版关键帧" = "Mask keyframes";
 "贴纸编辑" = "edit sticker";
->>>>>>> 407559f019e68f809ad629abb14bcd0531963ce2
+
+"识别类型" = "Recognition type";
+"画笔工具" = "Brush tool";
+"人物宠物" = "People and pets";
+"商品货物" = "Commodities and goods";
+"图标印章" = "Icon and seal";
+"尺寸" = "Size";
+"涂抹" = "Smear";
+"擦除" = "Erase";
+"添加模板" = "Add Template";
+"推荐布局" = "Layout";
+"长图拼接" = "PicStrip";
+"请选择1-9张照片进行拼图" = "Select 1-9 photos";
+"当前数量" = "Current number";
+"没有检测到人脸" = "No face detected";
+"检测到多张人脸" = "Multiple faces detected";
+"您确定要删除此草稿吗" = "Are you sure you want to delete this draft";
+
+"Proportion" = "Proportion";
+"ID Photo" = "ID Photo";
+"E-commerce" = "E-commerce";

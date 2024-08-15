@@ -15,6 +15,7 @@
     BOOL _isReStart;
     
 }
+@property (nonatomic, strong) UIImageView *selectedIV;
 
 @end
 
@@ -23,8 +24,8 @@
 +(VEAddItemButton *)initFXframe:(CGRect) rect atpercentage:(float) propor
 {
     VEAddItemButton * fxItemBtn = [[VEAddItemButton alloc] initWithFrame:rect];
-//    @property(nonatomic,strong)UIImageView *thumbnailIV;
     fxItemBtn.propor = propor;
+    
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, fxItemBtn.frame.size.width, fxItemBtn.frame.size.width, fxItemBtn.frame.size.height - fxItemBtn.frame.size.width)];
     fxItemBtn.label = label;
     fxItemBtn.label.textAlignment = NSTextAlignmentCenter;
@@ -67,38 +68,49 @@
     fxItemBtn.userInteractionEnabled = YES;
     fxItemBtn.layer.masksToBounds = YES;
     
-    
-    {
-        UIView * editView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, fxItemBtn.frame.size.width, fxItemBtn.frame.size.width)];
+    return fxItemBtn;
+}
+
+- (UIView *)editView {
+    if (!_editView) {
+        UIView * editView = [[UIView alloc] initWithFrame:_thumbnailIV.bounds];
         editView.backgroundColor = [UIColorFromRGB(0x000000) colorWithAlphaComponent:0.3];
         if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
             editView.backgroundColor = [UIColorFromRGB(0x000000) colorWithAlphaComponent:0.8];
         }
-        fxItemBtn.editView = editView;
-        [fxItemBtn.thumbnailIV addSubview:editView];
-        fxItemBtn.editView.tag = kFxIconTag + 10;
+        editView.tag = kFxIconTag + 10;
+        _editView = editView;
+        [_thumbnailIV addSubview:editView];
         
         UIImageView * editIconView = [[UIImageView alloc] initWithFrame:CGRectMake((editView.frame.size.width - 22)/2.0, (editView.frame.size.height - 20 - 22)/2.0, 22, 22)];
         editIconView.userInteractionEnabled = YES;
         editIconView.image = [VEHelp imageNamed:@"手写动画画笔"];
         editIconView.tag = 1;
-        [fxItemBtn.editView addSubview:editIconView];
+        [_editView addSubview:editIconView];
         
-        UILabel * editLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(editIconView.frame), editView.frame.size.width, 15)];
+        UILabel * editLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(editIconView.frame), editView.frame.size.width, 20)];
         editLabel.backgroundColor = [UIColor clearColor];
         editLabel.userInteractionEnabled = YES;
         editLabel.font = [UIFont systemFontOfSize:9];
         editLabel.textColor = [UIColor whiteColor];
-        
         editLabel.text = VELocalizedString(@"Paint", nil);
         editLabel.textAlignment = NSTextAlignmentCenter;
-        [fxItemBtn.editView addSubview:editLabel];
+        [_editView addSubview:editLabel];
         editView.hidden = YES;
     }
     
-    return fxItemBtn;
+    return _editView;
 }
 
+- (UIImageView *)selectedIV {
+    if (!_selectedIV) {
+        _selectedIV = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.width)];
+        _selectedIV.image = [VEHelp imageNamed:@"Common/SelectedBox_@3x"];
+        [self addSubview:_selectedIV];
+    }
+    
+    return _selectedIV;
+}
 
 -(void)pauseLayer:(CALayer*)layer
 {
@@ -202,6 +214,27 @@
 
 }
 
+- (void)setSelected:(BOOL)selected {
+    [super setSelected:selected];
+    if (_thumbnailIV.superview) {
+        if (_thumbnailIV.frame.origin.x == 0) {
+            _thumbnailIV.frame = CGRectInset(_thumbnailIV.frame, 4, 4);
+        }    
+        if (selected) {
+            self.selectedIV.hidden = NO;
+            _label.textColor = [UIColor whiteColor];
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                _label.textColor = UIColorFromRGB(0x131313);
+            }
+        }else {
+            _selectedIV.hidden = YES;
+            _label.textColor = TEXT_COLOR;
+            if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
+                _label.textColor = UIColorFromRGB(0x131313);
+            }
+        }
+    }
+}
 
 - (void)dealloc{
     [self stopScrollTitle];

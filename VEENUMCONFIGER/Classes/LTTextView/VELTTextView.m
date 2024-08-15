@@ -183,6 +183,46 @@
     return _placeholderTextView;
 }
 
+- (void)setSelectedRange:(NSRange)selectedRange {
+    if (selectedRange.length == 0) {
+        if (_textView.attributedText) {
+            NSString *text = _textView.attributedText.string;
+            _textView.attributedText = nil;
+            _textView.text = text;
+        }
+    }else {
+        NSRange range = NSMakeRange(0, 0);
+        NSInteger index = 0;
+        NSMutableString *selectedStr = [NSMutableString string];
+        for (NSInteger i = 0; i < _textView.text.length; i += range.length) {
+            range = [_textView.text rangeOfComposedCharacterSequenceAtIndex:i];
+            NSString *str = [_textView.text substringWithRange:range];
+            if ([str isEqualToString:@"\n"] && index == 0) {
+                continue;
+            }
+            if (index >= selectedRange.location) {
+                [selectedStr appendString:str];
+            }
+            if (index == selectedRange.location + selectedRange.length - 1) {
+                break;
+            }
+            else if (![str isEqualToString:@"\n"]) {
+                index++;
+            }
+        }
+        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:_textView.text];
+        NSRange selectedStrRrange = [[attributedText string] rangeOfString:selectedStr];
+        [attributedText addAttribute:NSBackgroundColorAttributeName value:[UIColorFromRGB(0xdddff8) colorWithAlphaComponent:0.26] range:selectedStrRrange];
+        [attributedText addAttribute:NSFontAttributeName value:_textView.font range:NSMakeRange(0, _textView.text.length)];
+        [attributedText addAttribute:NSForegroundColorAttributeName value:_textView.textColor range:NSMakeRange(0, _textView.text.length)];
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.alignment = NSTextAlignmentLeft;
+        paragraphStyle.lineSpacing = 5; // 行间距
+        [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, _textView.text.length)];
+        _textView.attributedText = attributedText;
+    }
+}
+
 @end
 
 

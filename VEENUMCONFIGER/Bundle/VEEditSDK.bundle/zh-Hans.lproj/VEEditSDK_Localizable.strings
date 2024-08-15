@@ -210,8 +210,8 @@
 "本地音乐" = "本地音乐";
 "允许访问" = "允许访问";
 "禁止访问音乐" = "禁止访问音乐";
-"无法访问媒体资料库" = "无法访问媒体资料库";
-"请更改设置，启用媒体资料库权限" = "请更改设置，启用媒体资料库权限";
+"暂未开启媒体库权限" = "暂未开启媒体库权限";
+"请更改设置，开启媒体库权限" = "请更改设置，开启媒体库权限";
 "设置" = "设置";
 //滤镜名称
 "原始" = "原始";
@@ -1642,6 +1642,8 @@
 "Album" = "相册";
 "BG Library" = "背景库";
 "Solid Color" = "纯色";
+"Gradients" = "渐变";
+"Color" = "颜色";
 "Color Palette" = "调色盘";
 "Go edit" = "去编辑";
 "In AI cutout..." = "AI抠图中...";
@@ -1717,3 +1719,53 @@
 "X-offset" = "左右偏移";
 
 "VR" = "全景";
+
+"In order to achieve material introduction/export, providing video editing functions,we must obtain album permissions.Otherwise, we will not be able to provide corresponding services" = "
+为实现素材导入/导出、提供视频剪辑功能等，必须获取相册权限，否则，我们将无法提供对应服务。";
+
+"Click \"Confirm\" to set the jump system page for settings" = "点击“确认”将跳转到系统页面进行设置";
+"Need to visit your camera to take photos or videos" = "需要访问你的相机才能拍摄照片或视频";
+"Need to visit your microphone to recording" = "需要访问你的麦克风才能录音";
+"To edit and store your audio, you must grant audio reading permissions" = "若要编辑和储存你的音频，则必须授予音频读取权限";
+"In order to achieve the voice to text function, need to call your voice recognition permission.Otherwise, we will not be able to provide corresponding services" = "为实现语音转文字功能，必须获取语音识别权限，否则我们将无法提供对应服务。";
+
+"Instructions for the use of storage permissions" = "存储权限使用说明";
+"In order to achieve material introduction/export, provide video editing functions, need to call the device to store space permissions" = "为实现素材导入/导出、提供视频剪辑功能等，需要调用设备存储空间权限";
+
+"Camera permission use instructions" = "摄像头权限使用说明";
+"Used to help you take materials, video, audio and other materials through mobile phone cameras to make subsequent audio and video editing, production preservation, and release" = "用于帮助您通过手机相机拍摄导入图片、视频、音频等素材以便进行后续的音视频编辑、制作保存、发布等";
+
+"Microphone Rights Use Instructions" = "麦克风权限使用说明";
+"Used to help you perform audio recording, assist microphone video editing, creation, and release" = "用于帮助您进行音频录制，辅助麦克风音视频编辑、创作、发布等";
+
+"Read pictures, video, audio permissions instructions" = "读取图片、视频、音频权限使用说明";
+"Allows to read pictures, videos, and audio permissions in mobile phone storage to help you import related materials and make audio and video editing, production, preservation, and release" = "允许读取手机存储中的图片、视频、音频权限，用于帮助您导入相关素材，进行音视频编辑、制作、保存、发布等。";
+
+"Proportion" = "比例";
+"ID Photo" = "证件照";
+"E-commerce" = "电商";
+"One-inch" = "一寸照";
+"Two-inch" = "二寸照";
+"wedding photo"  = "结婚照";
+"large ID photo"  = "大一寸";
+"small ID photo"  = "小一寸";
+"large 2-inch photo"  = "大二寸";
+"small 2-inch photo"  = "小二寸";
+"social security card\nidentification photo" = "社保卡\n证件照";
+"driver's license" = "驾驶证";
+"3-inch ID photo" = "三寸照";
+"4-inch ID photo" = "四寸照";
+"5-inch ID photo" = "五寸照";
+
+"main pictur" = "主图";
+"vertical main picture" = "竖版主图";
+"square poster" = "方形海报";
+"horizontal poster" = "横版海报";
+
+"vertical poster" = "竖版海报";
+"full-screen poster" = "全屏海报";
+"mobile version\nstore homepage" = "手机端\n店铺首页";
+"detail picture" = "详情图";
+
+"Select text" = "涂抹选择需要编辑的文字";
+"Apply to all texts" = "应用到所有字幕";

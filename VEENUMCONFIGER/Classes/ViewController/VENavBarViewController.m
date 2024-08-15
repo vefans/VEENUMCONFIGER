@@ -156,7 +156,8 @@
     if(self.typeCode == DisBackCode){
         [self dismissViewControllerAnimated:YES completion:nil];
     }else{
-        [self.navigationController popViewControllerAnimated:YES];
+        [VEHelp setCloseSceneAnimation_FromTheTopDown:self];
+        [self.navigationController popViewControllerAnimated:NO];
     }
     
 }

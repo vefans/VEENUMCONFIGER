@@ -497,6 +497,17 @@ typedef NS_ENUM(NSInteger, VENetworkMaterialType){
     VENetworkMaterialType_CameraTemplate    = 12,   //拍同款
 };
 
+//画笔
+typedef NS_ENUM(NSInteger, SystemAuthorizationType){
+    SystemAuthorizationType_Album,              //相册
+    SystemAuthorizationType_Camera,             //相机
+    SystemAuthorizationType_Microphone,         //麦克风
+    SystemAuthorizationType_CameraAndMic,       //相机和麦克风
+    SystemAuthorizationType_SpeechRecognition,  //语音识别
+    SystemAuthorizationType_SpeechAndMic,       //语音识别和麦克风
+    SystemAuthorizationType_MediaLibrary,       //媒体库
+};
+
 typedef void(^VERecordCompletionHandler) (int result,NSString *path,VEMusicInfo *music);
 
 /** 录制完后不合并视频的回调
@@ -679,6 +690,9 @@ isPhoneX;\
 #define kAPITemplatePlistPath [kAPITemplateFolder stringByAppendingPathComponent:@"veNetworkApiTemplates.plist"]
 #define kBookTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkBookTemplate/"]
 #define kBookTemplatePlistPath [kBookTemplateFolder stringByAppendingPathComponent:@"veNetworkBookTemplates.plist"]
+
+#define kPhotoSingingTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkPhotoSingTemplate/"]
+#define kPhotoSingingTemplatePlistPath [kPhotoSingingTemplateFolder stringByAppendingPathComponent:@"veNetworkPhotoSingTemplates.plist"]
 
 #define kPlayscriptTemplateFolder [[VEConfigManager sharedManager].directory stringByAppendingPathComponent:@"Documents/VENetworkPlayscriptTemplate/"]
 #define kPlayscriptTemplatePlistPath [kBookTemplateFolder stringByAppendingPathComponent:@"veNetworkPlayscriptTemplates.plist"]

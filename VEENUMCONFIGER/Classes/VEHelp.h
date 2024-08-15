@@ -176,6 +176,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 /**进入系统设置
  */
 + (void)enterSystemSetting;
++ (void)checkSystemAuthorizedForType:(SystemAuthorizationType)type currentViewController:(UIViewController *)viewController completionHandler:(void (^)(BOOL granted))handler;
 /**时间格式化
  */
 + (NSString * ) timeFormat: (float) seconds;
@@ -637,11 +638,10 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (CGSize)trackSize:(NSURL *)contentURL rotate:(float)rotate;
 + (CGSize)trackSize:(NSURL *)contentURL rotate:(float)rotate crop:(CGRect)crop;
 
-+ (NSString *)getAutoSegmentImagePath_Sky:(NSURL *)url;
++ (NSString *)getAutoSegmentImagePath_Sky:(NSURL *)url atUUID:( NSString * ) uuid;
 + (NSString *)getAutoSegmentImagePath:(NSURL *)url;
 + (NSString *)getAutoSegmentMaskImagePath:(NSURL *)autoSegmentImageUrl;
 + (NSString *)getAutoSegmentImagePath_Time:(NSURL *)url atUUID:( NSString * ) uuid;
-+ (NSString *)getAutoSegmentImageFolder_Time:(NSURL *)url atUUID:( NSString * ) uuid;
 + (NSString *)getErasePenImagePath:(NSURL *)url;
 
 + (NSString *)getMaterialCachedFilePath:(VECustomizationFunctionType)materialType netFilePath:(NSString *)netFilePath updatetime:(NSString *)updatetime;
@@ -702,6 +702,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 /**获取新的颜色列表
  */
 +(NSMutableArray *)getColorList;
++(NSMutableArray *)getGradientsColorList;
 
 #pragma mark- webm测试
 +(VEMediaInfo *)testWebmWidthMediaInfo;
@@ -802,6 +803,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSString *)getYearMonthDayS;
 
 + (UIImage *)multiColorGradientImageWithView:( UIView * ) view colors:(NSArray<UIColor *> *)colors atColorProportions:( NSArray * ) colorProportions;
++ (UIImage *)multiColorGradientImageWithView:( UIView * ) view colors:(NSArray<UIColor *> *)colors atColorProportions:( NSArray * ) colorProportions atStartPoint:( CGPoint ) startPoint atEndPoint:( CGPoint ) endPoint;
++ (UIImage *)multiColorGradientImageWithSize:( CGSize ) size colors:(NSArray<UIColor *> *)colors atColorProportions:( NSArray * ) colorProportions atStartPoint:( CGPoint ) startPoint atEndPoint:( CGPoint ) endPoint;
 
 + (void)centerButtonInScrollView:(UIButton *)sender;
 + (void)centerButtonInCollectionView:(NSInteger)index collectionView:(UICollectionView *)collectionView;
@@ -811,6 +814,20 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(void)script_SaveDraftDic:( NSMutableDictionary * ) dictionary;
 +(NSMutableArray *)script_GetDraftlines;
 +(void)setSliderCurrentLabelCenterWidthLabel:( UILabel * ) label atSlider:( UISlider * ) slider;
++ (void)showTipViewWithTitle:(NSString *)title
+                     message:(NSString *)message
+          confirmButtonTitle:(NSString *)confirmButtonTitle
+         confirmButtonAction:(SEL)confirmButtonAction
+           cancleButtonTitle:(NSString *)cancleButtonTitle
+          cancleButtonAction:(SEL)cancleButtonAction;
 
 +(BOOL)rangesIntersectWithRange:( CMTimeRange ) range atTimeRange:(CMTimeRange) range1;
+
++(void)setCloseSceneAnimation_FromTheTopDown:( UIViewController * ) viewController;
++(void)setEnterSceneAnimation_FromTheBottomUp:( UIViewController * ) viewController;
+
++ (void)checkAlbumAuthorization:(void(^)(BOOL isAuthorized))completionHandler;
+
++(BOOL)imageWithCutoutColor:( UIColor * ) cutoutColor atPath:( NSString * ) path;
++( NSString * ) UIColorToHexString:(UIColor *) color;
 @end

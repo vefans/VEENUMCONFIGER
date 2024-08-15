@@ -967,6 +967,7 @@
         vvasset.volume       = 1.0;//_selectFile.videoVolume;
     }else{
         NSLog(@"图片");
+        vvasset.fillType     =  ImageMediaFillTypeFit;
         vvasset.type         = MediaAssetTypeImage;
         vvasset.timeRange    = CMTimeRangeMake(kCMTimeZero, _selectFile.imageDurationTime);
         vvasset.speed        = _selectFile.speed;
@@ -1082,6 +1083,7 @@
         [self dismissViewControllerAnimated:NO completion:nil];
         return;
     }
+    [VEHelp setCloseSceneAnimation_FromTheTopDown:self];
     UIViewController *upView = [self.navigationController popViewControllerAnimated:NO];
     if(!upView){
         [self dismissViewControllerAnimated:NO completion:nil];
@@ -1292,6 +1294,7 @@
         if (self.presentingViewController && self.navigationController.viewControllers.count == 1) {
             [self dismissViewControllerAnimated:NO completion:nil];
         } else {
+            [VEHelp setCloseSceneAnimation_FromTheTopDown:self];
             [self.navigationController popViewControllerAnimated:NO];
         }
     }else{
@@ -1337,6 +1340,7 @@
         if (self.presentingViewController && self.navigationController.viewControllers.count == 1) {
             [self dismissViewControllerAnimated:NO completion:nil];
         } else {
+            [VEHelp setCloseSceneAnimation_FromTheTopDown:self];
             [self.navigationController popViewControllerAnimated:NO];
         }
         _editVideoForOnce_timeFinishAction(NO,

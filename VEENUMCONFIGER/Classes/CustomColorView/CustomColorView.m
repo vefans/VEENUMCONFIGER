@@ -132,10 +132,13 @@
             _otherColorAddBtn = [[UIButton alloc] initWithFrame:CGRectMake(_sliderBgView.frame.origin.x, self.frame.size.height - (self.frame.size.height - CGRectGetMaxY(_customShowColorView.frame)) / 2.0 + ((self.frame.size.height - CGRectGetMaxY(_customShowColorView.frame)) / 2.0 - 28) / 2.0, 60, 28)];
             _otherColorAddBtn.layer.cornerRadius = 14;
             _otherColorAddBtn.layer.masksToBounds = YES;
-            _otherColorAddBtn.layer.borderWidth = 0;
+            _otherColorAddBtn.layer.borderWidth = 1.0;
+            _otherColorAddBtn.layer.borderColor = UIColorFromRGB(0x3a3a3a).CGColor;
             [_otherColorAddBtn setImage:[VEHelp imageNamed:@"background/Add_Color_@3x" atBundle:[VEHelp getBundleName:@"VEEditSDK"]] forState:UIControlStateNormal];
+            [_otherColorAddBtn setImage:[VEHelp imageNamed:@"background/Add_Color_Selected@3x" atBundle:[VEHelp getBundleName:@"VEEditSDK"]] forState:UIControlStateSelected];
             [_otherColorAddBtn setTitle:VELocalizedString(@"添加", nil) forState:UIControlStateNormal];
             [_otherColorAddBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
+            [_otherColorAddBtn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
             _otherColorAddBtn.titleLabel.font = [UIFont systemFontOfSize:12];
             _otherColorAddBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -5, 0, 0);
             _otherColorAddBtn.titleEdgeInsets = UIEdgeInsetsMake(0, -10, 0, 0);
@@ -215,6 +218,19 @@
     [self setOtherColor:color];
     
     _otherColorAddBtn.backgroundColor = color;
+    BOOL isLightColor = false;
+    CGFloat red = 0.0, green = 0.0, blue = 0.0, alpha = 0.0;
+    if ([color getRed:&red green:&green blue:&blue alpha:&alpha]) {
+        // 成功获取到 RGB 值
+        CGFloat brightness = 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+        isLightColor  = (brightness > 0.5);
+    }
+    if( isLightColor )
+    {
+        [_otherColorAddBtn setSelected:true];
+    }else{
+        [_otherColorAddBtn setSelected:false];
+    }
     
     [_customShowColorView resetColor];
 }
@@ -473,6 +489,21 @@
 #endif
     _currentColor = color;
     _otherColorAddBtn.backgroundColor = color;
+    
+    BOOL isLightColor = false;
+    CGFloat red = 0.0, green = 0.0, blue = 0.0, alpha = 0.0;
+    if ([_currentColor getRed:&red green:&green blue:&blue alpha:&alpha]) {
+        // 成功获取到 RGB 值
+        CGFloat brightness = 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+        isLightColor  = (brightness > 0.5);
+    }
+    if( isLightColor )
+    {
+        [_otherColorAddBtn setSelected:true];
+    }else{
+        [_otherColorAddBtn setSelected:false];
+    }
+    
     if (_delegate && [_delegate respondsToSelector:@selector(colorViewChangeColor:)]) {
         [_delegate colorViewChangeColor:color];
     }

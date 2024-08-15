@@ -1295,7 +1295,10 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     if( _isCutout )
     {
         //取得所点击的点的坐标
-        [self setPointCutout:[recognizer locationInView:selectImageView] isRefresh:YES];
+        if (recognizer.state == UIGestureRecognizerStateEnded)
+            [self setPointCutout:[recognizer locationInView:selectImageView] isRefresh:false];
+        else
+            [self setPointCutout:[recognizer locationInView:selectImageView] isRefresh:YES];
     }
     else
     {

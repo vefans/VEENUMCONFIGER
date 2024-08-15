@@ -243,6 +243,7 @@ typedef NS_ENUM(NSInteger, VECropType){
 /**视频(或图片)裁剪范围
  */
 @property (nonatomic, assign) CGRect crop;
+@property (nonatomic, assign) CGRect templateTemeCrop;
 
 /**视频(或图片)旋转角度
  */

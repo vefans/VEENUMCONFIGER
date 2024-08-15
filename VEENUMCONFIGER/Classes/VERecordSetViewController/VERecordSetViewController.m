@@ -136,8 +136,8 @@
     if (_changeRecordSetFinish) {
         _changeRecordSetFinish(setBitrate, setResolutionIndex);
     }
-    
-    [self.navigationController popViewControllerAnimated:YES];
+    [VEHelp setCloseSceneAnimation_FromTheTopDown:self];
+    [self.navigationController popViewControllerAnimated:NO];
 }
 
 #pragma mark- UITableViewDelegate

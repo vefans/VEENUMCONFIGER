@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 //重新构建滤镜数组
 +(NSMutableArray *)createGlobalFilters;
 //下载网络资源中
-@property (nonatomic,strong) UIView  *loadView;
+@property (nonatomic,strong) UIView  * __nullable loadView;
 //是否隐藏标题
 @property(nonatomic, assign) BOOL isHiddenTitleBar;
 //标题栏是否置顶

@@ -618,6 +618,10 @@
         CustomFilter * filter = [VEHelp getCustomFilterWithFolderPath:_customAnimate.folderPath currentFrameImagePath:nil atMedia:self];
         filter.networkCategoryId = _customAnimate.networkCategoryId;
         filter.networkResourceId = _customAnimate.networkResourceId;
+        if(_customOtherAnimate){
+            _customOtherAnimate.networkCategoryId = filter.networkCategoryId;
+            _customOtherAnimate.networkResourceId = filter.networkResourceId;
+        }
         filter.timeRange = _customAnimate.timeRange;
         filter.animateType = _customAnimate.animateType;
         filter.cycleDuration = _customAnimate.cycleDuration;

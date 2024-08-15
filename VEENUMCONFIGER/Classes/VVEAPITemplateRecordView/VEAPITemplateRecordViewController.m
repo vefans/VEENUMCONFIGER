@@ -793,7 +793,8 @@
     if (_saveToAlbumBtn.selected) {
         
     }
-    [self.navigationController popViewControllerAnimated:YES];
+    [VEHelp setCloseSceneAnimation_FromTheTopDown:self];
+    [self.navigationController popViewControllerAnimated:NO];
 }
 
 - (void)saveToAlbumBtnAction:(UIButton *)sender {
@@ -854,7 +855,8 @@
     }
     else
     {
-        [self.navigationController popViewControllerAnimated:YES];
+        [VEHelp setCloseSceneAnimation_FromTheTopDown:self];
+        [self.navigationController popViewControllerAnimated:NO];
     }
 }
 

@@ -249,6 +249,9 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 @property (copy,nonatomic)NSString  * appKey;
 @property (copy,nonatomic)NSString  * licenceKey;
 @property (copy,nonatomic)NSString  * appSecret;
+
+@property (nonatomic, assign) BOOL isNoHtmlAutoSegmentImage;
+
 /** 默认为：false
  */
 @property (nonatomic, assign) BOOL hasInit;
@@ -385,10 +388,12 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 
 
 @property (nonatomic, strong) NSArray *selectedTypeColors;
-
+@property (nonatomic, strong) NSArray *selectedLineColors;
 /** 音乐界面布局样式 (default 0)
  */
 @property (nonatomic, assign) int musicViewLayoutStyle;
 @property (nonatomic, strong) id exportDraft;
+
+-(void)htmlSegmentation:( UIViewController * ) viewController;
 
 @end

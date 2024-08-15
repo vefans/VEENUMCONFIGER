@@ -35,5 +35,6 @@
 - (void)startScrollTitle;
 
 - (void)stopScrollTitle;
+- (void)setSelected:(BOOL)selected;
 
 @end

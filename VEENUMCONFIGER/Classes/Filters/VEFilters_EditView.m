@@ -2108,7 +2108,8 @@ NSString * _netMaterialTypeURL;
     
     [_globalFilters removeAllObjects];
     _globalFilters = nil;
-    _globalFilters = [[NSMutableArray alloc] initWithArray:_originalGlobalFilters];
+    if( _originalGlobalFilters )
+        _globalFilters = [[NSMutableArray alloc] initWithArray:_originalGlobalFilters];
     
     [_filtersName removeAllObjects];
     _filtersName = nil;

@@ -10,9 +10,14 @@
     
 //    NSAssert(percents.count <= 5, @"输入颜色数量过多，如果需求数量过大，请修改locations[]数组的个数");
     
-    NSMutableArray *ar = [NSMutableArray array];
-    for(UIColor *c in colors) {
-        [ar addObject:(id)c.CGColor];
+    NSMutableArray *ar;
+    if ([colors.firstObject isKindOfClass:[UIColor class]]) {
+        ar = [NSMutableArray array];
+        for (UIColor *color in colors) {
+            [ar addObject:(id)(color.CGColor)];
+        }
+    }else {
+        ar = [NSMutableArray arrayWithArray:colors];
     }
     
 //    NSUInteger capacity = percents.count;
@@ -26,7 +31,13 @@
     UIGraphicsBeginImageContextWithOptions(imageSize, YES, 1);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSaveGState(context);
-    CGColorSpaceRef colorSpace = CGColorGetColorSpace([[colors lastObject] CGColor]);
+    CGColorSpaceRef colorSpace;
+    if ([colors.firstObject isKindOfClass:[UIColor class]]) {
+        colorSpace = CGColorGetColorSpace([[colors lastObject] CGColor]);
+    }else {
+        CGColorRef cgColor = (CGColorRef)CFBridgingRetain(colors.lastObject);
+        colorSpace = CGColorGetColorSpace(cgColor);
+    }
     CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (CFArrayRef)ar, locations);
     CGPoint start;
     CGPoint end;
