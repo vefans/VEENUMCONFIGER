@@ -6,8 +6,10 @@
 //
 
 #import "VEFilters_EditView.h"
+#ifdef EnableSDWebImage
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <SDWebImage/UIView+WebCache.h>
+#endif
 #import <VEENUMCONFIGER/VEDefines.h>
 #import <VEENUMCONFIGER/VENetworkMaterialBtn_Cell.h>
 #import <VEENUMCONFIGER/VEReachability.h>
@@ -43,6 +45,7 @@ NSString * _netMaterialTypeURL;
     BOOL _isSelect;
     UIView *_barView;
 }
+
 @property(nonatomic,strong, nullable)ATMHud         *hud;
 
 @end
@@ -373,7 +376,11 @@ NSString * _netMaterialTypeURL;
         UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake( (_loadView.frame.size.width - 60)/2.0, (_loadView.frame.size.height - 60.0)/2.0, 60, 60)];
         imageView.tag = 201201;
         if([[NSFileManager defaultManager] fileExistsAtPath:[VEHelp getResourceFromBundle:@"VEPESDK" resourceName:@"/animatSchedule_@3x" Type:@"png"]])
+#ifdef EnableSDWebImage
             [imageView sd_setImageWithURL:[NSURL fileURLWithPath:[VEHelp getResourceFromBundle:@"VEPESDK" resourceName:@"/animatSchedule_@3x" Type:@"png"]]];
+#else
+        [VEHelp loadAnimationImageViiewWithView:imageView atImageUrl:[NSURL fileURLWithPath:[VEHelp getResourceFromBundle:@"VEPESDK" resourceName:@"/animatSchedule_@3x" Type:@"png"]] atPlaceholder:nil];
+#endif
         [_loadView addSubview:imageView];
         VEReachability *lexiu = [VEReachability reachabilityForInternetConnection];
         if([lexiu currentReachabilityStatus] != VEReachabilityStatus_NotReachable){
@@ -383,6 +390,7 @@ NSString * _netMaterialTypeURL;
             [self.hud setCaption:VELocalizedString(@"请检查网络，网络连接失败！", nil)];
             [self.hud show];
             [self.hud hideAfter:1];
+            
             [VEFilters_EditView loadFilterType:^(NSMutableArray * _Nonnull globalFilters) {
                 if( _loadFilterCallBack )
                 {
@@ -535,7 +543,11 @@ NSString * _netMaterialTypeURL;
                 NSString *filePath      = [bundle pathForResource:[NSString stringWithFormat:@"%@",@"原图"] ofType:@"png"];
                 item.itemIconView.image = [VEHelp imageWithContentOfPath:filePath];
             }else{
+#ifdef EnableSDWebImage
                 [item.itemIconView sd_setImageWithURL:[NSURL URLWithString:obj.netCover]];
+#else
+        [VEHelp loadAnimationImageViiewWithView:item.itemIconView atImageUrl:[NSURL URLWithString:obj.netCover] atPlaceholder:nil];
+#endif
             }
         }else{
             NSString *path = [VEHelp pathInCacheDirectory:@"filterImage"];
@@ -668,7 +680,7 @@ NSString * _netMaterialTypeURL;
                      ((UIButton*)obj).selected = obj.tag == currentlabelFilter;
                  }
             }];
-            NSInteger selectIndex = MAX(_selectFilterIndex - currentFilterIndex,0);
+            NSInteger selectIndex = MAX(_selectFilterIndex - currentFilterIndex,0) - 1;
             if(selectIndex > 0)
             [_filterCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:selectIndex inSection:(currentlabelFilter + 1)] atScrollPosition:UICollectionViewScrollPositionNone animated:YES];
         }
@@ -936,7 +948,11 @@ NSString * _netMaterialTypeURL;
                     NSString *filePath      = [bundle pathForResource:[NSString stringWithFormat:@"%@",@"原图"] ofType:@"png"];
                     item.itemIconView.image = [VEHelp imageWithContentOfPath:filePath];
                 }else{
+#ifdef c
                     [item.itemIconView sd_setImageWithURL:[NSURL URLWithString:obj.netCover]];
+#else
+                    [VEHelp loadAnimationImageViiewWithView:item.itemIconView atImageUrl:[NSURL URLWithString:obj.netCover] atPlaceholder:nil];
+#endif
                 }
             }else{
                 NSString *path = [VEHelp pathInCacheDirectory:@"filterImage"];
@@ -1843,7 +1859,9 @@ NSString * _netMaterialTypeURL;
         VEFileScrollViewChildItem *scrollViewChildItem = (VEFileScrollViewChildItem*)cell.btnCollectBtn;
         if( scrollViewChildItem.itemIconView )
         {
+#ifdef EnableSDWebImage
             [scrollViewChildItem.itemIconView  sd_cancelCurrentImageLoad];
+#endif
             scrollViewChildItem.itemIconView.image = nil;
             [scrollViewChildItem.itemIconView removeFromSuperview];
             scrollViewChildItem.itemIconView = nil;
@@ -1976,12 +1994,19 @@ NSString * _netMaterialTypeURL;
         
         if( image )
             item.itemIconView.image = image;
-        else
+        else{
+#ifdef EnableSDWebImage
             [item.itemIconView sd_setImageWithURL:[NSURL URLWithString:cover]];
+#else
+            [VEHelp loadAnimationImageViiewWithView:item.itemIconView atImageUrl:[NSURL URLWithString:cover] atPlaceholder:nil];
+#endif
+        }
     }
-
+#ifdef EnableSDWebImage
     [item.itemIconView sd_setImageWithURL:[NSURL URLWithString:cover]];
-
+#else
+    [VEHelp loadAnimationImageViiewWithView:item.itemIconView atImageUrl:[NSURL URLWithString:cover] atPlaceholder:nil];
+#endif
 
     if( currentlabelFilter == 120000 )
     {

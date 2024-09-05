@@ -57,6 +57,7 @@ typedef void(^VECloudBackupCompletionHandler) (int completionCount);
 typedef void(^VEExporTemplate) (UIViewController * view);
 
 
+
 UIKIT_EXTERN NSString * const VEStartExportNotification;
 UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 
@@ -186,6 +187,10 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 @end
 
 @interface VEConfigManager : NSObject
+//vip
+@property (nonatomic,assign) bool          isEnableVIP;
+@property(nonatomic,copy, nullable) void (^exportVip)(id currentViewController);
+
 /**文件存放根目录
  */
 @property (nonatomic, strong) NSString *directory;
@@ -277,6 +282,7 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 @property(nonatomic,copy) VEPrepareExportHandler prepareExportHandler;
 @property(nonatomic,copy) VEEnterAdvancedEditHandler canEnterAdvancedEditHandler;
 @property(nonatomic,copy) VEExporTemplate  exporTemplate;   //导出模版
+@property (nonatomic, copy) VECompletionHandler downloadedVideoCompletionHandler;
 
 @property(nonatomic, copy) void(^enterMusicAlbumTempCompletionHandler) (NSString *categoryId,NSDictionary * itemDic,NSInteger selectTypeIndex,NSInteger index, UIViewController *controller);
 
@@ -389,11 +395,14 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 
 @property (nonatomic, strong) NSArray *selectedTypeColors;
 @property (nonatomic, strong) NSArray *selectedLineColors;
+@property (nonatomic, strong) UIColor *textColorOnGradientView; //渐变背景色上面的文字颜色
 /** 音乐界面布局样式 (default 0)
  */
 @property (nonatomic, assign) int musicViewLayoutStyle;
 @property (nonatomic, strong) id exportDraft;
 
 -(void)htmlSegmentation:( UIViewController * ) viewController;
+
+@property(nonatomic,copy, nullable) void (^cancelBtnBlock)(UIButton * btn);
 
 @end

@@ -9,9 +9,12 @@
 #import "VENetworkMaterialCollectionViewCell.h"
 #import "VENetworkMaterialBtn_Cell.h"
 #import "VENetworkMaterialView.h"
+#ifdef EnableSDWebImage
 #import <SDWebImage/SDImageCache.h>
 #import <SDWebImage/UIView+WebCache.h>
+#endif
 #import <VEENUMCONFIGER/LongCacheImageView.h>
+#import <VEENUMCONFIGER/VEHelp.h>
 @implementation VECell_CollectionView
 
 - (void)setContentOffset:(CGPoint)contentOffset{
@@ -301,7 +304,11 @@
     if ([btnCell.btnCollectBtn isKindOfClass:[VEAddItemButton class]]) {
         VEAddItemButton *btn = (VEAddItemButton *)btnCell.btnCollectBtn;
         [btn.thumbnailIV long_stopAnimating];
+#ifdef EnableSDWebImage
         [btn.thumbnailIV sd_cancelCurrentImageLoad];
+#else
+        [VEHelp animatioonnImageView_CancelCurrentImageRequest:btn.thumbnailIV];
+#endif
     }
 }
 

@@ -207,6 +207,28 @@
                 array = _hsl.hsl_green;
             }
                 break;
+#ifdef kJYResources
+            case 4:
+            {
+                array = _hsl.hsl_cyan;
+            }
+                break;
+            case 5:
+            {
+                array = _hsl.hsl_blue;
+            }
+                break;
+            case 6:
+            {
+                array = _hsl.hsl_purple;
+            }
+                break;
+            case 7:
+            {
+                array = _hsl.hsl_magenta;
+            }
+                break;
+#else
             case 4:
             {
                 array = _hsl.hsl_blue;
@@ -222,6 +244,7 @@
                 array = _hsl.hsl_magenta;
             }
                 break;
+#endif
                 
             default:
                 break;
@@ -293,6 +316,28 @@
             _hsl.hsl_green = array;
         }
             break;
+#ifdef kJYResources
+        case 4:
+        {
+            _hsl.hsl_cyan = array;
+        }
+            break;
+        case 5:
+        {
+            _hsl.hsl_blue = array;
+        }
+            break;
+        case 6:
+        {
+            _hsl.hsl_purple = array;
+        }
+            break;
+        case 7:
+        {
+            _hsl.hsl_magenta = array;
+        }
+            break;
+#else
         case 4:
         {
             _hsl.hsl_blue = array;
@@ -308,6 +353,7 @@
             _hsl.hsl_magenta = array;
         }
             break;
+#endif
             
         default:
             break;

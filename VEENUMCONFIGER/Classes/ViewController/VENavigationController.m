@@ -37,6 +37,7 @@
 // 作用：拦截手势触发
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
+    
     // 注意：只有非根控制器才有滑动返回功能，根控制器没有。
     // 判断导航控制器是否只有一个子控制器，如果只有一个子控制器，肯定是根控制器
     if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
@@ -121,4 +122,5 @@
         }
     }
 }
+
 @end

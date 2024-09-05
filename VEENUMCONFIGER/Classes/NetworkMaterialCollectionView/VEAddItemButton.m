@@ -57,14 +57,14 @@
     fxItemBtn.thumbnailIV.layer.borderWidth = 1.0;
     fxItemBtn.thumbnailIV.layer.borderColor = [UIColor clearColor].CGColor;
     fxItemBtn.thumbnailIV.tag = kFxIconTag;
-    
+#ifdef EnableSDWebImage
     SDAnimatedImageView * animatedImageView = [[SDAnimatedImageView alloc] initWithFrame:fxItemBtn.thumbnailIV.bounds];
     animatedImageView.contentMode = UIViewContentModeScaleAspectFill;
     animatedImageView.backgroundColor = [UIColor clearColor];
     fxItemBtn.animatedImageView = animatedImageView;
     [fxItemBtn.thumbnailIV addSubview:fxItemBtn.animatedImageView];
     fxItemBtn.animatedImageView.tag = kFxIconTag+ 10000;
-    
+#endif
     fxItemBtn.userInteractionEnabled = YES;
     fxItemBtn.layer.masksToBounds = YES;
     

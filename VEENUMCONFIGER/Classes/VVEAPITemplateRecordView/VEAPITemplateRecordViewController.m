@@ -712,7 +712,6 @@
         _cameraManager.beautyToneIntensity = 0.5;
         _cameraManager.beautyThinFace = 0.5;
         _cameraManager.beautyBigEye = 0.0;
-        _cameraManager.swipeScreenIsChangeFilter = NO;
         [_cameraManager setfocus];
         _cameraManager.delegate = self;
         _cameraManager.beautifyState = BeautifyStateSeleted;
@@ -1511,7 +1510,6 @@
                     NSLog(@"failed:%@",error);
                     [bself->_cameraManager startCamera];
                     [bself->progressHud hideAnimated:YES];
-                    
                     NSString *message;
                     if (error.localizedRecoverySuggestion) {
                         message = error.localizedRecoverySuggestion;

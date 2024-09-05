@@ -6,7 +6,8 @@
 #import "VEAuthorizationView.h"
 #import "UIButton+VECustomLayout.h"
 
-#define kAppKeyType      @"AppKeyType"       //appkey类型
+#define EnableSDWebImage
+
 #define HEXCOLOR(c) [UIColor colorWithRed:((c>>24)&0xFF)/255.0 green:((c>>16)&0xFF)/255.0 blue:((c>>8)&0xFF)/255.0  alpha:((c)&0xFF)/255.0]
 #define ANDROID_COLOR(c) [UIColor colorWithRed:((c>>16)&0xFF)/255.0 green:((c>>8)&0xFF)/255.0 blue:((c)&0xFF)/255.0  alpha:((c>>24)&0xFF)/255.0]
 
@@ -654,6 +655,7 @@ isPhoneX;\
 #define VEDemoUseBundle [VEHelp getDemoUseBundle]
 //#define isEnglish [[[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"][0] hasPrefix:@"en"] || [[[NSUserDefaults standardUserDefaults] objectForKey:kVELanguage] isEqualToString:@"en"]
 #define isEnglish ([[[NSUserDefaults standardUserDefaults] objectForKey:kVELanguage] length] > 0 ? [[[NSUserDefaults standardUserDefaults] objectForKey:kVELanguage] isEqualToString:@"en"] : [[[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"][0] hasPrefix:@"en"])
+#define kIsChinese ([[[NSUserDefaults standardUserDefaults] objectForKey:kVELanguage] length] > 0 ? ([[[NSUserDefaults standardUserDefaults] objectForKey:kVELanguage] isEqualToString:@"zh-Hans"] || [[[NSUserDefaults standardUserDefaults] objectForKey:kVELanguage] isEqualToString:@"zh-Hant"]) : ([[[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"][0] hasPrefix:@"zh-Hans"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"][0] hasPrefix:@"zh-Hant"]))
 #define LanguageBundle [NSBundle bundleWithPath:[ClassBundle pathForResource:[NSString stringWithFormat:@"VEEditSDK.bundle/%@", isEnglish ? @"en" : @"zh-Hans"] ofType:@"lproj"]]
 //#define VELocalizedString(key,des) [LanguageBundle localizedStringForKey:(key) value:des table:@"VEEditSDK_Localizable"]
 #define VELocalizedString(key,des) [VEHelp getLocalizedString:key]
@@ -1006,4 +1008,4 @@ isPhoneX;\
 
 #define kScriptPropsRecordPlist [KScriptFolder stringByAppendingPathComponent:@"scriptPropsRecord.plist"]
 
-#define PHOTO_ALBUM_NAME @"拼图匠"//@"星剪"//@"VEDemo"
+#define PHOTO_ALBUM_NAME [[NSBundle mainBundle] infoDictionary][@"CFBundleDisplayName"]

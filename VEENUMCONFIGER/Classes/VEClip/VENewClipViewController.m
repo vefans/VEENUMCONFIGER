@@ -1016,16 +1016,38 @@
         _videoCoreSDK = [[VECore alloc] initWithAPPKey:[VEConfigManager sharedManager].appKey
         APPSecret:[VEConfigManager sharedManager].appSecret
         LicenceKey:[VEConfigManager sharedManager].licenceKey
-        videoSize:self.editVideoSize
+        videoSize:_editVideoSize
         fps:kEXPORTFPS
         resultFail:^(NSError *error) {
             
         }];
+        _videoPrewRect = AVMakeRectWithAspectRatioInsideRect(_videoBgView.bounds.size,CGRectMake(0, 0, _editVideoSize.width, _editVideoSize.height));
+        if(_editVideoSize.width /_editVideoSize.height <=_videoBgView.bounds.size.width/_videoBgView.bounds.size.height){
+            float height = _videoBgView.bounds.size.height;
+            float width = height * _editVideoSize.width /_editVideoSize.height;
+            if(width < _videoBgView.bounds.size.width){
+                width = _videoBgView.bounds.size.width;
+                height = width * _editVideoSize.height /_editVideoSize.width;
+            }
+            _videoPrewRect = CGRectMake(0, 0, width, height);
+        }
+        else{
+            float width = _videoBgView.bounds.size.width;
+            float height = width * _editVideoSize.height /_editVideoSize.width;
+            if(height < _videoBgView.bounds.size.height){
+                height = _videoBgView.bounds.size.height;
+                width = height * _editVideoSize.width /_editVideoSize.height;
+                _videoPrewRect = CGRectMake(0, 0, width, height);
+            }
+            _videoPrewRect = CGRectMake(0, 0, width, height);
+        }
+        [_videoCoreSDK setEditorVideoSize:_editVideoSize];
         if(CGRectEqualToRect(_videoPrewRect, CGRectZero)){
             [_videoCoreSDK setFrame:_videoBgView.bounds];
         }else{
             [_videoCoreSDK setFrame:_videoPrewRect];
         }
+        [_videoBgView setContentSize:_videoPrewRect.size];
         [_videoBgView insertSubview:_videoCoreSDK.view  atIndex:0];
         _videoCoreSDK.delegate = self;
     }
@@ -2230,6 +2252,8 @@
             if (_selectFile.rotate == 360) {
                 _selectFile.rotate = 0;
             }
+            _editVideoSize = CGSizeMake(_editVideoSize.height, _editVideoSize.width);//(1920,1448)
+            
             [self playVideo:NO];
             
             [self refreshPrewFrame];
@@ -2244,6 +2268,7 @@
                 _selectFile.rotate = 360;
             }
             _selectFile.rotate -=90;
+            _editVideoSize = CGSizeMake(_editVideoSize.height, _editVideoSize.width);//(1920,1448)
             [self playVideo:NO];
             
             [self refreshPrewFrame];

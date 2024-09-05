@@ -240,6 +240,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(UIImage *)imageWithContentOfFile:(NSString *)path atBundle:( NSBundle * ) bundle;
 +(UIImage *)imageWithContentOfFile:(NSString *)path atBundleName:(NSString *)bundleName;
 +( UIViewController * )getCurrentViewController;
++ (UIWindow *)getWindow;
 /**加载图片
  */
 
@@ -523,6 +524,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 #pragma mark- 气泡
 +(void)getConfig_CaptionEx:( CaptionEx * ) captionEx atCaptionConfig:( NSString * ) configPath atConfig:( NSDictionary** ) config;
++ (NSString *)getCaptionImagePathWithFolderPath:(NSString *)folderPath;
++ (CGRect)getCaptionTextRect:(CaptionEx *)caption dic:(NSDictionary *)dic;
 #pragma mark- 贴纸
 +(void)getConfig_CaptionStickerEx:( CaptionEx * ) captionEx atCaptionConfig:( NSString * ) configPath atConfig:( NSDictionary** ) config;
 + (NSString *)getCaptionWebmAudioPathWithConfigPath:(NSString *)configPath;
@@ -830,4 +833,14 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 +(BOOL)imageWithCutoutColor:( UIColor * ) cutoutColor atPath:( NSString * ) path;
 +( NSString * ) UIColorToHexString:(UIColor *) color;
+
++(void)animatioonnImageView_CancelCurrentImageRequest:( UIView * ) view;
++(UIImageView *)loadAnimationImageViiewWithView:( UIView * ) view  atImageUrl:(NSURL *)imageUrl  atPlaceholder:( UIImage * ) placeholder;
++(UIImageView *)loadAnimationImageViiewWithView:( UIView * ) view  atImageUrl:(NSURL *)imageUrl  atPlaceholder:( UIImage * ) placeholder atIsRelease:( BOOL ) isRelease;
++(void)btn_LoadImagge:( UIButton * ) sender atUrl:( NSURL * ) url forState:( UIControlState ) state;
++( void )YYWebImageMarnager_RemoveAllObjects;
+
++ (NSInteger)getTextByteLength:(NSString *)text encodingType:(CaptionTextEncodeType)encodeType;
++ (NSString *)getSubstring:(NSString *)fullString targetLength:(NSInteger)targetLength encodingType:(CaptionTextEncodeType)encodeType;
++ (NSString *)getSubstring:(NSString *)fullString targetRange:(NSRange)targetRange;
 @end

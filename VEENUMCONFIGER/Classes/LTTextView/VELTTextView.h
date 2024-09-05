@@ -14,6 +14,7 @@
 @protocol VELTTextViewDelegate <NSObject>
 @optional
 - (void)textViewShouldBeginEditing:(UITextView *)textView;
+- (void)textViewDidBeginEditing:(UITextView *)textView;
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
 - (void)textViewDidChange:(UITextView *)textView;
 @end

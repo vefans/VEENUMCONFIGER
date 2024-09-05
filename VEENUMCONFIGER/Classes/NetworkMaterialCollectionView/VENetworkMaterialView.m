@@ -8,7 +8,9 @@
 
 #import "VENetworkMaterialView.h"
 #import "VENetworkMaterialCollectionViewCell.h"
+#ifdef EnableSDWebImage
 #import <SDWebImage/SDImageCache.h>
+#endif
 @implementation VENet_CollectionView
 
 - (void)setContentOffset:(CGPoint)contentOffset{

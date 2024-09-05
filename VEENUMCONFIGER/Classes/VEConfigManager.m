@@ -9,7 +9,9 @@
 #import <LibVECore/Common.h>
 #import <LibVECore/PECore.h>
 #import "VEHelp.h"
+#ifdef EnableSDWebImage
 #import <SDWebImage/SDWebImage.h>
+#endif
 
 NSString *const VEStartExportNotification = @"VEStartExportNotification";
 NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermarkNotification";
@@ -88,9 +90,10 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
         if( singleOjbect.peEditConfiguration.isSingletrack == NO )
             singleOjbect.peEditConfiguration.isSingletrack = YES;
     }
+#ifdef EnableSDWebImage
     [[SDImageCache sharedImageCache] config].maxMemoryCost = 50 * 1024 * 1024;
     [[SDImageCache sharedImageCache] config].maxMemoryCount = 50;
-    
+#endif
     return singleOjbect;
 }
 
@@ -120,6 +123,7 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
         _hasInit = true;
         _enableBtnLikeTemp = NO;
         _selectedTypeColors = @[(id)UIColorFromRGB(0xdddff8).CGColor, (id)UIColorFromRGB(0xefe5e7).CGColor, (id)UIColorFromRGB(0xfbdcdb).CGColor];
+        _textColorOnGradientView = [UIColor blackColor];
     }
     return self;
 }

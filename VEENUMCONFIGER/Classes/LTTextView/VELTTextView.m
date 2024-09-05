@@ -83,6 +83,12 @@
     return YES;
 }
 
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    if (_delegate && [_delegate respondsToSelector:@selector(textViewDidBeginEditing:)]) {
+        [_delegate textViewDidBeginEditing:textView];
+    }
+}
+
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
     if (textView.text.length <= 1 && text.length == 0 && range.location == 0) {
         self.placeholderTextView.hidden = NO;
@@ -189,27 +195,17 @@
             NSString *text = _textView.attributedText.string;
             _textView.attributedText = nil;
             _textView.text = text;
+            
+            if (_textView.attributedText) {//之前选中了所有文字的情况，需要重新设置
+                NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+                paragraphStyle.alignment = NSTextAlignmentLeft;
+                paragraphStyle.lineSpacing = 5; // 行间距
+                _textView.attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName: _textView.font, NSForegroundColorAttributeName: _textView.textColor, NSParagraphStyleAttributeName: paragraphStyle}];
+            }
         }
     }else {
-        NSRange range = NSMakeRange(0, 0);
-        NSInteger index = 0;
-        NSMutableString *selectedStr = [NSMutableString string];
-        for (NSInteger i = 0; i < _textView.text.length; i += range.length) {
-            range = [_textView.text rangeOfComposedCharacterSequenceAtIndex:i];
-            NSString *str = [_textView.text substringWithRange:range];
-            if ([str isEqualToString:@"\n"] && index == 0) {
-                continue;
-            }
-            if (index >= selectedRange.location) {
-                [selectedStr appendString:str];
-            }
-            if (index == selectedRange.location + selectedRange.length - 1) {
-                break;
-            }
-            else if (![str isEqualToString:@"\n"]) {
-                index++;
-            }
-        }
+        NSString *selectedStr = [VEHelp getSubstring:_textView.text targetRange:selectedRange];
+        
         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:_textView.text];
         NSRange selectedStrRrange = [[attributedText string] rangeOfString:selectedStr];
         [attributedText addAttribute:NSBackgroundColorAttributeName value:[UIColorFromRGB(0xdddff8) colorWithAlphaComponent:0.26] range:selectedStrRrange];
