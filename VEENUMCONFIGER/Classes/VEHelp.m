@@ -10786,6 +10786,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     CaptionItem * captionItem = [CaptionItem new];
                     captionEx.texts = [NSMutableArray arrayWithObject:captionItem];
                     captionItem.frame = [self getCaptionTextRect:captionEx dic:subtitleEffectConfig];
+                    if (captionItem.frame.size.width < captionItem.frame.size.height && captionItem.frame.size.width / captionItem.frame.size.height < 0.485) {
+                        captionItem.isVertical = YES;
+                    }
                     captionItem.text = kDefaultSubtitleText;
                     if ([[NSFileManager defaultManager] fileExistsAtPath:kDefaultFontPath]) {
                         captionItem.fontPath = kDefaultFontPath;
@@ -10951,7 +10954,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSArray *textRectArray = dic[@"textRect"];
     CGRect textRect = CGRectZero;
     if (textRectArray.count == 4) {
-        textRect = CGRectMake([textRectArray[0] floatValue] + [textRectArray[2] floatValue] / 2.0, [textRectArray[1] floatValue] + [textRectArray[3] floatValue] / 2.0, [textRectArray[2] floatValue], [textRectArray[3] floatValue]);
+        float x = [textRectArray[0] floatValue];
+        float y = [textRectArray[1] floatValue];
+        float w = [textRectArray[2] floatValue];
+        float h = [textRectArray[3] floatValue];
+        textRect = CGRectMake(x + w / 2.0, y + h / 2.0, w, h);
     }
     if (CGRectEqualToRect(textRect, CGRectZero)) {
         if (caption.captionImagePath.length == 0) {
