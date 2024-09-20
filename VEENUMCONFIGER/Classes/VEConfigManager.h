@@ -190,6 +190,8 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 //vip
 @property (nonatomic,assign) bool          isEnableVIP;
 @property(nonatomic,copy, nullable) void (^exportVip)(id currentViewController);
+@property(nonatomic,copy, nullable) void (^onContinueExport)(bool  isWatermark);
+@property(nonatomic,copy, nullable) void ( ^close_SaveDraft )(void);
 
 /**文件存放根目录
  */

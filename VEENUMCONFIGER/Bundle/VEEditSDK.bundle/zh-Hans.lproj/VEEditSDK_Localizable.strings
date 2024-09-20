@@ -871,7 +871,7 @@
 "至少选择1个镜头" = "至少选择1个镜头";
 "片段总时长 %s" = "片段总时长 %s";
 "最近项目" = "最近项目";
-"素材库" = "素材库";
+"There are currently no materials available" = "暂时没有素材";
 "Book Material" = "书单样式";
 "长按拖动排序" = "长按拖动排序";
 "黑白场" = "黑白场";
@@ -1642,7 +1642,7 @@
 "Album" = "相册";
 "BG Library" = "背景库";
 "Solid Color" = "纯色";
-"Gradients" = "渐变";
+"Gradient" = "渐变";
 "Color" = "颜色";
 "Color Palette" = "调色盘";
 "Go edit" = "去编辑";
@@ -1746,26 +1746,26 @@
 "E-commerce" = "电商";
 "One-inch" = "一寸照";
 "Two-inch" = "二寸照";
-"wedding photo"  = "结婚照";
-"large ID photo"  = "大一寸";
-"small ID photo"  = "小一寸";
-"large 2-inch photo"  = "大二寸";
-"small 2-inch photo"  = "小二寸";
-"social security card\nidentification photo" = "社保卡\n证件照";
-"driver's license" = "驾驶证";
+"Wedding photo"  = "结婚照";
+"Large ID photo"  = "大一寸";
+"Small ID photo"  = "小一寸";
+"Large 2-inch photo"  = "大二寸";
+"Small 2-inch photo"  = "小二寸";
+"SSN\nID photo" = "社保卡\n证件照";
+"Driver's license" = "驾驶证";
 "3-inch ID photo" = "三寸照";
 "4-inch ID photo" = "四寸照";
 "5-inch ID photo" = "五寸照";
 
-"main pictur" = "主图";
-"vertical main picture" = "竖版主图";
-"square poster" = "方形海报";
-"horizontal poster" = "横版海报";
+"Main image" = "主图";
+"Vertical main image" = "竖版主图";
+"Square poster" = "方形海报";
+"Horizontal poster" = "横版海报";
 
-"vertical poster" = "竖版海报";
-"full-screen poster" = "全屏海报";
-"mobile version\nstore homepage" = "手机端\n店铺首页";
-"detail picture" = "详情图";
+"Vertical poster" = "竖版海报";
+"Full-screen poster" = "全屏海报";
+"Mobile \nStore home" = "手机端\n店铺首页";
+"Detail photo" = "详情图";
 
 "Select text" = "涂抹选择需要编辑的文字";
 

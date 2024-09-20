@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class VECutVideoRangeSlider;
 @protocol VECutVideoRangeSliderDelegate <NSObject>
-
+- (void)rangeSliderChange:(VECutVideoRangeSlider *)slider progress:(float)progress;
 - (void)rangeSliderChange:(VECutVideoRangeSlider *)slider start:(float)start duration:(float)duration progress:(float)progress;
 
 @end
@@ -33,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGFloat minRangeDuration;
 @property (nonatomic, assign) CGFloat maxRangeDuration;
 @property (nonatomic, strong) UIView *thumbHandle;
+@property (nonatomic, strong) UIView *thumbMaskHandle;
 @property (nonatomic, strong) UILabel *trimTimeLabel;
 
 - (instancetype)initWithFrame:(CGRect)frame player:(VECore *)player minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration;

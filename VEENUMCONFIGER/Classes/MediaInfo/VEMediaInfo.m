@@ -388,18 +388,6 @@
         }
         if (![VEHelp isSystemPhotoUrl:asset.url]) {
             asset.url = [VEHelp getFileURLFromAbsolutePath:asset.url.path];
-            if ([asset.url.absoluteString.pathExtension isEqualToString:@"webp"]) {
-                NSURL *url = [NSURL fileURLWithPath:[asset.url.path.stringByDeletingPathExtension stringByAppendingPathExtension:@"png"]];
-                if (![[NSFileManager defaultManager] fileExistsAtPath:url.path]) {
-                    UIImage *image = [VEHelp imageWithWebP:asset.url.path error:nil];
-                    if (image) {
-                        NSData *imageData = UIImagePNGRepresentation(image);
-                        [imageData writeToFile:url.path atomically:YES];
-                        [[NSFileManager defaultManager] removeItemAtURL:asset.url error:nil];
-                    }
-                }
-                asset.url = url;
-            }
         }
         self.antiShakeUrl = asset.antiShakeUrl;
         self.antiShakeType = asset.antiShakeType;

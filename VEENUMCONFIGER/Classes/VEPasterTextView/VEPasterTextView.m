@@ -3246,13 +3246,11 @@ static VEPasterTextView *lastTouchedView;
 
 -(CGPoint)getPictureCenter
 {
+    CGPoint center = [super center];
     if( _syncContainer && _syncContainer.picturePreImageView ){
-        CGPoint center = [_syncContainer  convertPoint:self.center toView:_syncContainer.picturePreImageView];
-        return center;
+        center = [_syncContainer  convertPoint:center toView:_syncContainer.picturePreImageView];
     }
-    else{
-        return self.center;
-    }
+    return center;
 }
 
 -(void)showFourSidesMove:( BOOL ) isMove

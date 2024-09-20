@@ -109,10 +109,17 @@
 }
 +( void )YYWebImageMarnager_RemoveAllObjects
 {
+    [YYWebImageManager sharedManager].cache.shouldGroupAccessibilityChildren;
     [[YYWebImageManager sharedManager].cache.memoryCache removeAllObjects];
 //    [[YYWebImageManager sharedManager].cache.diskCache removeAllObjects];
     [[YYWebImageManager sharedManager].cache.diskCache removeAllObjectsWithBlock:nil];
 }
+
++(void)setDecodeForDisplay:( BOOL ) decodeForDisplay
+{
+    [YYWebImageManager sharedManager].cache.decodeForDisplay = decodeForDisplay;
+}
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

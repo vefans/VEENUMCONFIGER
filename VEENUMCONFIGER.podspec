@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "VEENUMCONFIGER"
-  spec.version      = "3.3.8"
+  spec.version      = "3.3.9"
   spec.summary      = "VEENUMCONFIGER is a library of common resources."
   spec.homepage     = "https://github.com/vefans/VEENUMCONFIGER"
   spec.platform     = :ios, "9.0"
@@ -37,7 +37,7 @@ Pod::Spec.new do |spec|
   #不包含VEDemoUse.bundle的版本
   spec.subspec 'ExcludeDemoBundle' do |es|
     es.source_files = '**/*.{h,m}'
-    es.resources = '**/VEEditSDK.{bundle}','**/VideoRecord.{bundle}'
+    es.resources = '**/*.{bundle}'
   end
 
 end

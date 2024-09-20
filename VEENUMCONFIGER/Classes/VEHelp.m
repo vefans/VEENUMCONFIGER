@@ -17,6 +17,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <SDWebImage/UIImage+MultiFormat.h>
 #import <SDWebImage/UIImage+GIF.h>
+#import <SDWebImageWebPCoder/UIImage+WebP.h>
 #endif
 #import <ZipArchive/ZipArchive.h>
 #import <VEENUMCONFIGER/VEFileDownloader.h>
@@ -29,7 +30,6 @@
 #import <Speech/Speech.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <VEENUMCONFIGER/VEYYAnnimationImageView.h>
-#import <SDWebImageWebPCoder/UIImage+WebP.h>
 
 @import Vision;
 VENetworkResourceType const VENetworkResourceType_CardMusic = @"cardpoint_music";//卡点音乐
@@ -7217,16 +7217,34 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
 }
 
++ (UIImage *)scaleImageWithTransparencyUsingCoreGraphics:(UIImage *)image toSize:(CGSize)size {
+    UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextTranslateCTM(context, 0, size.height);
+    CGContextScaleCTM(context, 1.0, -1.0);
+    // 设置清空颜色为完全透明的黑色
+    CGContextSetFillColor(context, CGColorGetComponents([UIColor clearColor].CGColor));
+    // 清空图形上下文，使其背景透明
+    CGContextFillRect(context, CGRectMake(0, 0, size.width, size.height));
+    CGContextSetBlendMode(context, kCGBlendModeNormal);
+    CGContextDrawImage(context, CGRectMake(0, 0, size.width, size.height), [image CGImage]);
+    UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return scaledImage;
+}
 + (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize
 {
 #if 1   //20220105 使用保存到沙盒后再使用的方法iPhone6s（iOS13.7）会崩溃
     @autoreleasepool {
-        UIGraphicsBeginImageContext(CGSizeMake(((int)(image.size.width * scaleSize))/2*2.0, ((int)(image.size.height * scaleSize))/2*2.0));
-        [image drawInRect:CGRectMake(0, 0, ((int)(image.size.width * scaleSize))/2*2.0, ((int)(image.size.height * scaleSize))/2*2.0)];
+        CGSize size = CGSizeMake(((int)(image.size.width * scaleSize))/2*2.0, ((int)(image.size.height * scaleSize))/2*2.0);
+        UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGContextSetBlendMode(context, kCGBlendModeNormal);
+        [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
         UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         return scaledImage;
-    }
+    };
 #else
     UIGraphicsBeginImageContext(CGSizeMake(((int)(image.size.width * scaleSize))/2*2.0, ((int)(image.size.height * scaleSize))/2*2.0));
     [image drawInRect:CGRectMake(0, 0, ((int)(image.size.width * scaleSize))/2*2.0, ((int)(image.size.height * scaleSize))/2*2.0)];
@@ -7888,19 +7906,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 }
                 if (!folderPath && ![VEHelp isSystemPhotoUrl:overlay.media.url]) {
                     overlay.media.url = [VEHelp getFileURLFromAbsolutePath:overlay.media.url.path];
-                }
-                if ([overlay.media.url.absoluteString.pathExtension isEqualToString:@"webp"]) {
-                    NSURL *url = [NSURL fileURLWithPath:[overlay.media.url.path.stringByDeletingPathExtension stringByAppendingPathExtension:@"png"]];
-                    if (![[NSFileManager defaultManager] fileExistsAtPath:url.path]) {
-                        UIImage *image = [VEHelp imageWithWebP:overlay.media.url.path error:nil];
-                        if (image) {
-                            NSData *imageData = UIImagePNGRepresentation(image);
-                            [imageData writeToFile:url.path atomically:YES];
-                            [[NSFileManager defaultManager] removeItemAtURL:overlay.media.url error:nil];
-                        }
-                    }
-                    overlay.media.url = url;
-                    overlay.media.type = MediaAssetTypeImage;
                 }
                 if ([VEHelp isSystemPhotoUrl:overlay.media.url]) {
                     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
@@ -8768,12 +8773,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 if (caption) {
                     if (caption.captionImage.imageFolderPath.length > 0) {
                         caption.captionImage.imageFolderPath = [VEHelp getFileURLFromAbsolutePath_str:caption.captionImage.imageFolderPath];
-                        NSArray *images = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:caption.captionImage.imageFolderPath error:nil];
-                        [images enumerateObjectsUsingBlock:^(NSString * _Nonnull imageName, NSUInteger idx, BOOL * _Nonnull stop) {
-                            if ([imageName.pathExtension isEqualToString:@"webp"]) {
-                                [VEHelp webpToPng:[caption.captionImage.imageFolderPath stringByAppendingPathComponent:imageName]];
-                            }
-                        }];
                         NSString *configPath = [caption.captionImage.imageFolderPath stringByAppendingPathComponent:@"config.json"];
                         NSData *data = [[NSData alloc] initWithContentsOfFile:configPath];
                         if(data){
@@ -8852,13 +8851,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 if (caption) {
                     caption.imageFolderPath = [VEHelp getFileURLFromAbsolutePath_str:caption.imageFolderPath];
                     caption.type = CaptionTypeNoText;
-                    
-                    NSArray *images = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:caption.imageFolderPath error:nil];
-                    [images enumerateObjectsUsingBlock:^(NSString * _Nonnull imageName, NSUInteger idx, BOOL * _Nonnull stop) {
-                        if ([imageName.pathExtension isEqualToString:@"webp"]) {
-                            [VEHelp webpToPng:[caption.imageFolderPath stringByAppendingPathComponent:imageName]];
-                        }
-                    }];
                     
                     NSString *configPath = [caption.imageFolderPath stringByAppendingPathComponent:@"config.json"];
                     NSData *data = [[NSData alloc] initWithContentsOfFile:configPath];
@@ -9208,23 +9200,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             [scene.media enumerateObjectsUsingBlock:^(MediaAsset * _Nonnull asset, NSUInteger idx1, BOOL * _Nonnull stop1) {
                 if (!folderPath && ![VEHelp isSystemPhotoUrl:asset.url]) {
                     asset.url = [VEHelp getFileURLFromAbsolutePath:asset.url.path];
-                }
-                if ([asset.url.absoluteString.pathExtension isEqualToString:@"webp"]) {
-                    NSURL *url = [NSURL fileURLWithPath:[asset.url.path.stringByDeletingPathExtension stringByAppendingPathExtension:@"png"]];
-                    if (![[NSFileManager defaultManager] fileExistsAtPath:url.path]) {
-                        UIImage *image = [VEHelp imageWithWebP:asset.url.path error:nil];
-                        if (image) {
-                            NSData *imageData = UIImagePNGRepresentation(image);
-                            [imageData writeToFile:url.path atomically:YES];
-                            [[NSFileManager defaultManager] removeItemAtURL:asset.url error:nil];
-                        }
-                    }
-                    asset.url = url;
-                    asset.type = MediaAssetTypeImage;
-                    if (scene.backgroundAsset.blurIntensity > 0 || scene.backgroundAsset.type == MediaAssetTypeVideo) {
-                        scene.backgroundAsset.url = url;
-                        scene.backgroundAsset.type = MediaAssetTypeImage;
-                    }
                 }
                 if (scene.backgroundAsset) {
                     scene.backgroundAsset.crop = [self getBackgroundAssetCropWithUrl:scene.backgroundAsset.url crop:asset.crop rotate:asset.rotate videoSize:templateInfo.size];
@@ -18151,6 +18126,11 @@ static OSType help_inputPixelFormat(){
     return hexColor;
 }
 
++(UIImage *)getWebp:( NSString * ) path
+{
+    return [VEYYAnnimationImageView getWebp:path];
+}
+
 +(void)animatioonnImageView_CancelCurrentImageRequest:( UIView * ) view
 {
     [VEYYAnnimationImageView animatioonnImageView_CancelCurrentImageRequest:view];
@@ -18171,6 +18151,10 @@ static OSType help_inputPixelFormat(){
 +( void )YYWebImageMarnager_RemoveAllObjects
 {
     [VEYYAnnimationImageView YYWebImageMarnager_RemoveAllObjects];
+}
++(void)YYWebImageMarnager_setDecodeForDisplay:( BOOL ) decodeForDisplay
+{
+    [VEYYAnnimationImageView setDecodeForDisplay:decodeForDisplay];
 }
 
 + (NSInteger)getTextByteLength:(NSString *)text encodingType:(CaptionTextEncodeType)encodeType

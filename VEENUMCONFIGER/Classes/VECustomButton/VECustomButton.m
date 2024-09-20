@@ -83,6 +83,11 @@
     return self;
 }
 
+- (void)setNormalFontSize:(CGFloat)normalFontSize {
+    _normalFontSize = normalFontSize;
+    self.titleLabel.font = [UIFont systemFontOfSize:_normalFontSize];
+}
+
 - (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
     if (selected) {
@@ -92,7 +97,7 @@
             self.titleLabel.font = [UIFont boldSystemFontOfSize:self.titleLabel.font.pointSize];
         }
     }else {
-        if (_selectedFontSize > 0 && _normalFontSize) {
+        if (_normalFontSize > 0) {
             self.titleLabel.font = [UIFont systemFontOfSize:_normalFontSize];
         }else {
             self.titleLabel.font = [UIFont systemFontOfSize:self.titleLabel.font.pointSize];

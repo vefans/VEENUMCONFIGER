@@ -19,8 +19,8 @@
     id                      _timeObserver;
     BOOL                    isPause;
 }
-@property (nonatomic,strong)MBProgressHUD *progressHUD;
 
+@property (nonatomic,strong)MBProgressHUD *progressHUD;
 @property (nonatomic,weak) id<VEAPITemplatePlayerDelegate > _Nullable delegate;
 
 @property (nonatomic, strong) AVPlayer *player;
@@ -72,7 +72,6 @@
     [self stopAnimation];
     [_progressHUD removeFromSuperview];
     _progressHUD = nil;
-    
     [self.line.layer removeAllAnimations];
     [self.line removeFromSuperview];
     self.line = nil;
@@ -361,7 +360,6 @@
     }
     return _progressHUD;
 }
-
 
 - (void)initNotificationAndKVO
 {

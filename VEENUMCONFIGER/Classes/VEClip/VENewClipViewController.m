@@ -470,8 +470,13 @@
             if([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent){
                 [rotateBtn setTitleColor:UIColorFromRGB(0x131313) forState:UIControlStateNormal];
             }
-            rotateBtn.titleLabel.font = [UIFont systemFontOfSize:10.0];
-            [rotateBtn layoutButtonWithEdgeInsetsStyle:VEButtonEdgeInsetsStyleLeft imageTitleSpace:-5];
+            if (kIsChinese) {
+                rotateBtn.titleLabel.font = [UIFont systemFontOfSize:14.0];
+                [rotateBtn layoutButtonWithEdgeInsetsStyle:VEButtonEdgeInsetsStyleLeft imageTitleSpace:-5];
+            }else {
+                rotateBtn.titleLabel.font = [UIFont systemFontOfSize:12.0];
+                rotateBtn.titleEdgeInsets = UIEdgeInsetsMake(0, -5, 0, 0);
+            }
             [rotateBtn addTarget:self action:@selector(rotateBtnAction:) forControlEvents:UIControlEventTouchUpInside];
             rotateBtn.tag = i + 1;
             [_toolView addSubview:rotateBtn];

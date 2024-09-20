@@ -132,13 +132,19 @@
         self.trimTimeLabel.layer.masksToBounds = YES;
         [self.rangeView addSubview:self.trimTimeLabel];
         
-        self.thumbHandle = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 3, self.rangeView.frame.size.height)];
-        self.thumbHandle.backgroundColor = [UIColor whiteColor];
-        self.thumbHandle.layer.masksToBounds = YES;
-        self.thumbHandle.layer.cornerRadius = 1;
-        self.thumbHandle.layer.maskedCorners = kCALayerMaxXMinYCorner | kCALayerMaxXMaxYCorner | kCALayerMaxXMinYCorner | kCALayerMaxXMaxYCorner;
+        self.thumbHandle = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 26, self.rangeView.frame.size.height)];
+        self.thumbHandle.backgroundColor = [UIColor clearColor];
         [self.rangeView addSubview:self.thumbHandle];
         self.thumbHandle.hidden = NO;
+        
+        self.thumbMaskHandle = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 3, self.rangeView.frame.size.height)];
+        self.thumbMaskHandle.backgroundColor = [UIColor whiteColor];
+        self.thumbMaskHandle.layer.masksToBounds = YES;
+        self.thumbMaskHandle.layer.cornerRadius = 1;
+        self.thumbMaskHandle.layer.maskedCorners = kCALayerMaxXMinYCorner | kCALayerMaxXMaxYCorner | kCALayerMaxXMinYCorner | kCALayerMaxXMaxYCorner;
+        [self.thumbHandle addSubview:self.thumbMaskHandle];
+        
+        
         UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleProgressThumbPan:)];
         [self.thumbHandle addGestureRecognizer:panGesture];
         
@@ -215,9 +221,9 @@
             self.thumbInitialX = self.thumbHandle.frame.origin.x;
             break;
         case UIGestureRecognizerStateChanged: {
-            CGFloat newX = MAX(self.thumbInitialX + translation.x,0);
-            CGFloat maxAllowedX = CGRectGetWidth(self.rangeView.frame) - self.thumbHandle.frame.size.width;
-            if (newX >= 0 && newX <= maxAllowedX) {
+            CGFloat newX = MAX(self.thumbInitialX + translation.x,-10);
+            CGFloat maxAllowedX = CGRectGetWidth(self.rangeView.frame) - self.thumbHandle.frame.size.width + 10;
+            if (newX >= -10 && newX <= maxAllowedX) {
                 self.thumbHandle.frame = CGRectMake(newX, self.thumbHandle.frame.origin.y, self.thumbHandle.frame.size.width, self.thumbHandle.frame.size.height);
             }
             break;
@@ -225,7 +231,11 @@
         default:
             break;
     }
-    self.thumbHandle.hidden = YES;
+    _progress = self.thumbHandle.center.x/self.rangeView.frame.size.width;
+    if([_delegate respondsToSelector:@selector(rangeSliderChange:progress:)]){
+        [_delegate rangeSliderChange:self progress:_progress];
+    }
+    //self.thumbHandle.hidden = YES;
 }
 
 - (void)handleLeftThumbPan:(UIPanGestureRecognizer *)gesture {
@@ -286,20 +296,20 @@
     }
     self.trimTimeLabel.text = [VEHelp timeFormat:_durationTime];
     CGRect rect = self.thumbHandle.frame;
-    rect.origin.x = 0;
+    rect.origin.x = -10;
     self.thumbHandle.frame = rect;
     
 }
 - (void)setProgress:(CGFloat)progress{
     _progress = progress;
     float startProgress = self.startTime/ self.videoDuration;
-    float x = _progress - startProgress;
+    float x = _progress - startProgress - 10;
     
     //float maxProgress = (self.startTime + self.durationTime)/self.videoDuration;
     float off_x = (self.rangeView.frame.size.width/self.durationTime) * (x * self.videoDuration);
     NSLog(@"off_x:%f",off_x);
     CGRect rect = self.thumbHandle.frame;
-    rect.origin.x = MAX(off_x, 0);
+    rect.origin.x = MAX(off_x, -10);
     self.thumbHandle.frame = rect;
     self.thumbHandle.hidden = NO;
 }

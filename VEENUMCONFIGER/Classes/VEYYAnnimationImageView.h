@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 +(void)animatioonnImageView_CancelCurrentImageRequest:( UIView * ) view;
 
 +( void )YYWebImageMarnager_RemoveAllObjects;
+
++(void)setDecodeForDisplay:( BOOL ) decodeForDisplay;
 @end
 
 NS_ASSUME_NONNULL_END

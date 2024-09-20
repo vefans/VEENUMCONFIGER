@@ -26,6 +26,8 @@ typedef NS_ENUM(NSInteger, DraftType) {
 
 @interface LocalDraftData : NSObject
 
+@property (nonatomic, assign) NSInteger mid;
+
 /** 唯一标识
  */
 @property (nonatomic, strong) NSString *uuid;

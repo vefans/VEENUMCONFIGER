@@ -462,6 +462,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(NSMutableDictionary *)jsonToObject:( NSString * ) jsonStr;
 +(Caption *)getCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atType:(NSInteger) captionType;
 
++ (UIImage *)scaleImageWithTransparencyUsingCoreGraphics:(UIImage *)image toSize:(CGSize)size;
 + (UIImage *)drawImage:(UIImage *)image bgImage:(UIImage *)bgImage;
 + (UIImage *)drawImage:(UIImage *)image bgImage:(UIImage *)bgImage size:(CGSize) size;
 + (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize;
@@ -839,6 +840,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(UIImageView *)loadAnimationImageViiewWithView:( UIView * ) view  atImageUrl:(NSURL *)imageUrl  atPlaceholder:( UIImage * ) placeholder atIsRelease:( BOOL ) isRelease;
 +(void)btn_LoadImagge:( UIButton * ) sender atUrl:( NSURL * ) url forState:( UIControlState ) state;
 +( void )YYWebImageMarnager_RemoveAllObjects;
++(void)YYWebImageMarnager_setDecodeForDisplay:( BOOL ) decodeForDisplay;
++(UIImage *)getWebp:( NSString * ) path;
 
 + (NSInteger)getTextByteLength:(NSString *)text encodingType:(CaptionTextEncodeType)encodeType;
 + (NSString *)getSubstring:(NSString *)fullString targetLength:(NSInteger)targetLength encodingType:(CaptionTextEncodeType)encodeType;

@@ -167,6 +167,9 @@
     for (VESlider *slider in _sliders) {
         slider.value = 0;
     }
+    _hueValue = 0;
+    _saturationValue = 0;
+    _lightnessValue = 0;
     if (_delegate && [_delegate respondsToSelector:@selector(resetAdjustHSL:)]) {
         [_delegate resetAdjustHSL:self];
     }

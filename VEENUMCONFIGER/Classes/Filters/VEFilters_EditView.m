@@ -385,18 +385,18 @@ NSString * _netMaterialTypeURL;
         VEReachability *lexiu = [VEReachability reachabilityForInternetConnection];
         if([lexiu currentReachabilityStatus] != VEReachabilityStatus_NotReachable){
             
-        }
-        else{
-            [self.hud setCaption:VELocalizedString(@"请检查网络，网络连接失败！", nil)];
-            [self.hud show];
-            [self.hud hideAfter:1];
-            
             [VEFilters_EditView loadFilterType:^(NSMutableArray * _Nonnull globalFilters) {
                 if( _loadFilterCallBack )
                 {
                     _loadFilterCallBack( globalFilters );
                 }
-            } atFilterResourceURL:_filterResourceURL atNetMaterialTypeURL:_netMaterialTypeURL];
+            } atFilterResourceURL:_editConfiguration.filterResourceURL atNetMaterialTypeURL:_editConfiguration.netMaterialTypeURL];
+            
+        }
+        else{
+            [self.hud setCaption:VELocalizedString(@"请检查网络，网络连接失败！", nil)];
+            [self.hud show];
+            [self.hud hideAfter:1];
         }
 //        if(![VEConfigManager sharedManager].iPad_HD){
 //            _filterChildsView           = [UIScrollView new];

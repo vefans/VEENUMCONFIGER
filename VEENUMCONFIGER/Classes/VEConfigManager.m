@@ -124,6 +124,12 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
         _enableBtnLikeTemp = NO;
         _selectedTypeColors = @[(id)UIColorFromRGB(0xdddff8).CGColor, (id)UIColorFromRGB(0xefe5e7).CGColor, (id)UIColorFromRGB(0xfbdcdb).CGColor];
         _textColorOnGradientView = [UIColor blackColor];
+#ifndef EnableSDWebImage
+        if( !iPhone_X )
+        {
+            [VEHelp YYWebImageMarnager_setDecodeForDisplay:false];
+        }
+#endif
     }
     return self;
 }
