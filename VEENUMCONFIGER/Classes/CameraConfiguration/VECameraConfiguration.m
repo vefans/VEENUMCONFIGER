@@ -87,7 +87,7 @@
     copy.enableUseMusic                     = _enableUseMusic;
     copy.musicInfo                          = _musicInfo;
     copy.faceUBeautyParams                  = [_faceUBeautyParams copy];
-    copy.cameraEnterPhotoAlbumCallblackBlock= _cameraEnterPhotoAlbumCallblackBlock;
+    copy.cameraEnterPhotoAlbumCallbackBlock= _cameraEnterPhotoAlbumCallbackBlock;
     copy.cameraMV                           = _cameraMV;
     copy.cameraVideo                        = _cameraVideo;
     copy.cameraPhoto                        = _cameraPhoto;
@@ -148,7 +148,7 @@
     copy.enableFaceU                        = _enableFaceU;
     copy.faceUURL                           = _faceUURL;
     copy.enableNetFaceUnity                 = _enableNetFaceUnity;
-    copy.cameraEnterPhotoAlbumCallblackBlock= _cameraEnterPhotoAlbumCallblackBlock;
+    copy.cameraEnterPhotoAlbumCallbackBlock= _cameraEnterPhotoAlbumCallbackBlock;
     copy.hiddenPhotoLib                     = _hiddenPhotoLib;
     copy.enableFilter                       = _enableFilter;
     copy.enableUseMusic                    = _enableUseMusic;

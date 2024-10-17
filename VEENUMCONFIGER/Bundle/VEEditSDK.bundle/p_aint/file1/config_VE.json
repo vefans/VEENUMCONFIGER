@@ -1,0 +1,1 @@
+{"ver":6,"minCoreVer":155,"color":[0,0,0,0],"name":"ani","script":"WritingAnim.js","other":[{"name":"pen","fragShader":"normal.frag.txt","uniformParams":[{"paramName":"alpha","type":"float","frameArray":[{"time":0,"value":[1]}]}],"textureParams":[{"paramName":"inputImageTexture","source":"pen.png"}]}]}

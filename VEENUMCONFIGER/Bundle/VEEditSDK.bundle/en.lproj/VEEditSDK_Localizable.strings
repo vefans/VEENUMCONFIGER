@@ -2101,7 +2101,15 @@
 "搜索" = "Search";
 
 "推荐音乐" = "Recommended music";
-"我的收藏" = "My collection";
+"Collection successful" = "Added to Favorites";
+"Collection canceled" = "Removed from favorites";
+"Long press to save/cancel the collection~" = "Long press to add to/remove from Favorites~";
+"No stickers in collection yet. Long press sticker cover/to add local stickers for local collection." = "No favorite  stickers yet. Long press sticker cover/to add local stickers to add to Favorites.";
+"No stickers in collection yet. Long press sticker cover for local collection." = "No favorite stickers yet. Long press sticker cover to add to Favorites.";
+"No effects in collection yet. Long press effect cover for local collection." = "No favorite effects yet. Long press effect cover to add to Favorites.";
+"No filters in collection yet. Long press filter cover/to add local filters for local collection." = "No favorite filters yet. Long press filter cover/to add local filters to add to Favorites.";
+"No fonts in collection yet. Long press font cover/to add local fonts for local collection." = "No favorite fonts yet. Long press font cover/to add local fonts to add to Favorites.";
+"No templates in collection yet." = "No favorite templates yet.";
 "历史"  = "History";
 "本地" = "Local";
 

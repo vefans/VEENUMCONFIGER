@@ -6,11 +6,25 @@
 #import "VEAuthorizationView.h"
 #import "UIButton+VECustomLayout.h"
 
+
 #define EnableSDWebImage
+#define  Enable_Config_VE
 #define EnableVESpecialCamera
 
 #define HEXCOLOR(c) [UIColor colorWithRed:((c>>24)&0xFF)/255.0 green:((c>>16)&0xFF)/255.0 blue:((c>>8)&0xFF)/255.0  alpha:((c)&0xFF)/255.0]
 #define ANDROID_COLOR(c) [UIColor colorWithRed:((c>>16)&0xFF)/255.0 green:((c>>8)&0xFF)/255.0 blue:((c)&0xFF)/255.0  alpha:((c>>24)&0xFF)/255.0]
+
+//progressType
+typedef NS_ENUM(NSInteger, VEProgressTimeType){
+    VEProgressTimeType_None,              //无
+    VEProgressTimeType_MainVideo,      //主视频
+    VEProgressTimeType_Subtitle,          //字幕
+    VEProgressTimeType_Dewatermark,  //去水印
+    VEProgressTimeType_Effect,             //特效
+    VEProgressTimeType_PIP,                 //画中画
+    VEProgressTimeType_Filter,              //滤镜
+    VEProgressTimeType_Proportion,              //比例
+};
 
 //画笔
 typedef NS_ENUM(NSInteger, VEDoodleType){
@@ -591,7 +605,7 @@ isPhoneX;\
 #define BACKGROUND_WHITE_COLOR UIColorFromRGB(0xefefef)
 #define TOOLBAR_COLOR UIColorFromRGB(0x101010)
 #define CUSTOM_GRAYCOLOR UIColorFromRGB(0xb2b2b2)
-#define TEXT_COLOR UIColorFromRGB(0xcccccc)
+#define TEXT_COLOR ([VEConfigManager sharedManager].backgroundStyle == UIBgStyleDarkContent ? UIColorFromRGB(0x131313) : UIColorFromRGB(0xcccccc))
 #define HIGHLIGHTED_COLOR UIColorFromRGB(0x3c3d3d)
 #define DISABLED_COLOR UIColorFromRGB(0x3c3d3d)
 #define SUBTITLETEXT_COLOR UIColorFromRGB(0xcccccc)
@@ -1000,6 +1014,9 @@ isPhoneX;\
 #define kIsLoadedFaceShieldResource @"isLoadedFaceShieldResource"//智能挡脸
 #define kIsLoadedFlowerWordResource @"isLoadedFlowerWordResource"
 #define kIsLoadedTextTemplateResource @"isLoadedTextTemplateResource"
+#define kIsLoadedTextAnimationResource @"isLoadedTextAnimationResource"
+#define kIsLoadedWatermarkTemplateResource @"isLoadedWatermarkTemplateResource"
+#define kIsLoadedFontResource @"isLoadedFontResource"
 
 #define kVEEnableChangeColorAnimateId @"1012384"
 
@@ -1010,3 +1027,7 @@ isPhoneX;\
 #define kScriptPropsRecordPlist [KScriptFolder stringByAppendingPathComponent:@"scriptPropsRecord.plist"]
 
 #define PHOTO_ALBUM_NAME [[NSBundle mainBundle] infoDictionary][@"CFBundleDisplayName"]
+
+#define kWatermarkTemplateFolder [kVEDirectory stringByAppendingPathComponent:@"WatermarkTemplate"]
+#define kRecentlyWatermarkPlistPath [kWatermarkTemplateFolder stringByAppendingPathComponent:@"CustomRecentlyWatermark.plist"]
+#define kWatermarkTemplatePlistPath [kWatermarkTemplateFolder stringByAppendingPathComponent:@"WatermarkTemplatePlist.plist"]

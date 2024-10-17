@@ -522,6 +522,10 @@ typedef NS_ENUM(NSInteger, VECropType){
  */
 @property (nonatomic, strong) CustomFilter* customOutAnimate;
 
+/**设置媒体自定义组合动画。
+ */
+@property (nonatomic, strong) CustomFilter* customComboAnimate;
+
 /**设置媒体其他动画（例如：手绘画笔）
  */
 @property (nonatomic, strong) CustomFilter* customOtherAnimate;
@@ -550,6 +554,18 @@ typedef NS_ENUM(NSInteger, VECropType){
 /** 动画时间段 出场
 */
 @property (nonatomic, assign) CMTimeRange animationOutTimeRange;
+
+/** 组合动画序号
+*/
+@property (nonatomic, assign) NSInteger animationComboIndex;
+
+/** 动画时间段
+*/
+@property (nonatomic, assign) CMTimeRange animationComboTimeRange;
+
+/** 动画类型 组合
+*/
+@property (nonatomic, assign) NSInteger animationComboType;
 
 /** 动画名称
 */
@@ -649,4 +665,7 @@ typedef NS_ENUM(NSInteger, VECropType){
 @property (nonatomic, assign) float compositionDegrees;
 @property (nonatomic, strong) NSMutableArray *shotTrackArray;
 @property (nonatomic, assign) CGRect trackingAreaRect;
+
+- (UIImage *)getStartTimeThumbImage;
+
 @end

@@ -1,0 +1,23 @@
+{
+	"ver" : 2,
+	"minCoreVer":120,
+	"name" : "dmotion",
+	"fragShader" : "frag.txt",
+	"uniformParams": [{
+		"paramName": "blurStep",
+		"type": "float",
+		"frameArray": [{
+			"time": 0.000,
+			"value": 3
+		}
+		]
+	},{
+		"paramName": "direction",
+		"type": "int",
+		"frameArray": [{
+			"time": 0.000,
+			"value": 7
+		}
+		]
+	}]
+}

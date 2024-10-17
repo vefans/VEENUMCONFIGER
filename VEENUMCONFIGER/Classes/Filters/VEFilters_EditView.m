@@ -132,7 +132,7 @@ NSString * _netMaterialTypeURL;
                 {
                     filterCollectionPlists1 = [NSMutableDictionary new];
                     [filterCollectionPlists1 setObject:@"showchang" forKey:@"id"];
-                    [filterCollectionPlists1 setObject:VELocalizedString(@"Collect", nil) forKey:@"name"];
+                    [filterCollectionPlists1 setObject:VELocalizedString(@"Favorites", nil) forKey:@"name"];
                     NSMutableArray *array = [NSMutableArray arrayWithContentsOfFile:kFilterCollectionPlist];
                     if( array == nil )
                     {
@@ -1015,7 +1015,7 @@ NSString * _netMaterialTypeURL;
         
         //        [NSMutableDictionary new];
         //        [filterCollectionPlists setObject:@"showchang" forKey:@"id"];
-        //        [filterCollectionPlists setObject:VELocalizedString(@"Collect", nil) forKey:@"name"];
+        //        [filterCollectionPlists setObject:VELocalizedString(@"Favorites", nil) forKey:@"name"];
         //        [filterCollectionPlists setObject:[NSMutableDictionary arra] forKey:@"data"];
         BOOL success = [array writeToFile:kFilterCollectionPlist atomically:NO];
         if (!success) {
@@ -1177,7 +1177,12 @@ NSString * _netMaterialTypeURL;
                 _currentCustomFilter.isStrip = NO;
                 
                 if (itemPath.pathExtension.length == 0) {
+//                    NSString *configPath = [itemPath stringByAppendingPathComponent:@"filter/config.json"];
+#ifdef Enable_Config_VE
+                    NSString *configPath = [VEHelp getConfigPathWithFolderPath:itemPath];
+#else
                     NSString *configPath = [itemPath stringByAppendingPathComponent:@"filter/config.json"];
+#endif
                     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
                     NSMutableDictionary *configDic = [VEHelp objectForData:jsonData];
                     jsonData = nil;

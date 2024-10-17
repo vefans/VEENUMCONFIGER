@@ -60,13 +60,16 @@
     
 }
 - (instancetype)initWithFrame:(CGRect)frame player:(VECore *)player minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration {
+    return [self initWithFrame:frame player:player minRangeDuration:minRangeDuration maxRangeDuration:maxRangeDuration thumbImage:nil];
+}
+- (instancetype)initWithFrame:(CGRect)frame player:(VECore *)player minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration thumbImage:(UIImage *)thumbImage{
     self = [super initWithFrame:frame];
     if (self) {
 //        self.corePlayer = [[VECore alloc] initWithAPPKey:[VEConfigManager sharedManager].appKey APPSecret:[VEConfigManager sharedManager].appSecret videoSize:[player getEditorVideoSize] fps:24 resultFail:^(NSError *error) {
 //            
 //        }];
+        _thumbImage = thumbImage;
         [self initThumbCore:player];
-        
         self.videoDuration = player.duration;
         self.minRangeDuration = minRangeDuration;
         self.maxRangeDuration = maxRangeDuration;
@@ -154,7 +157,9 @@
         
         UIPanGestureRecognizer *rightPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleRightThumbPan:)];
         [self.rightHandle addGestureRecognizer:rightPanGesture];
-        //[self loadThumbView];
+        if(_thumbImage){
+            [self loadThumbView];
+        }
         
     }
     return self;
@@ -170,9 +175,14 @@
     NSMutableArray *items = [NSMutableArray new];
     CMTime actualTime = kCMTimeZero;
     UIImage *firstImage = nil;
-    CGImageRef imageRef = [self.corePlayer copyCGImageAtTime:kCMTimeZero actualTime:&actualTime maximumSize:CGSizeMake(200, 200) error:nil];
-    if(imageRef){
-        firstImage = [UIImage imageWithCGImage:imageRef];
+    if(_thumbImage){
+        firstImage = _thumbImage;
+    }
+    else{
+        CGImageRef imageRef = [self.corePlayer copyCGImageAtTime:kCMTimeZero actualTime:&actualTime maximumSize:CGSizeMake(200, 200) error:nil];
+        if(imageRef){
+            firstImage = [UIImage imageWithCGImage:imageRef];
+        }
     }
     
     for (int i = 0; i<count; i++) {
@@ -180,8 +190,10 @@
         if(i > 0){
             [items addObject:[NSValue valueWithCMTime:CMTimeMakeWithSeconds(itemTime, TIMESCALE)]];
         }
-        
-        UIImageView *itemView = [[UIImageView alloc] initWithFrame:CGRectMake(self.scrollView.frame.size.height * i,0,self.scrollView.frame.size.height, self.scrollView.frame.size.height)];
+        NSInteger tag = i+1;
+        UIImageView *itemView = [self.scrollView viewWithTag:tag];
+        if(!itemView)
+            itemView = [[UIImageView alloc] initWithFrame:CGRectMake(self.scrollView.frame.size.height * i,0,self.scrollView.frame.size.height, self.scrollView.frame.size.height)];
         if(i == count - 1){
             itemView.frame = CGRectMake(self.scrollView.frame.size.height * i,0,self.scrollView.frame.size.height * w, self.scrollView.frame.size.height);
         }
@@ -193,7 +205,7 @@
         itemView.layer.borderColor = UIColorFromRGB(0xffffff).CGColor;
         itemView.layer.borderWidth = 0;
         itemView.contentMode = UIViewContentModeScaleAspectFill;
-        itemView.tag = i+1;
+        itemView.tag = tag;
         if(firstImage){
             itemView.image = firstImage;
         }

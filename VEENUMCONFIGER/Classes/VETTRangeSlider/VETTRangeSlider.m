@@ -553,6 +553,7 @@ static const CGFloat kLabelsFontSize = 12.0f;
     rRect.size.width += 10;
     if(_isStartDrag){
         [self endTrackingWithTouch:touch withEvent:event];
+#if 0   //20240926 这样会结束后，又回调触摸开始的接口
         if(CGRectContainsPoint(lRect, location)){
             if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){
                 [_delegate touchesBegan:self isLeft:YES isRight:NO];
@@ -562,6 +563,7 @@ static const CGFloat kLabelsFontSize = 12.0f;
                 [_delegate touchesBegan:self isLeft:NO isRight:YES];
             }
         }
+#endif
     }else{
         if(CGRectContainsPoint(lRect, location)){
             if([_delegate respondsToSelector:@selector(touchesBegan:isLeft:isRight:)]){

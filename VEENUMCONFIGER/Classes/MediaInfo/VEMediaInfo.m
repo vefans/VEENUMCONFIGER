@@ -54,34 +54,34 @@
             [_eq addObject:object];
             switch (i) {
                 case 0:
-                    object.frequecy = 31;
+                    object.frequency = 31;
                     break;
                 case 1:
-                    object.frequecy = 63;
+                    object.frequency = 63;
                     break;
                 case 2:
-                    object.frequecy = 125;
+                    object.frequency = 125;
                     break;
                 case 3:
-                    object.frequecy = 250;
+                    object.frequency = 250;
                     break;
                 case 4:
-                    object.frequecy = 500;
+                    object.frequency = 500;
                     break;
                 case 5:
-                    object.frequecy = 1000;
+                    object.frequency = 1000;
                     break;
                 case 6:
-                    object.frequecy = 2000;
+                    object.frequency = 2000;
                     break;
                 case 7:
-                    object.frequecy = 4000;
+                    object.frequency = 4000;
                     break;
                 case 8:
-                    object.frequecy = 8000;
+                    object.frequency = 8000;
                     break;
                 case 9:
-                    object.frequecy = 16000;
+                    object.frequency = 16000;
                     break;
                 default:
                     break;
@@ -129,6 +129,7 @@
     copy.animation3D = _animation3D;
     copy.customAnimate = _customAnimate;
     copy.customOutAnimate = _customOutAnimate;
+    copy.customComboAnimate = _customComboAnimate;
     copy.customOtherAnimate = _customOtherAnimate;
     copy.isSelfieSegmentation = _isSelfieSegmentation;
     copy.animate = _animate;
@@ -153,6 +154,9 @@
     copy.autoSegmentImageUrl = _autoSegmentImageUrl;
     copy.animationType = _animationType;
     copy.animationIndex= _animationIndex;
+    copy.animationComboIndex = _animationComboIndex;
+    copy.animationComboTimeRange = _animationComboTimeRange;
+    copy.animationComboType = _animationComboType;
     copy.transitionIndex = _transitionIndex;
     copy.transitionTypeIndex = _transitionTypeIndex;
     copy.chromaColor= _chromaColor;
@@ -328,7 +332,7 @@
     copy.eq = [NSMutableArray new];
     [_eq enumerateObjectsUsingBlock:^(EqObject * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         EqObject * newObject = [EqObject new];
-        newObject.frequecy = obj.frequecy;
+        newObject.frequency = obj.frequency;
         newObject.gain = obj.gain;
         [copy.eq addObject:newObject];
     }];
@@ -634,6 +638,36 @@
         _animationOutType = _customOutAnimate.animateType;
         _customOutAnimate = filter;
         _animationOutTimeRange = filter.timeRange;
+    }
+    
+    if( _customComboAnimate )
+    {
+        if( _customComboAnimate.folderPath )
+            _customComboAnimate.folderPath = [VEHelp getFileURLFromAbsolutePath_str:_customComboAnimate.folderPath];
+        
+        CustomFilter * filter = [VEHelp getCustomFilterWithFolderPath:_customComboAnimate.folderPath currentFrameImagePath:nil atMedia:self];
+        filter.networkCategoryId = _customComboAnimate.networkCategoryId;
+        filter.networkResourceId = _customComboAnimate.networkResourceId;
+        if(_customOtherAnimate){
+            _customOtherAnimate.networkCategoryId = filter.networkCategoryId;
+            _customOtherAnimate.networkResourceId = filter.networkResourceId;
+        }
+        filter.timeRange = _customComboAnimate.timeRange;
+        filter.animateType = _customComboAnimate.animateType;
+        filter.cycleDuration = _customComboAnimate.cycleDuration;
+        
+        _animationType = _customComboAnimate.animateType;
+        _customComboAnimate = filter;
+        _animationComboTimeRange = filter.timeRange;
+    }
+    
+    if( _animation3D )
+    {
+        if( _animation3D.url )
+            _animation3D.url = [VEHelp getFileURLFromAbsolutePath:_animation3D.url.path];
+                
+        _animationComboType = CustomAnimationTypeCombined;
+        _animationComboTimeRange = _animation3D.timeRange;
     }
     
     if( _transition )
@@ -1047,4 +1081,34 @@
         err = nil;
     }
 }
+
+- (UIImage *)getStartTimeThumbImage {
+    if (_fileType == kFILEIMAGE && !_isGif) {
+        if (_thumbImage) {
+            return _thumbImage;
+        }
+        _thumbImage = [VEHelp getThumbImageWithUrl:_contentURL];
+        return _thumbImage;
+    }
+    if (_filtImagePatch.length == 0) {
+        if (_thumbImage) {
+            return _thumbImage;
+        }
+        _thumbImage = [VEHelp getThumbImageWithUrl:_contentURL];
+        return _thumbImage;
+    }
+    int number = 0;
+    if (_isGif) {
+        if (!CMTimeRangeEqual(_imageTimeRange, kCMTimeRangeZero)) {
+            number = CMTimeGetSeconds(_imageTimeRange.start);
+        }
+    }
+    else if (!CMTimeRangeEqual(_videoTrimTimeRange, kCMTimeRangeInvalid)) {
+        number = CMTimeGetSeconds(_videoTrimTimeRange.start);
+    }
+    NSString *path = [_filtImagePatch stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.png",number]];
+    UIImage *image = [UIImage imageWithContentsOfFile:path];
+    return image;
+}
+
 @end

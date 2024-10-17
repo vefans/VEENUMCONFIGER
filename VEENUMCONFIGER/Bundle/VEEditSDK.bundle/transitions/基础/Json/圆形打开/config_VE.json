@@ -1,0 +1,6 @@
+{
+	"ver" : 2,
+	"minCoreVer":120,
+	"name" : "CircleOpen",
+	"fragShader" : "frag.txt"
+}

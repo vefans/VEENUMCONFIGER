@@ -61,10 +61,10 @@
     
     self.textView.frame = self.bounds;
     self.placeholderTextView.frame = self.bounds;
-    if (_textAlignment == NSTextAlignmentCenter) {
-        _textView.contentInset = UIEdgeInsetsMake((_textView.frame.size.height - _textView.contentSize.height) / 2, 0, 0, 0);
-        _placeholderTextView.contentInset = UIEdgeInsetsMake((_placeholderTextView.frame.size.height - _placeholderTextView.contentSize.height) / 2, 0, 0, 0);
-    }
+//    if (_textAlignment == NSTextAlignmentCenter) {
+//        _textView.contentInset = UIEdgeInsetsMake((_textView.frame.size.height - _textView.contentSize.height) / 2, 0, 0, 0);
+//        _placeholderTextView.contentInset = UIEdgeInsetsMake((_placeholderTextView.frame.size.height - _placeholderTextView.contentSize.height) / 2, 0, 0, 0);
+//    }
 
 }
 //点击return 按钮 去掉

@@ -6,13 +6,25 @@
 @implementation VEWindow
 static char _tipsKey;
 static char _tapKey;
-
-+(void)showMessage:(NSString * _Nullable)text duration:(float)duration {
++(void)showMessage:(NSString * _Nullable)text duration:(float)duration{
+    [self showMessage:text duration:duration textColor:nil bgColor:nil];
+}
++(void)showMessageTwo:(NSString * _Nullable)text duration:(float)duration{
+    [self showMessage:text duration:duration textColor:UIColorFromRGB(0x000000) bgColor:UIColorFromRGB(0xffffff)];
+}
++(void)showMessage:(NSString * _Nullable)text duration:(float)duration textColor:(UIColor *)textColor bgColor:(UIColor *)bgColor{
     UITextView *tips = objc_getAssociatedObject(self, &_tipsKey);
     if(tips) {
         [self _dismiss];
         [NSThread sleepForTimeInterval:0.5f];
     }
+    if(!textColor){
+        textColor = UIColorFromRGB(0xffffff);
+    }
+    if(!bgColor){
+        bgColor = UIColorFromRGB(0x000000);
+    }
+    
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     CGFloat maxWidth = window.frame.size.width - 100;
     CGFloat maxHeight = window.frame.size.height - 200;
@@ -28,9 +40,8 @@ static char _tapKey;
     tips = [[UITextView alloc] initWithFrame:textFrame];
     tips.text = text;
     tips.font = font;
-    tips.textColor = [UIColor whiteColor];
-    tips.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
-    tips.layer.cornerRadius = 5;
+    tips.textColor = textColor;
+    tips.backgroundColor = [bgColor colorWithAlphaComponent:1.0];
     tips.editable = NO;
     tips.selectable = NO;
     tips.scrollEnabled = NO;
@@ -42,6 +53,7 @@ static char _tapKey;
     r.size.width = r.size.width + 20;
     r.origin.x = (window.frame.size.width - r.size.width)/2.0;
     tips.frame = r;
+    tips.layer.cornerRadius = r.size.height/2.0;
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handlerGuesture:)];
 //    [window addGestureRecognizer:tap];

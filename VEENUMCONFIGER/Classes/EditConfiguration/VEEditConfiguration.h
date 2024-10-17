@@ -201,7 +201,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) bool enableAlbumCamera;
 /**点击相册界面相机按钮回调
  */
-@property (nonatomic,copy,nullable) void(^clickAlbumCameraBlackBlock)(void);
+@property (nonatomic,copy,nullable) void(^clickAlbumCameraBackBlock)(void);
 
 /** 是否禁止编辑(default false)
  */

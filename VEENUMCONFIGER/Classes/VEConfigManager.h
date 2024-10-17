@@ -281,6 +281,8 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 @property(nonatomic,copy) VEFailedHandler failedHandler;
 @property(nonatomic,copy) VECloudBackingUpHandler cloudBackingUpHandler;
 @property(nonatomic,copy) VECloudBackupCompletionHandler cloudBackupCompletionHandler;
+@property(nonatomic, copy) void(^cloudDraftIDHandler) ( BOOL success,  NSString * cloudDraftID );
+@property(nonatomic, copy) void(^cloudDraftProgressHandler) (float  progress );
 @property(nonatomic,copy) VEPrepareExportHandler prepareExportHandler;
 @property(nonatomic,copy) VEEnterAdvancedEditHandler canEnterAdvancedEditHandler;
 @property(nonatomic,copy) VEExporTemplate  exporTemplate;   //导出模版

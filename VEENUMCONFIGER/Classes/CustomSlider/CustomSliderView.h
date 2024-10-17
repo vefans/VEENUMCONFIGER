@@ -21,7 +21,15 @@
 
 - (void)customDoubleSliderChangeValue:(float)value state:(UIGestureRecognizerState)state isMinValue:(BOOL)isMinValue;
 
+- (void)customDoubleSliderChangeMiddleTimeRange:(CMTimeRange)timeRange state:(UIGestureRecognizerState)state;
+
 @end
+
+typedef NS_ENUM(NSInteger, CustomDoubleSliderTyep){
+    CustomDoubleSliderTyep_Left,
+    CustomDoubleSliderTyep_Right,
+    CustomDoubleSliderTyep_Middle,
+};
 
 @interface CustomDoubleSlider : UIView
 
@@ -46,9 +54,14 @@
 @property (nonatomic,strong)UIColor *maxTintColor;
 
 /**
- 设置 中间 颜色
+ 设置主轨道颜色DBAA31
  */
 @property (nonatomic,strong)UIColor *mainTintColor;
+
+/**
+ 设置中间轨道颜色，默认为UIColorFromRGB(0xdead37)
+ */
+@property (nonatomic,strong)UIColor *middleTintColor;
 
 /**
  是否显示数值，默认为YES
@@ -80,6 +93,15 @@
 @property (nonatomic,assign)CGFloat currentMaxValue;
 
 /**
+ 是否显示中间轨道，默认为NO
+ */
+@property (nonatomic,assign) BOOL isShowMiddleTrack;
+/**
+ 当前中间时间范围
+ */
+@property (nonatomic,assign)CMTimeRange currentMiddelTimeRange;
+
+/**
  显示 min 滑块
  */
 @property (nonatomic,strong)UIImageView *minThumbImageView;
@@ -88,6 +110,16 @@
  显示 max 滑块
  */
 @property (nonatomic,strong)UIImageView *maxThumbImageView;
+
+/**
+ 显示中间左边滑块
+ */
+@property (nonatomic,strong)UIImageView *middleLeftThumbImageView;
+
+/**
+ 显示中间右边滑块
+ */
+@property (nonatomic,strong)UIImageView *middleRightThumbImageView;
 
 /**
  min 滑块图片，默认为nil
@@ -114,6 +146,12 @@
  */
 @property (nonatomic,copy)NSString * unit;
 
+@property (nonatomic, assign) CustomDoubleSliderTyep currentType;
+
 @property (nonatomic, weak) id<CustomDoubleSliderDelegate> delegate;
+
+- (void)showMinView;
+- (void)showMaxView;
+- (void)showMiddleView;
 
 @end

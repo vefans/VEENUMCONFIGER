@@ -149,7 +149,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) float                          cameraMV_MaxVideoDuration;
 /** 从相机进入相册
  */
-@property (nonatomic,copy,nonnull) void(^cameraEnterPhotoAlbumCallblackBlock)(void);
+@property (nonatomic,copy,nonnull) void(^cameraEnterPhotoAlbumCallbackBlock)(void);
 
 
 /** 是否隐藏相机进入相册按钮

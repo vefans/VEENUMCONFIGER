@@ -37,11 +37,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UILabel *trimTimeLabel;
 
 - (instancetype)initWithFrame:(CGRect)frame player:(VECore *)player minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration;
-
+- (instancetype)initWithFrame:(CGRect)frame player:(VECore *)player minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration thumbImage:(UIImage *)thumbImage;
 @property (nonatomic,weak) id <VECutVideoRangeSliderDelegate> delegate;
 @property (nonatomic, assign) CGFloat progress;
 @property (nonatomic, assign) CGFloat startTime;
 @property (nonatomic, assign) CGFloat durationTime;
+@property (nonatomic, strong) UIImage *thumbImage;
 
 @end
 

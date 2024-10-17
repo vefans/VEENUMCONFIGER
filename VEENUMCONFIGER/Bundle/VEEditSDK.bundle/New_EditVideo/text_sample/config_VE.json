@@ -1,0 +1,46 @@
+﻿{
+    "ver":1,
+    "type": 0,
+    "centerX": 0.3781,
+    "centerY": 0.8222,
+    "width": 156,
+    "height": 40, 
+    "stretchability": 1,
+    "singleLine":1,
+    "borderPadding": [
+           2.0,
+           2.0,
+           2.0,
+           2.0
+             ],
+    "textPadding": [
+		6,
+		6,
+		6,
+		6
+            ],
+    "name": "text_sample",
+    "textContent":"请输入内容...",
+    "textFont":"MicrosoftYaHei",
+    "textColor": [
+		255,
+		255,
+		255
+	],
+   "strokeColor": [
+		225,
+		225,
+		225
+	],
+    "strokeWidth":0,
+    "frameArray": [
+                 {"time":0,"pic":0}
+                 ],
+    
+    "timeArray": [{
+                 "beginTime": 0.0,
+		 "endTime": 1.3 
+                 }
+                 ]
+  
+}

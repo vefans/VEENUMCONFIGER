@@ -1,0 +1,12 @@
+{
+	"ver" : 2,
+	"minCoreVer":120,
+	"name" : "Displacement",
+	"fragShader" : "frag.txt",
+    
+    "textureParams":[{
+        "paramName": "displacementMap",
+        "source": "Displacement.png"
+    }
+    ]
+}

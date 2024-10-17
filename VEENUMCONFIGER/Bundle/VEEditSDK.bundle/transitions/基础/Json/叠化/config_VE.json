@@ -1,0 +1,6 @@
+{
+	"ver": 2,
+	"minCoreVer": 124,
+	"name": "Fade",
+	"fragShader": "frag.txt"
+}

@@ -1534,9 +1534,9 @@
 "No fonts in collection yet. Long press font cover/to add local fonts for local collection." = "暂无收藏的字体，长按字体封面/添加本地字体可进行本地收藏";
 "No templates in collection yet." = "暂无收藏的模板";
 "Import font" = "导入字体";
-"Collection" = "收藏";
-"Collect" = "收藏";
-"Collected" = "已收藏";
+"Favorites" = "收藏";
+"Favorite" = "收藏";
+"Favorited" = "已收藏";
 "Collection canceled" = "已取消收藏";
 "Collection successful" = "收藏成功";
 "By uploading, you confirm that the font can be used for commercial purposes and does not infringe any third-party rights." = "上传即表示你确认该字体可用于商业目的且未侵犯任何三方权利。";
@@ -1560,7 +1560,6 @@
 "Search language" = "输入搜索的语种";
 "Template volume" = "模板原声";
 "Music：" = "配乐：";
-"Delete" = "删除";
 "Music volume" = "配乐音量";
 "Please select a text" = "请选择一段文本";
 "Keep one media at least" = "至少保留一个媒体素材";
@@ -1676,7 +1675,7 @@
 "Music" = "音乐";
 "Sound Effects" = "音效";
 "Import Music" = "导入音乐";
-"Favorite" = "收藏";
+"Favorites" = "收藏";
 "Link Download" = "链接下载";
 "Extract" = "提取音乐";
 "From Files" = "来自文件";
@@ -1772,3 +1771,29 @@
 "AI create image" = "AI生图";
 "Apply to all texts" = "应用到所有字幕";
 "Video downloading... %.f%%" = "视频下载中... %.f%%";
+"Animation In and Out and Loop can be applied at the same time." = "出入场动画与循环动画已支持同时生效";
+"Animation In and Out and Combo can be applied at the same time." = "出入场动画与组合动画已支持同时生效";
+
+"Tile" = "平铺";
+"Templates" = "模板";
+"Single line" = "单行";
+"Single" = "单个";
+"Distance" = "间距";
+"Misalign" = "错位";
+"Single line watermark does not support adding animation." = "单行水印不支持添加动画";
+"Full screen watermark does not support adding animation." = "全屏水印不支持添加动画";
+"Select a watermark first." = "请先选中一款水印";
+"This is a required field." = "此为必选项";
+"Select a color first" = "先选中任意一个颜色哦～";
+"Styles" = "样式";
+"Shadow" = "阴影";
+"Font" = "字体";
+"Animation" = "动画";
+"50 recently used watermarks are saved here." = "这里展示你最近使用过的50个水印～";
+"Press and hold thumbnail to view the text details" = "长按缩略图可预览详细文字内容";
+"Top" = "置顶";
+"Character spacing" = "字间距";
+
+"Speech Text" = "文本朗读";
+"Extracted" = "提取声音";
+"Record" = "录音";

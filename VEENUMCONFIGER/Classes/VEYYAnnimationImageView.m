@@ -69,10 +69,12 @@
 -(void)setImageUrl:(NSURL *)imageUrl  atPlaceholder:( UIImage * ) placeholder{
     if( self.animatiionImageView == nil )
     {
-        self.animatiionImageView = [[YYAnimatedImageView alloc] initWithFrame:self.frame];
+        self.animatiionImageView = [[YYAnimatedImageView alloc] initWithFrame:self.bounds];
+        self.animatiionImageView.clipsToBounds = YES;
         self.animatiionImageView.contentMode = self.contentMode;
         [self addSubview:self.animatiionImageView];
     }
+    self.animatiionImageView.frame = self.bounds;
     if( _isRelease )
     {
         [self.animatiionImageView yy_cancelCurrentImageRequest];
@@ -99,12 +101,13 @@
 //       && self->_isRelease
        )
     {
-        [self.animatiionImageView yy_setImageWithURL:nil placeholder:nil];
+//        [self.animatiionImageView yy_setImageWithURL:nil placeholder:nil];
+        self.animatiionImageView.image = nil;
         [self.animatiionImageView yy_cancelCurrentImageRequest];
         [self.animatiionImageView removeFromSuperview];
         self.animatiionImageView = nil;
-        [[YYWebImageManager sharedManager].cache.memoryCache removeAllObjects];
-        [[YYWebImageManager sharedManager].cache.diskCache removeAllObjects];
+//        [[YYWebImageManager sharedManager].cache.memoryCache removeAllObjects];
+//        [[YYWebImageManager sharedManager].cache.diskCache removeAllObjects];
     }
 }
 +( void )YYWebImageMarnager_RemoveAllObjects

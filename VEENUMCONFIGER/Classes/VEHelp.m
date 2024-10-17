@@ -718,7 +718,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                                            context:nil].size;
     return sizeToFit.width;
 }
-+ (float)widthForString:(NSString *)value andHeight:(float)height font:(UIFont*)fontSize;
++ (float)widthForString:(NSString *)value andHeight:(float)height font:(UIFont*)fontSize
 {
     CGSize sizeToFit = [value boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, height)
                                            options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading
@@ -797,7 +797,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     // 目前已知8.0.0 ~ 8.0.2系统，拍照后的图片会保存在最近添加中
     if (version >= 800 && version <= 802) {
         return ((PHAssetCollection *)metadata).assetCollectionSubtype == PHAssetCollectionSubtypeSmartAlbumRecentlyAdded;
-    } else {
+    }
+//    else if (version >= 180) {//iOS18
+//        return ((PHAssetCollection *)metadata).assetCollectionSubtype == PHAssetCollectionSubtypeAlbumRegular;
+//    }
+    else {
         return ((PHAssetCollection *)metadata).assetCollectionSubtype == PHAssetCollectionSubtypeSmartAlbumUserLibrary;
     }
 }
@@ -936,43 +940,69 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 //从URL获取缩率图照片
 + (UIImage *)getThumbImageWithUrl:(NSURL *)url{
-    if([self isSystemPhotoUrl:url]){
-        return [self getAlbumThumbnailImage:url maxSize:(100 * [UIScreen mainScreen].scale)];
+    UIImage *image = nil;
+    if([self isSystemPhotoUrl:url]){//[self isSystemPhotoUrl:url]
+        image = [VEHelp getAlbumThumbnailImage:url maxSize:(100 * [UIScreen mainScreen].scale)];
     }else{
         if([self isImageUrl:url]){
             NSData *imagedata = [NSData dataWithContentsOfURL:url];
-            UIImage *image = [UIImage imageWithData:imagedata];
-            if (MIN(image.size.width, image.size.height) > IMAGE_MAX_SIZE_WIDTH) {
-                float scale;
-                if (image.size.width >= image.size.height) {
-                    scale = IMAGE_MAX_SIZE_WIDTH / image.size.width;
-                }else {
-                    scale = IMAGE_MAX_SIZE_WIDTH / image.size.height;
-                }
-                image = [self scaleImage:image toScale:(scale*(480.0/1080.0))];
-            }
-            image = [self fixOrientation:image];
-            return image;//[UIImage imageWithContentsOfFile:url.path];
+            image = [UIImage imageWithData:imagedata];
+            imagedata =nil;
         }else{
-            UIImage *image = [VEHelp imageWithWebP:url.path error:nil];
-            if( !image )
-                return [self assetGetThumImage:0.5 url:url urlAsset:nil];
-            else{
-                if (MIN(image.size.width, image.size.height) > IMAGE_MAX_SIZE_WIDTH) {
-                    float scale;
-                    if (image.size.width >= image.size.height) {
-                        scale = IMAGE_MAX_SIZE_WIDTH / image.size.width;
-                    }else {
-                        scale = IMAGE_MAX_SIZE_WIDTH / image.size.height;
-                    }
-                    image = [self scaleImage:image toScale:(scale*(480.0/1080.0))];
-                }
-                image = [self fixOrientation:image];
-                return image;//[UIImage imageWithContentsOfFile:url.path];
-            }
+            image = [self assetGetThumImage:0.5 url:url urlAsset:nil];
         }
     }
+    
+    if ( MAX(image.size.width, image.size.height) > 250.0 ) {
+        float scale;
+        if (image.size.width >= image.size.height) {
+            scale = 250.0 / image.size.width;
+        }else {
+            scale = 250.0 / image.size.height;
+        }
+        image = [self scaleImage:image toScale:scale];
+    }
+    image = [self fixOrientation:image];
+    return image;//[UIImage imageWithContentsOfFile:url.path];
 }
+//+ (UIImage *)getThumbImageWithUrl:(NSURL *)url{
+//    if([self isSystemPhotoUrl:url]){
+//        return [self getAlbumThumbnailImage:url maxSize:(100 * [UIScreen mainScreen].scale)];
+//    }else{
+//        if([self isImageUrl:url]){
+//            NSData *imagedata = [NSData dataWithContentsOfURL:url];
+//            UIImage *image = [UIImage imageWithData:imagedata];
+//            if (MIN(image.size.width, image.size.height) > IMAGE_MAX_SIZE_WIDTH) {
+//                float scale;
+//                if (image.size.width >= image.size.height) {
+//                    scale = IMAGE_MAX_SIZE_WIDTH / image.size.width;
+//                }else {
+//                    scale = IMAGE_MAX_SIZE_WIDTH / image.size.height;
+//                }
+//                image = [self scaleImage:image toScale:(scale*(480.0/1080.0))];
+//            }
+//            image = [self fixOrientation:image];
+//            return image;//[UIImage imageWithContentsOfFile:url.path];
+//        }else{
+//            UIImage *image = [VEHelp imageWithWebP:url.path error:nil];
+//            if( !image )
+//                return [self assetGetThumImage:0.5 url:url urlAsset:nil];
+//            else{
+//                if (MIN(image.size.width, image.size.height) > IMAGE_MAX_SIZE_WIDTH) {
+//                    float scale;
+//                    if (image.size.width >= image.size.height) {
+//                        scale = IMAGE_MAX_SIZE_WIDTH / image.size.width;
+//                    }else {
+//                        scale = IMAGE_MAX_SIZE_WIDTH / image.size.height;
+//                    }
+//                    image = [self scaleImage:image toScale:(scale*(480.0/1080.0))];
+//                }
+//                image = [self fixOrientation:image];
+//                return image;//[UIImage imageWithContentsOfFile:url.path];
+//            }
+//        }
+//    }
+//}
 
 + (UIImage *)getAlbumThumbnailImage:(NSURL *)url maxSize:(float)maxSize
 {
@@ -1284,7 +1314,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 {
     __block int currentFileIndex = progressIndex;
     __block int index = currentIndex;
-    CGFloat width = [UIScreen mainScreen].scale * 100;
+    CGFloat width = 150;
     if( [url.path containsString:@".webm"] )
     {
         WebmMediaInfo *mediaInfo  = [VECore getWebmInfo:url.path];
@@ -1725,7 +1755,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSString *configPath = nil;
     
     if ( [pExtension rangeOfString:@"zip"].location != NSNotFound ) {
+//        configPath = [NSString stringWithFormat:@"%@/config.json",[[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:name]];
+#ifdef Enable_Config_VE
+        configPath = [VEHelp getConfigPathWithFolderPath:[[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:name]];
+#else
         configPath = [NSString stringWithFormat:@"%@/config.json",[[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:name]];
+#endif
     }else if( ([pExtension rangeOfString:@"jpg"].location != NSNotFound)
              || ([pExtension rangeOfString:@"JPG"].location != NSNotFound)) {
         configPath = [NSString stringWithFormat:@"%@/%@.JPG",[path stringByDeletingLastPathComponent],name];
@@ -1746,6 +1781,26 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return [self imageWithContentOfFile:name];
 }
 
++(NSString *)getBundlePathWithName:( NSString * ) name
+{
+    NSBundle *bdl = [NSBundle mainBundle];
+    NSString * bundlePath = [bdl pathForResource:name ofType:@"bundle"];
+    if (bundlePath == nil) {
+        // 读取配置文件获取路径提示
+        NSString *configPath = [[NSBundle mainBundle] pathForResource:@"appConfig" ofType:@"plist"];
+        NSDictionary *configDict = [NSDictionary dictionaryWithContentsOfFile:configPath];
+        NSString *pathHint = configDict[@"bundlePathHint"];
+        if (pathHint) {
+            // 根据提示构建可能的路径
+            NSString *possiblePath = [NSString stringWithFormat:@"%@/%@.bundle", pathHint, name];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:possiblePath]) {
+                bundlePath = possiblePath;
+            }
+        }
+    }
+    return bundlePath;
+}
+
 + (NSString *) getEditResource:(NSString *)name type : (NSString *) type
 {
     NSBundle *bdl = [NSBundle bundleForClass:self.class];
@@ -1753,7 +1808,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if( bundlePath == nil )
     {
         bdl = [NSBundle mainBundle];
-        bundlePath = [bdl.resourcePath stringByAppendingPathComponent:@"VEEditSDK.bundle"];
+//        bundlePath = [bdl.resourcePath stringByAppendingPathComponent:@"VEEditSDK.bundle"];
+        bundlePath =[VEHelp getBundlePathWithName:@"VEEditSDK"];
     }
     NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
     return [bundle pathForResource:name ofType:type];
@@ -1767,7 +1823,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if( bundlePath == nil )
     {
         bdl = [NSBundle mainBundle];
-        bundlePath = [bdl.resourcePath stringByAppendingPathComponent:@"VideoRecord.bundle"];
+//        bundlePath = [bdl.resourcePath stringByAppendingPathComponent:@"VideoRecord.bundle"];
+        bundlePath =  [bdl pathForResource: @"VideoRecord" ofType :@"bundle"];
     }
     NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
     return [bundle pathForResource:name ofType:type];
@@ -1812,7 +1869,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         path = [path stringByAppendingPathComponent:folderName];
     }
     
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     //    CustomFilter *customFilter = [[CustomFilter alloc] init];
     customFilter.folderPath = path;
     
@@ -3580,7 +3642,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (MaskObject *)getMaskWithName:(NSString *)maskName
 {
     NSString *path = [[self getEditBundle] pathForResource:[NSString stringWithFormat:@"/New_EditVideo/mask/Json/%@", maskName] ofType:nil];
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
     NSMutableDictionary *configDic = [self objectForData:jsonData];
     jsonData = nil;
@@ -3666,7 +3733,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (path.pathExtension.length > 0) {
         return VEMaskType_SHAPE;
     }
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+    path = [configPath stringByDeletingLastPathComponent];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     if (![[NSFileManager defaultManager] fileExistsAtPath:configPath]) {
         for (NSString *fileName in [[NSFileManager defaultManager] enumeratorAtPath:path].allObjects) {
             if ([fileName.pathExtension isEqualToString:@"json"] && ![fileName containsString:@"/._"]) {
@@ -3721,7 +3794,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         
         return mask;
     }
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+    path = [configPath stringByDeletingLastPathComponent];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     if (![[NSFileManager defaultManager] fileExistsAtPath:configPath]) {
         for (NSString *fileName in [[NSFileManager defaultManager] enumeratorAtPath:path].allObjects) {
             if ([fileName.pathExtension isEqualToString:@"json"]) {
@@ -3815,7 +3894,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 + (MaskObject *)getMaskShapeWithPath:(NSString *)path {
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+    path = [configPath stringByDeletingLastPathComponent];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     if (![[NSFileManager defaultManager] fileExistsAtPath:configPath]) {
         for (NSString *fileName in [[NSFileManager defaultManager] enumeratorAtPath:path].allObjects) {
             if ([fileName.pathExtension isEqualToString:@"json"]) {
@@ -3841,7 +3926,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 + (NSString *)getConfigPathWithFolderPath:(NSString *)folderPath {
-    NSString *configPath;
+    NSString *configPath = nil;
     NSFileManager *fm = [NSFileManager defaultManager];
     NSMutableArray *files = [NSMutableArray arrayWithArray:[fm contentsOfDirectoryAtPath:folderPath error:nil]];
     if ([files containsObject:@"__MACOSX"]) {
@@ -3861,6 +3946,25 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     configPath = [folderPath stringByAppendingPathComponent:@"config.json"];
     
+#ifdef Enable_Config_VE
+#ifdef Enable_Config_VE_Nil
+    if( ![[NSFileManager defaultManager] fileExistsAtPath:configPath] )
+#endif
+    {
+        NSString * configPath_VE = [folderPath stringByAppendingPathComponent:@"config_VE.json"];
+        if( [[NSFileManager defaultManager] fileExistsAtPath:configPath_VE] )
+        {
+            configPath = configPath_VE;
+        }
+    }
+#endif
+
+    NSLog(@"config_VE: %@", configPath);
+    
+    if( configPath == nil )
+    {
+        configPath = @"";
+    }
     return configPath;
 }
 
@@ -4137,6 +4241,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 +(CustomFilter *)copyCustomCaption:( CustomFilter * ) Animate atCpation:( Caption * ) caption
 {
+    if (!Animate) {
+        return nil;
+    }
     NSString *folderPath = Animate.folderPath;
     CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:folderPath currentFrameImagePath:nil caption:caption];
     animate.timeRange = Animate.timeRange;
@@ -4151,6 +4258,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 +(CustomFilter *)copyCustomCaptionEx:( CustomFilter * ) Animate atCpationItem:( CaptionItem * ) item
 {
+    if (!Animate) {
+        return nil;
+    }
     NSString *folderPath = Animate.folderPath;
     CustomFilter *animate = [VEHelp getSubtitleAnimation:nil categoryId:nil atAnimationPath:folderPath  atCaptionItem:item];
     animate.timeRange = Animate.timeRange;
@@ -4162,8 +4272,28 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return animate;
 }
 
++ (CustomFilter *)copyStickerAnimate:(CustomFilter *)Animate atCaption:(CaptionEx *)caption
+{
+    if (!Animate) {
+        return nil;
+    }
+    CustomFilter *animate = [[CustomFilter alloc] init];
+    animate.animateType = Animate.animateType;
+    [VEHelp getStickerAnimation:Animate.folderPath atCaption:caption atCustomFiler:animate];
+    animate.timeRange = Animate.timeRange;
+    animate.cycleDuration = Animate.cycleDuration;
+    animate.networkCategoryId = Animate.networkCategoryId;
+    animate.networkResourceId = Animate.networkResourceId;
+    animate.animateType = Animate.animateType;
+    
+    return animate;
+}
+
 +(CustomFilter *)copyCustomMediaAsset:( CustomFilter * ) Animate atMedia:( MediaAsset * ) asset
 {
+    if (!Animate) {
+        return nil;
+    }
     NSString *folderPath = Animate.folderPath;
     CustomFilter *animate = [VEHelp getCustomFilterWithFolderPath:folderPath currentFrameImagePath:nil  atMedia:asset];
     animate.timeRange = Animate.timeRange;
@@ -4375,7 +4505,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath caption:(Caption *)caption
 {
+//    NSString *configPath = [folderPath stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:folderPath];
+#else
     NSString *configPath = [folderPath stringByAppendingPathComponent:@"config.json"];
+#endif
     CustomFilter *customFilter = [[CustomFilter alloc] init];
     
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
@@ -4697,7 +4832,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     apngData = nil;
     apngImage = nil;
     
+//    NSString *jsonPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *jsonPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *jsonPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     unlink([jsonPath UTF8String]);
     NSString *jsonStr = [VEHelp objectToJson:jsonDic];
     if (jsonStr.length > 0) {
@@ -6203,7 +6343,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 +(CustomFilter *)getAnimateCustomFilter:(NSString *) path
 {
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     CustomFilter * customFilter = [CustomFilter new];
     
     customFilter.folderPath = path;
@@ -6885,7 +7030,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 +(NSDictionary *)getCaptionConfig_Dic:( NSString * ) configPath
 {
+//    NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+#ifdef Enable_Config_VE
+    NSString *path = [VEHelp getConfigPathWithFolderPath:[NSString stringWithFormat:@"%@",configPath]];
+#else
     NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+#endif
     NSFileManager *manager = [[NSFileManager alloc] init];
     if(![manager fileExistsAtPath:path]){
         NSLog(@"nohave");
@@ -6907,7 +7057,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 +(Caption *)getCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atType:(NSInteger) captionType
 {
+//    NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+#ifdef Enable_Config_VE
+    NSString *path = [VEHelp getConfigPathWithFolderPath:[NSString stringWithFormat:@"%@",configPath]];
+#else
     NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+#endif
     NSFileManager *manager = [[NSFileManager alloc] init];
     if(![manager fileExistsAtPath:path]){
         NSLog(@"nohave");
@@ -7717,7 +7872,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 + (NSString *)getTransitionPath:(NSString *)typeName itemName:(NSString *)itemName {
+//    NSString *path = [[[[kLocalTransitionFolder stringByAppendingPathComponent:typeName] stringByAppendingPathComponent:@"Json"] stringByAppendingPathComponent:itemName] stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *path = [VEHelp getConfigPathWithFolderPath:[[[kLocalTransitionFolder stringByAppendingPathComponent:typeName] stringByAppendingPathComponent:@"Json"] stringByAppendingPathComponent:itemName]];
+#else
     NSString *path = [[[[kLocalTransitionFolder stringByAppendingPathComponent:typeName] stringByAppendingPathComponent:@"Json"] stringByAppendingPathComponent:itemName] stringByAppendingPathComponent:@"config.json"];
+#endif
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         path = nil;
     }
@@ -7861,6 +8021,37 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSString *uuid = [NSString stringWithString:(__bridge NSString*)uuid_string_ref];
     CFRelease(uuid_string_ref);
     return uuid;
+}
+
++(void)adjCaptionSubtitle_FontSize:( CaptionEx * ) captionSubtitle atTemplateSubtitleEx:( VECoreTemplateSubtitleEx * ) templateSubtitleEx atVideoSize:( CGSize  ) videoSize
+{
+    captionSubtitle.scale = templateSubtitleEx.scale;
+    [captionSubtitle.texts enumerateObjectsUsingBlock:^(CaptionItem * _Nonnull obj1, NSUInteger idx, BOOL * _Nonnull stop) {
+        float fontSize = templateSubtitleEx.wordItem[idx].fontSize/100.0*( videoSize.width * 0.58 );
+        obj1.fontSize = fontSize;
+    }];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:captionSubtitle.imageFolderPath];
+#else
+    NSString *configPath = [captionSubtitle.imageFolderPath stringByAppendingPathComponent:@"config.json"];
+#endif
+    NSData *data = [[NSData alloc] initWithContentsOfFile:configPath];
+    if(data){
+        NSError *error = nil;
+        NSMutableDictionary *configDic = [NSJSONSerialization JSONObjectWithData:data
+                                                                         options:NSJSONReadingMutableContainers
+                                                                           error:&error];
+        if (configDic) {
+            int imageW = [configDic[@"width"] intValue];
+            int imageH = [configDic[@"height"] intValue];
+            captionSubtitle.originalSize = CGSizeMake(imageW / videoSize.width, imageH / videoSize.height);
+        }
+    }
+    
+    if( (captionSubtitle.isStretch == false) && ( templateSubtitleEx.pipType != VEPIPType_WordTemplate ) )
+    {
+        captionSubtitle.scale = templateSubtitleEx.showRectF.size.width/captionSubtitle.originalSize.width;
+    }
 }
 
 + (void)refreshVeCoreSDK:(VECore *)veCoreSDK
@@ -8234,7 +8425,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     }
                 }];
                 
+//                NSString *configPath = [caption.imageFolderPath stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+                NSString *configPath = [VEHelp getConfigPathWithFolderPath:caption.imageFolderPath];
+#else
                 NSString *configPath = [caption.imageFolderPath stringByAppendingPathComponent:@"config.json"];
+#endif
                 NSData *data = [[NSData alloc] initWithContentsOfFile:configPath];
                 if(data){
                     NSError *error = nil;
@@ -8613,6 +8809,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (templateInfo.subtitleExs.count > 0) {
         [templateInfo.subtitleExs enumerateObjectsUsingBlock:^(VECoreTemplateSubtitleEx * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             CaptionEx *caption = [self getCaptionExWithTemplateSubtitleEx:obj folderPath:folderPath videoSize:templateInfo.size];
+            //MARK: 2024.10.14 字号归一化处理
+            if( templateInfo.ver >= 8 )
+            {
+                [VEHelp adjCaptionSubtitle_FontSize:caption atTemplateSubtitleEx:obj atVideoSize:templateInfo.size];
+            }
+//            else{
+//                [caption.texts enumerateObjectsUsingBlock:^(CaptionItem * _Nonnull obj1, NSUInteger idx, BOOL * _Nonnull stop) {
+//                    obj1.fontSize = 0;
+//                }];
+//            }
             if (caption) {
                 [captionExs addObject:caption];
             }
@@ -8622,6 +8828,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (templateInfo.speechSubtitles.count > 0) {
         [templateInfo.speechSubtitles enumerateObjectsUsingBlock:^(VECoreTemplateSubtitleEx * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             CaptionEx *caption = [self getCaptionExWithTemplateSubtitleEx:obj folderPath:folderPath videoSize:templateInfo.size];
+            //MARK: 2024.10.14 字号归一化处理
+            if( templateInfo.ver >= 8 )
+            {
+                [VEHelp adjCaptionSubtitle_FontSize:caption atTemplateSubtitleEx:obj atVideoSize:templateInfo.size];
+            }
+//            else{
+//                [caption.texts enumerateObjectsUsingBlock:^(CaptionItem * _Nonnull obj1, NSUInteger idx, BOOL * _Nonnull stop) {
+//                    obj1.fontSize = 0;
+//                }];
+//            }
             if (caption) {
                 caption.type = CaptionExTypeSpeech;
                 [captionExs addObject:caption];
@@ -8635,6 +8851,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         float scaleValue = ((templateInfo.size.width > templateInfo.size.height)?templateInfo.size.width/videoRect.size.width:templateInfo.size.height/videoRect.size.height);
         [templateInfo.subtitlesTemplate enumerateObjectsUsingBlock:^(VECoreTemplateSubtitleEx * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             CaptionEx *caption = [obj getSubtitleWithFolderPath:folderPath videoSize:templateInfo.size];
+            //MARK: 2024.10.14 字号归一化处理
+            if( templateInfo.ver >= 8 )
+            {
+                [VEHelp adjCaptionSubtitle_FontSize:caption atTemplateSubtitleEx:obj atVideoSize:templateInfo.size];
+            }
+//            else{
+//                [caption.texts enumerateObjectsUsingBlock:^(CaptionItem * _Nonnull obj1, NSUInteger idx, BOOL * _Nonnull stop) {
+//                    obj1.fontSize = 0;
+//                }];
+//            }
             if (caption) {
                 caption.imageFolderPath = [VEHelp getFileURLFromAbsolutePath_str:caption.imageFolderPath];
                 if (caption.speechPath) {
@@ -8758,6 +8984,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     }];
                     textTemplate.keyFrameAnimate = caption.keyFrameAnimate;
                     textTemplate.speechPath = caption.speechPath;
+                    //MARK: 2024.10.14 字号归一化处理
+                    if( templateInfo.ver >= 8 )
+                    {
+                        [VEHelp adjCaptionSubtitle_FontSize:textTemplate atTemplateSubtitleEx:obj atVideoSize:templateInfo.size];
+                    }
+//                    else{
+//                        [textTemplate.texts enumerateObjectsUsingBlock:^(CaptionItem * _Nonnull obj1, NSUInteger idx, BOOL * _Nonnull stop) {
+//                            obj1.fontSize = 0;
+//                        }];
+//                    }
                     [captionExs addObject:textTemplate];
                 }
             }
@@ -8773,7 +9009,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 if (caption) {
                     if (caption.captionImage.imageFolderPath.length > 0) {
                         caption.captionImage.imageFolderPath = [VEHelp getFileURLFromAbsolutePath_str:caption.captionImage.imageFolderPath];
+//                        NSString *configPath = [caption.captionImage.imageFolderPath stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+                        NSString *configPath = [VEHelp getConfigPathWithFolderPath:caption.captionImage.imageFolderPath];
+#else
                         NSString *configPath = [caption.captionImage.imageFolderPath stringByAppendingPathComponent:@"config.json"];
+#endif
                         NSData *data = [[NSData alloc] initWithContentsOfFile:configPath];
                         if(data){
                             NSError *error = nil;
@@ -8852,7 +9093,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     caption.imageFolderPath = [VEHelp getFileURLFromAbsolutePath_str:caption.imageFolderPath];
                     caption.type = CaptionTypeNoText;
                     
+//                    NSString *configPath = [caption.imageFolderPath stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+                    NSString *configPath = [VEHelp getConfigPathWithFolderPath:caption.imageFolderPath];
+#else
                     NSString *configPath = [caption.imageFolderPath stringByAppendingPathComponent:@"config.json"];
+#endif
                     NSData *data = [[NSData alloc] initWithContentsOfFile:configPath];
                     if(data){
                         NSError *error = nil;
@@ -9469,7 +9715,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 item.animateOut = animate;
             }
         }];
+//        NSString *configPath = [caption.imageFolderPath stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+        NSString *configPath = [VEHelp getConfigPathWithFolderPath:caption.imageFolderPath];
+#else
         NSString *configPath = [caption.imageFolderPath stringByAppendingPathComponent:@"config.json"];
+#endif
         NSData *data = [[NSData alloc] initWithContentsOfFile:configPath];
         if(data){
             NSError *error = nil;
@@ -9691,7 +9942,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         path = [path stringByAppendingPathComponent:folderName];
     }
     
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     CustomFilter *customFilter =[self getSubtitleAnmation:configPath atPath:path atCaptionItem:captionItem];
     customFilter.networkCategoryId = categoryId;
     customFilter.networkResourceId = itemDic[@"id"];
@@ -9761,7 +10017,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 +(NSDictionary *)getTextTemplateEffectConfig:( NSString * ) configPath
 {
     @try {
+//        NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+#ifdef Enable_Config_VE
+        NSString *path = [VEHelp getConfigPathWithFolderPath:[NSString stringWithFormat:@"%@",configPath]];
+#else
         NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+#endif
         NSFileManager *manager = [[NSFileManager alloc] init];
         if(![manager fileExistsAtPath:path]){
             NSLog(@"nohave");
@@ -9789,7 +10050,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 +(CaptionEx *)getTextTemplateCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atName:(NSString *) name
 {
     @try {
+//        NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+        NSString *path = [VEHelp getConfigPathWithFolderPath:[NSString stringWithFormat:@"%@",configPath]];
+#else
         NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingPathComponent:@"config.json"];
+#endif
         NSFileManager *manager = [[NSFileManager alloc] init];
         if(![manager fileExistsAtPath:path]){
             NSLog(@"nohave");
@@ -9807,7 +10073,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 }
             }
             if (folderName.length > 0) {
+//                path = [[configPath stringByAppendingPathComponent:folderName] stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+                path = [VEHelp getConfigPathWithFolderPath:[configPath stringByAppendingPathComponent:folderName]];
+#else
                 path = [[configPath stringByAppendingPathComponent:folderName] stringByAppendingPathComponent:@"config.json"];
+#endif
             }
         }
         configPath = path.stringByDeletingLastPathComponent;
@@ -10572,7 +10843,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 {
     //    CustomFilter * advCustomFIlter = [[CustomFilter alloc] init];
     
+//    NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+#ifdef Enable_Config_VE
+    NSString *path = [VEHelp getConfigPathWithFolderPath:[NSString stringWithFormat:@"%@",configPath]];
+#else
     NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+#endif
     NSFileManager *manager = [[NSFileManager alloc] init];
     if(![manager fileExistsAtPath:path]){
         NSLog(@"nohave");
@@ -10630,7 +10906,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 {
     @try {
         {
+//            NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+#ifdef Enable_Config_VE
+            NSString *path = [VEHelp getConfigPathWithFolderPath:[NSString stringWithFormat:@"%@",configPath]];
+#else
             NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+#endif
             NSFileManager *manager = [[NSFileManager alloc] init];
             if(![manager fileExistsAtPath:path]){
                 NSLog(@"nohave");
@@ -10730,7 +11011,13 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 {
     @try {
         {
-            NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingFormat:@"/config.json"];
+//            NSString *path = [[NSString stringWithFormat:@"%@",configPath]  stringByAppendingFormat:@"/config.json"];
+#ifdef Enable_Config_VE
+            NSString  * path = [VEHelp getConfigPathWithFolderPath:configPath];
+#else
+            NSString *path = [[NSString stringWithFormat:@"%@",configPath]
+                              stringByAppendingFormat:@"/config.json"];
+#endif
             NSFileManager *manager = [[NSFileManager alloc] init];
             if(![manager fileExistsAtPath:path]){
                 NSLog(@"nohave");
@@ -10750,7 +11037,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     NSLog(@"json解析失败：%@",err);
                 }
                 CaptionItem * captionItem = [CaptionItem new];
-                
                 captionEx.identifier = [VEHelp geCaptionExSubtitleIdentifier];
                 if ([subtitleEffectConfig.allKeys containsObject:@"textRect"]) {
                     captionEx.imageFolderPath = [configPath stringByAppendingString:@"/"];
@@ -10784,7 +11070,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 captionEx.originalSize = CGSizeMake(w, h);
                 captionEx.imageName = subtitleEffectConfig[@"name"];
                 captionEx.scale = 1;
-                captionItem.fontSize = 0.0;
+//                captionItem.fontSize = 0.0;
                 {
                     int fx = 0,fy = 0,fw = 0,fh = 0;
                     NSArray *textPadding = subtitleEffectConfig[@"textPadding"];
@@ -10980,7 +11266,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 #pragma mark- 特效创建
 +(CustomMultipleFilter *)getCustomMultipleFilter:( NSDictionary * ) itemDic atPath:( NSString * ) path atTimeRange:( CMTimeRange ) timeRange atImage:( UIImage * ) FXFrameTexture atFXFrameTexturePath:( NSString * )  fXFrameTexturePath atEffectArray:( NSMutableArray * ) effectArray
 {
+//    NSString *itemConfigPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *itemConfigPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *itemConfigPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:itemConfigPath];
     NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
     jsonData = nil;
@@ -11770,7 +12061,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                                  timeRange:(CMTimeRange)timeRange
                    currentFrameTexturePath:(NSString *)currentFrameTexturePath
 {
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     CustomFilter *customFilter = [[CustomFilter alloc] init];
     
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
@@ -13004,7 +13300,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         return nil;
     }
     
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     CustomFilter *customFilter = [[CustomFilter alloc] init];
     if( typeIndex == 0 )
     {
@@ -13203,7 +13504,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         path = [path stringByAppendingPathComponent:folderName];
     }
     
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     CustomFilter *customFilter = [[CustomFilter alloc] init];
     if( typeIndex == 0 )
     {
@@ -13419,7 +13725,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         path = [path stringByAppendingPathComponent:folderName];
     }
     
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     CustomFilter *customFilter = [[CustomFilter alloc] init];
     if( typeIndex == 0 )
     {
@@ -13603,7 +13914,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         path = [path stringByAppendingPathComponent:folderName];
     }
     
-    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
+        NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     CustomFilter *customFilter = [[CustomFilter alloc] init];
     if( typeIndex == 0 )
     {
@@ -13804,7 +14120,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 + (CustomFilter *)getAnimationCustomFilterWithPath:(NSString *) path{
     
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     CustomFilter *customFilter = [[CustomFilter alloc] init];
     
     customFilter.folderPath = path;
@@ -14657,6 +14978,29 @@ static OSType help_inputPixelFormat(){
     return returnImage;
 }
 
+
+
+-(UIImage*)getImageFromRGBA:(GLubyte*)pixel width:(int)w height:(int)h
+{
+   
+    
+    int perPix = 4;
+    int width = w;
+    int height = h;
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef newContext = CGBitmapContextCreate(pixel, width, height, 8,width * perPix,colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    
+    CGImageRef frame = CGBitmapContextCreateImage(newContext);
+    UIImage* image = [UIImage imageWithCGImage:frame];
+    
+    CGImageRelease(frame);
+    CGContextRelease(newContext);
+    CGColorSpaceRelease(colorSpace);
+    return image;
+    
+}
+
 + (UIImage *)blurryImage:(UIImage *)image withBlurLevel:(CGFloat)blur {
     if (blur < 0.f || blur > 1.f) {
         blur = 0.5f;
@@ -14664,28 +15008,48 @@ static OSType help_inputPixelFormat(){
     int boxSize = (int)(blur * 100);
     boxSize = boxSize - (boxSize % 2) + 1;
     
-    CGImageRef img = image.CGImage;
+#if 1
+    //image to unsigned char*
+    int imageWidth = image.size.width;
+    int imageHeight = image.size.height;
+
+    CGImageRef cgImage = [image CGImage];
+
+    unsigned char* pPixel = (unsigned char*)calloc(1, (int)imageWidth*(int)imageHeight*4);
+    if(!pPixel)
+        return nil;
+    CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef imageContext = CGBitmapContextCreate(pPixel, imageWidth, imageHeight, 8, 4*imageWidth, genericRGBColorspace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+
+    CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, imageWidth, imageHeight), cgImage);
+
+    CGContextRelease(imageContext);
+    CGColorSpaceRelease(genericRGBColorspace);
     
+    //unsigned char to image
+    CGImageRef img = [self getImageFromRGBA:pPixel width:image.size.width height:image.size.height].CGImage;
+    free(pPixel);
+#else
+    CGImageRef img = image.CGImage;
+#endif
     vImage_Buffer inBuffer, outBuffer;
     vImage_Error error;
     
-    void *pixelBuffer;
+    void *pixelBuffer = malloc(CGImageGetBytesPerRow(img) * CGImageGetHeight(img));
+    if (pixelBuffer == NULL) {
+        NSLog(@"内存分配失败，无法创建像素缓冲区");
+        return nil;
+    }
     
     CGDataProviderRef inProvider = CGImageGetDataProvider(img);
     CFDataRef inBitmapData = CGDataProviderCopyData(inProvider);
-    CGColorSpaceRef colorSpace = CGImageGetColorSpace(img);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
     
     inBuffer.width = CGImageGetWidth(img);
     inBuffer.height = CGImageGetHeight(img);
     inBuffer.rowBytes = CGImageGetBytesPerRow(img);
-    
     inBuffer.data = (void*)CFDataGetBytePtr(inBitmapData);
-    
-    pixelBuffer = malloc(CGImageGetBytesPerRow(img) *
-                         CGImageGetHeight(img));
-    
-    if(pixelBuffer == NULL)
-        NSLog(@"No pixelbuffer");
     
     outBuffer.data = pixelBuffer;
     outBuffer.width = CGImageGetWidth(img);
@@ -14704,10 +15068,17 @@ static OSType help_inputPixelFormat(){
     
     
     if (error) {
-        NSLog(@"error from convolution %ld", error);
+        NSLog(@"模糊处理错误: %ld", error);
+        // 清理资源
+        free(pixelBuffer);
+        CFRelease(inBitmapData);
+        CGColorSpaceRelease(colorSpace);
+        return nil;
     }
-    
+
+
     //CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();//CGColorSpaceCreateDeviceRGB
+
     CGContextRef ctx = CGBitmapContextCreate(
                                              outBuffer.data,
                                              outBuffer.width,
@@ -14715,21 +15086,52 @@ static OSType help_inputPixelFormat(){
                                              8,
                                              outBuffer.rowBytes,
                                              colorSpace,
-                                             kCGImageAlphaNoneSkipLast);
+                                             kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
     CGImageRef imageRef = CGBitmapContextCreateImage (ctx);
     UIImage *returnImage = [UIImage imageWithCGImage:imageRef];
-    
+        
     //clean up
-    CGContextRelease(ctx);
-    CGColorSpaceRelease(colorSpace);
-    
+    if (ctx) {
+        CGContextRelease(ctx);
+    }
+    if (colorSpace) {
+        CGColorSpaceRelease(colorSpace);
+    }
     free(pixelBuffer);
-    CFRelease(inBitmapData);
-    
-    CGColorSpaceRelease(colorSpace);
-    CGImageRelease(imageRef);
-    
+    if (inBitmapData) {
+        CFRelease(inBitmapData);
+    }
+    if (imageRef) {
+        CGImageRelease(imageRef);
+    }
     return returnImage;
+}
+
++ (UIImage *)getBlurBgThumbImage:(VEMediaInfo *)file blurIntensity:(float)blurIntensity {
+    UIImage *thumbImage = [file getStartTimeThumbImage];
+#if 1
+    UIImage *blurredImage = [self blurryImage:thumbImage withBlurLevel:blurIntensity];
+#else
+    if (blurIntensity < 0 || blurIntensity > 1) {
+        blurIntensity = 0.5;
+    }
+    CIContext *context = [CIContext contextWithOptions:nil];
+    CIImage *inputImage = [CIImage imageWithCGImage:thumbImage.CGImage];
+    // 创建高斯模糊滤镜
+    CIFilter *blurFilter = [CIFilter filterWithName:@"CIGaussianBlur"];
+    [blurFilter setValue:inputImage forKey:kCIInputImageKey];
+    [blurFilter setValue:@(blurIntensity * 100) forKey:@"inputRadius"];
+    
+    // 获取输出图像
+    CIImage *outputImage = [blurFilter outputImage];
+    CGImageRef cgImage = [context createCGImage:outputImage fromRect:[inputImage extent]];
+    
+    // 创建并返回模糊后的UIImage
+    UIImage *blurredImage = [UIImage imageWithCGImage:cgImage];
+    CGImageRelease(cgImage);
+    
+#endif
+    return blurredImage;
 }
 
 + (BOOL)isVideoUrl:(NSURL *)url {
@@ -14747,11 +15149,21 @@ static OSType help_inputPixelFormat(){
     Particle * particle = [Particle new];
     
     
+//    NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
+#ifdef Enable_Config_VE
+    NSString *jsonPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
+#endif
     
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
     if(!jsonData){
+//        jsonPath = [NSString stringWithFormat:@"%@/file/config.json", path];
+#ifdef Enable_Config_VE
+        jsonPath = [VEHelp getConfigPathWithFolderPath:[NSString stringWithFormat:@"%@/file/", path]];
+#else
         jsonPath = [NSString stringWithFormat:@"%@/file/config.json", path];
+#endif
         jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
     }
     NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
@@ -14933,8 +15345,12 @@ static OSType help_inputPixelFormat(){
 
 + (NSMutableArray *)getCameraParticle:( NSString * ) path atFramePath:( NSString * ) framePath atSize:( CGSize ) size
 {
+//    NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
+#ifdef Enable_Config_VE
+    NSString *jsonPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
-    
+#endif
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
     NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
     jsonData = nil;
@@ -14957,7 +15373,12 @@ static OSType help_inputPixelFormat(){
         effectDic = obj;
     }
     else{
+//        NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
+#ifdef Enable_Config_VE
+        NSString *jsonPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
         NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
+#endif
         NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
         effectDic = [VEHelp objectForData:jsonData];
         jsonData = nil;
@@ -15037,7 +15458,12 @@ static OSType help_inputPixelFormat(){
     Particle * particle = nil;
     if( obj == nil )
     {
+//        NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
+#ifdef Enable_Config_VE
+        NSString *jsonPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
         NSString *jsonPath = [NSString stringWithFormat:@"%@/config.json", path];
+#endif
         NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
         NSMutableDictionary *effectDic = [VEHelp objectForData:jsonData];
         jsonData = nil;
@@ -15434,9 +15860,19 @@ static OSType help_inputPixelFormat(){
     }
     if (path.pathExtension.length == 0) {
         if (directoryName.length > 0) {
+//            jsonPath = [[path stringByAppendingPathComponent:directoryName] stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+            jsonPath = [VEHelp getConfigPathWithFolderPath:[path stringByAppendingPathComponent:directoryName]];
+#else
             jsonPath = [[path stringByAppendingPathComponent:directoryName] stringByAppendingPathComponent:@"config.json"];
+#endif
         }else {
+//            jsonPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+            jsonPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
             jsonPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
         }
     }else {
         jsonPath = path;
@@ -15525,9 +15961,19 @@ static OSType help_inputPixelFormat(){
     }
     
     if (directoryName.length > 0) {
+//        jsonPath = [[path stringByAppendingPathComponent:directoryName] stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+        jsonPath = [VEHelp getConfigPathWithFolderPath:[path stringByAppendingPathComponent:directoryName]];
+#else
         jsonPath = [[path stringByAppendingPathComponent:directoryName] stringByAppendingPathComponent:@"config.json"];
+#endif
     }else {
+//        jsonPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+        jsonPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
         jsonPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     }
     NSData *jsonData = [[NSData alloc] initWithContentsOfFile:jsonPath];
     NSDictionary *effectDic = [VEHelp objectForData:jsonData];
@@ -16020,18 +16466,34 @@ static OSType help_inputPixelFormat(){
 + (void) insertColorGradient:(UIView *)view colors:(NSMutableArray <UIColor *>*)colors{//左右渐变的背景
     
     @autoreleasepool {
-        NSMutableArray *cgColors = [NSMutableArray new];
-        for (int i = 0; i< colors.count; i++) {
-            [cgColors addObject:(id)colors[i].CGColor];
+        if ([view isKindOfClass:[UILabel class]]) {
+            for (CALayer *layer in view.superview.layer.sublayers) {
+               if ([layer isKindOfClass:[CAGradientLayer class]]) {
+                   [layer removeFromSuperlayer];
+               }
+           }
+        }else {
+            for (CALayer *layer in view.layer.sublayers) {
+               if ([layer isKindOfClass:[CAGradientLayer class]]) {
+                   [layer removeFromSuperlayer];
+               }
+           }
         }
-        [view.layer.sublayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
         CAGradientLayer * maskLayer;
         maskLayer = [CAGradientLayer layer];
-        maskLayer.colors = cgColors;
+        maskLayer.colors = colors;
         maskLayer.frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
         maskLayer.startPoint = CGPointMake(0, 0);
         maskLayer.endPoint = CGPointMake(1, 0);
-        [view.layer insertSublayer:maskLayer above:0];
+        if ([view isKindOfClass:[UILabel class]]) {
+            UILabel *label = (UILabel *)view;
+            maskLayer.frame = label.frame;
+            [label.superview.layer addSublayer:maskLayer];
+            maskLayer.mask = label.layer;
+            label.frame = maskLayer.bounds;
+        }else {
+            [view.layer insertSublayer:maskLayer above:0];
+        }
     }
 }
 
@@ -16048,6 +16510,24 @@ static OSType help_inputPixelFormat(){
         [colorArray addObject:color];
     }
     [colorArray insertObject:[self colorWithHexString:@"ffffff"] atIndex:0];
+    return colorArray;
+}
+
++ (NSMutableArray *)getBgColorList
+{
+    NSString *path = [[self getEditBundle] pathForResource:@"BgColorList.txt" ofType:@""];
+    NSString *content = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+    NSArray *list = [content componentsSeparatedByString:@"\r\n"];
+    NSMutableArray * colorArray = [NSMutableArray array];
+    for (int i = 0; i<list.count; i++) {
+        NSString *colorStr = list[i];
+        if (colorStr.length == 0) {
+            continue;
+        }
+        colorStr = [colorStr substringFromIndex:colorStr.length - 6];
+        UIColor *color = [self colorWithHexString:colorStr];
+        [colorArray addObject:color];
+    }
     return colorArray;
 }
 
@@ -16207,7 +16687,12 @@ static OSType help_inputPixelFormat(){
     if ([captionEx.captionImage.captionImagePath containsString:kCustomStickerFolder.lastPathComponent]) {
         path = [kCustomStickerFolder stringByAppendingPathComponent:file.filtImagePatch.lastPathComponent];
     }
+//    NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+    NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
     NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         PHFetchResult<PHAsset *> *result = [PHAsset fetchAssetsWithALAssetURLs:@[file.contentURL] options:nil];
         if (result.count > 0) {
@@ -18242,5 +18727,20 @@ static OSType help_inputPixelFormat(){
     }
     
     return substring;
+}
++ (void)unlink:(NSString *)path{
+    unlink([path UTF8String]);
+}
+
++(void)initCaptionExFontsize:( CaptionEx * ) captionSubtitle
+{
+//    text_sample
+//    text_vertical
+    if( (captionSubtitle.isStretch == true) && !( ([captionSubtitle.imageName isEqualToString:@"text_sample"]) || ([captionSubtitle.imageName isEqualToString:@"text_vertical"]) ) )
+    {
+        [captionSubtitle.texts enumerateObjectsUsingBlock:^(CaptionItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            obj.fontSize = 22.0;
+        }];
+    }
 }
 @end

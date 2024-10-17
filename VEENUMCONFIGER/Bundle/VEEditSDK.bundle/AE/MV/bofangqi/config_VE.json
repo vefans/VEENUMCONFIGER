@@ -1,0 +1,22 @@
+﻿{
+    "ver":1,
+    "name": "在路上",
+    "folderName": "ontheroad",
+    "music": {
+        "fileName": "music.mp3",
+        "begintime": 0,
+        "duration": 0
+    },
+    "middle":{
+      "effects": [
+                    {
+                      "filter": "mask",
+                      "fileName": "mask.mp4",
+                      "repeat":1,
+                      "begintime": 0.0,
+                      "duration": 12.05,
+                      "filterType": "video"
+                    }
+              ]
+    }
+  }

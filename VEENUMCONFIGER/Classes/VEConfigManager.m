@@ -21,47 +21,52 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
 //判断是否可以使用 html 抠图
 -(void)htmlSegmentation:( UIViewController * ) viewController
 {
-    @autoreleasepool {
-        PECore * imageCoreSDK = [[PECore alloc] initWithAPPKey:[VEConfigManager sharedManager].appKey
-                                             APPSecret:[VEConfigManager sharedManager].appSecret
-                                            LicenceKey:[VEConfigManager sharedManager].licenceKey
-                                                  size:CGSizeMake(1000, 1000)
-                                            resultFail:^(NSError *error) {
-            NSLog(@"initSDKError:%@", error.localizedDescription);
-        }];
-        WeakSelf(self)
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            StrongSelf(self);
-            __block PECore * segmentCoreSDK = imageCoreSDK;
-            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0); // 创建信号量，初始值为0
-            {
-                UIImage *image = [VEHelp imageWithContentOfFile:@"分享"];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [imageCoreSDK segmentation_ImageWithImageData:UIImagePNGRepresentation(image) atView:viewController.view atCancelBtn:nil atIsDebug:true atCompletionHandler:^(NSString *message, id messageBody) {
-                        if( [message isEqualToString:@"SegmentationImage"] )
-                        {;
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                segmentCoreSDK = nil;
-                            });
-                            dispatch_semaphore_signal(semaphore); // 发送信号量，标记请求完成
-                        }
-                        else if( [message isEqualToString:@"Progress"] )
-                        {
-                            NSLog(@"segmentation Image Progress: %.2f", [messageBody floatValue]);
-                        }
-                        else if( [message isEqualToString:@"Failure"] )
-                        {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                segmentCoreSDK = nil;
-                            });
-                            NSLog(@"segmentation Image Failure");
-                            [VEConfigManager sharedManager].isNoHtmlAutoSegmentImage = true;
-                            dispatch_semaphore_signal(semaphore); // 发送信号量，标记请求完成
-                        }
-                    }];
-                });
-            }
-        });
+    if (@available(iOS 16.0, *))
+    {
+        @autoreleasepool {
+            PECore * imageCoreSDK = [[PECore alloc] initWithAPPKey:[VEConfigManager sharedManager].appKey
+                                                         APPSecret:[VEConfigManager sharedManager].appSecret
+                                                        LicenceKey:[VEConfigManager sharedManager].licenceKey
+                                                              size:CGSizeMake(1000, 1000)
+                                                        resultFail:^(NSError *error) {
+                NSLog(@"initSDKError:%@", error.localizedDescription);
+            }];
+            WeakSelf(self)
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                StrongSelf(self);
+                __block PECore * segmentCoreSDK = imageCoreSDK;
+                dispatch_semaphore_t semaphore = dispatch_semaphore_create(0); // 创建信号量，初始值为0
+                {
+                    UIImage *image = [VEHelp imageWithContentOfFile:@"分享"];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [imageCoreSDK segmentation_ImageWithImageData:UIImagePNGRepresentation(image) atView:viewController.view atCancelBtn:nil atIsDebug:true atCompletionHandler:^(NSString *message, id messageBody) {
+                            if( [message isEqualToString:@"SegmentationImage"] )
+                            {;
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    segmentCoreSDK = nil;
+                                });
+                                dispatch_semaphore_signal(semaphore); // 发送信号量，标记请求完成
+                            }
+                            else if( [message isEqualToString:@"Progress"] )
+                            {
+                                NSLog(@"segmentation Image Progress: %.2f", [messageBody floatValue]);
+                            }
+                            else if( [message isEqualToString:@"Failure"] )
+                            {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    segmentCoreSDK = nil;
+                                });
+                                NSLog(@"segmentation Image Failure");
+                                [VEConfigManager sharedManager].isNoHtmlAutoSegmentImage = true;
+                                dispatch_semaphore_signal(semaphore); // 发送信号量，标记请求完成
+                            }
+                        }];
+                    });
+                }
+            });
+        }
+    }else{
+        [VEConfigManager sharedManager].isNoHtmlAutoSegmentImage = true;
     }
 }
 

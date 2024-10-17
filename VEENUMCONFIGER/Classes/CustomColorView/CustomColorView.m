@@ -114,7 +114,6 @@
         _sliderBgView.layer.cornerRadius = 6;
         _sliderBgView.layer.masksToBounds = YES;
         [self addSubview:_sliderBgView];
-//        [VEHelp insertColorGradient:_sliderBgView colors:self.colors];
         _moreColorSlider = [[VESlider alloc] initWithFrame:CGRectMake(CGRectGetMinX(_sliderBgView.frame), CGRectGetMinY(_sliderBgView.frame) - (30 - _sliderBgView.frame.size.height) / 2.0, CGRectGetWidth(_sliderBgView.frame), 30)];
         _moreColorSlider.minimumValue = 0.0;
         _moreColorSlider.maximumValue = 1.0;

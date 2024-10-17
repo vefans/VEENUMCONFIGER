@@ -206,7 +206,7 @@
     copy.minVideoDuration                       = _minVideoDuration;
     copy.maxVideoDuration                       = _maxVideoDuration;
     copy.enableAlbumCamera                      = _enableAlbumCamera;
-    copy.clickAlbumCameraBlackBlock             = _clickAlbumCameraBlackBlock;
+    copy.clickAlbumCameraBackBlock             = _clickAlbumCameraBackBlock;
     copy.isDisableEdit                          = _isDisableEdit;
     //片段编辑预设
     copy.enableTextTitle                 = _enableTextTitle;

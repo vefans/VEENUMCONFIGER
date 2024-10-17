@@ -262,6 +262,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSString *)getDeluxeLocalizedString:(NSString *)key;
 
 +(void)getStickerAnimation:( NSString * ) path atCaption:( Caption * ) caption atCustomFiler:( CustomFilter * ) customFilter;
++(void)adjCaptionSubtitle_FontSize:( CaptionEx * ) captionSubtitle atTemplateSubtitleEx:( VECoreTemplateSubtitleEx * ) templateSubtitleEx atVideoSize:( CGSize  ) videoSize;
 /**
  *  获取设备可用容量(G)
  */
@@ -347,6 +348,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 +(CustomFilter *)copyCustomCaption:( CustomFilter * ) Animate atCpation:( Caption * ) caption;
 +(CustomFilter *)copyCustomCaptionEx:( CustomFilter * ) Animate atCpationItem:( CaptionItem * ) item;
++(CustomFilter *)copyStickerAnimate:( CustomFilter * ) Animate atCaption:( CaptionEx * ) caption;
 +(CustomFilter *)copyCustomMediaAsset:( CustomFilter * ) Animate atMedia:( MediaAsset * ) asset;
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath atMedia:( id ) mediaOrFile;
 + (CustomFilter *)getCustomFilterWithFolderPath:(NSString *)folderPath currentFrameImagePath:(NSString *)currentFrameImagePath caption:(Caption *)caption;
@@ -653,6 +655,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (UIImage *)blurScreenCapture;
 +(UIImage *)boxblurImage:(UIImage *)image withBlurNumber:(CGFloat)blur;
 + (UIImage *)blurryImage:(UIImage *)image withBlurLevel:(CGFloat)blur;
++ (UIImage *)getBlurBgThumbImage:(VEMediaInfo *)file blurIntensity:(float)blurIntensity;
 + (UIImage *)scaleToSize:(UIImage *)img size:(CGSize)size;
 + (BOOL)isVideoUrl:(NSURL *)url;
 
@@ -706,6 +709,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 /**获取新的颜色列表
  */
 +(NSMutableArray *)getColorList;
++(NSMutableArray *)getBgColorList;
 +(NSMutableArray *)getGradientsColorList;
 
 #pragma mark- webm测试
@@ -846,4 +850,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSInteger)getTextByteLength:(NSString *)text encodingType:(CaptionTextEncodeType)encodeType;
 + (NSString *)getSubstring:(NSString *)fullString targetLength:(NSInteger)targetLength encodingType:(CaptionTextEncodeType)encodeType;
 + (NSString *)getSubstring:(NSString *)fullString targetRange:(NSRange)targetRange;
++ (void)unlink:(NSString *)path;
+
++(void)initCaptionExFontsize:( CaptionEx * ) captionSubtitle;
 @end

@@ -54,7 +54,13 @@
         _savePath = [_savePath stringByAppendingPathComponent:downloadTask.response.suggestedFilename];
     }
     [fileManager moveItemAtPath:location.path toPath:_savePath error:&error];
-    if(error){
+    NSError *underlyingError = error.userInfo[NSUnderlyingErrorKey];
+    NSInteger underlyingErrorCode = 0;
+    if ([underlyingError isKindOfClass:[NSError class]]) {
+        underlyingErrorCode = underlyingError.code;
+        NSLog(@"Underlying error code: %ld", (long)code);
+    }
+    if(error && underlyingErrorCode != 17){
         if(_FailBlock){
             _FailBlock(error);
         }

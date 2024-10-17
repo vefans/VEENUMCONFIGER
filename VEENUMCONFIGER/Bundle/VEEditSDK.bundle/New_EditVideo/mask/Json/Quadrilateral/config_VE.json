@@ -1,0 +1,127 @@
+{
+	"ver" : 2,
+	"minCoreVer":142,
+	"color" : [233, 4, 139, 0.6],
+	"name" : "maskQuadRangle",
+	"fragShader" : "frag.txt",
+	"vertShader": "vert.txt",
+	"uniformParams": [
+		{
+		"paramName": "center",
+		"type": "floatArray",
+		"frameArray": [
+			{
+				"time": 0.000,
+				"value": [0,0]
+			}]
+		},
+		{
+			"paramName": "size",
+			"type": "floatArray",
+			"frameArray": [
+				{
+					"time": 0.000,
+					"value": [0.5,0.5]
+				}
+			]
+		},
+		{
+			"paramName": "cornerRadius",
+			"type": "float",
+			"frameArray": [
+				{
+					"time": 0.000,
+					"value": 0.0
+				}]
+		},
+		{
+			"paramName": "degrees",
+			"type": "float",
+			"frameArray": [
+				{
+					"time": 0.000,
+					"value": 0
+				}]
+		},
+		{
+			"paramName": "featherStep",
+			"type": "float",
+			"frameArray": [
+				{
+					"time": 0.000,
+					"value": 0.0
+				}
+			]
+		},
+		{
+			"paramName": "invert",
+			"type": "float",
+			"frameArray": [
+				{
+					"time": 0.000,
+					"value": 0
+				}
+			]
+		},
+        {
+            "paramName": "edgeSize",
+            "type": "float",
+            "frameArray": [
+                {
+                    "time": 0.000,
+                    "value": 0.0
+                }
+            ]
+        },
+        {
+            "paramName": "edgeColor",
+            "type": "frameArray",
+            "frameArray": [
+                {
+                    "time": 0.000,
+                    "value": [0.0,0.0,0.0,1.0]
+                }
+            ]
+        },
+        {
+            "paramName": "topLeft",
+            "type": "floatArray",
+            "frameArray": [
+                {
+                    "time": 0.000,
+                    "value": [0.25,0.25]
+                }
+            ]
+        },
+        {
+            "paramName": "topRight",
+            "type": "floatArray",
+            "frameArray": [
+                {
+                    "time": 0.000,
+                    "value": [0.75,0.25]
+                }
+            ]
+        },
+        {
+            "paramName": "bottomRight",
+            "type": "floatArray",
+            "frameArray": [
+                {
+                    "time": 0.000,
+                    "value": [0.75,0.75]
+                }
+            ]
+        },
+        {
+            "paramName": "bottomLeft",
+            "type": "floatArray",
+            "frameArray": [
+                {
+                    "time": 0.000,
+                    "value": [0.25,0.75]
+                }
+            ]
+        }
+	]
+}

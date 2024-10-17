@@ -1,0 +1,11 @@
+{
+    "ver": 1,
+    "color": [
+        255,
+        255,
+        255,
+        0.0
+    ],
+    "fragShader": "frag.txt",
+    "vertShader": "vert.txt"
+}

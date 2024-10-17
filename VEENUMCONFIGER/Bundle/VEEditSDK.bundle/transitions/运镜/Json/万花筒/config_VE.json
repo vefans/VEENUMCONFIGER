@@ -1,0 +1,155 @@
+{
+	"ver": 2,
+	"minCoreVer": 124,
+	"color": [100,149,139,0.6],
+	"name": "artascope",
+	"duration": 2,
+	"fragShader": "frag.txt",
+	"vertShader": "vert.txt",
+	"textureParams": [{
+		"paramName": "from"
+	},
+	{
+		"paramName": "to"
+	}],
+	"uniformParams": [{
+		"paramName": "CameraPath",
+		"type": "floatArray",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [0.638889,
+			-0.222222,
+			-0.166667,
+			-0.893939]
+		}]
+	},
+	{
+		"paramName": "CameraScale",
+		"type": "float",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [1.5]
+		}]
+	},
+	{
+		"paramName": "Direction",
+		"type": "floatArray",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [0.0,
+			2.0,
+			1.0,
+			1.0]
+		}]
+	},
+	{
+		"paramName": "DistanceControl0",
+		"type": "floatArray",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [0.21,
+			0.24,
+			0.68,
+			0.77]
+		}]
+	},
+	{
+		"paramName": "DistanceControl1",
+		"type": "floatArray",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [0.15,
+			0.62,
+			0.8,
+			0.18]
+		}]
+	},
+	{
+		"paramName": "DistanceControl2",
+		"type": "floatArray",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [0.1,
+			0.55,
+			0.76,
+			0.14]
+		}]
+	},
+	{
+		"paramName": "DistanceControl3",
+		"type": "floatArray",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [0.25,
+			0.3,
+			0.6,
+			0.6]
+		}]
+	},
+	{
+		"paramName": "DistanceInverted",
+		"type": "floatArray",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [1.0,
+			0.0,
+			1.0,
+			0.0]
+		}]
+	},
+	{
+		"paramName": "AngleControl0",
+		"type": "floatArray",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [0.45,
+			0.25,
+			0.55,
+			0.75]
+		}]
+	},
+	{
+		"paramName": "AngleControl1",
+		"type": "floatArray",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [0.14,
+			0.4,
+			0.75,
+			0.8]
+		}]
+	},
+	{
+		"paramName": "AngleControl2",
+		"type": "floatArray",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [0.24,
+			0.25,
+			0.33,
+			0.5]
+		}]
+	},
+	{
+		"paramName": "AngleControl3",
+		"type": "floatArray",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [0.25,
+			0.3,
+			0.8,
+			0.8]
+		}]
+	},
+	{
+		"paramName": "AngleInverted",
+		"type": "floatArray",
+		"frameArray": [{
+			"time": 0.000,
+			"value": [1.0,
+			0.0,
+			1.0,
+			0.0]
+		}]
+	}]
+}

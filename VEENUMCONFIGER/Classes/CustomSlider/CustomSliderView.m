@@ -267,6 +267,7 @@
     UIView *_minTrack;
     UIView *_maxTrack;
     UIView *_mainTrack;
+    UIView *_middleTrack;
     
     CGPoint _beganCenter;
     CGFloat _total;
@@ -295,6 +296,8 @@
                 _mainTintColor = UIColorFromRGB(0xcccfd6);
             }
         }
+        _middleTintColor = UIColorFromRGB(0xdead37);
+        _currentMiddelTimeRange = kCMTimeRangeZero;
         
         UIImage *handlerImage = [VEHelp imageNamed:@"/New_EditVideo/Slider/LeftHandler_@3x"];
         _mainTrack = [[UIView alloc]initWithFrame:CGRectMake(55 + 15, (self.frame.size.height - 2) / 2.0, self.frame.size.width - (55 + 15) * 2, 2)];
@@ -418,6 +421,56 @@
     _maxThumbImageView.image = nil;
 }
 
+- (void)setCurrentType:(CustomDoubleSliderTyep)currentType {
+    _currentType = currentType;
+    if (_currentType == CustomDoubleSliderTyep_Middle) {
+        _minTrack.alpha = 0.4;
+        _maxTrack.alpha = 0.4;
+        _minThumbImageView.hidden = YES;
+        _maxThumbImageView.hidden = YES;
+        
+        _minLabel.hidden = YES;
+        if (CMTimeGetSeconds(_currentMiddelTimeRange.duration) == 0) {
+            _maxLabel.hidden = YES;
+        }else {
+            _middleTrack.alpha = 1.0;
+            _middleLeftThumbImageView.hidden = NO;
+            _middleRightThumbImageView.hidden = NO;
+            _maxLabel.hidden = NO;
+        }
+        _maxLabel.text = [NSString stringWithFormat:@"%.1f%@", CMTimeGetSeconds(_currentMiddelTimeRange.duration), _unit];
+    }else {
+        _middleTrack.alpha = 0.4;
+        _middleLeftThumbImageView.hidden = YES;
+        _middleRightThumbImageView.hidden = YES;
+        
+        if (_currentMinValue > _minValue) {
+            _minTrack.alpha = 1.0;
+            _minThumbImageView.hidden = NO;
+        }
+        if (_currentMaxValue > _minValue) {
+            _maxTrack.alpha = 1.0;
+            _maxThumbImageView.hidden = NO;
+        }
+        if (_currentType == CustomDoubleSliderTyep_Left) {
+            if (_currentMinValue <= _minValue) {
+                _minLabel.hidden = YES;
+            }else {
+                _minLabel.text = [NSString stringWithFormat:@"%.1f%@", _currentMinValue, _unit];
+            }
+            [self bringSubviewToFront:_minThumbImageView];
+        }
+        else if (_currentType == CustomDoubleSliderTyep_Right) {
+            if (_currentMaxValue <= _minValue) {
+                _maxLabel.hidden = YES;
+            }else {
+                _maxLabel.text = [NSString stringWithFormat:@"%.1f%@", (_maxValue - _currentMaxValue), _unit];
+            }
+            [self bringSubviewToFront:_maxThumbImageView];
+        }
+    }
+}
+
 - (void)panMinThumbImageViewGesture:(UIPanGestureRecognizer *)gesture
 {
     CGPoint point = [gesture translationInView:self];
@@ -428,24 +481,36 @@
     }
     gesture.view.center = CGPointMake(_beganCenter.x + point.x, _minThumbImageView.center.y);
     
-    if (CGRectGetMaxX(gesture.view.frame) > CGRectGetMaxX(_maxThumbImageView.frame)) {
-        CGRect frame = gesture.view.frame;
-        frame.origin.x = _maxThumbImageView.frame.origin.x;
-        gesture.view.frame = frame;
+    if (CMTimeGetSeconds(_currentMiddelTimeRange.duration) == 0) {
+        if (CGRectGetMaxX(gesture.view.frame) > CGRectGetMaxX(_maxThumbImageView.frame)) {
+            CGRect frame = gesture.view.frame;
+            frame.origin.x = _maxThumbImageView.frame.origin.x;
+            gesture.view.frame = frame;
+        }
+        else {
+            if (gesture.view.center.x < _mainTrack.frame.origin.x) {
+                gesture.view.center = CGPointMake(_mainTrack.frame.origin.x, gesture.view.center.y);
+            }
+            if (gesture.view.center.x > CGRectGetMaxX(_mainTrack.frame)) {
+                gesture.view.center = CGPointMake(CGRectGetMaxX(_mainTrack.frame), gesture.view.center.y);
+            }
+        }
     }else {
         if (gesture.view.center.x < _mainTrack.frame.origin.x) {
             gesture.view.center = CGPointMake(_mainTrack.frame.origin.x, gesture.view.center.y);
         }
-        if (gesture.view.center.x > CGRectGetMaxX(_mainTrack.frame)) {
-            gesture.view.center = CGPointMake(CGRectGetMaxX(_mainTrack.frame), gesture.view.center.y);
+        else if (CGRectGetMaxX(gesture.view.frame) > CGRectGetMaxX(_middleLeftThumbImageView.frame)) {
+            CGRect frame = gesture.view.frame;
+            frame.origin.x = _middleLeftThumbImageView.frame.origin.x;
+            gesture.view.frame = frame;
         }
     }
     _minTrack.frame = CGRectMake(_minTrack.frame.origin.x, _minTrack.frame.origin.y,  gesture.view.center.x - _minTrack.frame.origin.x, _minTrack.frame.size.height);
     [self valueMinChange:gesture.view.center.x];
     
-    if (gesture.state != UIGestureRecognizerStateBegan && gesture.state != UIGestureRecognizerStateChanged && _delayTime >= 0) {
-        [self performSelector:@selector(hiddenLabel) withObject:nil afterDelay:_delayTime];
-    }
+//    if (gesture.state != UIGestureRecognizerStateBegan && gesture.state != UIGestureRecognizerStateChanged && _delayTime >= 0) {
+//        [self performSelector:@selector(hiddenLabel) withObject:nil afterDelay:_delayTime];
+//    }
     if (_delegate && [_delegate respondsToSelector:@selector(customDoubleSliderChangeValue:state:isMinValue:)]) {
         [_delegate customDoubleSliderChangeValue:_currentMinValue state:gesture.state isMinValue:YES];
     }
@@ -461,32 +526,38 @@
     }
     gesture.view.center = CGPointMake(_beganCenter.x + point.x, _minThumbImageView.center.y);
     
-    if (gesture.view.frame.origin.x < _minThumbImageView.frame.origin.x) {
-        CGRect frame = gesture.view.frame;
-        frame.origin.x = _minThumbImageView.frame.origin.x;
-        gesture.view.frame = frame;
-    }else {
-        if (gesture.view.center.x < _mainTrack.frame.origin.x) {
-            gesture.view.center = CGPointMake(_mainTrack.frame.origin.x, gesture.view.center.y);
+    if (CMTimeGetSeconds(_currentMiddelTimeRange.duration) == 0) {
+        if (gesture.view.frame.origin.x < _minThumbImageView.frame.origin.x) {
+            CGRect frame = gesture.view.frame;
+            frame.origin.x = _minThumbImageView.frame.origin.x;
+            gesture.view.frame = frame;
+        }else {
+            if (gesture.view.center.x < _mainTrack.frame.origin.x) {
+                gesture.view.center = CGPointMake(_mainTrack.frame.origin.x, gesture.view.center.y);
+            }
+            if (gesture.view.center.x > CGRectGetMaxX(_mainTrack.frame)) {
+                gesture.view.center = CGPointMake(CGRectGetMaxX(_mainTrack.frame), gesture.view.center.y);
+            }
         }
-        if (gesture.view.center.x > CGRectGetMaxX(_mainTrack.frame)) {
+    }else {
+        if (gesture.view.frame.origin.x < _middleRightThumbImageView.frame.origin.x) {
+            CGRect frame = gesture.view.frame;
+            frame.origin.x = _middleRightThumbImageView.frame.origin.x;
+            gesture.view.frame = frame;
+        }
+        else if (gesture.view.center.x > CGRectGetMaxX(_mainTrack.frame)) {
             gesture.view.center = CGPointMake(CGRectGetMaxX(_mainTrack.frame), gesture.view.center.y);
         }
     }
     _maxTrack.frame = CGRectMake(gesture.view.center.x, _maxTrack.frame.origin.y, self.frame.size.width - _mainTrack.frame.origin.x - gesture.view.center.x, _maxTrack.frame.size.height);
     [self valueMaxChange:gesture.view.center.x];
     
-    if (gesture.state != UIGestureRecognizerStateBegan && gesture.state != UIGestureRecognizerStateChanged && _delayTime >= 0) {
-        [self performSelector:@selector(hiddenLabel) withObject:nil afterDelay:_delayTime];
-    }
+//    if (gesture.state != UIGestureRecognizerStateBegan && gesture.state != UIGestureRecognizerStateChanged && _delayTime >= 0) {
+//        [self performSelector:@selector(hiddenLabel) withObject:nil afterDelay:_delayTime];
+//    }
     if (_delegate && [_delegate respondsToSelector:@selector(customDoubleSliderChangeValue:state:isMinValue:)]) {
         [_delegate customDoubleSliderChangeValue:_currentMaxValue state:gesture.state isMinValue:NO];
     }
-}
-
-- (void)hiddenLabel {
-    _minLabel.hidden = YES;
-    _maxLabel.hidden = YES;
 }
 
 - (void)valueMinChange:(CGFloat)num
@@ -499,6 +570,86 @@
 {
     _currentMaxValue = _minValue + _total * (num - _mainTrack.frame.origin.x);
     _maxLabel.text = [NSString stringWithFormat:@"%.1f%@", (_maxValue - _currentMaxValue), _unit];
+}
+
+- (void)panMiddleLeftThumbImageViewGesture:(UIPanGestureRecognizer *)gesture
+{
+    CGPoint point = [gesture translationInView:self];
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        _beganCenter = gesture.view.center;
+        _maxLabel.hidden = NO;
+        [self bringSubviewToFront:_middleLeftThumbImageView];
+    }
+    gesture.view.center = CGPointMake(_beganCenter.x + point.x, _minThumbImageView.center.y);
+    
+    if (gesture.view.frame.origin.x < _minThumbImageView.frame.origin.x) {
+        CGRect frame = gesture.view.frame;
+        frame.origin.x = _minThumbImageView.frame.origin.x;
+        gesture.view.frame = frame;
+    }
+    else if (gesture.view.center.x > _middleRightThumbImageView.frame.origin.x) {
+        gesture.view.center = CGPointMake(_middleRightThumbImageView.frame.origin.x, gesture.view.center.y);
+    }
+    
+    float leftValue = _minValue + _total * (gesture.view.center.x - _mainTrack.frame.origin.x);;
+    [self refreshMiddelTimeRange:leftValue isLeft:YES];
+    
+//    if (gesture.state != UIGestureRecognizerStateBegan && gesture.state != UIGestureRecognizerStateChanged && _delayTime >= 0) {
+//        [self performSelector:@selector(hiddenLabel) withObject:nil afterDelay:_delayTime];
+//    }
+    if (_delegate && [_delegate respondsToSelector:@selector(customDoubleSliderChangeMiddleTimeRange:state:)]) {
+        [_delegate customDoubleSliderChangeMiddleTimeRange:_currentMiddelTimeRange state:gesture.state];
+    }
+}
+
+- (void)panMiddleRightThumbImageViewGesture:(UIPanGestureRecognizer *)gesture
+{
+    CGPoint point = [gesture translationInView:self];
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        _beganCenter = gesture.view.center;
+        _maxLabel.hidden = NO;
+        [self bringSubviewToFront:_middleRightThumbImageView];
+    }
+    gesture.view.center = CGPointMake(_beganCenter.x + point.x, _minThumbImageView.center.y);
+    
+    if (gesture.view.frame.origin.x < _middleLeftThumbImageView.frame.origin.x) {
+        CGRect frame = gesture.view.frame;
+        frame.origin.x = _middleLeftThumbImageView.frame.origin.x;
+        gesture.view.frame = frame;
+    }
+    else if (CGRectGetMaxX(gesture.view.frame) > CGRectGetMaxX(_maxThumbImageView.frame)) {
+        CGRect frame = gesture.view.frame;
+        frame.origin.x = _maxThumbImageView.frame.origin.x;
+        gesture.view.frame = frame;
+    }
+    float duration = _total * (gesture.view.center.x - _middleLeftThumbImageView.center.x);
+    [self refreshMiddelTimeRange:duration isLeft:NO];
+    
+//    if (gesture.state != UIGestureRecognizerStateBegan && gesture.state != UIGestureRecognizerStateChanged && _delayTime >= 0) {
+//        [self performSelector:@selector(hiddenLabel) withObject:nil afterDelay:_delayTime];
+//    }
+    if (_delegate && [_delegate respondsToSelector:@selector(customDoubleSliderChangeMiddleTimeRange:state:)]) {
+        [_delegate customDoubleSliderChangeMiddleTimeRange:_currentMiddelTimeRange state:gesture.state];
+    }
+}
+
+- (void)refreshMiddelTimeRange:(float)value isLeft:(BOOL)isLeft {
+    if (isLeft) {
+        _currentMiddelTimeRange = CMTimeRangeMake(CMTimeMakeWithSeconds(value, TIMESCALE), CMTimeMakeWithSeconds(_total * (_middleRightThumbImageView.center.x - _middleLeftThumbImageView.center.x), TIMESCALE));
+    }else {
+        _currentMiddelTimeRange = CMTimeRangeMake(_currentMiddelTimeRange.start, CMTimeMakeWithSeconds(value, TIMESCALE));
+    }
+    CGRect frame = _middleTrack.frame;
+    frame.origin.x = _middleLeftThumbImageView.center.x;
+    frame.size.width = _middleRightThumbImageView.center.x - _middleLeftThumbImageView.center.x;
+    _middleTrack.frame = frame;
+    
+    _maxLabel.text = [NSString stringWithFormat:@"%.1f%@", CMTimeGetSeconds(_currentMiddelTimeRange.duration), _unit];
+}
+
+- (void)hiddenLabel {
+    _minLabel.hidden = YES;
+    _maxLabel.hidden = YES;
 }
 
 -(void)setMinValue:(CGFloat)minValue
@@ -520,7 +671,6 @@
     if (_total < 0) {
         _total = -_total;
     }
-    _currentMaxValue = maxValue;
     _maxLabel.text = [NSString stringWithFormat:@"%.1f%@", (_maxValue - _currentMaxValue), _unit];
 }
 
@@ -534,12 +684,24 @@
         CGRect frame = _minThumbImageView.frame;
         frame.origin.x = _mainTrack.frame.origin.x - frame.size.width / 2.0;
         _minThumbImageView.frame = frame;
+        
+        _minLabel.text = [NSString stringWithFormat:@"%.1f%@", _currentMinValue, _unit];
         return;
     }
-    if (currentMinValue > _maxValue - _currentMaxValue) {
+    if (_isShowMiddleTrack) {
+        if (CMTimeGetSeconds(_currentMiddelTimeRange.duration) == 0) {
+            if (currentMinValue > _maxValue - _currentMaxValue) {
+                _currentMinValue = _maxValue - _currentMaxValue;
+            }
+        }
+        else if (currentMinValue > CMTimeGetSeconds(_currentMiddelTimeRange.start)) {
+            _currentMinValue = CMTimeGetSeconds(_currentMiddelTimeRange.start);
+        }
+    }
+    else if (currentMinValue > _maxValue - _currentMaxValue) {
         _currentMinValue = _maxValue - _currentMaxValue;
     }
-    [self bringSubviewToFront:_minThumbImageView];
+    
     _minLabel.text = [NSString stringWithFormat:@"%.1f%@", _currentMinValue, _unit];
     CGRect frame = _minThumbImageView.frame;
     frame.origin.x = (_currentMinValue - _minValue) / _total + _mainTrack.frame.origin.x - frame.size.width / 2.0;
@@ -549,6 +711,12 @@
     frame.size.width = _minThumbImageView.center.x - _minTrack.frame.origin.x;
     _minTrack.frame = frame;
     
+    _minLabel.hidden = NO;
+    _minThumbImageView.hidden = NO;
+    _minTrack.hidden = NO;
+}
+
+- (void)showMinView {
     _minLabel.hidden = NO;
     _minThumbImageView.hidden = NO;
     _minTrack.hidden = NO;
@@ -564,12 +732,24 @@
         CGRect frame = _maxThumbImageView.frame;
         frame.origin.x = CGRectGetMaxX(_mainTrack.frame) - frame.size.width / 2.0;
         _maxThumbImageView.frame = frame;
+        
+        _maxLabel.text = [NSString stringWithFormat:@"%.1f%@", (_maxValue - _currentMaxValue), _unit];
         return;
     }
-    if (_currentMaxValue < _currentMinValue) {
+    if (_isShowMiddleTrack) {
+        if (CMTimeGetSeconds(_currentMiddelTimeRange.duration) == 0) {
+            if (_currentMaxValue < _currentMinValue) {
+                _currentMaxValue = _currentMinValue;
+            }
+        }
+        else if (_currentMaxValue < CMTimeGetSeconds(CMTimeAdd(_currentMiddelTimeRange.start, _currentMiddelTimeRange.duration))) {
+            _currentMaxValue = CMTimeGetSeconds(CMTimeAdd(_currentMiddelTimeRange.start, _currentMiddelTimeRange.duration));
+        }
+    }
+    else if (_currentMaxValue < _currentMinValue) {
         _currentMaxValue = _currentMinValue;
     }
-    [self bringSubviewToFront:_maxThumbImageView];
+    
     _maxLabel.text = [NSString stringWithFormat:@"%.1f%@", (_maxValue - _currentMaxValue), _unit];
     CGRect frame = _maxThumbImageView.frame;
     frame.origin.x = (_currentMaxValue - _minValue) / _total + _mainTrack.frame.origin.x - frame.size.width / 2.0;
@@ -583,6 +763,84 @@
     _maxLabel.hidden = NO;
     _maxThumbImageView.hidden = NO;
     _maxTrack.hidden = NO;
+}
+
+- (void)showMaxView {
+    _maxLabel.hidden = NO;
+    _maxThumbImageView.hidden = NO;
+    _maxTrack.hidden = NO;
+}
+
+- (void)setCurrentMiddelTimeRange:(CMTimeRange)currentMiddelTimeRange {
+    _currentMiddelTimeRange = currentMiddelTimeRange;
+    if (CMTimeGetSeconds(currentMiddelTimeRange.duration) <= _minValue) {
+        _middleLeftThumbImageView.hidden = YES;
+        _middleRightThumbImageView.hidden = YES;
+        _middleTrack.hidden = YES;
+        _maxLabel.hidden = YES;
+    }else {
+        if (CMTimeGetSeconds(currentMiddelTimeRange.start) < _currentMinValue) {
+            _currentMiddelTimeRange = CMTimeRangeMake(CMTimeMakeWithSeconds(_currentMinValue, TIMESCALE), _currentMiddelTimeRange.duration);
+        }
+        if (_currentMaxValue > _minValue && CMTimeGetSeconds(currentMiddelTimeRange.start) + CMTimeGetSeconds(currentMiddelTimeRange.duration) > _currentMaxValue) {
+            _currentMiddelTimeRange = CMTimeRangeMake(_currentMiddelTimeRange.start, CMTimeMakeWithSeconds(_currentMaxValue - CMTimeGetSeconds(_currentMiddelTimeRange.start), TIMESCALE));
+        }
+        if (!_middleTrack) {
+            _middleTrack = [[UIView alloc]initWithFrame:CGRectMake(_mainTrack.frame.origin.x, _mainTrack.frame.origin.y, 0, _mainTrack.frame.size.height)];
+            _middleTrack.backgroundColor = _middleTintColor;
+            [self addSubview:_middleTrack];
+            
+            CGSize size = _minThumbImageView.frame.size;
+            UIImageView *leftThumbImageView = [[UIImageView alloc]initWithFrame:CGRectMake(_mainTrack.frame.origin.x - size.width / 2.0, (self.frame.size.height - size.height) / 2.0 + 3, size.width, size.height)];
+            leftThumbImageView.backgroundColor = [UIColor clearColor];
+            leftThumbImageView.layer.masksToBounds = YES;
+            leftThumbImageView.image = [VEHelp imageNamed:@"/New_EditVideo/Slider/MiddleLHandler_@3x"];
+            leftThumbImageView.userInteractionEnabled = YES;
+            UIPanGestureRecognizer *leftThumbImageViewPanGestureRecognizer = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panMiddleLeftThumbImageViewGesture:)];
+            [leftThumbImageView addGestureRecognizer:leftThumbImageViewPanGestureRecognizer];
+            [self addSubview:leftThumbImageView];
+            _middleLeftThumbImageView = leftThumbImageView;
+            
+            UIImageView *rightThumbImageView = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_mainTrack.frame) - size.width / 2.0, leftThumbImageView.frame.origin.y, leftThumbImageView.frame.size.width, leftThumbImageView.frame.size.height)];
+            rightThumbImageView.backgroundColor = [UIColor clearColor];
+            rightThumbImageView.layer.masksToBounds = YES;
+            rightThumbImageView.image = [VEHelp imageNamed:@"/New_EditVideo/Slider/MiddleRHandler_@3x"];
+            rightThumbImageView.userInteractionEnabled = YES;
+            UIPanGestureRecognizer *rightThumbImageViewPanGestureRecognizer = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panMiddleRightThumbImageViewGesture:)];
+            [rightThumbImageView addGestureRecognizer:rightThumbImageViewPanGestureRecognizer];
+            [self addSubview:rightThumbImageView];
+            _middleRightThumbImageView = rightThumbImageView;
+        }
+        CGFloat startTime = CMTimeGetSeconds(currentMiddelTimeRange.start);
+        CGFloat duration = CMTimeGetSeconds(currentMiddelTimeRange.duration);
+        
+        CGRect frame = _middleLeftThumbImageView.frame;
+        frame.origin.x = (startTime - _minValue) / _total + _mainTrack.frame.origin.x - frame.size.width / 2.0;
+        _middleLeftThumbImageView.frame = frame;
+        
+        frame = _middleRightThumbImageView.frame;
+        frame.origin.x = (startTime + duration) / _total + _mainTrack.frame.origin.x - frame.size.width / 2.0;
+        _middleRightThumbImageView.frame = frame;
+        
+        frame = _middleTrack.frame;
+        frame.origin.x = _middleLeftThumbImageView.center.x;
+        frame.size.width = _middleRightThumbImageView.center.x - frame.origin.x;
+        _middleTrack.frame = frame;
+        
+        _middleLeftThumbImageView.hidden = NO;
+        _middleRightThumbImageView.hidden = NO;
+        _middleTrack.hidden = NO;
+        
+        _maxLabel.text = [NSString stringWithFormat:@"%.1f%@", CMTimeGetSeconds(_currentMiddelTimeRange.duration), _unit];
+        _maxLabel.hidden = NO;
+    }
+}
+
+- (void)showMiddleView {
+    _middleLeftThumbImageView.hidden = NO;
+    _middleRightThumbImageView.hidden = NO;
+    _middleTrack.hidden = NO;
+    _maxLabel.hidden = NO;
 }
 
 -(void)setMinTintColor:(UIColor *)minTintColor

@@ -365,7 +365,12 @@
                 path = _collage.media.mask.folderPath;
             }
             
+//            NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#ifdef Enable_Config_VE
+            NSString *configPath = [VEHelp getConfigPathWithFolderPath:path];
+#else
             NSString *configPath = [path stringByAppendingPathComponent:@"config.json"];
+#endif
             NSData *jsonData = [[NSData alloc] initWithContentsOfFile:configPath];
             NSMutableDictionary *configDic = [VEHelp objectForData:jsonData];
             jsonData = nil;
