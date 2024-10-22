@@ -17,7 +17,7 @@
 {
     BOOL _isRelease;
 }
-@property(nonatomic, strong) YYAnimatedImageView *animatiionImageView;
+@property(nonatomic, strong) UIImageView *animatiionImageView;
 @end
 
 @implementation VEYYAnnimationImageView
@@ -69,22 +69,21 @@
 -(void)setImageUrl:(NSURL *)imageUrl  atPlaceholder:( UIImage * ) placeholder{
     if( self.animatiionImageView == nil )
     {
-        self.animatiionImageView = [[YYAnimatedImageView alloc] initWithFrame:self.bounds];
+        self.animatiionImageView = [[UIImageView alloc] initWithFrame:self.bounds];
         self.animatiionImageView.clipsToBounds = YES;
         self.animatiionImageView.contentMode = self.contentMode;
         [self addSubview:self.animatiionImageView];
     }
-    self.animatiionImageView.frame = self.bounds;
-    if( _isRelease )
-    {
-        [self.animatiionImageView yy_cancelCurrentImageRequest];
-    }
-    [self.animatiionImageView yy_setImageWithURL:imageUrl placeholder:placeholder];
+//    if( _isRelease )
+//    {
+//        [self.animatiionImageView yy_cancelCurrentImageRequest];
+//    }
+    [self.animatiionImageView yy_setImageWithURL:imageUrl placeholder:placeholder options:YYWebImageOptionProgressive | YYWebImageOptionProgressiveBlur |  YYWebImageOptionAllowInvalidSSLCertificates completion:nil];
 }
 
 +(void)btn_LoadImagge:( UIButton * ) sender atUrl:( NSURL * ) url forState:( UIControlState ) state
 {
-    [sender yy_setImageWithURL:url forState:state placeholder:nil];
+    [sender yy_setImageWithURL:url forState:state placeholder:nil  options:YYWebImageOptionProgressive | YYWebImageOptionProgressiveBlur |  YYWebImageOptionAllowInvalidSSLCertificates completion:nil];
 }
 
 +(void)animatioonnImageView_CancelCurrentImageRequest:( UIView * ) view
@@ -103,7 +102,7 @@
     {
 //        [self.animatiionImageView yy_setImageWithURL:nil placeholder:nil];
         self.animatiionImageView.image = nil;
-        [self.animatiionImageView yy_cancelCurrentImageRequest];
+//        [self.animatiionImageView yy_cancelCurrentImageRequest];
         [self.animatiionImageView removeFromSuperview];
         self.animatiionImageView = nil;
 //        [[YYWebImageManager sharedManager].cache.memoryCache removeAllObjects];
@@ -114,7 +113,7 @@
 {
     [YYWebImageManager sharedManager].cache.shouldGroupAccessibilityChildren;
     [[YYWebImageManager sharedManager].cache.memoryCache removeAllObjects];
-//    [[YYWebImageManager sharedManager].cache.diskCache removeAllObjects];
+    [[YYWebImageManager sharedManager].cache.diskCache removeAllObjects];
     [[YYWebImageManager sharedManager].cache.diskCache removeAllObjectsWithBlock:nil];
 }
 

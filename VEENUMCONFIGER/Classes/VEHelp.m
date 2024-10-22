@@ -3080,6 +3080,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 formatDescription = (__bridge CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
                 if (formatDescription) {
                     size = CMVideoFormatDescriptionGetPresentationDimensions(formatDescription, false, false);
+                    size = CGSizeApplyAffineTransform(size, videoTrack.preferredTransform);
                 }
             }
         }
@@ -5641,6 +5642,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     formatDescription = (__bridge CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
                     if (formatDescription) {
                         size = CMVideoFormatDescriptionGetPresentationDimensions(formatDescription, false, false);
+                        size = CGSizeApplyAffineTransform(size, videoTrack.preferredTransform);
                     }
                 }
             }
@@ -5775,6 +5777,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 formatDescription = (__bridge CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
                 if (formatDescription) {
                     size = CMVideoFormatDescriptionGetPresentationDimensions(formatDescription, false, false);
+                    size = CGSizeApplyAffineTransform(size, videoTrack.preferredTransform);
                 }
             }
         }
@@ -5839,6 +5842,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 formatDescription = (__bridge CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
                 if (formatDescription) {
                     size = CMVideoFormatDescriptionGetPresentationDimensions(formatDescription, false, false);
+                    size = CGSizeApplyAffineTransform(size, videoTrack.preferredTransform);
                 }
             }
         }
@@ -7547,7 +7551,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         AVURLAsset *asset = [AVURLAsset assetWithURL:fileURL];
         AVAssetImageGenerator *gen = [[AVAssetImageGenerator alloc] initWithAsset:asset];
         gen.appliesPreferredTrackTransform = YES;
-        gen.apertureMode =AVAssetImageGeneratorApertureModeEncodedPixels;
+//        gen.apertureMode =AVAssetImageGeneratorApertureModeEncodedPixels;//20241019 有的视频 编码像素尺寸比例 与 显示尺寸比例（naturalSize）不一致，所以不能设置这个mode（让AVAssetImageGenerator使用视频帧的编码像素尺寸）
         //如果需要精确时间
         gen.requestedTimeToleranceAfter = kCMTimeZero;
         gen.requestedTimeToleranceBefore = kCMTimeZero;
