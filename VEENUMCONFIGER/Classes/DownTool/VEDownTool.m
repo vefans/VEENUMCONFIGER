@@ -58,7 +58,7 @@
     NSInteger underlyingErrorCode = 0;
     if ([underlyingError isKindOfClass:[NSError class]]) {
         underlyingErrorCode = underlyingError.code;
-        NSLog(@"Underlying error code: %ld", (long)code);
+        NSLog(@"Underlying error code: %ld", (long)underlyingErrorCode);
     }
     if(error && underlyingErrorCode != 17){
         if(_FailBlock){

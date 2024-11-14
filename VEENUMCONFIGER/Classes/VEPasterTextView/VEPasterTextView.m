@@ -217,6 +217,29 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     [self addSubview:selectImageView];
 }
 
+-(void)initSelectImageView_CreateTemplate
+{
+    [selectImageView removeFromSuperview];
+    selectImageView = nil;
+    selectImageViewBorderWidth = 2.0;
+    selectImageViewShadowRadius = 2.0;
+    selectImageView = [[UIImageView alloc] init];
+    selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
+    selectImageView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
+    selectImageView.layer.borderWidth = selectImageViewBorderWidth;
+    selectImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    selectImageView.layer.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.8].CGColor;
+    selectImageView.layer.shadowOffset = CGSizeZero;
+    selectImageView.layer.shadowOpacity = 0.5;
+    selectImageView.layer.shadowRadius = selectImageViewShadowRadius;
+    selectImageView.layer.masksToBounds = true;
+    selectImageView.clipsToBounds = NO;
+    selectImageView.userInteractionEnabled = YES;
+    selectImageView.layer.allowsEdgeAntialiasing = YES;
+    [self addSubview:selectImageView];
+    selectImageView.hidden = true;
+}
+
 
 -(UIImageView *)getRotateView
 {

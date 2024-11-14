@@ -206,6 +206,7 @@ NS_ASSUME_NONNULL_BEGIN
 /** 是否禁止编辑(default false)
  */
 @property (nonatomic, assign) bool isDisableEdit;
+@property (nonatomic, assign) bool isDefaultCrop;
 /** 选取素材进入GIF制作
  */
 @property (nonatomic, assign) bool isGIFAlbum;
@@ -560,6 +561,11 @@ NS_ASSUME_NONNULL_BEGIN
 /** 字幕 (default true)
  */
 @property (nonatomic,assign) bool enableSubtitle;
+
+/** 富文本 (default false)
+ */
+@property (nonatomic,assign) bool enableAttributedString;
+
 /** 字幕转语音 (default false),enableSubtitle为true时，才生效
  */
 @property (nonatomic,assign) bool enableSubtitleToSpeech;
@@ -707,6 +713,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @property (copy,nonatomic)NSString  * sourcesKey;
+
+/**相册选择素材时屏蔽GIF
+ */
+@property (nonatomic, assign) bool isDisableSelectGif;
 
 @end
 

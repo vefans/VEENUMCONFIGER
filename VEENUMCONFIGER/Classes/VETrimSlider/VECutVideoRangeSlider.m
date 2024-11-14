@@ -140,12 +140,17 @@
         [self.rangeView addSubview:self.thumbHandle];
         self.thumbHandle.hidden = NO;
         
-        self.thumbMaskHandle = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 3, self.rangeView.frame.size.height)];
+        
+        self.thumbMaskHandle = [[UIView alloc] initWithFrame:CGRectMake(12, -2, 2, self.rangeView.frame.size.height + 4)];
         self.thumbMaskHandle.backgroundColor = [UIColor whiteColor];
-        self.thumbMaskHandle.layer.masksToBounds = YES;
         self.thumbMaskHandle.layer.cornerRadius = 1;
-        self.thumbMaskHandle.layer.maskedCorners = kCALayerMaxXMinYCorner | kCALayerMaxXMaxYCorner | kCALayerMaxXMinYCorner | kCALayerMaxXMaxYCorner;
+        self.thumbMaskHandle.layer.masksToBounds = YES;
+        //self.thumbMaskHandle.layer.maskedCorners = kCALayerMaxXMinYCorner | kCALayerMaxXMaxYCorner | kCALayerMaxXMinYCorner | kCALayerMaxXMaxYCorner;
         [self.thumbHandle addSubview:self.thumbMaskHandle];
+        UIImageView *thumbImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, (CGRectGetHeight(self.thumbHandle.frame) - 26)/2.0, 26, 26)];
+        thumbImage.backgroundColor = [UIColor clearColor];
+        thumbImage.image = [VEHelp imageNamed:@"拖动轨道"];
+        [self.thumbHandle addSubview:thumbImage];
         
         
         UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleProgressThumbPan:)];
@@ -170,7 +175,7 @@
     float rangeArea = self.scrollView.frame.size.width - (self.scrollView.contentInset.left + self.scrollView.contentInset.right);
     float contentWidth = rangeArea / rangeDuration * self.videoDuration;
     int count = ceil(contentWidth / self.scrollView.frame.size.height);
-    float w = (contentWidth / self.scrollView.frame.size.height) - floorf(contentWidth / self.scrollView.frame.size.height);
+    float w_item = (contentWidth / self.scrollView.frame.size.height) - floorf(contentWidth / self.scrollView.frame.size.height);
     
     NSMutableArray *items = [NSMutableArray new];
     CMTime actualTime = kCMTimeZero;
@@ -195,7 +200,7 @@
         if(!itemView)
             itemView = [[UIImageView alloc] initWithFrame:CGRectMake(self.scrollView.frame.size.height * i,0,self.scrollView.frame.size.height, self.scrollView.frame.size.height)];
         if(i == count - 1){
-            itemView.frame = CGRectMake(self.scrollView.frame.size.height * i,0,self.scrollView.frame.size.height * w, self.scrollView.frame.size.height);
+            itemView.frame = CGRectMake(self.scrollView.frame.size.height * i,0,self.scrollView.frame.size.height * w_item, self.scrollView.frame.size.height);
         }
         if(i % 2 ==0)
             itemView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1.0];
@@ -205,6 +210,7 @@
         itemView.layer.borderColor = UIColorFromRGB(0xffffff).CGColor;
         itemView.layer.borderWidth = 0;
         itemView.contentMode = UIViewContentModeScaleAspectFill;
+        itemView.layer.masksToBounds = YES;
         itemView.tag = tag;
         if(firstImage){
             itemView.image = firstImage;

@@ -106,6 +106,8 @@ typedef enum {
 
 @property (assign, nonatomic) float rightSpace;//右边间距
 
+@property (assign, nonatomic) float minThumbWidth;
+
 - (instancetype)initWithFrame:(CGRect)frame videoCore:(VECore *)videoCore;
 
 - (void)resetSubviews:(UIImage *)thumbImage;

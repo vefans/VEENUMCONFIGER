@@ -275,6 +275,7 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 
 @property (nonatomic, assign) BOOL  isOutputAudioPath;
 @property (nonatomic, copy) VECompletionHandler   callbackBlock;
+@property (nonatomic, copy) void(^newCallImagebackBlock)(NSString *path,UIViewController *vc);
 @property (nonatomic, copy) VECompletionHandler   editLiteVideoCompletionHandler;
 @property(nonatomic, copy) void(^completioHandler) (NSString * videoPath, UIViewController *controller);
 @property(nonatomic,copy) VECancelHandler cancelHandler;

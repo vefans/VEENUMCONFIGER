@@ -165,6 +165,10 @@
         folderPath = kFlowerWordFolder;
         plistPath = kFlowerWordPlistPath;
     }
+    else if ([type isEqualToString:VENetworkResourceType_Watermark]) {
+        folderPath = kWatermarkTemplateFolder;
+        plistPath = kWatermarkTemplatePlistPath;
+    }
     if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
         [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
@@ -196,26 +200,32 @@
                 }
                 __block NSString *tmpUpdateTime;
                 [tempTemplateList enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
-                    if ([[obj2 objectForKey:@"id"] isEqualToString:categoryId]) {
-                        [obj2[@"data"] enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj3, NSUInteger idx3, BOOL * _Nonnull stop3) {
-                            if ([[obj3[@"file"] stringByDeletingPathExtension] isEqualToString:file]) {
-                                tmpUpdateTime = obj3[@"updatetime"];
-                                if ([tmpUpdateTime isKindOfClass:[NSNumber class]]) {
-                                    tmpUpdateTime = [obj3[@"updatetime"] stringValue];
+                    if (categoryId.length > 0) {
+                        if ([[obj2 objectForKey:@"id"] isEqualToString:categoryId]) {
+                            [obj2[@"data"] enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj3, NSUInteger idx3, BOOL * _Nonnull stop3) {
+                                if ([[obj3[@"file"] stringByDeletingPathExtension] isEqualToString:file]) {
+                                    tmpUpdateTime = obj3[@"updatetime"];
+                                    if ([tmpUpdateTime isKindOfClass:[NSNumber class]]) {
+                                        tmpUpdateTime = [obj3[@"updatetime"] stringValue];
+                                    }
+                                    *stop3 = YES;
+                                    *stop2 = YES;
                                 }
-                                *stop3 = YES;
-                                *stop2 = YES;
+                            }];
+                        }
+                    }else {
+                        if ([obj2[@"ufid"] isEqualToString:obj1[@"ufid"]]) {
+                            tmpUpdateTime = obj2[@"updatetime"];
+                            if ([tmpUpdateTime isKindOfClass:[NSNumber class]]) {
+                                tmpUpdateTime = [obj2[@"updatetime"] stringValue];
                             }
-                        }];
+                            *stop2 = YES;
+                        }
                     }
                 }];
                 if(tmpUpdateTime && ![tmpUpdateTime isEqualToString:updateTime])
                 {
-                    NSString *path = [VEHelp getCachedFileNameWithUrlStr:obj1[@"file"] folderPath:folderPath];
-                    NSString *jsonPath = [NSString stringWithFormat:@"%@/%@.json", folderPath, file];
-                    if ([fileManager fileExistsAtPath:jsonPath]) {
-                        [fileManager removeItemAtPath:jsonPath error:nil];
-                    }
+                    NSString *path = [folderPath stringByAppendingPathComponent:obj1[@"ufid"]];
                     if ([fileManager fileExistsAtPath:path]) {
                         [fileManager removeItemAtPath:path error:nil];
                     }

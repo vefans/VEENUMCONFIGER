@@ -31,6 +31,7 @@
             UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(20.0, 0, self.saveBtn.frame.size.width - 15.0*2.0, height)];
             label.font = [UIFont systemFontOfSize:14];
             label.tag = -100;
+            label.textColor = [VEConfigManager sharedManager].textColorOnGradientView;
             label.text =  VELocalizedString(@"Save Draft and Exit",nil);
             [self.saveBtn addSubview:label];
             

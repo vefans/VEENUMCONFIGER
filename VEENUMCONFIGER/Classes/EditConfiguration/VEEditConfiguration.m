@@ -171,6 +171,7 @@
         _enableSmartCrop = true;
         _enableExtractFrames = true;
         _enableMotionflow = true;
+        _isDisableSelectGif = false;
     }
     
     return self;
@@ -243,6 +244,7 @@
     //编辑导出预设
     copy.enableMV               = _enableMV;
     copy.enableSubtitle         = _enableSubtitle;
+    copy.enableAttributedString = _enableAttributedString;
     copy.enableAIRecogSubtitle  = _enableAIRecogSubtitle;
     copy.enableSubtitleToSpeech = _enableSubtitleToSpeech;
     copy.enableSticker           = _enableSticker;
@@ -345,6 +347,7 @@
     copy.enableExtractFrames = _enableExtractFrames;
     copy.enableMotionflow = _enableMotionflow;
     
+    copy.isDisableSelectGif = _isDisableSelectGif;
     return copy;
 }
 

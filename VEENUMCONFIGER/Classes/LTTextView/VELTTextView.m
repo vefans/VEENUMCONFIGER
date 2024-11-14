@@ -61,10 +61,13 @@
     
     self.textView.frame = self.bounds;
     self.placeholderTextView.frame = self.bounds;
-//    if (_textAlignment == NSTextAlignmentCenter) {
-//        _textView.contentInset = UIEdgeInsetsMake((_textView.frame.size.height - _textView.contentSize.height) / 2, 0, 0, 0);
-//        _placeholderTextView.contentInset = UIEdgeInsetsMake((_placeholderTextView.frame.size.height - _placeholderTextView.contentSize.height) / 2, 0, 0, 0);
-//    }
+    if (_textAlignment == NSTextAlignmentCenter && _textView.frame.size.height > _textView.contentSize.height) {
+        _textView.contentInset = UIEdgeInsetsMake((_textView.frame.size.height - _textView.contentSize.height) / 2, 0, 0, 0);
+        _placeholderTextView.contentInset = UIEdgeInsetsMake((_placeholderTextView.frame.size.height - _placeholderTextView.contentSize.height) / 2, 0, 0, 0);
+    }else {
+        _textView.contentInset = UIEdgeInsetsZero;
+        _placeholderTextView.contentInset = UIEdgeInsetsZero;
+    }
 
 }
 //点击return 按钮 去掉
@@ -190,8 +193,13 @@
 }
 
 - (void)setSelectedRange:(NSRange)selectedRange {
+    if (NSEqualRanges(_selectedRange, selectedRange)) {
+        return;
+    }
+    _selectedRange = selectedRange;
     if (selectedRange.length == 0) {
         if (_textView.attributedText) {
+#if 0
             NSString *text = _textView.attributedText.string;
             _textView.attributedText = nil;
             _textView.text = text;
@@ -202,6 +210,11 @@
                 paragraphStyle.lineSpacing = 5; // 行间距
                 _textView.attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName: _textView.font, NSForegroundColorAttributeName: _textView.textColor, NSParagraphStyleAttributeName: paragraphStyle}];
             }
+#else
+            NSMutableAttributedString *plainText = [[NSMutableAttributedString alloc] initWithString:_textView.attributedText.string];
+            _textView.attributedText = plainText;
+            _textView.text = _textView.attributedText.string;
+#endif
         }
     }else {
         NSString *selectedStr = [VEHelp getSubstring:_textView.text targetRange:selectedRange];

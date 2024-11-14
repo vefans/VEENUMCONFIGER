@@ -40,6 +40,7 @@ FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_ScreenEffect
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_FlowerWord;//花字
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_MusicAlbumTemplate;//音乐相册
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_PlayscriptTemplate;//台本模版
+FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_Watermark;//水印
 
 //亮度
 extern float const VEAdjust_MinValue_Brightness;
@@ -95,6 +96,8 @@ extern float const VEAdjust_MaxValue_Exposure;
 extern float const VEAdjust_DefaultValue_Exposure;
 
 @interface VEHelp : NSObject
+
++ (void)resetLoadResourcesStatus;
 + (NSString *)createFilename;
 
 + (UIEdgeInsets) safeAreaInsets;
@@ -632,6 +635,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 /**图片翻转
  */
 + (UIImage *)imageFilp:(UIImage *)cImage isVerticalFlip:(BOOL)isVerticalFlip;
++ (UIImage *)imageFilp:(UIImage *)cImage type:(int)type;
 
 + (UIImage *)imageRotatedByDegrees:(UIImage *)cImage rotation:(float)rotation;
 
@@ -844,8 +848,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(UIImageView *)loadAnimationImageViiewWithView:( UIView * ) view  atImageUrl:(NSURL *)imageUrl  atPlaceholder:( UIImage * ) placeholder atIsRelease:( BOOL ) isRelease;
 +(void)btn_LoadImagge:( UIButton * ) sender atUrl:( NSURL * ) url forState:( UIControlState ) state;
 +( void )YYWebImageMarnager_RemoveAllObjects;
-+(void)YYWebImageMarnager_setDecodeForDisplay:( BOOL ) decodeForDisplay;
 +(UIImage *)getWebp:( NSString * ) path;
++(void)setVeSDWebImageMaxMemory;
 
 + (NSInteger)getTextByteLength:(NSString *)text encodingType:(CaptionTextEncodeType)encodeType;
 + (NSString *)getSubstring:(NSString *)fullString targetLength:(NSInteger)targetLength encodingType:(CaptionTextEncodeType)encodeType;
@@ -853,4 +857,12 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (void)unlink:(NSString *)path;
 
 +(void)initCaptionExFontsize:( CaptionEx * ) captionSubtitle;
++ (void)downloadVideoFromURL:(NSString *)urlString savePath:(NSString *)savepath completed:(void(^)(NSString *,NSError *))completed;
+
++ (void)copyLabelStylesFromCaptionItem:(CaptionItem *)originalItem toCaptionItem:(CaptionItem *)captionItem;
+
++(UIView *)keyloadWait:( NSString * ) str  aViewController: ( UIViewController * ) viewController atActivityView:(UIView *)view;
+
++ (CaptionEx *)getTextWatermarkWithFolderPath:(NSString *)path configDic:(NSDictionary **)configDic;
+
 @end

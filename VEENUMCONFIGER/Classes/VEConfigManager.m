@@ -98,6 +98,8 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
 #ifdef EnableSDWebImage
     [[SDImageCache sharedImageCache] config].maxMemoryCost = 50 * 1024 * 1024;
     [[SDImageCache sharedImageCache] config].maxMemoryCount = 50;
+#else
+    [VEHelp setVeSDWebImageMaxMemory];
 #endif
     return singleOjbect;
 }
@@ -129,12 +131,6 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
         _enableBtnLikeTemp = NO;
         _selectedTypeColors = @[(id)UIColorFromRGB(0xdddff8).CGColor, (id)UIColorFromRGB(0xefe5e7).CGColor, (id)UIColorFromRGB(0xfbdcdb).CGColor];
         _textColorOnGradientView = [UIColor blackColor];
-#ifndef EnableSDWebImage
-        if( !iPhone_X )
-        {
-            [VEHelp YYWebImageMarnager_setDecodeForDisplay:false];
-        }
-#endif
     }
     return self;
 }
@@ -151,11 +147,12 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
         case CHINESE:
             [[NSUserDefaults standardUserDefaults] setObject:@"zh-Hans" forKey:kVELanguage];
             break;
-            
         case ENGLISH:
             [[NSUserDefaults standardUserDefaults] setObject:@"en" forKey:kVELanguage];
             break;
-        
+        case OtherLanguages:
+            [[NSUserDefaults standardUserDefaults] setObject:@"system" forKey:kVELanguage];
+            break;
         default:
             break;
     }

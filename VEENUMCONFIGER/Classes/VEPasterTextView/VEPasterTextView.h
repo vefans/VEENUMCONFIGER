@@ -86,6 +86,8 @@
 @property (nonatomic, assign)NSInteger   captionTextIndex;
 @property (nonatomic, assign)CGRect  tOutRect;
 
+-(void)initSelectImageView_CreateTemplate;
+
 @property (nonatomic, strong)NSMutableArray<UIButton *> * _Nullable textEditBtnArray;
 @property (nonatomic, strong)NSMutableArray * _Nullable textEditBtnLayerArrary;
 -(void)addTextEditBoxEx:(CGRect) rect;

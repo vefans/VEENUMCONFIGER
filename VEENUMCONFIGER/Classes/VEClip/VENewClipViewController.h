@@ -17,6 +17,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VENewClipViewController : VENavBarViewController
 
+@property(nonatomic, assign) float currentRotate;
+@property(nonatomic, assign) BOOL isCurrentRefreshRotate;
+@property(nonatomic, assign) BOOL isRotation;
+
 @property(nonatomic, assign)FileCropModeType    cutMmodeType;
 @property(nonatomic, assign)BOOL                        isCropTypeViewHidden;   //是否显示 裁剪比例选择
 @property(nonatomic, assign)CGRect fixedMaxCrop;//固定裁剪最大区域
@@ -25,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**需要裁剪的文件
  */
 @property (nonatomic, strong ) VEMediaInfo        *selectFile;
+@property (nonatomic, assign) float  file_rotate;
 
 /** 是否需要导出，默认NO
  */

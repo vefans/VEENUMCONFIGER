@@ -690,16 +690,16 @@
     }
     if (_isShowMiddleTrack) {
         if (CMTimeGetSeconds(_currentMiddelTimeRange.duration) == 0) {
-            if (currentMinValue > _maxValue - _currentMaxValue) {
-                _currentMinValue = _maxValue - _currentMaxValue;
+            if (_currentMaxValue > 0 && currentMinValue > _currentMaxValue) {
+                _currentMinValue = _currentMaxValue;
             }
         }
         else if (currentMinValue > CMTimeGetSeconds(_currentMiddelTimeRange.start)) {
             _currentMinValue = CMTimeGetSeconds(_currentMiddelTimeRange.start);
         }
     }
-    else if (currentMinValue > _maxValue - _currentMaxValue) {
-        _currentMinValue = _maxValue - _currentMaxValue;
+    else if (_currentMaxValue > 0 && currentMinValue > _currentMaxValue) {
+        _currentMinValue = _currentMaxValue;
     }
     
     _minLabel.text = [NSString stringWithFormat:@"%.1f%@", _currentMinValue, _unit];

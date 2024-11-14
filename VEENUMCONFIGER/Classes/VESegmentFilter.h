@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VESegmentFilter : NSObject
 
-
+-(CVPixelBufferRef)segmentChromeGreenPixelBuffer:(CVPixelBufferRef)pixel ;
 -(int)segmentPixelBuffer:(CVPixelBufferRef)pixel maskPixelBuffer:(CVPixelBufferRef)mask;
 
 @end

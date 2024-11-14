@@ -116,6 +116,7 @@
 - (void)loadTrimmerViewThumbImage:(UIImage *)image thumbnailCount:(NSInteger)thumbnailCount
 {
     if(_TrimmerView){
+        _TrimmerView.minThumbWidth = _currentHandle.frame.size.width;
         [_TrimmerView setVideoCore:_thumbnailCoreSDK];
         [_TrimmerView setClipTimeRange:CMTimeRangeMake(CMTimeMakeWithSeconds(0, TIMESCALE), _thumbnailCoreSDK.composition.duration)];
         _TrimmerView.thumbTimes = thumbnailCount;

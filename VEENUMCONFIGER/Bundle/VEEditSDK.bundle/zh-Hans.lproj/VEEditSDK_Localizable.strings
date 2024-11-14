@@ -1776,6 +1776,7 @@
 
 "Tile" = "平铺";
 "Templates" = "模板";
+"Text_watermark" = "文案";
 "Single line" = "单行";
 "Single" = "单个";
 "Distance" = "间距";
@@ -1793,6 +1794,7 @@
 "Press and hold thumbnail to view the text details" = "长按缩略图可预览详细文字内容";
 "Top" = "置顶";
 "Character spacing" = "字间距";
+"Local watermark" = "本地水印";
 
 "Speech Text" = "文本朗读";
 "Extracted" = "提取声音";

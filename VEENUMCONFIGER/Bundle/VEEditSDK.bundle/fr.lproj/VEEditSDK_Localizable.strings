@@ -169,7 +169,7 @@
 "选择配乐" = "Sélectionner une musique";
 "选择音效" = "Sélectionner un effet";
 "选择媒体资源" = "Sélectionnez un/des média(s)";
-"无法下载" = "Impossible de télécharger"
+"无法下载" = "Impossible de télécharger";
 "加载中..." = "Chargement en cours…";
 "正在存入草稿箱...." = "Dépôt dans une boîte à projets en cours....";
 "长按并拖动可调整顺序哟" = "Appuyer longuement et faire glisser pour adapter le tri";
@@ -1267,7 +1267,7 @@
 "智能抠像" = "VideoMatting";
 "请输入宽高比（例如：16:9）" = "Enter proportion（e.g：16:9）";
 "输入自定义比例" = "Enter custom proportion";
-"请输入正确的宽高比（例如：16:9）" = "Enter right proportion（e.g：16:9）"
+"请输入正确的宽高比（例如：16:9）" = "Enter right proportion（e.g：16:9）";
 "请输入或粘贴文稿，开启提词器功能～" = "Please input or paste the text and turn on the function of the teleprompter ~";
 
 "您确定要删除此草稿吗？" = "Do you sure delete this draft?";

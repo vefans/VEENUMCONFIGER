@@ -2961,6 +2961,9 @@
                 float duration = _videoCore.duration*1000.0;
                 float fRemain = ( (int)duration )%( (int)(_trimDuration_OneSpecifyTime/4.0 *1000) );
                 endWidth = endWidth*( (((float)fRemain)/1000.0)/(_trimDuration_OneSpecifyTime/4.0) );
+                if (_minThumbWidth > 0 && endWidth + currentFrame.origin.x < _minThumbWidth) {
+                    endWidth = _minThumbWidth - currentFrame.origin.x;
+                }
                 currentFrame.size.width = endWidth;
             }
             

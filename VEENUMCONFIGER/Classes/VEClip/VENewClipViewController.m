@@ -147,29 +147,34 @@
     _sourceImageSize = imageSize;
     _editVideoSize = imageSize;
     
+    _file_rotate = 0;
     {
+        float  rotate = _selectFile.rotate;
+//        if( _isCurrentRefreshRotate )
+//        {
+//            rotate = _currentRotate;
+//        }
         float x = _fixedMaxCrop.origin.x;
         float y = _fixedMaxCrop.origin.y;
         float w = _fixedMaxCrop.size.width;
         float h = _fixedMaxCrop.size.height;
-        if((_selectFile.rotate > 45 && _selectFile.rotate < 90 + 45)){
+        if((rotate > 45 && rotate < 90 + 45)){
             x = _fixedMaxCrop.origin.y;
             y = (1 - (_fixedMaxCrop.origin.x + _fixedMaxCrop.size.width));
             w = _fixedMaxCrop.size.height;
             h = _fixedMaxCrop.size.width;
             if(self.cropType != VE_VECROPTYPE_ORIGINAL && self.cropType != VE_VECROPTYPE_FREE)
-            _sourceImageSize = CGSizeMake(imageSize.height, imageSize.width);
-        }else if(_selectFile.rotate > 180 - 45 && _selectFile.rotate < 180 + 45){
+                _sourceImageSize = CGSizeMake(imageSize.height, imageSize.width);
+        }else if(rotate > 180 - 45 && rotate < 180 + 45){
             x = (1 - (_fixedMaxCrop.origin.x + _fixedMaxCrop.size.width));
             y = (1 - (_fixedMaxCrop.origin.y + _fixedMaxCrop.size.height));
-            
-        }else  if(_selectFile.rotate > 270 - 45 && _selectFile.rotate < 270 + 45){
+        }else if(rotate > 270 - 45 && rotate < 270 + 45){
             x = (1 - (_fixedMaxCrop.origin.y + _fixedMaxCrop.size.height));
             y = _fixedMaxCrop.origin.x;
             w = _fixedMaxCrop.size.height;
             h = _fixedMaxCrop.size.width;
             if(self.cropType != VE_VECROPTYPE_ORIGINAL && self.cropType != VE_VECROPTYPE_FREE)
-            _sourceImageSize = CGSizeMake(imageSize.height, imageSize.width);
+                _sourceImageSize = CGSizeMake(imageSize.height, imageSize.width);
         }
         _fixedMaxCrop = CGRectMake(x, y, w, h);
     }
@@ -182,7 +187,7 @@
     //============================================================
     [self refreshPrewFrame];
     _videoBgView.hidden = NO;
-    [_videoBgView setContentSize:_videoPrewRect.size];
+//    [_videoBgView setContentSize:_videoPrewRect.size];
     {
 //        float v_w = _videoBgView.frame.size.width;
 //        if(self.cropType ==VE_VECROPTYPE_FIXEDRATIO){
@@ -279,6 +284,12 @@
 #ifdef kEnterBackgroundCancelExport
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationEnterHome:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 #endif
+//    if( _isCurrentRefreshRotate )
+//    {
+//        _isCurrentRefreshRotate = false;
+//        [self setRotate_RefreshFrame:_currentRotate];
+        
+//    }
 }
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView{
     
@@ -457,6 +468,10 @@
             }else if (i == 2) {
                 imagePath = @"New_EditVideo/scrollViewChildImage/剪辑_剪辑旋转默认_";
                 [rotateBtn setTitle:VELocalizedString(@"旋转", nil) forState:UIControlStateNormal];
+                if( _isCurrentRefreshRotate && !_isRotation )
+                {
+                    rotateBtn.hidden = true;
+                }
             }else {
                 imagePath = @"剪辑_重置默认_";
                 [rotateBtn setImage:[VEHelp imageWithContentOfFile:@"剪辑_重置选中_"] forState:UIControlStateDisabled];
@@ -464,6 +479,10 @@
                 [rotateBtn setTitleColor:UIColorFromRGB(0x3c3d3d) forState:UIControlStateDisabled];
                 rotateBtn.enabled = NO;
                 _resetBtn = rotateBtn;
+                if( _isCurrentRefreshRotate && !_isRotation )
+                {
+                    rotateBtn.frame =  CGRectMake(width * 2, y, width, 44);
+                }
             }
             [rotateBtn setImage:[VEHelp imageWithContentOfFile:imagePath] forState:UIControlStateNormal];
             [rotateBtn setTitleColor:TEXT_COLOR forState:UIControlStateNormal];
@@ -480,6 +499,10 @@
             [rotateBtn addTarget:self action:@selector(rotateBtnAction:) forControlEvents:UIControlEventTouchUpInside];
             rotateBtn.tag = i + 1;
             [_toolView addSubview:rotateBtn];
+        }
+        if( _isCurrentRefreshRotate && !_isRotation )
+        {
+            _toolView.frame = CGRectMake(_toolView.frame.origin.x + width/2.0, _toolView.frame.origin.y, _toolView.frame.size.width, _toolView.frame.size.height);
         }
     }
 }
@@ -1046,6 +1069,16 @@
             }
             _videoPrewRect = CGRectMake(0, 0, width, height);
         }
+        
+        if( _cutMmodeType == kCropTypeFixed  )
+        {
+            if (vvasset.rotate == 90 || vvasset.rotate == 270) {
+                float  width = _sourceImage.size.width/_editVideoSize.width;
+                float height = _sourceImage.size.height/_editVideoSize.height;
+                vvasset.rectInVideo = CGRectMake((1.0 - width) / 2.0, (1.0 - height) / 2.0, width, height);
+            }
+        }
+        
         [_videoCoreSDK setEditorVideoSize:_editVideoSize];
         if(CGRectEqualToRect(_videoPrewRect, CGRectZero)){
             [_videoCoreSDK setFrame:_videoBgView.bounds];
@@ -1056,6 +1089,8 @@
         [_videoBgView insertSubview:_videoCoreSDK.view  atIndex:0];
         _videoCoreSDK.delegate = self;
     }
+    
+
     [_videoCoreSDK setScenes:self.scenesArray];
     [_videoCoreSDK build];
 }
@@ -1198,11 +1233,42 @@
         _selectFile.rotate = 0;
     }
     [self playVideo:NO];
+    [self refreshPrewFrame];
+    
+    _file_rotate += 90;
+    if (_file_rotate == 360) {
+        _file_rotate = 0;
+    }
+ 
+    float x = _fixedMaxCrop.origin.x*_videoBgView.contentSize.width;
+    float y = _fixedMaxCrop.origin.y*_videoBgView.contentSize.height;
+    if( _file_rotate == 90 )
+    {
+        x = (1.0 - _fixedMaxCrop.origin.x - _fixedMaxCrop.size.width)*_videoBgView.contentSize.width;
+        y = (1.0 - _fixedMaxCrop.origin.y - _fixedMaxCrop.size.height)*_videoBgView.contentSize.height;
+    }
+    if( (y + _videoBgView.frame.size.height) > _videoBgView.contentSize.height )
+    {
+        y = _videoBgView.contentSize.height - _videoBgView.frame.size.height;
+    }
+    if( (x + _videoBgView.frame.size.width) > _videoBgView.contentSize.width )
+    {
+        x = _videoBgView.contentSize.width - _videoBgView.frame.size.width;
+    }
+    [_videoBgView setContentOffset: CGPointMake(x, y) animated:YES];
+    
+    [self setResetButtonEnabled:YES];
+    
+}
+
+-(void)setRotate_RefreshFrame:( float ) rotate
+{
+    _selectFile.rotate = rotate;
+    [self playVideo:NO];
     
     [self refreshPrewFrame];
     
     [self setResetButtonEnabled:YES];
-    
 }
 
 -(void)vertButtonClicked{
@@ -1228,6 +1294,7 @@
 }
 
 -(void)resetButtonClicked{
+    _file_rotate = 0.0;
     _selectFile.rotate = 0;
     _selectFile.isVerticalMirror = NO;
     _selectFile.isHorizontalMirror = NO;
@@ -1938,7 +2005,33 @@
         _videoPrewRect = CGRectMake(0, 0, v_w, v_h);
         _editVideoSize = CGSizeMake(_editVideoSize.width, _editVideoSize.width * (v_h/v_w));
         [self initPlayer];
-        _videoBgView.contentSize = _videoPrewRect.size;
+        
+        if(  _cutMmodeType == kCropTypeFixed &&
+          _cropType == VE_VECROPTYPE_FIXEDRATIO )
+        {
+            float scale = (_videoPrewRect.size.width/_fixedMaxCrop.size.width)/_videoPrewRect.size.width;
+            if( _fixedMaxCrop.size.height == 1.0 )
+                scale = 1.0;
+            else{
+                if( ( (_videoPrewRect.size.height/_fixedMaxCrop.size.height)/_videoPrewRect.size.height ) < scale )
+                    scale = (_videoPrewRect.size.height/_fixedMaxCrop.size.height)/_videoPrewRect.size.height;
+            }
+            [_videoBgView setZoomScale:scale];
+            float x = _fixedMaxCrop.origin.x*_videoBgView.contentSize.width;
+            float y = _fixedMaxCrop.origin.y*_videoBgView.contentSize.height;
+            if( (y + _videoBgView.frame.size.height) > _videoBgView.contentSize.height )
+            {
+                y = _videoBgView.contentSize.height - _videoBgView.frame.size.height;
+            }
+            if( (x + _videoBgView.frame.size.width) > _videoBgView.contentSize.width )
+            {
+                x = _videoBgView.contentSize.width - _videoBgView.frame.size.width;
+            }
+//            [_videoBgView setZoomScale:scale animated:true];
+            [_videoBgView setContentOffset: CGPointMake(x, y) animated:YES];
+        }else{
+            _videoBgView.contentSize = _videoPrewRect.size;
+        }
     }
 }
 
@@ -1953,9 +2046,13 @@
         crop.size.width = self.videoBgView.frame.size.width/self.videoBgView.contentSize.width;
         crop.size.height = self.videoBgView.frame.size.height/self.videoBgView.contentSize.height;
         
-        UIImage *imageRet = [UIImage imageWithCGImage:[_videoCoreSDK copyCurrentCGImage]];
-        imageRet = [VEHelp image:imageRet rotation:0 cropRect:crop];
-        return imageRet;
+        if( _videoCoreSDK )
+        {
+            UIImage *imageRet = [UIImage imageWithCGImage:[_videoCoreSDK copyCurrentCGImage]];
+            imageRet = [VEHelp image:imageRet rotation:0 cropRect:crop];
+            return imageRet;
+        }
+        return nil;
     };
 }
 
@@ -2048,7 +2145,6 @@
         _videoBgView.layer.borderWidth = 2.0;
         _videoBgView.delegate = self;
         [_bgView addSubview:_videoBgView];
-        
         [self initPlayer];
     }
   
@@ -2258,8 +2354,9 @@
                 _selectFile.rotate = 0;
             }
             _editVideoSize = CGSizeMake(_editVideoSize.height, _editVideoSize.width);//(1920,1448)
-            
             [self playVideo:NO];
+            [_videoCoreSDK stop];
+            _videoCoreSDK = nil;
             
             [self refreshPrewFrame];
             
@@ -2275,7 +2372,8 @@
             _selectFile.rotate -=90;
             _editVideoSize = CGSizeMake(_editVideoSize.height, _editVideoSize.width);//(1920,1448)
             [self playVideo:NO];
-            
+            [_videoCoreSDK stop];
+            _videoCoreSDK = nil;
             [self refreshPrewFrame];
             
             [self setResetButtonEnabled:YES];

@@ -128,6 +128,173 @@ NSString* const kLightWrapFragmentShader = SHADER_STRING
  
  );
 
+NSString* const kChromeFragmentShader = SHADER_STRING
+(
+ precision highp float;
+ //pi 值
+ const highp float PI = 3.14159265358979323846;
+ uniform sampler2D u_RGBTexture; //指定颜色透明的纹理
+ uniform vec2 size;
+ varying vec2 textureCoordinate;
+ 
+ vec2 RGBtoUV(vec3 rgb) {
+   return vec2(
+     rgb.r * -0.169 + rgb.g * -0.331 + rgb.b *  0.5    + 0.5,
+     rgb.r *  0.5   + rgb.g * -0.419 + rgb.b * -0.081  + 0.5
+   );
+ }
+ vec3 keyColor = vec3(0.0, 1.0, 0.0);
+ float similarity = 0.1;
+ float smoothness = 0.1;
+  float spill = 0.04;
+ 
+ vec4 ProcessChromaKey(vec2 texCoord) {
+    
+   vec4 rgba = texture2D(u_RGBTexture, texCoord);
+   float chromaDist = distance(RGBtoUV(rgba.rgb), RGBtoUV(keyColor));
+
+   float baseMask = chromaDist - similarity;
+   float fullMask = pow(clamp(baseMask / smoothness, 0., 1.), 1.5);
+
+   if(fullMask == 0.0){
+     return vec4(0.0,0.0,0.0,0.0);
+   }
+   else if(fullMask<1.0){
+     return vec4(fullMask,baseMask,0.0,1.0);
+   }
+   else{
+     return vec4(1.0,1.0,1.0,1.0);
+   }
+ }
+
+ vec4 ProcessChromaKey2(vec2 texCoord) {
+    vec4 rgba = ProcessChromaKey(texCoord);
+    vec2 resolution = vec2(1.0/size.x,1.0/size.y);
+    vec2 left = vec2(clamp(texCoord.x - resolution.x,0.0,1.0),texCoord.y);
+    vec2 right = vec2(clamp(texCoord.x+resolution.x,0.0,1.0),texCoord.y);
+    vec2 top = vec2(texCoord.x,clamp(texCoord.y - resolution.y,0.0,1.0));
+    vec2 bottom = vec2(texCoord.x,clamp(texCoord.y + resolution.y,0.0,1.0));
+
+    vec2 left_top = vec2(clamp(texCoord.x - resolution.x,0.0,1.0),clamp(texCoord.y - resolution.y,0.0,1.0));
+    vec2 right_top = vec2(clamp(texCoord.x + resolution.x,0.0,1.0),clamp(texCoord.y - resolution.y,0.0,1.0));
+    vec2 left_bottom = vec2(clamp(texCoord.x - resolution.x,0.0,1.0),clamp(texCoord.y + resolution.y,0.0,1.0));
+    vec2 right_bottom = vec2(clamp(texCoord.x + resolution.x,0.0,1.0),clamp(texCoord.y + resolution.y,0.0,1.0));
+
+    vec3 left_val =  ProcessChromaKey(left).rgb;
+    vec3 right_val =  ProcessChromaKey(right).rgb;
+    vec3 top_val =  ProcessChromaKey(top).rgb;
+    vec3 bottom_val =  ProcessChromaKey(bottom).rgb;
+
+    vec3 left_top_val = ProcessChromaKey(left_top).rgb;
+    vec3 right_top_val = ProcessChromaKey(right_top).rgb;
+    vec3 left_bottom_val = ProcessChromaKey(left_bottom).rgb;
+    vec3 right_bottom_val = ProcessChromaKey(right_bottom).rgb;
+
+    float val = min(right_bottom_val.r, min(left_bottom_val.r, min(right_top_val.r, min(left_top_val.r, min(bottom_val.r,min(top_val.r,min(left_val.r,right_val.r)))))));
+    float val1 = min(right_bottom_val.g, min(left_bottom_val.g, min(right_top_val.g, min(left_top_val.g, min(bottom_val.g,min(top_val.g,min(left_val.g,right_val.g)))))));
+
+    if(val==0.0){
+         return vec4(0.0,0.0,0.0,0.0);
+    }
+    else{
+         return vec4(val,val1,0.0,1.0);
+    }
+    
+ }
+ 
+ void main() {
+    
+#if 0
+    vec3 keyRGB1 = vec3(0.0,1.0,0.0);
+    float alphaLower = 1.0;
+    float alphaUpper = 1.0;
+    float thresholdSensitivity = 0.4*alphaUpper;
+    float smoothing = 0.10*alphaUpper; //安卓是0.13
+    if(keyRGB1.r != 0.0 || keyRGB1.g != 1.0 || keyRGB1.b != 0.0)
+        smoothing = 0.10*alphaLower;
+    
+    vec3 colorToReplace = keyRGB1;
+    
+    vec4 textureColor = texture2D(u_RGBTexture, textureCoordinate);
+    
+    float maskY = 0.2989 * colorToReplace.r + 0.5866 * colorToReplace.g + 0.1145 * colorToReplace.b;
+    float maskCr = 0.7132 * (colorToReplace.r - maskY);
+    float maskCb = 0.5647 * (colorToReplace.b - maskY);
+    
+    float Y = 0.2989 * textureColor.r + 0.5866 * textureColor.g + 0.1145 * textureColor.b;
+    float Cr = 0.7132 * (textureColor.r - Y);
+    float Cb = 0.5647 * (textureColor.b - Y);
+    
+    //     float blendValue = 1.0 - smoothstep(thresholdSensitivity - smoothing, thresholdSensitivity , abs(Cr - maskCr) + abs(Cb - maskCb));
+    float blendValue = smoothstep(thresholdSensitivity, thresholdSensitivity + smoothing, distance(vec2(Cr, Cb), vec2(maskCr, maskCb)));
+    gl_FragColor = vec4(textureColor.rgb, textureColor.a * blendValue);
+    //gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+    if(textureColor.a * blendValue == 0.0)
+        gl_FragColor = vec4(0.0,0.0,0.0, 1.0);
+    else
+        gl_FragColor = vec4(1.0,1.0,1.0, textureColor.a * blendValue);
+#else
+    
+    
+    vec3 keyRGB1 = vec3(0.0,0.8,0.0);
+    float alphaLower = 0.2*0.2;
+    float alphaUpper = 1.0*0.2;
+    float factor = 0.2*0.2;
+    
+     keyColor = keyRGB1;
+     similarity = alphaUpper;
+     smoothness = alphaLower;
+     spill = factor;
+    vec2 texCoord = textureCoordinate;
+    vec4 color = texture2D(u_RGBTexture, textureCoordinate);
+    vec4 mask_color = ProcessChromaKey2(textureCoordinate);
+
+    float spillVal = pow(clamp(mask_color.g / spill, 0., 1.), 1.5);
+
+    if(mask_color.r>0.0 &&mask_color.r<1.0){
+      vec2 resolution = vec2(1.0/size.x,1.0/size.y);
+      resolution = resolution + resolution / 0.5;
+      vec2 left = vec2(clamp(texCoord.x - resolution.x,0.0,1.0),texCoord.y);
+      vec2 right = vec2(clamp(texCoord.x + resolution.x,0.0,1.0),texCoord.y);
+      vec2 top = vec2(texCoord.x,clamp(texCoord.y - resolution.y,0.0,1.0));
+      vec2 bottom = vec2(texCoord.x,clamp(texCoord.y + resolution.y,0.0,1.0));
+
+      float left_val = ProcessChromaKey(left).r;
+      float right_val = ProcessChromaKey(right).r;
+      float top_val = ProcessChromaKey(top).r;
+      float bottom_val = ProcessChromaKey(bottom).r;
+
+      float val = max(bottom_val,max(top_val,max(left_val,right_val)));
+      if(val == left_val){
+        color = texture2D(u_RGBTexture, left);
+      }
+      else if(val == right_val){
+        color = texture2D(u_RGBTexture, right);
+      }
+      else if(val == top_val){
+        color = texture2D(u_RGBTexture, top);
+      }
+      else if(val == bottom_val){
+        color = texture2D(u_RGBTexture, bottom);
+      }
+      // vec3 res = color.rgb - (1.0-spillVal) * keyColor;
+      float desat = clamp(color.r * 0.2126 + color.g * 0.7152 + color.b * 0.0722, 0., 1.);
+      vec3 res = mix(vec3(desat, desat, desat), color.rgb, spillVal);
+      gl_FragColor = vec4(res.r,res.g,res.b,mask_color.r);
+    }
+    else{
+      // vec3 res = color.rgb - (1.0-spillVal) * keyColor;
+      float desat = clamp(color.r * 0.2126 + color.g * 0.7152 + color.b * 0.0722, 0., 1.);
+      vec3 res = mix(vec3(desat, desat, desat), color.rgb, spillVal);
+      gl_FragColor = vec4(res.r,res.g,res.b,mask_color.r);
+    }
+    if(gl_FragColor.a == 0.0)
+        gl_FragColor = vec4(0.0,0.0,0.0, 1.0);
+    else
+        gl_FragColor = vec4(1.0,1.0,1.0, gl_FragColor.a);
+#endif
+}
+ );
 typedef struct OutputPixelBufferList
 {
     CVPixelBufferRef outputPixelBuffer;
@@ -185,6 +352,13 @@ typedef NS_ENUM(NSInteger, VESegmentStatu) {
     GLuint _lightWrapInputTextureUniform,_lightWrapInputMaskTextureUniform;
     GLuint _coverageUniform,_lightWrappingUniform,_blendModeUniform;
     
+    
+    //chrome-green
+    GLuint _greenProgam;
+    GLuint _greenPositionAttribute,_greenTextureCoordinateAttribute;
+    GLuint _greenVert,_greenFrag,_greenInputTextureUniform,_greenSizeUnifrom;
+    CVPixelBufferRef _grayPixel;
+    
     OutputPixelBufferList *_pOutputPixelBufferList;
     FrameBufferObjectList* _pFBOList;
     TextureList* _pMaskTextureList;
@@ -203,6 +377,7 @@ typedef NS_ENUM(NSInteger, VESegmentStatu) {
         _pOutputPixelBufferList = NULL;
         _videoTextureCache = NULL;
         _pFBOList = NULL;
+        _grayPixel = NULL;
         _statu = VESegment_Finish;
     }
     return self;
@@ -432,6 +607,7 @@ typedef NS_ENUM(NSInteger, VESegmentStatu) {
     
     _bilateralProgram = glCreateProgram();
     _lightWrapProgam = glCreateProgram();
+    _greenProgam = glCreateProgram();
 
     if (![self compileShader:&_bilateralVert type:GL_VERTEX_SHADER source:kJointBilateralVertexShader]) {
         NSLog(@"Failed to compile vertex shader");
@@ -455,14 +631,29 @@ typedef NS_ENUM(NSInteger, VESegmentStatu) {
         return NO;
     }
     
+    if (![self compileShader:&_greenVert type:GL_VERTEX_SHADER source:kLightWrapVertexShader]) {
+        NSLog(@"Failed to compile vertex shader");
+        return NO;
+    }
+    
+    
+    if (![self compileShader:&_greenFrag type:GL_FRAGMENT_SHADER source:kChromeFragmentShader]) {
+        NSLog(@"Failed to compile cust fragment shader");
+        return NO;
+    }
+    
     glAttachShader(_bilateralProgram, _bilateralVert);
     glAttachShader(_bilateralProgram, _bilateralFrag);
     glAttachShader(_lightWrapProgam, _lightWrapVert);
     glAttachShader(_lightWrapProgam, _lightWrapFrag);
+    glAttachShader(_greenProgam, _greenVert);
+    glAttachShader(_greenProgam, _greenFrag);
+    
     
     
     if (![self linkProgram:_bilateralProgram] ||
-        ![self linkProgram:_lightWrapProgam]) {
+        ![self linkProgram:_lightWrapProgam] ||
+        ![self linkProgram:_greenProgam]) {
         
         if (_bilateralVert) {
             glDetachShader(_bilateralProgram, _bilateralVert);
@@ -484,7 +675,16 @@ typedef NS_ENUM(NSInteger, VESegmentStatu) {
             glDeleteShader(_lightWrapFrag);
             _lightWrapFrag = 0;
         }
-        
+        if (_greenVert) {
+            glDetachShader(_greenProgam, _greenVert);
+            glDeleteShader(_greenVert);
+            _greenVert = 0;
+        }
+        if (_greenFrag) {
+            glDetachShader(_greenProgam, _greenFrag);
+            glDeleteShader(_lightWrapFrag);
+            _greenFrag = 0;
+        }
         return NO;
     }
     
@@ -510,6 +710,11 @@ typedef NS_ENUM(NSInteger, VESegmentStatu) {
     _blendModeUniform = glGetUniformLocation(_lightWrapProgam, "blendMode");
     
     
+    _greenPositionAttribute = glGetAttribLocation(_greenProgam, "position");
+    _greenTextureCoordinateAttribute = glGetAttribLocation(_greenProgam, "inputTextureCoordinate");
+    _greenInputTextureUniform = glGetUniformLocation(_greenProgam, "u_RGBTexture");
+    _greenSizeUnifrom = glGetUniformLocation(_greenProgam, "size");
+    
     // Release vertex and fragment shaders.
     if (_bilateralVert) {
         glDetachShader(_bilateralProgram, _bilateralVert);
@@ -532,7 +737,16 @@ typedef NS_ENUM(NSInteger, VESegmentStatu) {
         glDeleteShader(_lightWrapFrag);
         _lightWrapFrag = 0;
     }
-    
+    if (_greenVert) {
+        glDetachShader(_greenProgam, _greenVert);
+        glDeleteShader(_greenVert);
+        _greenVert = 0;
+    }
+    if (_greenFrag) {
+        glDetachShader(_greenProgam, _greenFrag);
+        glDeleteShader(_lightWrapFrag);
+        _greenFrag = 0;
+    }
     CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, _curContext, NULL, &_videoTextureCache);
     if (err != noErr) {
         NSLog(@"Error at CVOpenGLESTextureCacheCreate %d", err);
@@ -816,7 +1030,83 @@ bail:
     return jointBilateralPixel;;
 }
 
+-(int)processGreenPixelBuffer:(CVPixelBufferRef)srcPixelBuffer dstPixelBuffer:(CVPixelBufferRef)dstPixelBuffer
+{
+    GLfloat verticesCoordinates[8]  = {
+        
+        -1.0,-1.0,
+        1.0,-1.0,
+        -1.0,1.0,
+        1.0,1.0,
+    };
+    
+    GLfloat textureCoordinates[8]  = {
+        0.0,0.0,
+        1.0,0.0,
+        0.0,1.0,
+        1.0,1.0,
+    };
+    
+    if(!srcPixelBuffer || !dstPixelBuffer)
+        return -__LINE__;
+    
+    CVOpenGLESTextureRef dstTextureRef = 0;
+    CVOpenGLESTextureRef textureRef = [self customTextureForPixelBuffer:srcPixelBuffer];
+    if (!textureRef)
+        return -__LINE__;
+ 
+    int w = (int)CVPixelBufferGetWidth(srcPixelBuffer);
+    int h = (int)CVPixelBufferGetHeight(srcPixelBuffer);
+    FrameBufferObjectList* pFbo = [self getTextureFBOListNodeWithWidth:w height:h];
+    if (!pFbo)
+        return -__LINE__;
+    
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, pFbo->fbo);
+    //裁剪之后的宽高，也是输出纹理的大小
+    glViewport(0, 0, (int)w, (int)h);
+    
+    dstTextureRef = [self customTextureForPixelBuffer:dstPixelBuffer];
+    // Attach the destination texture as a color attachment to the off screen frame buffer
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(dstTextureRef), 0);
+    
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
+    }
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glUseProgram(_greenProgam);
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, CVOpenGLESTextureGetName(textureRef));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glUniform1i(_greenInputTextureUniform, 0);
+    
+    glUniform2f(_greenSizeUnifrom, w, h);
+    
+    //每个顶点由xy组成，一共4个顶点，所以顶点坐标和纹理坐标都是32
+    if(!_vbo)
+        [self createVBO:&_vbo positionAttribute:_greenPositionAttribute textureAttribute:_greenTextureCoordinateAttribute verticeCoordinates:(float*)verticesCoordinates verticeCoordinatesLen:32 textureCoordinates:(float*)textureCoordinates textureCoordinatesLen:32];
+    
+    [self useVBO:_vbo positionAttribute:_greenPositionAttribute textureAttribute:_greenTextureCoordinateAttribute verticeCoordinates:(float*)verticesCoordinates verticeCoordinatesLen:32 textureCoordinates:(float*)textureCoordinates textureCoordinatesLen:32];
 
+    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    glFlush();
+    
+    CFRelease(dstTextureRef);
+    CFRelease(textureRef);
+    
+    return 1;
+}
 -(CVPixelBufferRef)processLightWrapFromPixelBuffer:(CVPixelBufferRef)pixel maskPixelBuffer:(CVPixelBufferRef)mask
 {
     GLfloat verticesCoordinates[8]  = {
@@ -921,7 +1211,79 @@ bail:
     }
     return;
 }
+-(CVPixelBufferRef)segmentChromeGreenPixelBuffer:(CVPixelBufferRef)pixel
+{
+    _statu = VESegment_Begin;
+    if(!pixel)
+    {
+        _statu = VESegment_Finish;
+        return 0;
+    }
+    //创建新的上下文
+    if (!_curContext &&  [EAGLContext currentContext])
+        _curContext = [EAGLContext currentContext];
+    if(!_curContext)
+    {
+        _statu = VESegment_Finish;
+        return 0;
+    }
+    
+    [EAGLContext setCurrentContext:_curContext];
+    
+    if((_greenProgam <= 0) && (![self loadShaders]))
+    {
+        _statu = VESegment_Finish;
+        NSLog(@"error:segmentPixelBuffer load shader error ,line:%d",__LINE__);
+        return 0;
+    }
+    
+    int width = (int)CVPixelBufferGetWidth(pixel);
+    int height = (int)CVPixelBufferGetHeight(pixel);
+    
+    if(!_grayPixel || width != CVPixelBufferGetWidth(_grayPixel) || height != CVPixelBufferGetHeight(_grayPixel))
+    {
+        //如果 outputPixelBuffer 作为临时局部变量不停的alloc/release，导出4k视频内存会暴涨崩溃，1080p却正常
+        if(_grayPixel)
+        {
+            CVPixelBufferRelease(_grayPixel);
+            _grayPixel = nil;
+        }
+        
+        NSDictionary *pixelAttributes = [NSDictionary dictionaryWithObject:@{} forKey:(NSString *)kCVPixelBufferIOSurfacePropertiesKey];
+        CVReturn result = CVPixelBufferCreate(kCFAllocatorDefault,
+                                              width,
+                                              height,
+                                              kCVPixelFormatType_32BGRA,
+                                              (__bridge CFDictionaryRef)pixelAttributes,
+                                              &_grayPixel);
 
+        
+        if (result != kCVReturnSuccess){
+            NSLog(@"Unable to create cvpixelbuffer %d", result);
+            return 0;
+        }
+    }
+#if 0
+    CVPixelBufferLockBaseAddress(_grayPixel, 0);
+    size_t w = CVPixelBufferGetWidth(_grayPixel);
+    size_t h = CVPixelBufferGetHeight(_grayPixel);
+    size_t bytePerRow = CVPixelBufferGetBytesPerRow(_grayPixel);
+    uint8_t *pAddress = (uint8_t *)CVPixelBufferGetBaseAddress(_grayPixel);
+    memset(pAddress, 0, bytePerRow*h);
+    CVPixelBufferUnlockBaseAddress(_grayPixel, 0);
+#endif
+
+    int ret = [self processGreenPixelBuffer:pixel dstPixelBuffer:_grayPixel];
+    if(ret <= 0)
+    {
+        _statu = VESegment_Finish;
+        NSLog(@"error:processGreenPixelBuffer  error ,line:%d",__LINE__);
+        return 0;
+    }
+    [EAGLContext setCurrentContext:_curContext];
+    _statu = VESegment_Finish;
+    return  _grayPixel;
+}
 -(int)segmentPixelBuffer:(CVPixelBufferRef)pixel maskPixelBuffer:(CVPixelBufferRef)mask
 {
     _statu = VESegment_Begin;
@@ -1109,6 +1471,10 @@ bail:
         glDeleteProgram(_lightWrapProgam);
         _lightWrapProgam = 0;
     }
+    if (_greenProgam) {
+        glDeleteProgram(_greenProgam);
+        _greenProgam = 0;
+    }
     if (_videoTextureCache) {
         CVOpenGLESTextureCacheFlush(_videoTextureCache, 0);
         CFRelease(_videoTextureCache);
@@ -1138,6 +1504,9 @@ bail:
         free(_pOutputPixelBufferList);
         _pOutputPixelBufferList = pList;
     }
+    if(_grayPixel)
+        CVPixelBufferRelease(_grayPixel);
+    _grayPixel = NULL;
     [EAGLContext setCurrentContext:_curContext];
     
     NSLog(@"VESegmentFilter dealloc ~~");
