@@ -425,6 +425,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 + (NSURL *)getUrlWithFolderPath:(NSString *)folderPath fileName:(NSString *)fileName;
 + (NSURL *)getFileUrlWithFolderPath:(NSString *)folderPath fileName:(NSString *)fileName;
++ (NSURL *)getUrlWithFolderPath:(NSString *)folderPath fileUrl:(NSURL *)fileUrl suffix:(NSString *)suffix;
 + (id)getNetworkMaterialWithType:(NSString *)type
                           appkey:(NSString *)appkey
                          urlPath:(NSString *)urlPath;
@@ -864,5 +865,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(UIView *)keyloadWait:( NSString * ) str  aViewController: ( UIViewController * ) viewController atActivityView:(UIView *)view;
 
 + (CaptionEx *)getTextWatermarkWithFolderPath:(NSString *)path configDic:(NSDictionary **)configDic;
+
+//获取在原图的基础上裁剪图片
++ (UIImage *)cropImageFromURL:(NSURL *)imageURL withCrop:(CGRect)crop rotation:(float)rotation isHorizontalMirror:(BOOL) isHorizontalMirror isVerticalMirror:(BOOL)isVerticalMirror;
 
 @end

@@ -192,7 +192,8 @@
     
     for (int i = 0; i<count; i++) {
         float itemTime = self.videoDuration / count * i;
-        if(i > 0){
+        //if(i > 0)
+        {
             [items addObject:[NSValue valueWithCMTime:CMTimeMakeWithSeconds(itemTime, TIMESCALE)]];
         }
         NSInteger tag = i+1;
@@ -219,7 +220,7 @@
         
     }
     
-    __block NSInteger index = 1;
+    __block NSInteger index = 0;
     [self.corePlayer generateCGImagesAsynchronouslyForTimes:items maximumSize:CGSizeMake(200, 200) completionHandler:^(CMTime requestedTime, CGImageRef  _Nullable image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError * _Nullable error) {
         index ++;
         UIImage *newImage = [UIImage imageWithCGImage:image];

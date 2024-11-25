@@ -160,7 +160,7 @@ typedef void(^CancelBlock)(void);
         }
     }else{
         NSString *fullPath = [kStreamFile stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.%@",(unsigned) [task.response.URL hash],[task.response.URL pathExtension]]];
-        NSError *error;
+        NSError *fileError;
         NSString *filePath = nil;
         if(_cacheFilePath.length>0){
             filePath = _cacheFilePath;
@@ -177,15 +177,15 @@ typedef void(^CancelBlock)(void);
         NSLog(@"filePath : %@",filePath);
         unlink([filePath UTF8String]);
        
-        BOOL suc = [[NSFileManager defaultManager] moveItemAtURL:[NSURL fileURLWithPath:fullPath] toURL:[NSURL fileURLWithPath:filePath] error:&error];
+        BOOL suc = [[NSFileManager defaultManager] moveItemAtURL:[NSURL fileURLWithPath:fullPath] toURL:[NSURL fileURLWithPath:filePath] error:&fileError];
         if(_finishBlock&& suc){
             _finishBlock(filePath);
             
         }else{
-            [[NSFileManager defaultManager] removeItemAtURL:[NSURL fileURLWithPath:fullPath] error:&error];
             if(_failBlock){
                 _failBlock(error);
             }
+            [[NSFileManager defaultManager] removeItemAtURL:[NSURL fileURLWithPath:fullPath] error:&fileError];
         }
     }
 }

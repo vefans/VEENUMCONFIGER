@@ -34,7 +34,7 @@
 "比例" = "Ratio";
 "请稍候,正在应用到所有!" = "Wait a moment, applying to all!";
 
-"素材库" = "Stock videos";
+"素材库" = "Bibliothek";
 "Book Material" = "Book";
 "虚拟直播间" = "VirtualLive";
 "请添加音乐" = "Add Music";
@@ -2443,7 +2443,7 @@
 "+ 添加点" = "+ Add beat";
 "- 删除点" = "- Delete beat";
 "时长不足，填充为图片" = "Insufficient time, fill with picture";
-"最近项目" = "Recents";
+"最近项目" = "Neueste";
 "添加点" = "Add beat";
 "删除点" = "Delete";
 "批量编辑" = "Batch edit";

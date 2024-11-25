@@ -107,6 +107,7 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
 - (instancetype)init
 {
     if (self = [super init]) {
+        _subtiteJsonFontSize = 8.0;
         _directory = NSHomeDirectory();//[NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) firstObject];//
         _editConfiguration = [[VEEditConfiguration alloc] init];
         _cameraConfiguration = [[VECameraConfiguration alloc] init];

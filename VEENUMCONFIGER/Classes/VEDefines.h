@@ -1031,3 +1031,5 @@ isPhoneX;\
 #define kWatermarkTemplateFolder [kVEDirectory stringByAppendingPathComponent:@"WatermarkTemplate"]
 #define kRecentlyWatermarkPlistPath [kWatermarkTemplateFolder stringByAppendingPathComponent:@"CustomRecentlyWatermark.plist"]
 #define kWatermarkTemplatePlistPath [kWatermarkTemplateFolder stringByAppendingPathComponent:@"WatermarkTemplatePlist.plist"]
+
+#define kSubtitleEncodingType CaptionTextEncodeUTF16 //富文本编码格式

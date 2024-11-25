@@ -193,6 +193,8 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 @property(nonatomic,copy, nullable) void (^onContinueExport)(bool  isWatermark);
 @property(nonatomic,copy, nullable) void ( ^close_SaveDraft )(void);
 
+@property(nonatomic, assign) float  subtiteJsonFontSize;
+
 /**文件存放根目录
  */
 @property (nonatomic, strong) NSString *directory;

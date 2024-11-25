@@ -830,6 +830,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         // 初始化媒体文件
         urlAsset = [AVURLAsset URLAssetWithURL:url options:opts];
     }
+//    if(![[NSFileManager defaultManager] fileExistsAtPath:urlAsset.URL.path]){
+//        return nil;
+//    }
+    float duration = CMTimeGetSeconds(urlAsset.duration);
     // 根据asset构造一张图
     AVAssetImageGenerator *generator = [AVAssetImageGenerator assetImageGeneratorWithAsset:urlAsset];
     // 设定缩略图的方向
@@ -6230,6 +6234,24 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return [NSURL fileURLWithPath:filePath];
 }
 
++ (NSURL *)getUrlWithFolderPath:(NSString *)folderPath fileUrl:(NSURL *)fileUrl suffix:(NSString *)suffix {
+    NSString *path = [NSString stringWithFormat:@"%lu", (unsigned long)[[fileUrl description] hash]];
+    NSString *fileName = [NSString stringWithFormat:@"%@_%@", path, suffix];
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:folderPath]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *filePath;
+    BOOL isExists = NO;
+    NSInteger index = 0;
+    do {
+        filePath = [[folderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%ld", fileName.stringByDeletingPathExtension, (long)index]] stringByAppendingPathExtension:fileName.pathExtension];
+        index ++;
+        isExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+    } while (isExists);
+    return [NSURL fileURLWithPath:filePath];
+}
+
 +(NSString *)getPEImagePathForNowTime
 {
     NSString *folder;
@@ -8897,6 +8919,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 }];
                 CaptionEx *textTemplate = [VEHelp getTextTemplateCaptionConfig:caption.imageFolderPath atStart:0 atConfig:nil atName:nil];
                 if (textTemplate) {
+                    textTemplate.isEnableCenterPosition = YES;
                     textTemplate.type = CaptionExTypeTemplate;
                     textTemplate.timeRange = caption.timeRange;
                     textTemplate.position = caption.position;
@@ -8929,7 +8952,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                             CaptionItem *wordItem = obj.texts[idx1];
                             item.text = wordItem.text;
                             item.textColor = wordItem.textColor;
-                            
+                            item.isEnableCenterPosition = YES;
                             if (wordItem.fontPath.length > 0) {
                                 item.fontPath = [VEHelp getFileURLFromAbsolutePath_str:wordItem.fontPath];
                                 
@@ -9002,6 +9025,50 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                             else if (!wordItem.animateOut) {
                                 item.animateOut = nil;
                             }
+                            item.labelStyles = wordItem.labelStyles;
+                            [item.labelStyles enumerateObjectsUsingBlock:^(CaptionLabelStyle * _Nonnull label, NSUInteger idx, BOOL * _Nonnull stop) {
+                                label.isEnableCenterPosition = YES;
+                                if (label.encodingType != kSubtitleEncodingType) {
+                                    NSString *leftStr = [VEHelp getSubstring:item.text targetLength:label.start encodingType:label.encodingType];
+                                    NSString *selectedStr = [VEHelp getSubstring:item.text targetLength:(label.end - label.start) encodingType:label.encodingType];
+                                    label.encodingType = kSubtitleEncodingType;
+                                    label.start = [VEHelp getTextByteLength:leftStr encodingType:label.encodingType];
+                                    label.end = [VEHelp getTextByteLength:selectedStr encodingType:label.encodingType];
+                                    label.end += label.start;
+                                }
+                                if (label.fontPath.length > 0) {
+                                    label.fontPath = [VEHelp getFileURLFromAbsolutePath_str:label.fontPath];
+                                    
+                                    if ([[NSFileManager defaultManager] fileExistsAtPath:label.fontPath]) {
+                                        label.fontName = [VEHelp customFontArrayWithPath:label.fontPath].firstObject;
+                                    }else {
+                                        label.fontPath = nil;
+                                    }
+                                }
+                                if (label.fontPath.length == 0) {
+                                    if ([[NSFileManager defaultManager] fileExistsAtPath:kDefaultFontPath]) {
+                                        label.fontPath = kDefaultFontPath;
+                                        label.fontName = [VEHelp customFontArrayWithPath:kDefaultFontPath].firstObject;
+                                    }else {
+                                        label.fontPath = nil;
+                                        label.fontName = [UIFont systemFontOfSize:10].fontName;
+                                    }
+                                }
+                                if (label.flowerResourceId.length > 0 && label.flowerPath.length > 0) {
+                                    label.flowerPath = [VEHelp getFileURLFromAbsolutePath_str:label.flowerPath];
+                                    if (label.flowerPath.pathExtension.length == 0) {
+                                        label.flowerPath = [VEHelp getFlowerTextConfigPathWithFolderPath:label.flowerPath];
+                                    }
+                                    CaptionEffectCfg * fancyWrodsCfg = [VEHelp getFLowerWordConfig:label.flowerPath];
+                                    if (fancyWrodsCfg) {
+                                        if( label.textColor && fancyWrodsCfg.normal.colors.count > 0)
+                                        {
+                                            fancyWrodsCfg.normal.colors[0].color = label.textColor;
+                                        }
+                                        label.effectCfg = fancyWrodsCfg;
+                                    }
+                                }
+                            }];
                         }
                     }];
                     textTemplate.keyFrameAnimate = caption.keyFrameAnimate;
@@ -9638,6 +9705,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (CaptionEx *)getCaptionExWithTemplateSubtitleEx:(VECoreTemplateSubtitleEx *)obj folderPath:(NSString *)folderPath videoSize:(CGSize)videoSize {
     CaptionEx *caption = [obj getSubtitleWithFolderPath:folderPath videoSize:videoSize];
     if (caption) {
+        caption.isEnableCenterPosition = YES;
         caption.captionImage = nil;//TODO: 界面中还没有使用captionImage的情况，设置为nil
         if (caption.captionImagePath.length > 0) {
             caption.captionImagePath = [VEHelp getFileURLFromAbsolutePath_str:caption.captionImagePath];
@@ -9658,6 +9726,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
         }];
         [caption.texts enumerateObjectsUsingBlock:^(CaptionItem * _Nonnull item, NSUInteger idx, BOOL * _Nonnull stop) {
+            item.isEnableCenterPosition = YES;
             if (item.fontPath.length > 0) {
                 item.fontPath = [VEHelp getFileURLFromAbsolutePath_str:item.fontPath];
                 
@@ -9726,6 +9795,49 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 
                 item.animateOut = animate;
             }
+            [item.labelStyles enumerateObjectsUsingBlock:^(CaptionLabelStyle * _Nonnull label, NSUInteger idx, BOOL * _Nonnull stop) {
+                label.isEnableCenterPosition = YES;
+                if (label.encodingType != kSubtitleEncodingType) {
+                    NSString *leftStr = [VEHelp getSubstring:item.text targetLength:label.start encodingType:label.encodingType];
+                    NSString *selectedStr = [VEHelp getSubstring:item.text targetLength:(label.end - label.start) encodingType:label.encodingType];
+                    label.encodingType = kSubtitleEncodingType;
+                    label.start = [VEHelp getTextByteLength:leftStr encodingType:label.encodingType];
+                    label.end = [VEHelp getTextByteLength:selectedStr encodingType:label.encodingType];
+                    label.end += label.start;
+                }
+                if (label.fontPath.length > 0) {
+                    label.fontPath = [VEHelp getFileURLFromAbsolutePath_str:label.fontPath];
+                    
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:label.fontPath]) {
+                        label.fontName = [VEHelp customFontArrayWithPath:label.fontPath].firstObject;
+                    }else {
+                        label.fontPath = nil;
+                    }
+                }
+                if (label.fontPath.length == 0) {
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:kDefaultFontPath]) {
+                        label.fontPath = kDefaultFontPath;
+                        label.fontName = [VEHelp customFontArrayWithPath:kDefaultFontPath].firstObject;
+                    }else {
+                        label.fontPath = nil;
+                        label.fontName = [UIFont systemFontOfSize:10].fontName;
+                    }
+                }
+                if (label.flowerResourceId.length > 0 && label.flowerPath.length > 0) {
+                    label.flowerPath = [VEHelp getFileURLFromAbsolutePath_str:label.flowerPath];
+                    if (label.flowerPath.pathExtension.length == 0) {
+                        label.flowerPath = [VEHelp getFlowerTextConfigPathWithFolderPath:label.flowerPath];
+                    }
+                    CaptionEffectCfg * fancyWrodsCfg = [VEHelp getFLowerWordConfig:label.flowerPath];
+                    if (fancyWrodsCfg) {
+                        if( label.textColor && fancyWrodsCfg.normal.colors.count > 0)
+                        {
+                            fancyWrodsCfg.normal.colors[0].color = label.textColor;
+                        }
+                        label.effectCfg = fancyWrodsCfg;
+                    }
+                }
+            }];
         }];
 //        NSString *configPath = [caption.imageFolderPath stringByAppendingPathComponent:@"config.json"];
 #ifdef Enable_Config_VE
@@ -10169,6 +10281,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 if( fontFile == nil || (fontFile.length == 0)  )
                 {
                     captionItem.fontName = [[UIFont systemFontOfSize:10] fontName];
+                    captionItem.fontPath = kDefaultFontPath;
                 }
                 else
                 {
@@ -10183,6 +10296,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     }
                     else{
                         captionItem.fontName = [[UIFont systemFontOfSize:10] fontName];
+                        captionItem.fontPath = kDefaultFontPath;
                     }
                 }
 #if 0
@@ -16050,8 +16164,6 @@ static OSType help_inputPixelFormat(){
         // 设定缩略图的方向
         // 如果不设定，可能会在视频旋转90/180/270°时，获取到的缩略图是被旋转过的，而不是正向的（自己的理解）
         generator.appliesPreferredTrackTransform = YES;
-        // 设置图片的最大size(分辨率)
-        generator.maximumSize = CGSizeMake(100*[UIScreen mainScreen].scale, 80*[UIScreen mainScreen].scale);
         //如果需要精确时间
         generator.requestedTimeToleranceAfter = kCMTimeZero;
         generator.requestedTimeToleranceBefore = kCMTimeZero;
@@ -18941,7 +19053,13 @@ static OSType help_inputPixelFormat(){
         UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake( (imageActivityView.frame.size.width - 80)/2.0, 0, 80, 80)];
         imageView.tag = 201201;
 //        [imageView sd_setImageWithURL:[NSURL fileURLWithPath:[VEHelp getResourceFromBundle:@"VEPESDK" resourceName:@"/animatSchedule_@3x" Type:@"png"]]];
-        [imageView sd_setImageWithURL:[NSURL fileURLWithPath:[VEHelp getResourceFromBundle:@"VEPESDK" resourceName:@"/animated_Wait@3x" Type:@"png"]]];
+#ifdef EnableSDWebImage
+        [imageView sd_setImageWithURL:[NSURL fileURLWithPath:[
+            VEHelp getResourceFromBundle:@"VEPESDK" resourceName:@"/animated_Wait@3x" Type:@"png"]]];
+#else
+        [VEHelp loadAnimationImageViiewWithView:imageView atImageUrl:[NSURL fileURLWithPath:[VEHelp getResourceFromBundle:@"VEPESDK" resourceName:@"/animated_Wait@3x" Type:@"png"]] atPlaceholder:nil];
+#endif
+        
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, imageView.frame.size.height + imageView.frame.origin.y - 20, imageActivityView.frame.size.width, 20)];
         label.text = str;
@@ -19053,6 +19171,7 @@ static OSType help_inputPixelFormat(){
             }
             else{
                 captionItem.fontName = [[UIFont systemFontOfSize:10] fontName];
+                captionItem.fontPath = kDefaultFontPath;
             }
         }
         captionItem.fontSize = [obj[@"fontSize"] floatValue];
@@ -19299,6 +19418,27 @@ static OSType help_inputPixelFormat(){
     }
     
     return ppCaption;
+}
+
++ (UIImage *)cropImageFromURL:(NSURL *)imageURL withCrop:(CGRect)crop rotation:(float)rotation isHorizontalMirror:(BOOL) isHorizontalMirror isVerticalMirror:(BOOL)isVerticalMirror
+{
+    UIImage *originalImage = [self getOriginalImageWithUrl:imageURL];
+    if (!originalImage) {
+        NSLog(@"Failed to create UIImage from data");
+        return nil;
+    }
+    UIImage *croppedImage = originalImage;
+    if (rotation != 0 || rotation != 0) {
+        croppedImage = [self imageRotatedByDegrees:croppedImage rotation:rotation];
+    }
+    if (!CGRectEqualToRect(crop, CGRectMake(0, 0, 1, 1))) {
+        croppedImage = [self clipImage:croppedImage rect:crop];
+    }
+    if (isHorizontalMirror || isVerticalMirror) {
+        [self drawImageWithImage:croppedImage atIsHorizontalMirror:isHorizontalMirror atIsVerticalMirror:isVerticalMirror];
+    }
+    
+    return croppedImage;
 }
 
 @end
