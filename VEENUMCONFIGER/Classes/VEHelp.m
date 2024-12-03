@@ -8954,8 +8954,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                             if (((VECoreTemplateSubtitleTemplate *)obj).content.count > idx1) {
                                 item.text = ((VECoreTemplateSubtitleTemplate *)obj).content[idx1];
                             }
-                        } else if ([obj isKindOfClass:[VECoreTemplateSubtitleEx class]] && obj.texts.count > idx1) {
-                            CaptionItem *wordItem = obj.texts[idx1];
+                        } else if ([obj isKindOfClass:[VECoreTemplateSubtitleEx class]] && caption.texts.count > idx1) {
+                            CaptionItem *wordItem = caption.texts[idx1];
+                            item.isEnableCenterPosition = YES;
+                            item.fontSize = wordItem.fontSize;
                             item.text = wordItem.text;
                             item.textColor = wordItem.textColor;
                             item.isEnableCenterPosition = YES;
@@ -9033,7 +9035,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                             }
                             item.labelStyles = wordItem.labelStyles;
                             [item.labelStyles enumerateObjectsUsingBlock:^(CaptionLabelStyle * _Nonnull label, NSUInteger idx, BOOL * _Nonnull stop) {
+                                CaptionLabelStyle *originalLbl = wordItem.labelStyles[idx];
                                 label.isEnableCenterPosition = YES;
+                                label.fontSize = originalLbl.fontSize;
                                 if (label.encodingType != kSubtitleEncodingType) {
                                     NSString *leftStr = [VEHelp getSubstring:item.text targetLength:label.start encodingType:label.encodingType];
                                     NSString *selectedStr = [VEHelp getSubstring:item.text targetLength:(label.end - label.start) encodingType:label.encodingType];
