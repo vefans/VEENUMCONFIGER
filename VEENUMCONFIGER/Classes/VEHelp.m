@@ -842,8 +842,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     // 设置图片的最大size(分辨率)
     generator.maximumSize = CGSizeMake(100*[UIScreen mainScreen].scale, 80*[UIScreen mainScreen].scale);
     //如果需要精确时间
-    generator.requestedTimeToleranceAfter = kCMTimeZero;
-    generator.requestedTimeToleranceBefore = kCMTimeZero;
+    //generator.requestedTimeToleranceAfter = kCMTimeZero;
+    //generator.requestedTimeToleranceBefore = kCMTimeZero;
+    generator.requestedTimeToleranceBefore = CMTimeMakeWithSeconds(1.0, TIMESCALE);
+    generator.requestedTimeToleranceAfter = CMTimeMakeWithSeconds(2.0, TIMESCALE);
     float frameRate = 0.0;
     if ([[urlAsset tracksWithMediaType:AVMediaTypeVideo] count] > 0) {
         AVAssetTrack* clipVideoTrack = [[urlAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
@@ -866,6 +868,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if(image){
         return image;
     }else{
+        printf("\n\n============>%.f秒=====没有截图成功\n\n",second);
         return nil;
     }
 }
@@ -6343,6 +6346,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 + (UIImage *)image:(UIImage *)image rotation:(float)rotation cropRect:(CGRect)cropRect {//此方法有内存泄漏，慎用
+    if (!image) {
+        return nil;
+    }
     @autoreleasepool {
         if (CGRectEqualToRect(cropRect, CGRectZero)) {
             cropRect = CGRectMake(0, 0, 1, 1);
@@ -10581,6 +10587,20 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
 }
 
++ (void)setTextTemplateMaxFontSize:(CaptionEx *)caption {
+    float scale = 0.99;
+    for (CaptionItem *item in caption.texts) {
+        item.isEnableCenterPosition = caption.isEnableCenterPosition;
+        if (caption.isStretch && caption.isEnableCenterPosition) {
+            float fontSize = item.padding.size.height * caption.originalSize.height * scale;
+            float maxFontSize = item.isVertical ? 60 : 80;
+            item.fontSize = MIN(fontSize, maxFontSize);
+        }else {
+            item.fontSize = 0;
+        }
+    }
+}
+
 // 函数用于计算逆旋转矩阵并应用到旋转后的点
 + (CGPoint)getOriginalPoint:(CGPoint)centerPoint rotatePoint:(CGPoint)rotatePoint angle:(float)angle
 {
@@ -10830,12 +10850,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 
                 [captionItem.otherAnimates addObject:otherAnimation];
             }];
-        }
-        else{
-            [captionItem.otherAnimates enumerateObjectsUsingBlock:^(CustomFilter * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                obj = nil;
-            }];
-            captionItem.otherAnimates = nil;
         }
     }
     
@@ -19436,6 +19450,21 @@ static OSType help_inputPixelFormat(){
     }
     if (isHorizontalMirror || isVerticalMirror) {
         [self drawImageWithImage:croppedImage atIsHorizontalMirror:isHorizontalMirror atIsVerticalMirror:isVerticalMirror];
+    }
+    
+    return croppedImage;
+}
+
++ (UIImage *)cropImageFromURL:(NSURL *)imageURL withCrop:(CGRect)crop
+{
+    UIImage *originalImage = [self getOriginalImageWithUrl:imageURL];
+    if (!originalImage) {
+        NSLog(@"Failed to create UIImage from data");
+        return nil;
+    }
+    UIImage *croppedImage = originalImage;
+    if (!CGRectEqualToRect(crop, CGRectMake(0, 0, 1, 1))) {
+        croppedImage = [self clipImage:croppedImage rect:crop];
     }
     
     return croppedImage;

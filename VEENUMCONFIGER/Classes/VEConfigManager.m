@@ -157,6 +157,7 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
         default:
             break;
     }
+    self.isLanguage = NO;
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

@@ -525,6 +525,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(NSDictionary *)getTextTemplateEffectConfig:( NSString * ) configPath;
 +(CaptionEx *)getTextTemplateCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atName:(NSString *) name;
 +(CustomFilter *)getTextTemplateAnimation:( NSString * ) configPath  atFileName:(NSString *) fileName atCaptionItem:( CaptionItem * ) captionItem;
++ (void)setTextTemplateMaxFontSize:(CaptionEx *)caption;
 
 //判断图片是否有alpha通道
 + (BOOL)CGImageRefContainsAlpha:(CGImageRef)imageRef;
@@ -868,5 +869,6 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 //获取在原图的基础上裁剪图片
 + (UIImage *)cropImageFromURL:(NSURL *)imageURL withCrop:(CGRect)crop rotation:(float)rotation isHorizontalMirror:(BOOL) isHorizontalMirror isVerticalMirror:(BOOL)isVerticalMirror;
++ (UIImage *)cropImageFromURL:(NSURL *)imageURL withCrop:(CGRect)crop;
 
 @end

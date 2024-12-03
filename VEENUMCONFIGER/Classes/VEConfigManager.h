@@ -318,6 +318,7 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 /**  语言设置
  */
 @property (nonatomic,assign) SUPPORTLANGUAGE language;
+@property (nonatomic, assign) BOOL isLanguage;
 
 @property (nonatomic, assign) AUDIO_SPEECH_Type audioSpeechType;
 @property (nonatomic, strong) NSString *  model;

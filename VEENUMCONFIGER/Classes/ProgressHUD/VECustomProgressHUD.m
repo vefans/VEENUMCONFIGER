@@ -7,8 +7,10 @@
 
 #import "VEProgressHUD.h"
 #import "VECustomProgressHUD.h"
+#ifdef EnableSDWebImage
 #import <SDWebImage/SDAnimatedImage.h>
 #import <SDWebImage/SDWebImage.h>
+#endif
 #import <VEENUMCONFIGER/VEHelp.h>
 @interface VECustomProgressHUD()
 @property(nonatomic,strong)UIView *view;
@@ -55,7 +57,11 @@
 
     // 创建动画视图，例如 UIImageView
     UIImageView *iconIV = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 98, 98)];
+#ifdef EnableSDWebImage
     [iconIV sd_setImageWithURL:[NSURL fileURLWithPath:[[VEHelp getBundleName:@"VEEditSDK"] pathForResource:@"生成动画" ofType:@"gif"]]];
+#else
+        [VEHelp loadAnimationImageViiewWithView:iconIV atImageUrl:[NSURL fileURLWithPath:[[VEHelp getBundleName:@"VEEditSDK"] pathForResource:@"生成动画" ofType:@"gif"]] atPlaceholder:nil];
+#endif
     self.iconIV = iconIV;
     
     UILabel *statusLabel = [[UILabel alloc] initWithFrame:CGRectZero];

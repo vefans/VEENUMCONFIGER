@@ -2601,7 +2601,7 @@
 "图片导出成功" = "Succeed save image to album";
 
 "套索" = "Lasso";
-"消除" = "Eliminate";
+"消除" = "Remove";
 "在画面中涂抹选择需要消除的区域" = "Swipe the area you want to erase.";
 "在画面中画出形状选择需要消除的区域" = "Draw a shape to select the area you want to erase.";
 "在画面中圈出需要消除的区域" = "Circle the area you want to erase.";
@@ -2953,6 +2953,7 @@
 "手动涂抹" = "Manual";
 "文字消除" = "Text";
 "人像消除" = "Portrait";
+"路人消除" = "Passerby";
 "立即消除" = "Remove";
 "消除中..." = "Removing...";
 "复制修补" = "Repair";
