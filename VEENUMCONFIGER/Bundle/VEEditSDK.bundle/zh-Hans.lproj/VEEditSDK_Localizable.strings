@@ -1781,7 +1781,10 @@
 "Single line" = "单行";
 "Single" = "单个";
 "Distance" = "间距";
+"Angle" = "角度";
 "Misalign" = "错位";
+"Size" = "大小";
+"Density" = "密度";
 "Single line watermark does not support adding animation." = "单行水印不支持添加动画";
 "Full screen watermark does not support adding animation." = "全屏水印不支持添加动画";
 "Select a watermark first." = "请先选中一款水印";
@@ -1796,6 +1799,7 @@
 "Top" = "置顶";
 "Character spacing" = "字间距";
 "Local watermark" = "本地水印";
+"This element cannot be misaligned." = "该素材不支持调整错位";
 
 "Speech Text" = "文本朗读";
 "Extracted" = "提取声音";

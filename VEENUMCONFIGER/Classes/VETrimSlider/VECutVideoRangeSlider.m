@@ -33,6 +33,7 @@
     if(status == kVECoreStatusReadyToPlay){
         [self loadThumbView];
         [self updateRangeView];
+        [self setProgress:_progress];
     }
 }
 - (void)dealloc{
@@ -251,8 +252,13 @@
             break;
     }
     _progress = self.thumbHandle.center.x/self.rangeView.frame.size.width;
-    if([_delegate respondsToSelector:@selector(rangeSliderChange:progress:)]){
-        [_delegate rangeSliderChange:self progress:_progress];
+    if([_delegate respondsToSelector:@selector(rangeSliderChange:progress:status:)]){
+        [_delegate rangeSliderChange:self progress:_progress status:gesture.state];
+    }
+    else{
+        if([_delegate respondsToSelector:@selector(rangeSliderChange:progress:)]){
+            [_delegate rangeSliderChange:self progress:_progress];
+        }
     }
     //self.thumbHandle.hidden = YES;
 }
@@ -322,10 +328,13 @@
 - (void)setProgress:(CGFloat)progress{
     _progress = progress;
     float startProgress = self.startTime/ self.videoDuration;
-    float x = _progress - startProgress - 10;
+    float x = _progress - startProgress;// - 10;
     
     //float maxProgress = (self.startTime + self.durationTime)/self.videoDuration;
-    float off_x = (self.rangeView.frame.size.width/self.durationTime) * (x * self.videoDuration);
+    float off_x = (self.rangeView.frame.size.width/self.durationTime) * (x * self.videoDuration) - 10;
+    if(isnan(off_x)){
+        return;
+    }
     NSLog(@"off_x:%f",off_x);
     CGRect rect = self.thumbHandle.frame;
     rect.origin.x = MAX(off_x, -10);

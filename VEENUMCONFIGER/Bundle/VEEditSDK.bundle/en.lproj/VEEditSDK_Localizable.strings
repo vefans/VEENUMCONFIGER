@@ -1948,6 +1948,7 @@
 "键盘" = "Keyboard";
 "字体" = "Font";
 "对齐" = "Align";
+"水印排版" = "Watermark typography";
 "媒体选择数量错误" = "Wrong media number selected";
 "退出" = "Exit";
 "确定放弃已经选中的媒体?" = "Confirm to cancel selected media?";
@@ -2965,6 +2966,7 @@
 "请先涂抹消除区域再羽化哦" = "Swipe the erased area\nbefore using Feathering.";
 "请先涂抹消除区域再旋转哦" = "Swipe the erased area\nbefore using Rotate.";
 "请先涂抹消除区域再翻转哦" = "Swipe the erased area\nbefore using Flip.";
+"请先添加选框" = "Please add a checkbox first";
 "应用" = "Apply";
 "Go to Settings" = "Settings";
 "张" = "";

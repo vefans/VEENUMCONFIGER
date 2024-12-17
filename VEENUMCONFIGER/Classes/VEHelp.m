@@ -844,8 +844,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     //如果需要精确时间
     //generator.requestedTimeToleranceAfter = kCMTimeZero;
     //generator.requestedTimeToleranceBefore = kCMTimeZero;
-    generator.requestedTimeToleranceBefore = CMTimeMakeWithSeconds(1.0, TIMESCALE);
-    generator.requestedTimeToleranceAfter = CMTimeMakeWithSeconds(2.0, TIMESCALE);
+    //generator.requestedTimeToleranceBefore = CMTimeMakeWithSeconds(1.0, TIMESCALE);
+    //generator.requestedTimeToleranceAfter = CMTimeMakeWithSeconds(2.0, TIMESCALE);
     float frameRate = 0.0;
     if ([[urlAsset tracksWithMediaType:AVMediaTypeVideo] count] > 0) {
         AVAssetTrack* clipVideoTrack = [[urlAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
@@ -5204,6 +5204,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         options.networkAccessAllowed = YES;//解决草稿箱获取不到缩略图的问题
         PHFetchResult *phAsset = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
         PHAsset * asset = [phAsset firstObject];
+        //20220211 iPhone6s iOS13.2 需要设置为PHImageRequestOptionsVersionOriginal才能获取到有alpha通道的图片，iOS15.0以上及iOS12.5不设置也没问题
+        BOOL hasAdjustments = [[asset valueForKey:@"hasAdjustments"] boolValue];
+        if (!hasAdjustments) {
+            options.version = PHImageRequestOptionsVersionOriginal;
+        }
         if(!asset){
             NSData *data = [NSData dataWithContentsOfURL:url];
             if(data){
@@ -6299,8 +6304,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         options = nil;
         phAsset = nil;
     }else{
+        PHAsset* asset = [phAsset firstObject];
+        //20220211 iPhone6s iOS13.2 需要设置为PHImageRequestOptionsVersionOriginal才能获取到有alpha通道的图片，iOS15.0以上及iOS12.5不设置也没问题
+        BOOL hasAdjustments = [[asset valueForKey:@"hasAdjustments"] boolValue];
+        if (!hasAdjustments) {
+            options.version = PHImageRequestOptionsVersionOriginal;
+        }
         @try {
-            [[PHImageManager defaultManager] requestImageForAsset:[phAsset firstObject] targetSize:CGSizeMake(maxWidth, maxWidth) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(maxWidth, maxWidth) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
                 
                 image = result;
                 result = nil;
@@ -10186,12 +10197,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 +(CaptionEx *)getTextTemplateCaptionConfig:( NSString * ) configPath atStart:(float) startTime atConfig:(NSDictionary **) config atName:(NSString *) name
 {
     @try {
-//        NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingPathComponent:@"config.json"];
-#ifdef Enable_Config_VE
         NSString *path = [VEHelp getConfigPathWithFolderPath:[NSString stringWithFormat:@"%@",configPath]];
-#else
-        NSString *path = [[NSString stringWithFormat:@"%@",configPath] stringByAppendingPathComponent:@"config.json"];
-#endif
         NSFileManager *manager = [[NSFileManager alloc] init];
         if(![manager fileExistsAtPath:path]){
             NSLog(@"nohave");
@@ -10209,12 +10215,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 }
             }
             if (folderName.length > 0) {
-//                path = [[configPath stringByAppendingPathComponent:folderName] stringByAppendingPathComponent:@"config.json"];
-#ifdef Enable_Config_VE
                 path = [VEHelp getConfigPathWithFolderPath:[configPath stringByAppendingPathComponent:folderName]];
-#else
-                path = [[configPath stringByAppendingPathComponent:folderName] stringByAppendingPathComponent:@"config.json"];
-#endif
             }
         }
         configPath = path.stringByDeletingLastPathComponent;
@@ -10235,6 +10236,15 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             
             CaptionEx *ppCaption = [[CaptionEx alloc]init];
             ppCaption.type = CaptionExTypeTemplate;
+            ppCaption.angle = [subtitleEffectConfig[@"angle"] floatValue];
+            if ([subtitleEffectConfig.allKeys containsObject:@"watermark"]) {
+                NSDictionary *watermarkDic = subtitleEffectConfig[@"watermark"];
+                ppCaption.type = CaptionExTypeWatermark;
+                ppCaption.watermark = [[Watermark alloc] init];
+                ppCaption.watermark.type = [watermarkDic[@"type"] integerValue];
+                ppCaption.watermark.spacing = [watermarkDic[@"spacing"] floatValue];
+                ppCaption.watermark.angle = [watermarkDic[@"angle"] floatValue];
+            }
             //大小
             float width = [subtitleEffectConfig[@"width"] floatValue];
             float height = [subtitleEffectConfig[@"height"] floatValue];

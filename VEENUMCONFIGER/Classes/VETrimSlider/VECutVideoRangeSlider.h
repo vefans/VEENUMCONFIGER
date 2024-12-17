@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class VECutVideoRangeSlider;
 @protocol VECutVideoRangeSliderDelegate <NSObject>
+- (void)rangeSliderChange:(VECutVideoRangeSlider *)slider progress:(float)progress status:(UIGestureRecognizerState)status;
 - (void)rangeSliderChange:(VECutVideoRangeSlider *)slider progress:(float)progress;
 - (void)rangeSliderChange:(VECutVideoRangeSlider *)slider start:(float)start duration:(float)duration progress:(float)progress;
 
@@ -43,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGFloat startTime;
 @property (nonatomic, assign) CGFloat durationTime;
 @property (nonatomic, strong) UIImage *thumbImage;
-
+- (void)updateRangeView;
 @end
 
 NS_ASSUME_NONNULL_END

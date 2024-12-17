@@ -261,7 +261,7 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 
 @property (nonatomic, assign) BOOL isNoHtmlAutoSegmentImage;
 
-/** 默认为：false
+/** 默认为：true
  */
 @property (nonatomic, assign) BOOL hasInit;
 
