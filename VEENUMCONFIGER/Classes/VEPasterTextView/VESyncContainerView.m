@@ -348,4 +348,17 @@
     [self.trackAreaImageView removeFromSuperview];
     self.trackAreaImageView = nil;
 }
+
+- (UIView *)contentView {
+    if (!_contentView) {
+        UIView *view = [[UIView alloc] initWithFrame:_picturePreImageView.frame];
+        view.backgroundColor = [UIColor clearColor];
+        view.layer.masksToBounds = YES;
+        _contentView = view;
+        [self addSubview:view];
+    }
+    
+    return _contentView;
+}
+
 @end

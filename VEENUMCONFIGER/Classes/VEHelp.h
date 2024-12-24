@@ -861,7 +861,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(void)initCaptionExFontsize:( CaptionEx * ) captionSubtitle;
 + (void)downloadVideoFromURL:(NSString *)urlString savePath:(NSString *)savepath completed:(void(^)(NSString *,NSError *))completed;
 
-+ (void)copyLabelStylesFromCaptionItem:(CaptionItem *)originalItem toCaptionItem:(CaptionItem *)captionItem;
++ (void)copyTextStylesFromCaptionItem:(CaptionItem *)originalItem toCaptionItem:(CaptionItem *)captionItem;
 
 +(UIView *)keyloadWait:( NSString * ) str  aViewController: ( UIViewController * ) viewController atActivityView:(UIView *)view;
 
@@ -870,5 +870,9 @@ extern float const VEAdjust_DefaultValue_Exposure;
 //获取在原图的基础上裁剪图片
 + (UIImage *)cropImageFromURL:(NSURL *)imageURL withCrop:(CGRect)crop rotation:(float)rotation isHorizontalMirror:(BOOL) isHorizontalMirror isVerticalMirror:(BOOL)isVerticalMirror;
 + (UIImage *)cropImageFromURL:(NSURL *)imageURL withCrop:(CGRect)crop;
+
++ (CGFloat)getDiagonalLengthWithWidth:(CGFloat)width height:(CGFloat)height;
+
++ (UIColor *)colorWithAlphaOne:(UIColor *)originalColor;
 
 @end

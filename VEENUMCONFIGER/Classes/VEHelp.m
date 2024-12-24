@@ -855,7 +855,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     NSError *error = nil;
     // 根据时间，获得第N帧的图片
     // CMTimeMake(a, b)可以理解为获得第a/b秒的frame
-    CGImageRef img = [generator copyCGImageAtTime:CMTimeMakeWithSeconds(second, frameRate>0 ? frameRate : 30) actualTime:NULL error:&error];
+    CGImageRef img = [generator copyCGImageAtTime:CMTimeMake(second, frameRate>0 ? frameRate : 30) actualTime:NULL error:&error];
     // 构造图片
     UIImage *image = [UIImage imageWithCGImage: img];
     CGImageRelease(img);
@@ -3944,6 +3944,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 + (NSString *)getConfigPathWithFolderPath:(NSString *)folderPath {
+    if (folderPath.length == 0) {
+        return nil;
+    }
     NSString *configPath = nil;
     NSFileManager *fm = [NSFileManager defaultManager];
     NSMutableArray *files = [NSMutableArray arrayWithArray:[fm contentsOfDirectoryAtPath:folderPath error:nil]];
@@ -6803,8 +6806,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             params  = [[NSMutableDictionary alloc] init];
             
         }
-        if(![params.allKeys containsObject:@"hasInit"]){
-            [params setObject:[VEConfigManager sharedManager].hasInit ? @"1" : @"0" forKey:@"hasInit"];
+        if(![params.allKeys containsObject:@"use_init"]){
+            [params setObject:[VEConfigManager sharedManager].hasInit ? @(1) : @(0) forKey:@"use_init"];
         }
         if(![[params allKeys] containsObject:@"os"]){
             [params setObject:@"ios" forKey:@"os"];
@@ -7092,6 +7095,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 +(NSDictionary *)getConfig_Dic:( NSString * ) configPath
 {
+    if (configPath.length == 0) {
+        return nil;
+    }
     if (configPath.pathExtension.length == 0) {
         configPath = [VEHelp getConfigPathWithFolderPath:configPath];
     }
@@ -7273,10 +7279,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [params setObject:appkey forKey:@"appkey"];
     }
     if([type isEqualToString:@"music2"]){
-        [params setObject:@"1" forKey:@"hasInit"];
+        [params setObject:@(1) forKey:@"use_init"];
     }
     else{
-        [params setObject:([VEConfigManager sharedManager].hasInit ? @"1": @"0") forKey:@"hasInit"];
+        [params setObject:([VEConfigManager sharedManager].hasInit ? @(1): @(0)) forKey:@"use_init"];
     }
     [params setObject:@"ios" forKey:@"os"];
     return [self updateInfomation:params andUploadUrl:urlPath];
@@ -8116,8 +8122,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     [captionSubtitle.texts enumerateObjectsUsingBlock:^(CaptionItem * _Nonnull obj1, NSUInteger idx, BOOL * _Nonnull stop) {
         float fontSize = templateSubtitleEx.wordItem[idx].fontSize/100.0*( videoSize.width * 0.58 );
         obj1.fontSize = fontSize;
-        [obj1.labelStyles enumerateObjectsUsingBlock:^(CaptionLabelStyle * _Nonnull label, NSUInteger idx1, BOOL * _Nonnull stop) {
-            float fontSize1 = templateSubtitleEx.wordItem[idx].labelStyleList[idx1].fontSize/100.0*( videoSize.width * 0.58 );
+        [obj1.textStyleLists enumerateObjectsUsingBlock:^(CaptionTextStyle * _Nonnull label, NSUInteger idx1, BOOL * _Nonnull stop) {
+            float fontSize1 = templateSubtitleEx.wordItem[idx].textStyleLists[idx1].fontSize/100.0*( videoSize.width * 0.58 );
             label.fontSize = fontSize1;
         }];
     }];
@@ -9044,9 +9050,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                             else if (!wordItem.animateOut) {
                                 item.animateOut = nil;
                             }
-                            item.labelStyles = wordItem.labelStyles;
-                            [item.labelStyles enumerateObjectsUsingBlock:^(CaptionLabelStyle * _Nonnull label, NSUInteger idx, BOOL * _Nonnull stop) {
-                                CaptionLabelStyle *originalLbl = wordItem.labelStyles[idx];
+                            item.textStyleLists = wordItem.textStyleLists;
+                            [item.textStyleLists enumerateObjectsUsingBlock:^(CaptionTextStyle * _Nonnull label, NSUInteger idx, BOOL * _Nonnull stop) {
+                                CaptionTextStyle *originalLbl = wordItem.textStyleLists[idx];
                                 label.isEnableCenterPosition = YES;
                                 label.fontSize = originalLbl.fontSize;
                                 if (label.encodingType != kSubtitleEncodingType) {
@@ -9816,7 +9822,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 
                 item.animateOut = animate;
             }
-            [item.labelStyles enumerateObjectsUsingBlock:^(CaptionLabelStyle * _Nonnull label, NSUInteger idx, BOOL * _Nonnull stop) {
+            [item.textStyleLists enumerateObjectsUsingBlock:^(CaptionTextStyle * _Nonnull label, NSUInteger idx, BOOL * _Nonnull stop) {
                 label.isEnableCenterPosition = YES;
                 if (label.encodingType != kSubtitleEncodingType) {
                     NSString *leftStr = [VEHelp getSubstring:item.text targetLength:label.start encodingType:label.encodingType];
@@ -10243,6 +10249,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 ppCaption.watermark = [[Watermark alloc] init];
                 ppCaption.watermark.type = [watermarkDic[@"type"] integerValue];
                 ppCaption.watermark.spacing = [watermarkDic[@"spacing"] floatValue];
+                ppCaption.watermark.scale = [watermarkDic[@"scale"] floatValue];
+                if (ppCaption.watermark.scale == 0) {
+                    ppCaption.watermark.scale = 1.0;
+                }
+                ppCaption.watermark.misalign = [watermarkDic[@"misalign"] floatValue];
                 ppCaption.watermark.angle = [watermarkDic[@"angle"] floatValue];
             }
             //大小
@@ -16204,7 +16215,7 @@ static OSType help_inputPixelFormat(){
         NSError *error = nil;
         // 根据时间，获得第N帧的图片
         // CMTimeMake(a, b)可以理解为获得第a/b秒的frame
-        CGImageRef img = [generator copyCGImageAtTime:CMTimeMakeWithSeconds(0, frameRate>0 ? frameRate : 30) actualTime:NULL error:&error];
+        CGImageRef img = [generator copyCGImageAtTime:CMTimeMake(0, frameRate>0 ? frameRate : 30) actualTime:NULL error:&error];
         // 构造图片
         UIImage *image = [UIImage imageWithCGImage: img];
         CGImageRelease(img);
@@ -18983,15 +18994,15 @@ static OSType help_inputPixelFormat(){
     [downloadTask resume];
 }
 
-+ (void)copyLabelStylesFromCaptionItem:(CaptionItem *)originalItem toCaptionItem:(CaptionItem *)captionItem {
-    [captionItem.labelStyles removeAllObjects];
-    if (originalItem.labelStyles.count > 0) {
-        if (!captionItem.labelStyles) {
-            captionItem.labelStyles = [NSMutableArray array];
++ (void)copyTextStylesFromCaptionItem:(CaptionItem *)originalItem toCaptionItem:(CaptionItem *)captionItem {
+    [captionItem.textStyleLists removeAllObjects];
+    if (originalItem.textStyleLists.count > 0) {
+        if (!captionItem.textStyleLists) {
+            captionItem.textStyleLists = [NSMutableArray array];
         }
         NSString *originalText = originalItem.text;
         NSString *text = captionItem.text;
-        for (CaptionLabelStyle *obj in originalItem.labelStyles) {
+        for (CaptionTextStyle *obj in originalItem.textStyleLists) {
             CaptionTextEncodeType encodingType = obj.encodingType;
             NSRange range;
             NSString *str;
@@ -19042,7 +19053,7 @@ static OSType help_inputPixelFormat(){
             NSInteger end = [VEHelp getTextByteLength:selectedStr encodingType:encodingType];
             end += start;
             
-            CaptionLabelStyle *label = [obj copy];
+            CaptionTextStyle *label = [obj copy];
             label.start = start;
             label.end = end;
             if (label.flowerPath.length > 0) {
@@ -19055,7 +19066,7 @@ static OSType help_inputPixelFormat(){
                     label.effectCfg = fancyWrodsCfg;
                 }
             }
-            [captionItem.labelStyles addObject:label];
+            [captionItem.textStyleLists addObject:label];
         }
     }
 }
@@ -19482,6 +19493,19 @@ static OSType help_inputPixelFormat(){
     }
     
     return croppedImage;
+}
+
++ (CGFloat)getDiagonalLengthWithWidth:(CGFloat)width height:(CGFloat)height {
+    CGFloat diagonalLength = sqrt(pow(width, 2) + pow(height, 2));
+    return diagonalLength;
+}
+
++ (UIColor *)colorWithAlphaOne:(UIColor *)originalColor {
+    CGFloat red, green, blue, alpha;
+    
+    [originalColor getRed:&red green:&green blue:&blue alpha:&alpha];
+    
+    return [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
 }
 
 @end

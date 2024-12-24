@@ -44,6 +44,13 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     return CGSizeMake(sqrt(t.a * t.a + t.c * t.c), sqrt(t.b * t.b + t.d * t.d)) ;
 }
 
+typedef NS_ENUM(NSInteger, VEBtnPosition){
+    VEBtnPosition_TopLeft       = 0,
+    VEBtnPosition_TopRight      = 1,
+    VEBtnPosition_BottomRight   = 2,
+    VEBtnPosition_BottomLeft    = 3,
+};
+
 @implementation VEAlignBtn
 
 - (void)setHidden:(BOOL)hidden{
@@ -178,7 +185,6 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
 
 -(void)initCloseRotate
 {
-    rotateViewWidth = 20;
     _closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(-rotateViewWidth/2.0 + globalInset, -rotateViewWidth/2.0 + globalInset, rotateViewWidth, rotateViewWidth)];
     _closeBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin ;
     _closeBtn.backgroundColor = [UIColor clearColor];
@@ -276,6 +282,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     iswatermark = isWatermark;
 //    _closeBtn.hidden = YES;
     _textEditBtn.hidden = YES;
+    _minScale = 1.0;
 }
 
 
@@ -427,11 +434,12 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     _isSizePrompt = false;
     _isDrag_Upated = false;
     globalInset = 8;
-    rotateViewWidth = 20;
+    rotateViewWidth = globalInset*3;
     _syncContainerRect = syncContainerRect;
     _needStretching = needStretching;
     _tsize = tsize;
     _tOutRect = t;
+    _captionWatermarkCenter = CGPointMake(0.5, 0.5);
     if( !isREstroe )
     {
         if (frame.size.width < globalInset*2.0) {
@@ -621,12 +629,23 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     _alignBtn.hidden = NO;
     [self addSubview:_alignBtn];
     
-    _alignBtn.transform =  CGAffineTransformMakeScale(1, 1);
-    _alignBtn.transform =  CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+    if (!_captionSubtitle.watermark) {
+        _alignBtn.transform =  CGAffineTransformMakeScale(1, 1);
+        _alignBtn.transform =  CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+    }
+    
     if(rotateView){
         CGPoint center = _alignBtn.center;
         _alignBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
         _alignBtn.center = center;
+    }
+    
+    if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
+        [_alignBtn removeFromSuperview];
+        [self.superview addSubview:_alignBtn];
+        
+        float angle = atan2f(self.transform.b, self.transform.a);
+        _alignBtn.center = [self getBtnCenter:VEBtnPosition_BottomLeft angle:angle];
     }
 }
 
@@ -677,21 +696,22 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     }
     self.bounds = bounds;
     _contentImage.frame = CGRectInset(self.bounds, globalInset, globalInset);
-    selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
-    if( !iswatermark )
-    {
-        if( _closeBtn )
+    if (!_captionSubtitle.watermark) {
+        selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
+        if( !iswatermark )
         {
-            _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+            if( _closeBtn )
+            {
+                _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+            }
+            if( _textEditBtn )
+            {
+                _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+            }
+            rotateView.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3);
+            _mirrorBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
         }
-        if( _textEditBtn )
-        {
-            _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
-        }
-        rotateView.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3);
-        _mirrorBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
     }
-    
     _selfScale = self.transform.a;
     
     [_contentLabel setNeedsLayout];
@@ -1015,7 +1035,11 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         case UIGestureRecognizerStateBegan://缩放开始
         {
             deltaAngle      = -CGAffineTransformGetAngle(self.transform);
+            if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
+                deltaAngle = _angle / (180 / M_PI);
+            }   
             beginAngle      = rotation.rotation;
+            [self hiddenSubBtn:YES];
         }
             break;
         case UIGestureRecognizerStateChanged://缩放改变
@@ -1037,8 +1061,11 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             }
             if( self.isAngle )
                 angleDiff = 0;
-            self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), _selfScale, _selfScale);
-            
+            if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
+                _angle = angleDiff * (180 / M_PI);
+            }else {
+                self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), _selfScale, _selfScale);
+            }
             if( _isDrag )
             {
                 _isDrag_Upated = false;
@@ -1068,11 +1095,16 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             }
             if( self.isAngle )
                 angleDiff = 0;
-            self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), _selfScale, _selfScale);
+            if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
+                _angle = angleDiff * (180 / M_PI);
+            }else {
+                self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), _selfScale, _selfScale);
+            }
             if( _isDrag )
             {
                 _isDrag_Upated = true;
             }
+            [self hiddenSubBtn:NO];
         }
             break;
         default:
@@ -1119,6 +1151,9 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         case UIGestureRecognizerStateBegan://缩放开始
         {
              deltaAngle      =-CGAffineTransformGetAngle(self.transform);
+            if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
+                deltaAngle = _angle / (180 / M_PI);
+            }
                     beganLocation = touchLocation;
                     initialBounds   = CGRectIntegral(self.bounds);
                     initialDistance = CGPointGetDistance(center, touchLocation);
@@ -1134,6 +1169,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 _isDrag_Upated = false;
 //                _contentImage.alpha = 1.0;
             }
+            [self hiddenSubBtn:YES];
         }
             break;
         case UIGestureRecognizerStateChanged://缩放改变
@@ -1144,30 +1180,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             
 //            float angleDiff = deltaAngle - ang;
             
-            CGFloat newScale = 0;
-            if( iswatermark )
-            {
-//                newScale = (recognizer.scale - 1.0) + _oldSelfScale;
-                newScale =  _oldSelfScale*recognizer.scale;
-                
-                if( newScale > _waterMaxScale )
-                    newScale = _waterMaxScale;
-                else if( newScale < 1.0 )
-                    newScale = 1.0;
-                else
-                    newScale =  _oldSelfScale*recognizer.scale;
-//                    newScale = (recognizer.scale - 1.0) + _oldSelfScale;
-                
-            }
-            else
-//               newScale = (recognizer.scale - 1.0) + _oldSelfScale;
-                newScale =  _oldSelfScale*recognizer.scale;
+            CGFloat newScale = _oldSelfScale*recognizer.scale;
             
-           
-            
-
-//            if( newScale < 0.20 )
-//                newScale = 0.2;
             float scaleHeight = 15;
             if( _captionSubtitle )
             {
@@ -1192,11 +1206,17 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 newScale = [self getCropREct_Scale:newScale];
             }
 #endif
-            if( _minScale > newScale )
-            {
+            if (_maxScale > 0 && newScale > _maxScale) {
+                newScale = _maxScale;
+            }
+            else if (_minScale > 0 && newScale < _minScale) {
                 newScale = _minScale;
             }
-            self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(atan2f(self.transform.b, self.transform.a)), newScale, newScale);
+            
+            if (_captionSubtitle.watermark.type != WatermarkTypeFull) {
+                float angle = atan2f(self.transform.b, self.transform.a);
+                self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(angle), newScale, newScale);
+            }
             [self setFramescale:newScale];
             
             if( _isFixedCrop)
@@ -1268,6 +1288,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 _isDrag_Upated = true;
 //                _contentImage.alpha = 0.0;
             }
+            [self hiddenSubBtn:NO];
             break;
             
         default:
@@ -1335,8 +1356,13 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         if (recognizer.state == UIGestureRecognizerStateBegan) {
 //            beginningPoint = touchLocation;
 //            beginningCenter = self.center;
-            shockX = self.center.x;
-            shockY = self.center.y;
+            if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
+                shockX = _captionWatermarkCenter.x;
+                shockY = _captionWatermarkCenter.y;
+            }else {
+                shockX = self.center.x;
+                shockY = self.center.y;
+            }
 //            CGPoint point = [((UIPanGestureRecognizer*)recognizer) translationInView:_syncContainer];
             
 //            self.center = CGPointMake(self.center.x + point.x, self.center.y + point.y);
@@ -1347,10 +1373,6 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             if( _isDrag )
             {
                 _isDrag_Upated = false;
-#if 0
-//                _contentImage.alpha = 1.0;
-#else   //20200306 test
-//                _contentImage.alpha = 0.0;
                 if( _textEditBtnArray )
                 {
                     [_textEditBtnArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -1358,12 +1380,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                     }];
                 }
                 selectImageView.hidden = YES;
-                _closeBtn.hidden = YES;
-                _textEditBtn.hidden = YES;
-                rotateView.hidden = YES;
-                _mirrorBtn.hidden = YES;
-                _alignBtn.hidden = YES;
-#endif
+                [self hiddenSubBtn:YES];
             }
         }else if (recognizer.state == UIGestureRecognizerStateChanged){
             
@@ -1417,33 +1434,14 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 isShockY = true;
             }
             
-//            if( center.x < 10 )
-//            {
-//                center.x = 0;
-//                if( self.center.x != center.x )
-//                    AudioServicesPlaySystemSound(1519);
-//            }
-//            else if( center.x > ( self.syncContainer.frame.size.width - 10 ) )
-//            {
-//                center.x = self.syncContainer.frame.size.width;
-//                if( self.center.x != center.x )
-//                    AudioServicesPlaySystemSound(1519);
-//            }
-//
-//            if( center.y < 10 )
-//            {
-//                center.y = 0;
-//                if( self.center.y != center.y )
-//                    AudioServicesPlaySystemSound(1519);
-//            }
-//            else if( center.y > ( self.syncContainer.frame.size.height - 10 ) )
-//            {
-//                center.y = self.syncContainer.frame.size.height;
-//                if( self.center.y != center.y )
-//                    AudioServicesPlaySystemSound(1519);
-//            }
-            
-            [self setCenter:center];
+            if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
+                _captionWatermarkCenter = center;
+            }else {
+                if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
+                    [self refreshSubBtnFrame:center];
+                }
+                [self setCenter:center];
+            }
             
             [((UIPanGestureRecognizer*)recognizer) setTranslation:CGPointMake(0, 0) inView:_syncContainer];
             
@@ -1503,41 +1501,19 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 isShockY = true;
             }
             
-            
-//            if( center.x < 10 )
-//            {
-//                center.x = 10;
-//                if( self.center.x != center.x )
-//                    AudioServicesPlaySystemSound(1519);
-//            }
-//            else if( center.x > (self.syncContainer.frame.size.width - 10 ) )
-//            {
-//                center.x = self.syncContainer.frame.size.width;
-//                if( self.center.x != center.x )
-//                    AudioServicesPlaySystemSound(1519);
-//            }
-//
-//            if( center.y < 10 )
-//            {
-//                center.y = 0;
-//                if( self.center.y != center.y )
-//                    AudioServicesPlaySystemSound(1519);
-//            }
-//            else if( center.y > ( self.syncContainer.frame.size.height - 10 ) )
-//            {
-//                center.y = self.syncContainer.frame.size.height;
-//                if( self.center.y != center.y )
-//                    AudioServicesPlaySystemSound(1519);
-//            }
-            
-            [self setCenter:center];
-            
+            if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
+                _captionWatermarkCenter = center;
+            }else {
+                if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
+                    [self refreshSubBtnFrame:center];
+                }
+                [self setCenter:center];
+            }
             [((UIPanGestureRecognizer*)recognizer) setTranslation:CGPointMake(0, 0) inView:_syncContainer];
             
-            //            if(_delegate){
             if( self.syncContainer )
-                [self.syncContainer pasterMidline:self isHidden:false];
-            //            }
+                [self.syncContainer pasterMidline:self isHidden:true];
+            
             if( _isDrag )
             {
                 _isDrag_Upated = true;
@@ -1547,15 +1523,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                         obj.hidden = NO;
                     }];
                 }
-//                _contentImage.alpha = 0.0;
-#if 1   //20200306 test
                 selectImageView.hidden = NO;
-                _closeBtn.hidden = NO;
-                _textEditBtn.hidden = NO;
-                rotateView.hidden = NO;
-                _mirrorBtn.hidden = NO;
-                _alignBtn.hidden = NO;
-#endif
+                [self hiddenSubBtn:NO];
             }
         }
 //        prevPoint = touchLocation;
@@ -1566,6 +1535,8 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         [_contentLabel setNeedsLayout];
         [_shadowLbl setNeedsLayout];
     }
+    
+    NSLog(@"center:%@", NSStringFromCGPoint(_captionSubtitle.watermark.position));
 }
 
 - (void)touchClose{
@@ -1645,9 +1616,10 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     _selfScale = value;
     
     value = value *  _hairScale;
-    
-    selectImageView.layer.borderWidth = selectImageViewBorderWidth*1/value;
-    selectImageView.layer.shadowRadius = selectImageViewShadowRadius*1/value;
+    if (_captionSubtitle.watermark.type != WatermarkTypeFull) {
+        selectImageView.layer.borderWidth = selectImageViewBorderWidth*1/value;
+        selectImageView.layer.shadowRadius = selectImageViewShadowRadius*1/value;
+    }
     _cutout_MagnifierView.layer.borderWidth = 1.0*1/value;
     _cutout_MagnifierView.layer.shadowRadius = 2.0*1/value;
     _cutout_MagnifierView.transform = CGAffineTransformMakeScale(1, 1);
@@ -1688,48 +1660,49 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
         [_contentLabel setNeedsLayout];
         [_shadowLbl setNeedsLayout];
     }
-    
-    rotateView.transform = CGAffineTransformMakeScale(1, 1);
-    rotateView.transform =  CGAffineTransformMakeScale(1/value, 1/value);
-
-    _alignBtn.transform =  CGAffineTransformMakeScale(1, 1);
-    _alignBtn.transform =  CGAffineTransformMakeScale(1/value, 1/value);
-
-    _mirrorBtn.transform = CGAffineTransformMakeScale(1, 1);
-    _mirrorBtn.transform = CGAffineTransformMakeScale(1/value, 1/value);
-    
-    _closeBtn.transform =  CGAffineTransformMakeScale(1, 1);
-    _closeBtn.transform =  CGAffineTransformMakeScale(1/value, 1/value);
-
-    _textEditBtn.transform =  CGAffineTransformMakeScale(1, 1);
-    _textEditBtn.transform = CGAffineTransformMakeScale(1/value, 1/value);
-    
-    if (rotateView) {
-        CGPoint center = rotateView.center;
-        rotateView.frame = CGRectMake(0, 0,  globalInset*3/value,  globalInset*3/value);
-        rotateView.center = center;
-    }
-    
-    if( _closeBtn )
-    {
-        CGPoint center = _closeBtn.center;
-        _closeBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
-        _closeBtn.center = center;
-    }
-    
-    if( _textEditBtn )
-    {
-        CGPoint center = _textEditBtn.center;
-        _textEditBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
-        _textEditBtn.center = center;
-    }
-    
-    if( _alignBtn )
-    {
-        CGPoint center = _alignBtn.center;
-        _alignBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
-        _alignBtn.center = center;
+    if (!_captionSubtitle.watermark) {
+        rotateView.transform = CGAffineTransformMakeScale(1, 1);
+        rotateView.transform =  CGAffineTransformMakeScale(1/value, 1/value);
         
+        _alignBtn.transform =  CGAffineTransformMakeScale(1, 1);
+        _alignBtn.transform =  CGAffineTransformMakeScale(1/value, 1/value);
+        
+        _mirrorBtn.transform = CGAffineTransformMakeScale(1, 1);
+        _mirrorBtn.transform = CGAffineTransformMakeScale(1/value, 1/value);
+        
+        _closeBtn.transform =  CGAffineTransformMakeScale(1, 1);
+        _closeBtn.transform =  CGAffineTransformMakeScale(1/value, 1/value);
+        
+        _textEditBtn.transform =  CGAffineTransformMakeScale(1, 1);
+        _textEditBtn.transform = CGAffineTransformMakeScale(1/value, 1/value);
+        
+        if (rotateView) {
+            CGPoint center = rotateView.center;
+            rotateView.frame = CGRectMake(0, 0,  globalInset*3/value,  globalInset*3/value);
+            rotateView.center = center;
+        }
+        
+        if( _closeBtn )
+        {
+            CGPoint center = _closeBtn.center;
+            _closeBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
+            _closeBtn.center = center;
+        }
+        
+        if( _textEditBtn )
+        {
+            CGPoint center = _textEditBtn.center;
+            _textEditBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
+            _textEditBtn.center = center;
+        }
+        
+        if( _alignBtn )
+        {
+            CGPoint center = _alignBtn.center;
+            _alignBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
+            _alignBtn.center = center;
+            
+        }
     }
 }
 
@@ -1737,7 +1710,7 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     [self frameScale_Value:value];
     
     float deltaAngle  = - CGAffineTransformGetAngle(self.transform);
-    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-0), 1.0, 1.0);
+    self.transform = CGAffineTransformIdentity;
     
     if( _leftMoveImageView )
     {
@@ -1770,7 +1743,13 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
             _bottomMoveImageView.center = center;
         }
     }
-    self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-deltaAngle), value, value);
+    if (!_captionSubtitle.watermark || _captionSubtitle.watermark.type != WatermarkTypeFull) {
+        self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-deltaAngle), value, value);
+    }    
+    
+    if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
+        [self rotateBtn:-deltaAngle];
+    }
 }
 
 - (float) getFramescale{
@@ -1786,24 +1765,25 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     }
     self.frame = frame;
     _contentImage.frame = CGRectInset(self.bounds, globalInset, globalInset);
-    selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
-    if( !iswatermark )
-    {
-        if( _closeBtn )
+    if (!_captionSubtitle.watermark) {
+        selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
+        if( !iswatermark )
         {
-            _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+            if( _closeBtn )
+            {
+                _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+            }
+            if( _textEditBtn )
+            {
+                _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+            }
+            if (_alignBtn) {
+                _alignBtn.frame = CGRectMake(-globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3);
+            }
+            rotateView.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3);
+            _mirrorBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
         }
-        if( _textEditBtn )
-        {
-            _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
-        }
-        if (_alignBtn) {
-            _alignBtn.frame = CGRectMake(-globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3);
-        }
-        rotateView.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, self.bounds.size.height - globalInset*3 + globalInset/2.0, globalInset*3, globalInset*3);
-        _mirrorBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);        
     }
-    
     _selfScale = self.transform.a;
     
     [_contentLabel setNeedsLayout];
@@ -1851,103 +1831,44 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     
     if( self.syncContainer )
        [self.syncContainer pasterMidline:self isHidden:false];
-//    if( _delegate && iscanvas || iswatermark )
-//    {
-//        if([_delegate respondsToSelector:@selector(pasterMidline: isHidden:)]){
-//                   [_delegate pasterMidline:self isHidden:false];
-//               }
-//    }
-    
-    
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
-        deltaAngle      =
-//        floor(
-//              atan2(touchLocation.y - center.y, touchLocation.x-center.x)
-              - CGAffineTransformGetAngle(self.transform)
-//        )
-        ;
+        deltaAngle = - CGAffineTransformGetAngle(self.transform);
+        if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
+            deltaAngle = _angle / (180 / M_PI);
+        }
         beganLocation = touchLocation;
         initialBounds   = CGRectIntegral(self.bounds);
-        initialDistance =
-//        floor(
-                                CGPointGetDistance(center, touchLocation)
-//        )
-        ;
+        initialDistance = CGPointGetDistance(center, touchLocation);
         _oldSelfScale = _selfScale;
         if( _isDrag )
         {
             _isDrag_Upated = false;
 //            _contentImage.alpha = 1.0;
         }
+        [self hiddenSubBtn:YES];
         
     } else if (recognizer.state == UIGestureRecognizerStateChanged){
-        float ang =
-        -atan2(beganLocation.y-center.y, beganLocation.x-center.x) +
-//        [self Angle];
-        atan2(touchLocation.y-center.y, touchLocation.x-center.x);
+        float ang =  -atan2(beganLocation.y-center.y, beganLocation.x-center.x) + atan2(touchLocation.y-center.y, touchLocation.x-center.x);
         
         float angleDiff = deltaAngle - ang;
         
-//        float oldScale = _selfScale;
-        
         _zoomScale = CGPointGetDistance(center, touchLocation)/(initialDistance);
-        if( iswatermark )
-        {
-            float watermarkScale = _oldSelfScale + (_zoomScale-1.0)*_oldSelfScale;
-            
-            if( watermarkScale > _waterMaxScale )
-                _selfScale = _waterMaxScale;
-            else if( watermarkScale < 1.0 )
-                _selfScale = 1.0;
-            else
-                _selfScale = _oldSelfScale + (_zoomScale-1.0)*_oldSelfScale;
+        
+        float newScale = _oldSelfScale + (_zoomScale-1.0)*_oldSelfScale;
+        if (_maxScale > 0 && newScale > _maxScale) {
+            newScale = _maxScale;
         }
-        else
-            _selfScale = _oldSelfScale + (_zoomScale-1.0)*_oldSelfScale;
-//        if(_zoomScale>1){
-//            if(_zoomScale>_zoomLastScale){
-//                _selfScale +=0.04;
-//            }
-//            else if(_zoomLastScale>_zoomScale){
-//                _selfScale -=0.04;
-//            }
-//        }else if(_zoomScale<1){
-//            if(_zoomScale>_zoomLastScale)
-//                _selfScale +=0.02;
-//            else if(_zoomLastScale>_zoomScale){
-//                _selfScale -=0.02;
-//            }
-//        }
+        else if (_minScale > 0 && newScale < _minScale) {
+            newScale = _minScale;
+        }
+        _selfScale = newScale;
         _zoomLastScale = _zoomScale;
         if( _contentLabel )
         {
             float size = (_selfScale - 1.0)/1.2f;
-            float scale;// = oldScale;
-//
-//            float fontSize = _fontSize * (size*1.2f + 1.0);
-//
-//            float RestrictedFontSize = 6.0;
-//            if( !_needStretching )
-//                RestrictedFontSize = 4.0;
-//
-//            if( ( fontSize > RestrictedFontSize )
-//               && (size < 4.0)
-//               )
-//                scale = _selfScale;
-//            else
-//            {
-//                if( size >= 4.0 )
-//                    size = 4.0;
-//                else
-//                    if(  fontSize < RestrictedFontSize )
-//                        size = (RestrictedFontSize/_fontSize - 1.0)/1.2f;
-//
-//                _selfScale = size*1.2f + 1.0;
-                scale = _selfScale;
-                
-                
-//            }
+            float scale = _selfScale;
+            
             if( ((-angleDiff) < (20.0/180.0/3.14)) && ((-angleDiff) >= (-20.0/180.0/3.14))  )
             {
                 angleDiff = 0;
@@ -1989,14 +1910,17 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
                 isShock = true;
             }
             
-            if( _minScale > scale )
-            {
-                scale = _minScale;
-            }
             if( self.isAngle )
                 angleDiff = 0;
-            self.transform =  CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), scale, scale);
+//            NSLog(@"before:%@", NSStringFromCGRect(self.frame));
+            
+            if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
+                _angle = angleDiff * (180 / M_PI);
+            }else {
+                self.transform =  CGAffineTransformScale(CGAffineTransformMakeRotation(-angleDiff), scale, scale);
+            }
             [self setFramescale:scale];
+//            NSLog(@"after:%@", NSStringFromCGRect(self.frame));
             
             if( _isSizePrompt )
             {
@@ -2058,12 +1982,13 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     }else if(recognizer.state == UIGestureRecognizerStateEnded){
         
            if( self.syncContainer )
-            [self.syncContainer pasterMidline:self isHidden:false];
+               [self.syncContainer pasterMidline:self isHidden:true];
         if( _isDrag )
         {
             _isDrag_Upated = true;
 //            _contentImage.alpha = 0.0;
         }
+        [self hiddenSubBtn:NO];
     }
     if(_delegate){
         if([_delegate respondsToSelector:@selector(pasterViewDidChangeFrame:)]){
@@ -2076,11 +2001,14 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     [_contentLabel setNeedsLayout];
     [_shadowLbl setNeedsLayout];
 }
--(void)setMinScale:(float) scale
-{
-    _minScale = scale;
-}
 
+- (void)hiddenSubBtn:(BOOL)isHidden {
+    _closeBtn.hidden = isHidden;
+    _textEditBtn.hidden = isHidden;
+    rotateView.hidden = isHidden;
+    _mirrorBtn.hidden = isHidden;
+    _alignBtn.hidden = isHidden;
+}
 
 - (void)setTextString:(NSString *)text adjustPosition:(BOOL)adjust{
     _contentLabel.isUseAttributedText = NO;
@@ -2300,20 +2228,22 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     
     [_contentLabel setNeedsLayout];
     [_shadowLbl setNeedsLayout];
-    selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
-    if( _alignBtn )
-    {
-        if( _closeBtn )
+    if (!_captionSubtitle.watermark) {
+        selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
+        if( _alignBtn )
         {
-            _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
-//            [self textEdit];
+            if( _closeBtn )
+            {
+                _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+                //            [self textEdit];
+            }
         }
-    }
-
-    if( _textEditBtn )
-    {
-        _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
-
+        
+        if( _textEditBtn )
+        {
+            _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+            
+        }
     }
     [self setFramescale:_selfScale];
 //    NSLog(@"self:%@ 文本框:%@ _tOutRect:%@ 图片：%@", NSStringFromCGSize(self.frame.size), NSStringFromCGRect(_labelBgView.frame), NSStringFromCGRect(_tOutRect), NSStringFromCGRect(_contentImage.frame));
@@ -2509,20 +2439,22 @@ CG_INLINE CGSize CGAffineTransformGetScale(CGAffineTransform t)
     }else {
         [_contentLabel setNeedsLayout];
     }
-    selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
-    if( _alignBtn )
-    {
-        if( _closeBtn )
+    if (!_captionSubtitle.watermark) {
+        selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
+        if( _alignBtn )
         {
-            _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
-//            [self textEdit];
+            if( _closeBtn )
+            {
+                _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+                //            [self textEdit];
+            }
         }
-    }
-
-    if( _textEditBtn )
-    {
-        _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
-
+        
+        if( _textEditBtn )
+        {
+            _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+            
+        }
     }
     [self setFramescale:_selfScale];
 //    NSLog(@"self:%@ 文本框:%@ _tOutRect:%@ 图片：%@", NSStringFromCGSize(self.frame.size), NSStringFromCGRect(_labelBgView.frame), NSStringFromCGRect(_tOutRect), NSStringFromCGRect(_contentImage.frame));
@@ -2724,17 +2656,19 @@ static VEPasterTextView *lastTouchedView;
 //    }
     [_contentLabel setNeedsLayout];
     [_shadowLbl setNeedsLayout];
-    selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
-    if( _alignBtn )
-    {
-        if( _closeBtn )
+    if (!_captionSubtitle.watermark) {
+        selectImageView.frame = CGRectInset(self.bounds, globalInset, globalInset);
+        if( _alignBtn )
         {
-            _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
-//            [self textEdit];
-        }
-        if( _textEditBtn )
-        {
-            _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+            if( _closeBtn )
+            {
+                _closeBtn.frame = CGRectMake(-globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+                //            [self textEdit];
+            }
+            if( _textEditBtn )
+            {
+                _textEditBtn.frame = CGRectMake(self.bounds.size.width - globalInset*3 + globalInset/2.0, -globalInset/2.0, globalInset*3, globalInset*3);
+            }
         }
     }
     if (_needStretching) {
@@ -2778,6 +2712,10 @@ static VEPasterTextView *lastTouchedView;
 - (void)dealloc{
     NSLog(@"%s",__func__);
     
+    [self releaseView];
+}
+
+- (void)releaseView {
     [_textEditBtnLayerArrary enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSMutableArray *array = (NSMutableArray*)obj;
         [array enumerateObjectsUsingBlock:^(id  _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
@@ -2873,12 +2811,21 @@ static VEPasterTextView *lastTouchedView;
     [_textEditBtn addTarget:self action:_editTextAction forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_textEditBtn];
     
-    _textEditBtn.transform = CGAffineTransformMakeScale(1, 1);
-    _textEditBtn.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
-    if(rotateView){
+    if (!_captionSubtitle.watermark) {
+        _textEditBtn.transform = CGAffineTransformMakeScale(1, 1);
+        _textEditBtn.transform = CGAffineTransformMakeScale(1/_selfScale, 1/_selfScale);
+    }
+    if(rotateView) {
         CGPoint center = _textEditBtn.center;
         _textEditBtn.frame = CGRectMake(0, 0, rotateView.frame.size.width, rotateView.frame.size.height);
         _textEditBtn.center = center;
+    }
+    if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
+        [_textEditBtn removeFromSuperview];
+        [self.superview addSubview:_textEditBtn];
+        
+        float angle = atan2f(self.transform.b, self.transform.a);
+        _textEditBtn.center = [self getBtnCenter:VEBtnPosition_TopRight angle:angle];
     }
 }
 
@@ -2925,7 +2872,7 @@ static VEPasterTextView *lastTouchedView;
     _hairScale = 1.0;
     _captionTextIndex = 0;
     globalInset = 8;
-    rotateViewWidth = 20;
+    rotateViewWidth = globalInset*3;
     _syncContainerRect = syncContainerRect;
     if( !isREstroe )
     {
@@ -3270,7 +3217,10 @@ static VEPasterTextView *lastTouchedView;
 -(CGPoint)getPictureCenter
 {
     CGPoint center = [super center];
-    if( _syncContainer && _syncContainer.picturePreImageView ){
+    if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
+        center = _captionWatermarkCenter;
+    }
+    else if( _syncContainer && _syncContainer.picturePreImageView ){
         center = [_syncContainer  convertPoint:center toView:_syncContainer.picturePreImageView];
     }
     return center;
@@ -3524,5 +3474,226 @@ static VEPasterTextView *lastTouchedView;
         [_delegate pasterViewMoveScaleSize:self];
     }
 }
-#pragma mark- =============================
+
+- (void)didMoveToSuperview {
+    [super didMoveToSuperview];
+    if (!self.superview) {
+        [self releaseView];
+        return;
+    }
+    if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
+        [selectImageView removeFromSuperview];
+        
+        float maxWidth = [VEHelp getDiagonalLengthWithWidth:_syncContainer.picturePreImageView.frame.size.width height:_syncContainer.picturePreImageView.frame.size.height] / 0.25;
+        CGRect bounds = selectImageView.bounds;
+        bounds.size.width = maxWidth;
+        selectImageView.bounds = bounds;
+        
+        [_syncContainer.contentView addSubview:selectImageView];
+        
+        [_closeBtn removeFromSuperview];
+        [self.superview addSubview:_closeBtn];
+        
+        [rotateView removeFromSuperview];
+        [self.superview addSubview:rotateView];
+        
+        if (_textEditBtn) {
+            [_textEditBtn removeFromSuperview];
+            [self.superview addSubview:_textEditBtn];
+        }
+        if (_alignBtn) {
+            [_alignBtn removeFromSuperview];
+            [self.superview addSubview:_alignBtn];
+        }
+        float angle = atan2f(self.transform.b, self.transform.a);
+        [self rotateBtn:angle];
+    }
+}
+
+- (void)rotateBtn:(float)angle {
+    selectImageView.transform = CGAffineTransformIdentity;    
+    CGRect frame = selectImageView.frame;
+    frame.size.height = self.bounds.size.height - globalInset * 2;
+    selectImageView.frame = frame;
+    selectImageView.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(angle), _selfScale, _selfScale);
+    
+    CGPoint center = [selectImageView.superview convertPoint:self.center fromView:self.superview];
+    selectImageView.center = center;
+    
+    _closeBtn.center = [self getBtnCenter:VEBtnPosition_TopLeft angle:angle];
+    rotateView.center = [self getBtnCenter:VEBtnPosition_BottomRight angle:angle];
+    
+    if (_textEditBtn) {
+        _textEditBtn.center = [self getBtnCenter:VEBtnPosition_TopRight angle:angle];
+    }
+    if (_alignBtn) {
+        _alignBtn.center = [self getBtnCenter:VEBtnPosition_BottomLeft angle:angle];
+    }
+}
+
+- (CGPoint)getBtnCenter:(VEBtnPosition)position angle:(float)angle
+{
+    angle = - angle * (180 / M_PI);
+    
+    CGRect bounds = selectImageView.bounds;
+    
+    // 计算四个顶点的位置
+    CGPoint topLeft = bounds.origin;
+    CGPoint topRight = CGPointMake(CGRectGetMaxX(bounds), bounds.origin.y);
+    CGPoint bottomLeft = CGPointMake(bounds.origin.x, CGRectGetMaxY(bounds));
+    CGPoint bottomRight = CGPointMake(CGRectGetMaxX(bounds), CGRectGetMaxY(bounds));
+    
+//    NSLog(@"topLeft:%@ topRight:%@ bottomLeft:%@ bottomRight:%@", NSStringFromCGPoint(topLeft), NSStringFromCGPoint(topRight), NSStringFromCGPoint(bottomLeft), NSStringFromCGPoint(bottomRight));
+
+    // 将顶点转换到全局坐标系
+    CGPoint transformedTopLeft = [selectImageView convertPoint:topLeft toView:self.superview];
+    CGPoint transformedTopRight = [selectImageView convertPoint:topRight toView:self.superview];
+    CGPoint transformedBottomLeft = [selectImageView convertPoint:bottomLeft toView:self.superview];
+    CGPoint transformedBottomRight = [selectImageView convertPoint:bottomRight toView:self.superview];
+    
+    //    NSLog(@"transformedTopLeft:%@ topRight:%@ bottomLeft:%@ bottomRight:%@", NSStringFromCGPoint(transformedTopLeft), NSStringFromCGPoint(transformedTopRight), NSStringFromCGPoint(transformedBottomLeft), NSStringFromCGPoint(transformedBottomRight));
+    
+    CGRect edgeFrame = _syncContainer.picturePreImageView.frame;
+    if (!CGRectEqualToRect(_syncContainer.frame, _syncContainer.superview.bounds)) {
+        edgeFrame = _syncContainer.picturePreImageView.bounds;
+    }
+    CGPoint edgeTopLeftPoint = edgeFrame.origin;
+    CGPoint edgeTopRightPoint = CGPointMake(CGRectGetMaxX(edgeFrame), edgeFrame.origin.y);
+    CGPoint edgeBottomLeftPoint = CGPointMake(edgeFrame.origin.x, CGRectGetMaxY(edgeFrame));
+    CGPoint edgeBottomRightPoint = CGPointMake(CGRectGetMaxX(edgeFrame), CGRectGetMaxY(edgeFrame));
+    
+    CGPoint linePoint1 = CGPointZero;
+    CGPoint linePoint2 = CGPointZero;
+    if (position == VEBtnPosition_TopLeft || position == VEBtnPosition_TopRight) {
+        linePoint1 = transformedTopLeft;
+        linePoint2 = transformedTopRight;
+    }else {
+        linePoint1 = transformedBottomLeft;
+        linePoint2 = transformedBottomRight;
+    }
+    
+    BOOL isLeft = NO;
+    if (position == VEBtnPosition_TopLeft || position == VEBtnPosition_BottomLeft) {
+        isLeft = YES;
+    }
+    CGPoint center = CGPointZero;
+    if (isLeft) {//left edge
+        center = [self intersectionBetweenLines:linePoint1 point2:linePoint2 point3:edgeTopLeftPoint point4:edgeBottomLeftPoint];
+    }else {//right edge
+        center = [self intersectionBetweenLines:linePoint1 point2:linePoint2 point3:edgeTopRightPoint point4:edgeBottomRightPoint];
+    }
+    
+    if (fabsf(angle) > 90)
+    {
+        if (isLeft && center.x <= edgeFrame.origin.x + 1) {//right edge
+            center = [self intersectionBetweenLines:linePoint1 point2:linePoint2 point3:edgeTopRightPoint point4:edgeBottomRightPoint];
+        }
+        else if (!isLeft && center.x >= CGRectGetMaxX(edgeFrame) - 1) {//left edge
+            center = [self intersectionBetweenLines:linePoint1 point2:linePoint2 point3:edgeTopLeftPoint point4:edgeBottomLeftPoint];
+        }
+    }
+    
+    if (center.y < edgeFrame.origin.y) {//top edge
+        center = [self intersectionBetweenLines:linePoint1 point2:linePoint2 point3:edgeTopLeftPoint point4:edgeTopRightPoint];
+    }
+    else if (center.y > CGRectGetMaxY(edgeFrame)) {//bottom edge
+        center = [self intersectionBetweenLines:linePoint1 point2:linePoint2 point3:edgeBottomLeftPoint point4:edgeBottomRightPoint];
+    }
+    
+    if (isLeft && center.x > CGRectGetMaxX(edgeFrame)) {//right edge
+        center = [self intersectionBetweenLines:linePoint1 point2:linePoint2 point3:edgeTopRightPoint point4:edgeBottomRightPoint];
+    }
+    else if (!isLeft && center.x < edgeFrame.origin.x) {//left edge
+        center = [self intersectionBetweenLines:linePoint1 point2:linePoint2 point3:edgeTopLeftPoint point4:edgeBottomLeftPoint];
+    }
+    
+    if (center.y < CGRectGetMinY(edgeFrame)) {
+        center.y = CGRectGetMinY(edgeFrame);
+    }
+    if (center.y > CGRectGetMaxY(edgeFrame)) {
+        center.y = CGRectGetMaxY(edgeFrame);
+    }
+    if (center.x < CGRectGetMinX(edgeFrame)) {
+        center.x = CGRectGetMinX(edgeFrame);
+    }
+    if (center.x > CGRectGetMaxX(edgeFrame)) {
+        center.x = CGRectGetMaxX(edgeFrame);
+    }
+    
+    return center;
+}
+
+- (CGPoint)intersectionBetweenLines:(CGPoint)line1Point1 point2:(CGPoint)line1Point2 point3:(CGPoint)line2Point1 point4:(CGPoint)line2Point2 {
+    CGFloat x1 = line1Point1.x, y1 = line1Point1.y;
+    CGFloat x2 = line1Point2.x, y2 = line1Point2.y;
+    CGFloat x3 = line2Point1.x, y3 = line2Point1.y;
+    CGFloat x4 = line2Point2.x, y4 = line2Point2.y;
+    
+    CGFloat delta = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+    
+    if (delta == 0) {
+        return CGPointZero; // 线不相交
+    }
+    
+    CGFloat x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / delta;
+    CGFloat y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / delta;
+    
+    CGPoint intersectionPoint = CGPointMake(x, y);
+    
+    return intersectionPoint;
+}
+
+- (void)refreshSubBtnFrame:(CGPoint)newCenter {
+    CGPoint center = [selectImageView.superview convertPoint:self.center fromView:self];
+    selectImageView.center = center;
+    if (self.frame.size.width >= self.frame.size.height) {
+        float diffY = newCenter.y - self.center.y;
+        
+        CGRect frame = _closeBtn.frame;
+        frame.origin.y += diffY;
+        _closeBtn.frame = frame;
+        
+        frame = rotateView.frame;
+        frame.origin.y += diffY;
+        rotateView.frame = frame;
+        
+        if (_textEditBtn) {
+            frame = _textEditBtn.frame;
+            frame.origin.y += diffY;
+            _textEditBtn.frame = frame;
+        }
+        
+        if (_alignBtn) {
+            frame = _alignBtn.frame;
+            frame.origin.y += diffY;
+            _alignBtn.frame = frame;
+        }
+    }else {
+        float diffX = newCenter.x - self.center.x;
+        
+        CGRect frame = _closeBtn.frame;
+        frame.origin.x += diffX;
+        _closeBtn.frame = frame;
+        
+        frame = rotateView.frame;
+        frame.origin.x += diffX;
+        rotateView.frame = frame;
+        
+        if (_textEditBtn) {
+            frame = _textEditBtn.frame;
+            frame.origin.x += diffX;
+            _textEditBtn.frame = frame;
+        }
+        
+        if (_alignBtn) {
+            frame = _alignBtn.frame;
+            frame.origin.x += diffX;
+            _alignBtn.frame = frame;
+        }
+    }
+    
+    float angle = atan2f(self.transform.b, self.transform.a);
+    [self rotateBtn:angle];
+}
+
 @end

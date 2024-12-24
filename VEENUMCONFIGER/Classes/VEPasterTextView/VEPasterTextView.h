@@ -50,7 +50,7 @@
 @property(nonatomic, assign) BOOL   isTextTemplateEdit;
 
 @property(nonatomic, assign)BOOL    isPESDK;
-
+@property(nonatomic, assign)CGPoint captionWatermarkCenter;
 -(UIImageView *_Nullable)getselectImageView;
 
 @property (assign, nonatomic) CGRect contentsCenter_Rect;
@@ -213,7 +213,8 @@
 
 //加水印
 -(void)setWatermarkPasterText:(BOOL) isWatermark;
-@property (nonatomic,assign)float waterMaxScale;
+@property (nonatomic,assign)float maxScale;
+@property (nonatomic,assign)float angle;
 
 - (void)pinchGestureRecognizer:(UIPinchGestureRecognizer * _Nullable)recognizer;
 - (void) moveGesture:(UIGestureRecognizer * _Nullable) recognizer;

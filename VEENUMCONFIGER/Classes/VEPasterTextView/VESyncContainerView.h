@@ -29,6 +29,7 @@
 @property(nonatomic,strong)UIPinchGestureRecognizer *gestureRecognizer;
 @property(nonatomic,strong)UIRotationGestureRecognizer *rotationGesture;
 @property(nonatomic, weak)UIImageView      *picturePreImageView;
+@property(nonatomic, weak)UIView      *contentView;
 -(CGRect)getPreImageViewFrame;
 -(CGRect)getPreImageViewBounds;
 
