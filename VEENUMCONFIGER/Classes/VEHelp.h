@@ -859,7 +859,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (void)unlink:(NSString *)path;
 
 +(void)initCaptionExFontsize:( CaptionEx * ) captionSubtitle;
-+ (void)downloadVideoFromURL:(NSString *)urlString savePath:(NSString *)savepath completed:(void(^)(NSString *,NSError *))completed;
++ (NSURLSessionDownloadTask *)downloadVideoFromURL:(NSString *)urlString savePath:(NSString *)savepath completed:(void(^)(NSString *,NSError *))completed;
 
 + (void)copyTextStylesFromCaptionItem:(CaptionItem *)originalItem toCaptionItem:(CaptionItem *)captionItem;
 
@@ -874,5 +874,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (CGFloat)getDiagonalLengthWithWidth:(CGFloat)width height:(CGFloat)height;
 
 + (UIColor *)colorWithAlphaOne:(UIColor *)originalColor;
+
++ (float)getAlphaWithColor:(UIColor *)color;
 
 @end

@@ -96,6 +96,23 @@
     [self setNeedsLayout];
 }
 
+- (UILabel *)valueLbl {
+    if (!_valueLbl) {
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, -5, 50, 20)];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.textColor = [UIColor whiteColor];
+        if([VEConfigManager sharedManager].toolsTitleColor){
+            label.textColor = [VEConfigManager sharedManager].toolsTitleColor;
+        }
+        label.font = [UIFont systemFontOfSize:12];
+        label.hidden = YES;
+        _valueLbl = label;
+        [self addSubview:label];
+    }
+    
+    return _valueLbl;
+}
+
 - (void)dealloc{
 //    NSLog(@"%s",__func__);
 }

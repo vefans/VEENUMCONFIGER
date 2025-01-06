@@ -267,6 +267,9 @@
 @property(nonatomic, assign) CGPoint    skyBeginPoint;
 @property(nonatomic, assign) CGPoint    skyMovePoint;
 @property(nonatomic, assign) UIGestureRecognizerState skyRecognizerState;
+
+- (BOOL)isContainPoint:(CGPoint)point;
+
 @end
 
 

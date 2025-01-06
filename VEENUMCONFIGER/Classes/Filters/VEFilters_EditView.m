@@ -87,11 +87,9 @@ NSString * _netMaterialTypeURL;
     _originalGlobalFilters = [NSMutableArray new];
     NSString *appKey = [VEConfigManager sharedManager].editConfiguration.sourcesKey;
     
-    WeakSelf(self);
     if([lexiu currentReachabilityStatus] != VEReachabilityStatus_NotReachable && filterResourceURL.length>0)
     {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            StrongSelf(self);
             _filtersName = [NSMutableArray array];
             _originalFiltersName = [NSMutableArray new];
             NSMutableDictionary *itemDic = [NSMutableDictionary dictionary];
@@ -199,6 +197,8 @@ NSString * _netMaterialTypeURL;
                             {
                                 [_globalFilters addObject:filter];
                                 [_originalGlobalFilters addObject:filter];
+                            }else {
+                                break;
                             }
                         }
                     }
@@ -226,8 +226,11 @@ NSString * _netMaterialTypeURL;
                     filter.networkResourceId = filterDic[@"id"];
                     filter.netCover = filterDic[@"cover"];
                     filter.name = filterDic[@"name"];
-                    if( _globalFilters )
+                    if( _globalFilters ) {
                         [_globalFilters addObject:filter];
+                    }else {
+                        break;
+                    }
                 }
             }
             

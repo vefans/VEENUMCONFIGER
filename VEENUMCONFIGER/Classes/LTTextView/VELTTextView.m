@@ -220,7 +220,32 @@
         NSString *selectedStr = [VEHelp getSubstring:_textView.text targetRange:selectedRange];
         
         NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:_textView.text];
-        NSRange selectedStrRrange = [[attributedText string] rangeOfString:selectedStr];
+        NSRange selectedStrRrange = selectedRange;
+        if (selectedRange.location == 0) {
+            selectedStrRrange = [attributedText.string rangeOfString:selectedStr];
+        }else {
+            NSString *text = attributedText.string;
+            NSInteger index = 0;
+            NSUInteger location = 0;
+            NSUInteger length = 0;
+            NSRange range;
+            for (NSUInteger i = 0; i < text.length; i += range.length) {
+                range = [text rangeOfComposedCharacterSequenceAtIndex:i];
+                NSString *str = [text substringWithRange:range];
+                if (![str isEqualToString:@"\n"]) {
+                    index++;
+                }
+                if (index == selectedRange.location) {
+                    location = range.location + range.length;
+                }
+                if (index == selectedRange.location + selectedRange.length) {
+                    length = range.location + range.length - location;
+                    break;
+                }
+            }
+            selectedStrRrange = NSMakeRange(location, length);
+        }
+        
         [attributedText addAttribute:NSBackgroundColorAttributeName value:[UIColorFromRGB(0xdddff8) colorWithAlphaComponent:0.26] range:selectedStrRrange];
         [attributedText addAttribute:NSFontAttributeName value:_textView.font range:NSMakeRange(0, _textView.text.length)];
         [attributedText addAttribute:NSForegroundColorAttributeName value:_textView.textColor range:NSMakeRange(0, _textView.text.length)];

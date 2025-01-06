@@ -13,5 +13,6 @@
 @property (nonatomic, assign) CGRect thumbRect;
 @property (nonatomic, assign) BOOL isAETemplate;
 @property (nonatomic, assign) BOOL isAdj;
+@property (nonatomic, weak) UILabel *valueLbl;
 
 @end

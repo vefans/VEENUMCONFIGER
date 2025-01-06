@@ -6809,6 +6809,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         if(![params.allKeys containsObject:@"use_init"]){
             [params setObject:[VEConfigManager sharedManager].hasInit ? @(1) : @(0) forKey:@"use_init"];
         }
+        if(![params.allKeys containsObject:@"hasInit"]){
+            [params setObject:[VEConfigManager sharedManager].hasInit ? @(1) : @(0) forKey:@"hasInit"];
+        }
         if(![[params allKeys] containsObject:@"os"]){
             [params setObject:@"ios" forKey:@"os"];
         }
@@ -7283,6 +7286,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
     else{
         [params setObject:([VEConfigManager sharedManager].hasInit ? @(1): @(0)) forKey:@"use_init"];
+    }
+    if(![params.allKeys containsObject:@"hasInit"]){
+        [params setObject:[VEConfigManager sharedManager].hasInit ? @(1) : @(0) forKey:@"hasInit"];
     }
     [params setObject:@"ios" forKey:@"os"];
     return [self updateInfomation:params andUploadUrl:urlPath];
@@ -18930,16 +18936,17 @@ static OSType help_inputPixelFormat(){
     }
 }
 
-+ (void)downloadVideoFromURL:(NSString *)urlString savePath:(NSString *)savepath completed:(void(^)(NSString *,NSError *))completed {
++ (NSURLSessionDownloadTask *)downloadVideoFromURL:(NSString *)urlString savePath:(NSString *)savepath completed:(void(^)(NSString *,NSError *))completed {
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
-
+    __block BOOL downloading = YES;
     NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:url completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
             if(completed){
                 completed(nil,error);
             }
+            downloading = NO;
             NSLog(@"下载失败: %@", error.localizedDescription);
             return;
         }
@@ -18949,6 +18956,7 @@ static OSType help_inputPixelFormat(){
             if (completed) {
                 completed(nil, [NSError errorWithDomain:@"DownloadError" code:httpResponse.statusCode userInfo:nil]);
             }
+            downloading = NO;
             return;
         }
 
@@ -18958,7 +18966,6 @@ static OSType help_inputPixelFormat(){
         if(savepath){
             filePath = savepath;
         }
-        
         // 移动文件到目标路径
         NSURL *destinationURL = [NSURL fileURLWithPath:filePath];
         [[NSFileManager defaultManager] removeItemAtURL:destinationURL error:nil]; // 删除已有文件
@@ -18970,10 +18977,11 @@ static OSType help_inputPixelFormat(){
             NSUInteger fileSize = [attributes fileSize];
             NSLog(@"下载文件大小: %lu bytes", (unsigned long)fileSize);
             if (fileSize == 0) {
-                NSLog(@"下载内容为空");
+                NSLog(@"未提取到视频内容");
                 if (completed) {
-                    completed(nil, [NSError errorWithDomain:@"DownloadError" code:0 userInfo:@{NSLocalizedDescriptionKey: @"下载内容为空"}]);
+                    completed(nil, [NSError errorWithDomain:@"DownloadError" code:0 userInfo:@{NSLocalizedDescriptionKey: @"未提取到视频内容"}]);
                 }
+                downloading = NO;
                 return;
             }
         }
@@ -18984,14 +18992,26 @@ static OSType help_inputPixelFormat(){
             if(completed){
                 completed(nil,fileError);
             }
+            downloading = NO;
         } else {
             //printf("视频下载成功，保存在: %s", filePath);
             if(completed){
                 completed(filePath,nil);
             }
+            downloading = NO;
         }
     }];
     [downloadTask resume];
+    [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(!downloading){
+                [timer invalidate];
+            }
+            printf("\n下载进度：%f\n",(downloadTask.progress.completedUnitCount * 1.0)/(downloadTask.progress.totalUnitCount * 1.0));
+        });
+    }];
+    
+    return downloadTask;
 }
 
 + (void)copyTextStylesFromCaptionItem:(CaptionItem *)originalItem toCaptionItem:(CaptionItem *)captionItem {
@@ -19506,6 +19526,19 @@ static OSType help_inputPixelFormat(){
     [originalColor getRed:&red green:&green blue:&blue alpha:&alpha];
     
     return [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
+}
+
++ (float)getAlphaWithColor:(UIColor *)color {
+    if (!color) {
+        return 0;
+    }
+    CGFloat r = 0;
+    CGFloat g = 0;
+    CGFloat b = 0;
+    CGFloat a = 0;
+    [color getRed:&r green:&g blue:&b alpha:&a];
+    
+    return a;
 }
 
 @end

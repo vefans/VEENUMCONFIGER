@@ -9,6 +9,32 @@
 #import "VESyncContainerView.h"
 #import "VEPasterTextView.h"
 
+@implementation VEDrawLineView
+
+- (void)drawRect:(CGRect)rect {
+    // 获取当前图形上下文
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // 设置线条颜色
+    CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
+    
+    // 设置线条宽度
+    CGContextSetLineWidth(context, 1.0);
+    
+    // 绘制第一条直线：左上到右上
+    CGContextMoveToPoint(context, _topLeft.x, _topLeft.y);
+    CGContextAddLineToPoint(context, _topRight.x, _topRight.y);
+    
+    // 绘制第二条直线：左下到右下
+    CGContextMoveToPoint(context, _bottomLeft.x, _bottomLeft.y);
+    CGContextAddLineToPoint(context, _bottomRight.x, _bottomRight.y);
+    
+    // 执行绘制操作
+    CGContextStrokePath(context);
+}
+
+@end
+
 
 @interface VESyncContainerView()<UIGestureRecognizerDelegate>
 {
@@ -349,16 +375,24 @@
     self.trackAreaImageView = nil;
 }
 
-- (UIView *)contentView {
-    if (!_contentView) {
-        UIView *view = [[UIView alloc] initWithFrame:_picturePreImageView.frame];
+- (VEDrawLineView *)lineView {
+    if (!_lineView) {
+        VEDrawLineView *view = [[VEDrawLineView alloc] initWithFrame:self.bounds];
+        if (_picturePreImageView) {
+            view.frame = [self.superview convertRect:_picturePreImageView.frame toView:self];
+        }
         view.backgroundColor = [UIColor clearColor];
         view.layer.masksToBounds = YES;
-        _contentView = view;
-        [self addSubview:view];
+        _lineView = view;
+        [self insertSubview:view atIndex:0];
     }
     
-    return _contentView;
+    return _lineView;
+}
+
+- (void)releaseLineView {
+    [_lineView removeFromSuperview];
+    _lineView = nil;
 }
 
 @end

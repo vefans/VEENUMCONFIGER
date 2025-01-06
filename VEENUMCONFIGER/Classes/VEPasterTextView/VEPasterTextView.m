@@ -10,7 +10,6 @@
 //#import "UIImage+Tint.h"
 #import <VEENUMCONFIGER/VEENUMCONFIGER.h>
 
-
 /* 角度转弧度 */
 #define SK_DEGREES_TO_RADIANS(angle) \
 ((angle) / 180.0 * M_PI)
@@ -121,6 +120,12 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
     CGPoint selfCenter;
     CGPoint comimageCenter;
 }
+
+@property(nonatomic, assign) CGPoint topLeft;
+@property(nonatomic, assign) CGPoint topRight;
+@property(nonatomic, assign) CGPoint bottomLeft;
+@property(nonatomic, assign) CGPoint bottomRight;
+
 @end
 @implementation VEPasterTextView
 //加这个方法是为了解决四个角的按钮不好点击的问题
@@ -439,7 +444,6 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
     _needStretching = needStretching;
     _tsize = tsize;
     _tOutRect = t;
-    _captionWatermarkCenter = CGPointMake(0.5, 0.5);
     if( !isREstroe )
     {
         if (frame.size.width < globalInset*2.0) {
@@ -1346,16 +1350,12 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
     }
     else
     {
-//        touchLocation = [recognizer locationInView:self.superview];
-        
         if(_delegate){
                 if( self.syncContainer )
                     [self.syncContainer pasterMidline:self isHidden:false];
         }
         
         if (recognizer.state == UIGestureRecognizerStateBegan) {
-//            beginningPoint = touchLocation;
-//            beginningCenter = self.center;
             if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
                 shockX = _captionWatermarkCenter.x;
                 shockY = _captionWatermarkCenter.y;
@@ -1363,13 +1363,9 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
                 shockX = self.center.x;
                 shockY = self.center.y;
             }
-//            CGPoint point = [((UIPanGestureRecognizer*)recognizer) translationInView:_syncContainer];
-            
-//            self.center = CGPointMake(self.center.x + point.x, self.center.y + point.y);
             
             [((UIPanGestureRecognizer*)recognizer) setTranslation:CGPointMake(0, 0) inView:_syncContainer];
             
-//            beginBounds = self.bounds;
             if( _isDrag )
             {
                 _isDrag_Upated = false;
@@ -1379,7 +1375,6 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
                         obj.hidden = YES;
                     }];
                 }
-                selectImageView.hidden = YES;
                 [self hiddenSubBtn:YES];
             }
         }else if (recognizer.state == UIGestureRecognizerStateChanged){
@@ -1437,10 +1432,10 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
             if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
                 _captionWatermarkCenter = center;
             }else {
-                if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
-                    [self refreshSubBtnFrame:center];
-                }
                 [self setCenter:center];
+                if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
+                    [self refreshSubBtnFrame];
+                }
             }
             
             [((UIPanGestureRecognizer*)recognizer) setTranslation:CGPointMake(0, 0) inView:_syncContainer];
@@ -1504,10 +1499,10 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
             if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
                 _captionWatermarkCenter = center;
             }else {
-                if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
-                    [self refreshSubBtnFrame:center];
-                }
                 [self setCenter:center];
+                if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
+                    [self refreshSubBtnFrame];
+                }
             }
             [((UIPanGestureRecognizer*)recognizer) setTranslation:CGPointMake(0, 0) inView:_syncContainer];
             
@@ -1523,11 +1518,9 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
                         obj.hidden = NO;
                     }];
                 }
-                selectImageView.hidden = NO;
                 [self hiddenSubBtn:NO];
             }
         }
-//        prevPoint = touchLocation;
         
         if([_delegate respondsToSelector:@selector(pasterViewMoved:)]){
             [_delegate pasterViewMoved:self];
@@ -1536,7 +1529,7 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
         [_shadowLbl setNeedsLayout];
     }
     
-    NSLog(@"center:%@", NSStringFromCGPoint(_captionSubtitle.watermark.position));
+    NSLog(@"position:%@ self:%@", NSStringFromCGPoint(_captionSubtitle.watermark.position), NSStringFromCGPoint(self.center));
 }
 
 - (void)touchClose{
@@ -1616,7 +1609,7 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
     _selfScale = value;
     
     value = value *  _hairScale;
-    if (_captionSubtitle.watermark.type != WatermarkTypeFull) {
+    if (!_captionSubtitle.watermark) {
         selectImageView.layer.borderWidth = selectImageViewBorderWidth*1/value;
         selectImageView.layer.shadowRadius = selectImageViewShadowRadius*1/value;
     }
@@ -1745,10 +1738,9 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
     }
     if (!_captionSubtitle.watermark || _captionSubtitle.watermark.type != WatermarkTypeFull) {
         self.transform = CGAffineTransformScale(CGAffineTransformMakeRotation(-deltaAngle), value, value);
-    }    
-    
-    if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
-        [self rotateBtn:-deltaAngle];
+        if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
+            [self refreshSubBtnFrame];
+        }
     }
 }
 
@@ -1825,10 +1817,7 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
         return;
     
     touchLocation = [recognizer locationInView:self.superview];
-//    touchLocation = [VEHelp solveUIWidgetFuzzyPoint:touchLocation];
     CGPoint center = CGRectGetCenter(self.frame);
-//    center = [VEHelp solveUIWidgetFuzzyPoint:center];
-    
     if( self.syncContainer )
        [self.syncContainer pasterMidline:self isHidden:false];
     
@@ -2000,6 +1989,7 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
     }
     [_contentLabel setNeedsLayout];
     [_shadowLbl setNeedsLayout];
+//    NSLog(@"position:%@ center:%@ selectImageView:%@ angle:%f", NSStringFromCGPoint(_captionSubtitle.watermark.position), NSStringFromCGPoint(self.center), NSStringFromCGPoint(selectImageView.center), _captionSubtitle.watermark.angle);
 }
 
 - (void)hiddenSubBtn:(BOOL)isHidden {
@@ -2507,7 +2497,11 @@ typedef NS_ENUM(NSInteger, VEBtnPosition){
     if( !iscanvas  && !iswatermark)
     {
         rotateView.hidden = YES;
-        selectImageView.hidden = YES;
+        if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
+            _syncContainer.lineView.hidden = YES;
+        }else {
+            selectImageView.hidden = YES;
+        }
     }
     _mirrorBtn.hidden = YES;
     
@@ -2555,8 +2549,13 @@ static VEPasterTextView *lastTouchedView;
         _alignBtn.hidden = NO;
         _mirrorBtn.hidden = NO;
     }
-    
-    selectImageView.hidden = NO;
+    if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
+        _syncContainer.lineView.hidden = NO;
+        [_syncContainer.lineView addSubview:selectImageView];
+        [self.superview insertSubview:self belowSubview:_closeBtn];
+    }else {
+        selectImageView.hidden = NO;
+    }
     rotateView.hidden = NO;
     
     if( _leftMoveImageView )
@@ -2711,8 +2710,6 @@ static VEPasterTextView *lastTouchedView;
 
 - (void)dealloc{
     NSLog(@"%s",__func__);
-    
-    [self releaseView];
 }
 
 - (void)releaseView {
@@ -2774,7 +2771,10 @@ static VEPasterTextView *lastTouchedView;
         [_shadowLbl removeFromSuperview];
         _shadowLbl = nil;
     }
-    
+    if (_textEditBtn) {
+        [_textEditBtn removeFromSuperview];
+        _textEditBtn = nil;
+    }
     if( _cutout_MagnifierView )
     {
         [_cutout_label1 removeFromSuperview];
@@ -2792,6 +2792,7 @@ static VEPasterTextView *lastTouchedView;
         [_cutout_MagnifierView removeFromSuperview];
         _cutout_MagnifierView = nil;
     }
+    _syncContainer.lineView.hidden = YES;
 }
 
 -(void)setTextEdit
@@ -2902,7 +2903,7 @@ static VEPasterTextView *lastTouchedView;
         _tScale = 1.0;
         isShock = true;
         isShockY = true;
-        
+        _captionWatermarkCenter = CGPointZero;
         originRect = frame;
         _selfScale = 1.0;
         _oldSelfScale = 1.0;
@@ -3200,19 +3201,16 @@ static VEPasterTextView *lastTouchedView;
 
 - (void)removeFromSuperview{
     [super removeFromSuperview];
+    [self releaseView];
 }
 
-//- (void)setCenter:(CGPoint)center
-//{
-//    if( _syncContainer && _syncContainer.picturePreImageView )
-//    {
-//        CGPoint point = [_syncContainer.picturePreImageView convertPoint:center toView:_syncContainer];
-//        [self superview].center = point;
-//    }
-//    else{
-//        [self superview].center =  center;
-//    }
-//}
+- (void)setCenter:(CGPoint)center
+{
+    [super setCenter:center];
+    if (CGPointEqualToPoint(_captionWatermarkCenter, CGPointZero)) {
+        _captionWatermarkCenter = center;
+    }
+}
 
 -(CGPoint)getPictureCenter
 {
@@ -3220,7 +3218,7 @@ static VEPasterTextView *lastTouchedView;
     if (_captionSubtitle.watermark.type == WatermarkTypeFull) {
         center = _captionWatermarkCenter;
     }
-    else if( _syncContainer && _syncContainer.picturePreImageView ){
+    if( _syncContainer && _syncContainer.picturePreImageView ){
         center = [_syncContainer  convertPoint:center toView:_syncContainer.picturePreImageView];
     }
     return center;
@@ -3482,15 +3480,23 @@ static VEPasterTextView *lastTouchedView;
         return;
     }
     if (_captionSubtitle.watermark.type == WatermarkTypeSingleLine) {
+        selectImageView.layer.borderColor = [UIColor clearColor].CGColor;
+        selectImageView.layer.borderWidth = 1.0;
         [selectImageView removeFromSuperview];
         
-        float maxWidth = [VEHelp getDiagonalLengthWithWidth:_syncContainer.picturePreImageView.frame.size.width height:_syncContainer.picturePreImageView.frame.size.height] / 0.25;
+        float maxWidth;
+        if (_syncContainer.picturePreImageView) {
+            maxWidth = [VEHelp getDiagonalLengthWithWidth:_syncContainer.picturePreImageView.frame.size.width height:_syncContainer.picturePreImageView.frame.size.height] / 0.25;
+        }else {
+            maxWidth = [VEHelp getDiagonalLengthWithWidth:_syncContainer.frame.size.width height:_syncContainer.frame.size.height] / 0.25;
+        }
         CGRect bounds = selectImageView.bounds;
         bounds.size.width = maxWidth;
         selectImageView.bounds = bounds;
-        
-        [_syncContainer.contentView addSubview:selectImageView];
-        
+        selectImageView.hidden = YES;
+        [_syncContainer.lineView addSubview:selectImageView];
+        _syncContainer.lineView.hidden = NO;
+
         [_closeBtn removeFromSuperview];
         [self.superview addSubview:_closeBtn];
         
@@ -3505,13 +3511,13 @@ static VEPasterTextView *lastTouchedView;
             [_alignBtn removeFromSuperview];
             [self.superview addSubview:_alignBtn];
         }
-        float angle = atan2f(self.transform.b, self.transform.a);
-        [self rotateBtn:angle];
+        [self refreshSubBtnFrame];
     }
 }
 
-- (void)rotateBtn:(float)angle {
-    selectImageView.transform = CGAffineTransformIdentity;    
+- (void)refreshSubBtnFrame {
+    float angle = atan2f(self.transform.b, self.transform.a);
+    selectImageView.transform = CGAffineTransformIdentity;
     CGRect frame = selectImageView.frame;
     frame.size.height = self.bounds.size.height - globalInset * 2;
     selectImageView.frame = frame;
@@ -3529,6 +3535,34 @@ static VEPasterTextView *lastTouchedView;
     if (_alignBtn) {
         _alignBtn.center = [self getBtnCenter:VEBtnPosition_BottomLeft angle:angle];
     }
+    
+    UIView *lineView = selectImageView.superview;
+    CGPoint topLeft = CGPointMake(_closeBtn.center.x - lineView.frame.origin.x, _closeBtn.center.y - lineView.frame.origin.y);
+    CGPoint bottomRight = CGPointMake(rotateView.center.x - lineView.frame.origin.x, rotateView.center.y - lineView.frame.origin.y);
+    CGPoint topRight;
+    if (_textEditBtn) {
+        topRight = CGPointMake(_textEditBtn.center.x - lineView.frame.origin.x, _textEditBtn.center.y - lineView.frame.origin.y);
+    }else {
+        CGPoint center = [self getBtnCenter:VEBtnPosition_TopRight angle:angle];
+        topRight = CGPointMake(center.x - lineView.frame.origin.x, center.y - lineView.frame.origin.y);
+    }
+    CGPoint bottomLeft;
+    if (_alignBtn) {
+        bottomLeft = CGPointMake(_alignBtn.center.x - lineView.frame.origin.x, _alignBtn.center.y - lineView.frame.origin.y);
+    }else {
+        CGPoint center = [self getBtnCenter:VEBtnPosition_BottomLeft angle:angle];
+        bottomLeft = CGPointMake(center.x - lineView.frame.origin.x, center.y - lineView.frame.origin.y);
+    }
+    _syncContainer.lineView.topLeft = topLeft;
+    _syncContainer.lineView.topRight = topRight;
+    _syncContainer.lineView.bottomLeft = bottomLeft;
+    _syncContainer.lineView.bottomRight = bottomRight;
+    [_syncContainer.lineView setNeedsDisplay];
+    
+    _topLeft = topLeft;
+    _topRight = topRight;
+    _bottomLeft = bottomLeft;
+    _bottomRight = bottomRight;
 }
 
 - (CGPoint)getBtnCenter:(VEBtnPosition)position angle:(float)angle
@@ -3553,10 +3587,7 @@ static VEPasterTextView *lastTouchedView;
     
     //    NSLog(@"transformedTopLeft:%@ topRight:%@ bottomLeft:%@ bottomRight:%@", NSStringFromCGPoint(transformedTopLeft), NSStringFromCGPoint(transformedTopRight), NSStringFromCGPoint(transformedBottomLeft), NSStringFromCGPoint(transformedBottomRight));
     
-    CGRect edgeFrame = _syncContainer.picturePreImageView.frame;
-    if (!CGRectEqualToRect(_syncContainer.frame, _syncContainer.superview.bounds)) {
-        edgeFrame = _syncContainer.picturePreImageView.bounds;
-    }
+    CGRect edgeFrame = selectImageView.superview.frame;
     CGPoint edgeTopLeftPoint = edgeFrame.origin;
     CGPoint edgeTopRightPoint = CGPointMake(CGRectGetMaxX(edgeFrame), edgeFrame.origin.y);
     CGPoint edgeBottomLeftPoint = CGPointMake(edgeFrame.origin.x, CGRectGetMaxY(edgeFrame));
@@ -3643,57 +3674,19 @@ static VEPasterTextView *lastTouchedView;
     return intersectionPoint;
 }
 
-- (void)refreshSubBtnFrame:(CGPoint)newCenter {
-    CGPoint center = [selectImageView.superview convertPoint:self.center fromView:self];
-    selectImageView.center = center;
-    if (self.frame.size.width >= self.frame.size.height) {
-        float diffY = newCenter.y - self.center.y;
-        
-        CGRect frame = _closeBtn.frame;
-        frame.origin.y += diffY;
-        _closeBtn.frame = frame;
-        
-        frame = rotateView.frame;
-        frame.origin.y += diffY;
-        rotateView.frame = frame;
-        
-        if (_textEditBtn) {
-            frame = _textEditBtn.frame;
-            frame.origin.y += diffY;
-            _textEditBtn.frame = frame;
-        }
-        
-        if (_alignBtn) {
-            frame = _alignBtn.frame;
-            frame.origin.y += diffY;
-            _alignBtn.frame = frame;
-        }
-    }else {
-        float diffX = newCenter.x - self.center.x;
-        
-        CGRect frame = _closeBtn.frame;
-        frame.origin.x += diffX;
-        _closeBtn.frame = frame;
-        
-        frame = rotateView.frame;
-        frame.origin.x += diffX;
-        rotateView.frame = frame;
-        
-        if (_textEditBtn) {
-            frame = _textEditBtn.frame;
-            frame.origin.x += diffX;
-            _textEditBtn.frame = frame;
-        }
-        
-        if (_alignBtn) {
-            frame = _alignBtn.frame;
-            frame.origin.x += diffX;
-            _alignBtn.frame = frame;
-        }
-    }
+- (BOOL)isContainPoint:(CGPoint)point {
+    point = [selectImageView.superview convertPoint:point toView:selectImageView.superview];
+    // 计算 minX, maxX, minY, maxY
+    CGFloat minX = fminf(fminf(_topLeft.x, _topRight.x), fminf(_bottomLeft.x, _bottomRight.x));
+    CGFloat maxX = fmaxf(fmaxf(_topLeft.x, _topRight.x), fmaxf(_bottomLeft.x, _bottomRight.x));
+    CGFloat minY = fminf(fminf(_topLeft.y, _topRight.y), fminf(_bottomLeft.y, _bottomRight.y));
+    CGFloat maxY = fmaxf(fmaxf(_topLeft.y, _topRight.y), fmaxf(_bottomLeft.y, _bottomRight.y));
+
+    // 创建 CGRect
+    CGRect rect = CGRectMake(minX, minY, maxX - minX, maxY - minY);
+    BOOL isContain = CGRectContainsPoint(rect, point);
     
-    float angle = atan2f(self.transform.b, self.transform.a);
-    [self rotateBtn:angle];
+    return isContain;
 }
 
 @end

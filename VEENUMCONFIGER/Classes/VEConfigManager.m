@@ -49,7 +49,7 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
                             }
                             else if( [message isEqualToString:@"Progress"] )
                             {
-                                NSLog(@"segmentation Image Progress: %.2f", [messageBody floatValue]);
+//                                NSLog(@"segmentation Image Progress: %.2f", [messageBody floatValue]);
                             }
                             else if( [message isEqualToString:@"Failure"] )
                             {

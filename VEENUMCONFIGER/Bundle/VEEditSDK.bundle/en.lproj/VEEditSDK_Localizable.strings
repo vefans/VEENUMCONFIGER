@@ -24,7 +24,7 @@
 "样式" = "Styles";
 "动画" = "Animation";
 "字幕_动画" = "Anim";
-"边框" = "Frames";
+"边框" = "Frame";
 "颜色" = "Color";
 "描边" = "Stroke";
 "大小" = "Size";//调节字幕大小(标题)
@@ -2052,7 +2052,7 @@
 "请输入文字"  = "Enter text";
 "文本" = "Text";
 "标签" = "Canvas";
-"粗斜体"  = "Bold Italic";
+"粗斜体"  = "Bold";
 "排列" = "Align";
 "半径" = "Radius";
 "粗体" = "Bold";
@@ -3068,3 +3068,6 @@
 "Text_watermark" = "Text";
 "Local watermark" = "Local";
 "涂鸦笔加载中..." = "Loading...";
+"Edit Video" = "Edit";
+"Edit Photo" = "Edit";
+"无缝模式" = "Seamless";

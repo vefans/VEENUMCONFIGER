@@ -7,6 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+
+@interface VEDrawLineView : UIView
+
+@property(nonatomic, assign) CGPoint topLeft;
+@property(nonatomic, assign) CGPoint topRight;
+@property(nonatomic, assign) CGPoint bottomLeft;
+@property(nonatomic, assign) CGPoint bottomRight;
+
+@end
+
+
 @class VESyncContainerView;
 @protocol VESyncContainerViewDelegate <NSObject>
 -(void)selectePasterTextView:( UITapGestureRecognizer * ) tapGesture atView:( VESyncContainerView * ) view;
@@ -29,7 +40,7 @@
 @property(nonatomic,strong)UIPinchGestureRecognizer *gestureRecognizer;
 @property(nonatomic,strong)UIRotationGestureRecognizer *rotationGesture;
 @property(nonatomic, weak)UIImageView      *picturePreImageView;
-@property(nonatomic, weak)UIView      *contentView;
+@property(nonatomic, weak)VEDrawLineView      *lineView;
 -(CGRect)getPreImageViewFrame;
 -(CGRect)getPreImageViewBounds;
 
@@ -64,4 +75,7 @@
 #pragma mark- 放大镜
 @property(nonatomic, weak) UIView *magnifyingGlassCenterView;
 @property(nonatomic, weak) UIView *magnifyingGlassMaskCenterView;
+
+- (void)releaseLineView;
+
 @end
