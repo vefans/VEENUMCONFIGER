@@ -1,4 +1,4 @@
-﻿{
+{
     "ver":1,
     "type": 0,
     "centerX": 0.3781,
@@ -6,7 +6,7 @@
     "width": 156,
     "height": 40, 
     "stretchability": 1,
-    "singleLine":1,
+    "singleLine":0,
     "borderPadding": [
            2.0,
            2.0,

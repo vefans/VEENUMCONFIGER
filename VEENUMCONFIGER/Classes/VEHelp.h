@@ -370,7 +370,9 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (UIImage *) imageWithColor:(UIColor *)color size:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
 + (UIImage *)gradientImageWithColors:(NSArray *)colors size:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
 + (UIImage *)gradientRightToLeftImageWithColors:(NSArray *)colors size:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
++ (NSString *)getSlomoLiveVideoPath:(VEMediaInfo *)file;
 + (BOOL)exportSlomoVideoFile:(VEMediaInfo *)file;
++ (BOOL)exportLiveVideoFile:(VEMediaInfo *)file;
 + (BOOL)createSaveTmpFileFolder;
 
 +(CGSize)getPEexpSize:(NSMutableArray *) peMediaInfos;

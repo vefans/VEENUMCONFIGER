@@ -582,6 +582,10 @@ typedef NS_ENUM(NSInteger, VECropType){
  */
 @property (nonatomic, assign) BOOL isSlomoVideo;
 
+/**是否是Live动图
+ */
+@property (nonatomic, assign) BOOL isLivePhoto;
+
 /**关键帧
  */
 @property (nonatomic, strong) NSArray<MediaAssetAnimatePosition*>*  animate;

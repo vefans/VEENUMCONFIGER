@@ -1982,6 +1982,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }
         customFilter.configure = extPaint;
     }
+    NSDictionary *scriptConfig= effectDic[@"scriptConfig"];
+    if(scriptConfig)
+        customFilter.scriptConfig = scriptConfig;
     for(id  _Nonnull obj in textureParams) {
         @autoreleasepool {
             
@@ -4491,7 +4494,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [extPaint setValue:[NSNumber numberWithFloat:0.25] forKey:@"penScale"];
     }
     customFilter.configure = extPaint;
-    
+    NSDictionary *scriptConfig= effectDic[@"scriptConfig"];
+    if(scriptConfig)
+        customFilter.scriptConfig = scriptConfig;
     if( mediaOrFile )
     {
         __block CustomFilter *animate;
@@ -4945,17 +4950,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 + (BOOL)exportSlomoVideoFile:(VEMediaInfo *)file
 {
     __block BOOL isSuccess = YES;
-    NSString *directory = [kVEDirectory stringByAppendingPathComponent:@"SlomoVideo"];
-    if(![[NSFileManager defaultManager] fileExistsAtPath:directory]){
-        [[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    NSString *path;
-    NSArray *temp = [file.localIdentifier componentsSeparatedByString:@"/"];
-    if (temp.count > 0) {
-        path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mov", [temp firstObject]]];
-    }else {
-        path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mov", file.localIdentifier]];
-    }
+    NSString *path = [self getSlomoLiveVideoPath:file];
     BOOL isExist = NO;
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
         AVURLAsset *asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:path]];
@@ -5009,6 +5004,86 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 }];
             }];
             dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        }
+    }
+    return isSuccess;
+}
+
++ (NSString *)getSlomoLiveVideoPath:(VEMediaInfo *)file {
+    NSString *directory;
+    if (file.isSlomoVideo) {
+        directory = [kVEDirectory stringByAppendingPathComponent:@"SlomoVideo"];
+    }else {
+        directory = [kVEDirectory stringByAppendingPathComponent:@"LivePhotos"];
+    }
+    if(![[NSFileManager defaultManager] fileExistsAtPath:directory]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *path;
+    NSArray *temp = [file.localIdentifier componentsSeparatedByString:@"/"];
+    if (temp.count > 0) {
+        path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mov", [temp firstObject]]];
+    }else {
+        path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mov", file.localIdentifier]];
+    }
+    
+    return path;
+}
+
++ (BOOL)exportLiveVideoFile:(VEMediaInfo *)file {
+    __block BOOL isSuccess = YES;
+    NSString *path = [self getSlomoLiveVideoPath:file];
+    BOOL isExist = NO;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        AVURLAsset *asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:path]];
+        NSArray *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+        if (videoTracks.count > 0) {
+            isExist = YES;
+        }
+    }
+    if (isExist) {
+        if (![file.contentURL.absoluteString.lastPathComponent isEqual:path.lastPathComponent]) {
+            file.videoActualTimeRange = kCMTimeRangeZero;
+            file.contentURL = [NSURL fileURLWithPath:path];
+            file.videoTimeRange = CMTimeRangeMake(kCMTimeZero,file.videoDurationTime);
+            file.reverseVideoTimeRange = file.videoTimeRange;
+            file.videoTrimTimeRange = kCMTimeRangeInvalid;
+            file.reverseVideoTrimTimeRange = kCMTimeRangeInvalid;
+        }
+    }else {
+        PHFetchResult<PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[file.localIdentifier] options:nil];
+        if (fetchResult.count == 0) {
+            isSuccess = NO;
+        }else {
+            PHAsset *asset = [fetchResult firstObject];
+            NSArray *assetResources = [PHAssetResource assetResourcesForAsset:asset];
+
+            for (PHAssetResource *resource in assetResources) {
+                if (resource.type == PHAssetResourceTypePairedVideo) {
+                    NSURL *fileURL = [NSURL fileURLWithPath:path];
+                    
+                    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+                    [[PHAssetResourceManager defaultManager] writeDataForAssetResource:resource
+                                                                              toFile:fileURL
+                                                                            options:nil
+                                                                  completionHandler:^(NSError * _Nullable error) {
+                        if (error) {
+                            isSuccess = NO;
+                            NSLog(@"Live Photo导出失败:%@", error);
+                        } else {
+                            file.videoActualTimeRange = kCMTimeRangeZero;
+                            file.contentURL = fileURL;
+                            file.videoTimeRange = CMTimeRangeMake(kCMTimeZero,file.videoDurationTime);
+                            file.reverseVideoTimeRange = file.videoTimeRange;
+                            file.videoTrimTimeRange = kCMTimeRangeInvalid;
+                            file.reverseVideoTrimTimeRange = kCMTimeRangeInvalid;
+                        }
+                        dispatch_semaphore_signal(semaphore);
+                    }];
+                    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                    break;
+                }
+            }
         }
     }
     return isSuccess;
@@ -5207,10 +5282,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         options.networkAccessAllowed = YES;//解决草稿箱获取不到缩略图的问题
         PHFetchResult *phAsset = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
         PHAsset * asset = [phAsset firstObject];
-        //20220211 iPhone6s iOS13.2 需要设置为PHImageRequestOptionsVersionOriginal才能获取到有alpha通道的图片，iOS15.0以上及iOS12.5不设置也没问题
-        BOOL hasAdjustments = [[asset valueForKey:@"hasAdjustments"] boolValue];
-        if (!hasAdjustments) {
-            options.version = PHImageRequestOptionsVersionOriginal;
+        if (asset.mediaType == PHAssetMediaTypeImage) {
+            //20220211 iPhone6s iOS13.2 需要设置为PHImageRequestOptionsVersionOriginal才能获取到有alpha通道的图片，iOS15.0以上及iOS12.5不设置也没问题
+            BOOL hasAdjustments = [[asset valueForKey:@"hasAdjustments"] boolValue];
+            if (!hasAdjustments) {
+                options.version = PHImageRequestOptionsVersionOriginal;
+            }
         }
         if(!asset){
             NSData *data = [NSData dataWithContentsOfURL:url];
@@ -6308,10 +6385,12 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         phAsset = nil;
     }else{
         PHAsset* asset = [phAsset firstObject];
-        //20220211 iPhone6s iOS13.2 需要设置为PHImageRequestOptionsVersionOriginal才能获取到有alpha通道的图片，iOS15.0以上及iOS12.5不设置也没问题
-        BOOL hasAdjustments = [[asset valueForKey:@"hasAdjustments"] boolValue];
-        if (!hasAdjustments) {
-            options.version = PHImageRequestOptionsVersionOriginal;
+        if (asset.mediaType == PHAssetMediaTypeImage) {//20250108 有的视频设置为PHImageRequestOptionsVersionOriginal会获取不到缩略图
+            //20220211 iPhone6s iOS13.2 需要设置为PHImageRequestOptionsVersionOriginal才能获取到有alpha通道的图片，iOS15.0以上及iOS12.5不设置也没问题
+            BOOL hasAdjustments = [[asset valueForKey:@"hasAdjustments"] boolValue];
+            if (!hasAdjustments) {
+                options.version = PHImageRequestOptionsVersionOriginal;
+            }
         }
         @try {
             [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(maxWidth, maxWidth) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
@@ -9759,7 +9838,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             }
         }];
         [caption.texts enumerateObjectsUsingBlock:^(CaptionItem * _Nonnull item, NSUInteger idx, BOOL * _Nonnull stop) {
+            float fontSize = item.fontSize;
             item.isEnableCenterPosition = YES;
+            if (fontSize == 0) {
+                item.fontSize = 0;
+            }
             if (item.fontPath.length > 0) {
                 item.fontPath = [VEHelp getFileURLFromAbsolutePath_str:item.fontPath];
                 
@@ -10878,7 +10961,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     NSMutableDictionary *configer = effectDic[@"extPaint"];
                     otherAnimation.configure = configer;
                 }
-                
                 [captionItem.otherAnimates addObject:otherAnimation];
             }];
         }
@@ -10909,6 +10991,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
         customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
+    }
+    if([[effectDic allKeys] containsObject:@"scriptConfig"]){
+        customFilter.scriptConfig = effectDic[@"scriptConfig"];
     }
     
     NSArray *uniformParams = effectDic[@"uniformParams"];
@@ -13477,6 +13562,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
         customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
     }
+    if (effectDic[@"scriptConfig"]) {
+        NSMutableDictionary *scriptConfig = [effectDic[@"scriptConfig"] mutableCopy];
+        customFilter.scriptConfig = scriptConfig;
+    }
     
     NSArray *uniformParams = effectDic[@"uniformParams"];
     [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -13682,6 +13771,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         NSString *scriptPath = [path stringByAppendingPathComponent:effectDic[@"script"]];
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
         customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
+    }
+    if (effectDic[@"scriptConfig"]) {
+        NSMutableDictionary *scriptConfig = [effectDic[@"scriptConfig"] mutableCopy];
+        customFilter.scriptConfig = scriptConfig;
     }
     
     NSArray *uniformParams = effectDic[@"uniformParams"];
@@ -14080,6 +14173,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         customFilter.script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:&error];
         customFilter.scriptName = [[scriptPath lastPathComponent] stringByDeletingPathExtension];
     }
+    if (effectDic[@"scriptConfig"]) {
+        NSMutableDictionary *scriptConfig = [effectDic[@"scriptConfig"] mutableCopy];
+        customFilter.scriptConfig = scriptConfig;
+    }
     NSArray *uniformParams = effectDic[@"uniformParams"];
     [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *type = obj[@"type"];
@@ -14195,7 +14292,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     captionex.captionImage.otherAnimates.configure = extPaint;
                     captionex.captionImage.animate.configure =extPaint;
                 }
-                
             }
             else
             {
@@ -14296,6 +14392,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [extPaint setValue:[NSNumber numberWithFloat:0.25] forKey:@"penScale"];
     }
     customFilter.configure = extPaint;
+    NSMutableDictionary *scriptConfig= effectDic[@"scriptConfig"];
+    if(scriptConfig)
+        customFilter.scriptConfig = scriptConfig;
     NSArray *uniformParams = effectDic[@"uniformParams"];
     [uniformParams enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *type = obj[@"type"];

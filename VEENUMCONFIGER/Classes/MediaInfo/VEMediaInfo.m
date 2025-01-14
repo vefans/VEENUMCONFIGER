@@ -242,7 +242,7 @@
         }];
     }
     copy.isSlomoVideo = _isSlomoVideo;
-    
+    copy.isLivePhoto = _isLivePhoto;
     if (_mask) {
         copy.maskName = _maskName;
 //        MaskObject *mask = [VEHelp getMaskWithName:_maskName];
@@ -724,18 +724,8 @@
 - (void)setContentURL:(NSURL *)contentURL {
     _contentURL = contentURL;
     _draftContentURL = contentURL;
-    if (_isSlomoVideo && _localIdentifier.length > 0) {
-        NSString *directory = [kVEDirectory stringByAppendingPathComponent:@"SlomoVideo"];
-        if(![[NSFileManager defaultManager] fileExistsAtPath:directory]){
-            [[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
-        }
-        NSString *path;
-        NSArray *temp = [_localIdentifier componentsSeparatedByString:@"/"];
-        if (temp.count > 0) {
-            path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mov", [temp firstObject]]];
-        }else {
-            path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mov", _localIdentifier]];
-        }
+    if ((_isSlomoVideo || _isLivePhoto) && _localIdentifier.length > 0) {
+        NSString *path = [VEHelp getSlomoLiveVideoPath:self];
         if ([_contentURL.absoluteString.lastPathComponent isEqual:path.lastPathComponent] && CMTimeRangeEqual(_videoActualTimeRange, kCMTimeRangeZero)) {
             _videoActualTimeRange = [VECore getActualTimeRange:contentURL];
             if (CMTimeCompare(_videoActualTimeRange.duration, kCMTimeZero) == 1) {
