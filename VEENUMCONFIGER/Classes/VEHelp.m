@@ -10031,6 +10031,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                             item.frame = wordItem.showRectF;
                         }
                     }
+                    if (item.fontSize == 0) {
+                        CGFloat fontSize = [VEHelp customFontSizeWithCaptionItem:item showSize:obj.showRectF.size templateSize:videoSize];
+                        fontSize /= caption.scale;
+                        item.fontSize = fontSize;
+                    }
                     if (obj.previewSize.width > 0) {
                         item.fontSize *= videoSize.width / obj.previewSize.width;
                     }
@@ -19638,6 +19643,92 @@ static OSType help_inputPixelFormat(){
     [color getRed:&r green:&g blue:&b alpha:&a];
     
     return a;
+}
+
++ (CGFloat)customFontSizeWithCaptionItem:(CaptionItem *)item
+                                showSize:(CGSize)showSize
+                            templateSize:(CGSize)templateSize
+{
+    CGFloat outputWidth = showSize.width * templateSize.width;
+    CGFloat outputHeight = showSize.height * templateSize.height;
+    CGRect textRect = item.padding;
+    NSString *text = item.text;
+    NSString *fontName = item.fontName;
+    float wordSpacing = item.wordSpacing;
+    float lineSpacing = item.lineSpacing;
+    CGFloat tmpW;
+    if (item.isVertical) { // 竖排: 按照高来计算字号
+        tmpW = outputHeight * CGRectGetHeight(textRect);
+    } else {
+        tmpW = outputWidth * CGRectGetWidth(textRect);
+    }
+    
+    CGFloat textLength = 1.0f;
+    NSArray *split = [text componentsSeparatedByString:@"\n"];
+    NSInteger lineCount = split.count;
+    
+    NSString *dstText = text;
+    NSString *tmp = text;
+    float lastWpx = 0;
+    for (int i = 0; i < lineCount; i++) {
+        tmp = [split[i] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        float a = [tmp sizeWithAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:10]}].width;//根据测量后的文字宽,决定最长的字符串
+        if (a > lastWpx) {
+            dstText = tmp;
+            textLength = tmp.length * 0.5f;
+            lastWpx = a;
+        }
+    }
+    if (wordSpacing != 0 && textLength >= 2) {
+        textLength = (textLength - 1) * (1 + wordSpacing) + 1;
+    }
+    
+    CGFloat textSizeW = outputWidth;
+    if (item.isVertical) { // 竖排排版时,需保证横竖不同方向上文字都在框内
+        CGFloat w = outputWidth * CGRectGetWidth(textRect);
+        CGFloat b = lineCount;
+        if (lineSpacing != 0 && lineCount >= 2) {
+            b = (lineCount - 1) * (1 + lineSpacing) + 1;
+        }
+        textSizeW = w / (b + 0.3f);
+    }
+    
+    CGFloat textSize = MIN(tmpW / (textLength + 0.3f), textSizeW); // +0.3f 左右间隙
+    
+    // 重置画笔属性
+    UIFont *font = [UIFont systemFontOfSize:textSize];
+    if (fontName.length > 0) { // 有字体，需要paint测量
+        @try {
+            font = [UIFont fontWithName:fontName size:textSize];
+        } @catch (NSException *exception) {
+            NSLog(@"Font creation error: %@", exception);
+        }
+    }
+    
+    // 获取最佳尺寸
+    CGFloat dstSize = [self getBestSizeWithFont:font
+                                           text:dstText
+                                        maxWidth:tmpW
+                                         maxSize:textSize];
+    
+    return dstSize;
+}
+
++ (CGFloat)getBestSizeWithFont:(UIFont *)font text:(NSString *)text maxWidth:(CGFloat)maxWidth maxSize:(CGFloat)maxSize {
+    BOOL result = YES;
+    UIFont *currentFont = [font fontWithSize:maxSize];
+    
+    while (result) {
+        CGFloat tmp = [text sizeWithAttributes:@{NSFontAttributeName: currentFont}].width;
+        if (tmp <= maxWidth) {
+            result = NO;
+        } else {
+            maxSize -= maxSize * 0.1;
+            currentFont = [font fontWithSize:maxSize];
+        }
+    }
+    
+    return currentFont.pointSize;
 }
 
 @end

@@ -879,4 +879,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 + (float)getAlphaWithColor:(UIColor *)color;
 
++ (CGFloat)customFontSizeWithCaptionItem:(CaptionItem *)item
+                                showSize:(CGSize)showSize
+                            templateSize:(CGSize)templateSize;
 @end
