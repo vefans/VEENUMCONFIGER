@@ -1087,6 +1087,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         url = [NSURL URLWithString:path];
         return [self getAlbumThumbnailImage:url maxSize:(100 * [UIScreen mainScreen].scale)];
     }else{
+        if(!path){
+            return nil;
+        }
         url = [NSURL fileURLWithPath:path];
         if([self isImageUrl:url]){
             NSData *imagedata = [NSData dataWithContentsOfURL:url];
@@ -16262,6 +16265,7 @@ static OSType help_inputPixelFormat(){
         options.synchronous = YES;
         options.resizeMode = PHImageRequestOptionsResizeModeExact;
         options.networkAccessAllowed = YES;//解决草稿箱获取不到缩略图的问题
+        
         PHFetchResult *phAsset = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
         PHAsset * asset = [phAsset firstObject];
         if(!asset){
@@ -16276,6 +16280,11 @@ static OSType help_inputPixelFormat(){
             options = nil;
             phAsset = nil;
         }else{
+            //需要设置为PHImageRequestOptionsVersionOriginal才能获取到有alpha通道的图片
+            BOOL hasAdjustments = [[asset valueForKey:@"hasAdjustments"] boolValue];
+            if (!hasAdjustments) {
+                options.version = PHImageRequestOptionsVersionOriginal;
+            }
             @try {
                 CGSize targetSize;
                 if (@available(iOS 13.0, *)) {

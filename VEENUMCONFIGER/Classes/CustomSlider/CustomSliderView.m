@@ -452,22 +452,20 @@
             _maxTrack.alpha = 1.0;
             _maxThumbImageView.hidden = NO;
         }
-        if (_currentType == CustomDoubleSliderTyep_Left) {
-            if (_currentMinValue <= _minValue) {
-                _minLabel.hidden = YES;
-            }else {
-                _minLabel.text = [NSString stringWithFormat:@"%.1f%@", _currentMinValue, _unit];
-            }
-            [self bringSubviewToFront:_minThumbImageView];
+        
+        if (_currentMinValue <= _minValue) {
+            _minLabel.hidden = YES;
+        }else {
+            _minLabel.text = [NSString stringWithFormat:@"%.1f%@", _currentMinValue, _unit];
         }
-        else if (_currentType == CustomDoubleSliderTyep_Right) {
-            if (_currentMaxValue <= _minValue) {
-                _maxLabel.hidden = YES;
-            }else {
-                _maxLabel.text = [NSString stringWithFormat:@"%.1f%@", (_maxValue - _currentMaxValue), _unit];
-            }
-            [self bringSubviewToFront:_maxThumbImageView];
+        [self bringSubviewToFront:_minThumbImageView];
+    
+        if (_currentMaxValue <= _minValue) {
+            _maxLabel.hidden = YES;
+        }else {
+            _maxLabel.text = [NSString stringWithFormat:@"%.1f%@", (_maxValue - _currentMaxValue), _unit];
         }
+        [self bringSubviewToFront:_maxThumbImageView];
     }
 }
 

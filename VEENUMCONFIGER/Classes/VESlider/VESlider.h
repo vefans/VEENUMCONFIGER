@@ -14,5 +14,6 @@
 @property (nonatomic, assign) BOOL isAETemplate;
 @property (nonatomic, assign) BOOL isAdj;
 @property (nonatomic, weak) UILabel *valueLbl;
+@property (nonatomic, assign) CGPoint thumbCenter;
 
 @end

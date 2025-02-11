@@ -107,6 +107,13 @@ typedef NS_ENUM(NSInteger, BackGroundColorType) {
 };
 
 
+typedef NS_ENUM(NSInteger, DefaultErasePenType)
+{
+    DefaultErasePenType_Manual = 0,  //手动抹除
+    DefaultErasePenType_Text = 1,       //文字消除
+    DefaultErasePenType_Pedestrian = 2,       //路人消除
+};
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface VEEditConfiguration : NSObject<NSMutableCopying,NSCopying>
@@ -539,6 +546,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 音乐资源配置地址
  */
 @property (nonatomic,copy,nullable)NSString    *musicResourcesConfigPath;
+/** aiChat 地址
+ */
+@property (nonatomic,copy,nullable)NSString    *aiChatPath;
 
 /** MV (default false)
  */
@@ -717,6 +727,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**相册选择素材时屏蔽GIF
  */
 @property (nonatomic, assign) bool isDisableSelectGif;
+
+
+/**默认消除方式
+ */
+@property (nonatomic, assign) DefaultErasePenType defaultErasePenType;
 
 @end
 

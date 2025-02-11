@@ -126,11 +126,11 @@
     copy.filterPath = _filterPath;
     copy.voiceFXIndex = _voiceFXIndex;
     copy.pitch = _pitch;
-    copy.animation3D = _animation3D;
-    copy.customAnimate = _customAnimate;
-    copy.customOutAnimate = _customOutAnimate;
-    copy.customComboAnimate = _customComboAnimate;
-    copy.customOtherAnimate = _customOtherAnimate;
+    copy.animation3D = [_animation3D copy];
+    copy.customAnimate = [_customAnimate copy];
+    copy.customOutAnimate = [_customOutAnimate copy];
+    copy.customComboAnimate = [_customComboAnimate copy];
+    copy.customOtherAnimate = [_customOtherAnimate copy];
     copy.isSelfieSegmentation = _isSelfieSegmentation;
     copy.animate = _animate;
     copy.sourceRotate = _sourceRotate;

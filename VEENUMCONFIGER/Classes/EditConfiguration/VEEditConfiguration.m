@@ -172,6 +172,7 @@
         _enableExtractFrames = true;
         _enableMotionflow = true;
         _isDisableSelectGif = false;
+        _defaultErasePenType = DefaultErasePenType_Manual;
     }
     
     return self;
@@ -348,6 +349,8 @@
     copy.enableMotionflow = _enableMotionflow;
     
     copy.isDisableSelectGif = _isDisableSelectGif;
+    copy.defaultErasePenType = _defaultErasePenType;
+    copy.aiChatPath = _aiChatPath;
     return copy;
 }
 

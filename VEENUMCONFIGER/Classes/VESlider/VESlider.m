@@ -91,6 +91,14 @@
     return _thumbRect;
 }
 
+
+- (CGPoint)thumbCenter {
+    CGPoint thumbCenter = CGPointZero;
+    thumbCenter.x = (self.value - self.minimumValue) / (self.maximumValue - self.minimumValue) * self.frame.size.width;
+    thumbCenter.y = self.frame.size.height / 2.0;
+    return thumbCenter;
+}
+
 - (void)setEnabled:(BOOL)enabled {
     [super setEnabled:enabled];
     [self setNeedsLayout];
@@ -98,7 +106,7 @@
 
 - (UILabel *)valueLbl {
     if (!_valueLbl) {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, -5, 50, 20)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height / 2.0 - 20 - 10, 50, 20)];
         label.textAlignment = NSTextAlignmentCenter;
         label.textColor = [UIColor whiteColor];
         if([VEConfigManager sharedManager].toolsTitleColor){
