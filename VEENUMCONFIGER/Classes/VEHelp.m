@@ -824,6 +824,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 }
 
 + (UIImage *)assetGetThumImage:(CGFloat)second url:(NSURL * _Nullable) url urlAsset:(AVURLAsset * _Nullable) urlAsset{
+    if (url.pathExtension.length > 0 && [url.pathExtension.lowercaseString isEqualToString:@"webm"]) {
+        return [VECore getImageFromWebmFilePath:url.path time:second scale:1.0];
+    }
     if(!urlAsset){
         NSDictionary *opts = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO]
                                                          forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
@@ -7671,7 +7674,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 + (UIImage *)getLastScreenShotImageFromVideoURL:(NSURL *)fileURL atTime:(CMTime)time {
     if (CMTimeCompare(time, kCMTimeZero) < 0) {
-        return nil;
+        time = kCMTimeZero;
+    }
+    if (fileURL.pathExtension.length > 0 && [fileURL.pathExtension.lowercaseString isEqualToString:@"webm"]) {
+        return [VECore getImageFromWebmFilePath:fileURL.path time:CMTimeGetSeconds(time) scale:1.0];
     }
     @autoreleasepool {
         AVURLAsset *asset = [AVURLAsset assetWithURL:fileURL];
@@ -7723,6 +7729,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     if (CMTimeCompare(time, kCMTimeZero) < 0) {
         time = kCMTimeZero;
+    }
+    if (fileURL.pathExtension.length > 0 && [fileURL.pathExtension.lowercaseString isEqualToString:@"webm"]) {
+        return [VECore getImageFromWebmFilePath:fileURL.path time:CMTimeGetSeconds(time) scale:1.0];
     }
     @autoreleasepool {
         AVURLAsset *asset = [AVURLAsset assetWithURL:fileURL];
@@ -16312,6 +16321,9 @@ static OSType help_inputPixelFormat(){
         UIImage * image = [self imageWithContentOfPathFull:url.path];
         return image;
     }else{
+        if (url.pathExtension.length > 0 && [url.pathExtension.lowercaseString isEqualToString:@"webm"]) {
+            return [VECore getImageFromWebmFilePath:url.path time:0 scale:1.0];
+        }
         NSDictionary *opts = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO]
                                                          forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
         // 初始化媒体文件
