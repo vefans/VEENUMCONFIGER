@@ -152,15 +152,15 @@ float VE_DistanceBetweenPoints(CGPoint a, CGPoint b);
 //    }
 //}
 
-- (UIView *)maskView {
-    if (!_maskView) {
-        _maskView = [[UIView alloc] initWithFrame:_thumbIconView.bounds];
-        _maskView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-        _maskView.tag = 666;
-        [self.thumbIconView insertSubview:_maskView aboveSubview:_coverView];
+- (UIView *)customMaskView {
+    if (!_customMaskView) {
+        _customMaskView = [[UIView alloc] initWithFrame:_thumbIconView.bounds];
+        _customMaskView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+        _customMaskView.tag = 666;
+        [self.thumbIconView insertSubview:_customMaskView aboveSubview:_coverView];
     }
     
-    return _maskView;
+    return _customMaskView;
 }
 
 -(void)setIsAlbum:(BOOL)isAlbum

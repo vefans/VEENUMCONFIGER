@@ -23,6 +23,8 @@
 
 - (void)customDoubleSliderChangeMiddleTimeRange:(CMTimeRange)timeRange state:(UIGestureRecognizerState)state;
 
+- (void)customDoubleSliderChangeMiddleTimeRange:(CMTimeRange)timeRange state:(UIGestureRecognizerState)state isMinValue:(BOOL)isMinValue;
+
 @end
 
 typedef NS_ENUM(NSInteger, CustomDoubleSliderTyep){
@@ -100,6 +102,7 @@ typedef NS_ENUM(NSInteger, CustomDoubleSliderTyep){
  当前中间时间范围
  */
 @property (nonatomic,assign)CMTimeRange currentMiddelTimeRange;
+@property (nonatomic,assign)float middelMinTimeDuration;
 
 /**
  显示 min 滑块
@@ -153,5 +156,5 @@ typedef NS_ENUM(NSInteger, CustomDoubleSliderTyep){
 - (void)showMinView;
 - (void)showMaxView;
 - (void)showMiddleView;
-
+- (void)hiddenLabel;
 @end

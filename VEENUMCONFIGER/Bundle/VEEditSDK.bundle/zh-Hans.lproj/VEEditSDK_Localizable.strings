@@ -602,7 +602,6 @@
 "低" = "低";
 "高" = "高";
 "音乐" = "音乐";
-"替换" = "替换";
 "上拉加载更多" = "上拉加载更多";
 "正在加载" = "正在加载";
 "垂直翻转" = "垂直翻转";
@@ -1804,3 +1803,15 @@
 "Speech Text" = "文本朗读";
 "Extracted" = "提取声音";
 "Record" = "录音";
+"Edit Video" = "编辑视频";
+"Edit Photo" = "编辑图片";
+"Loop" = "循环播放";
+"Once" = "单次播放";
+"Rotate 90°" = "旋转90°";
+"Flip(H)" = "水平翻转";
+"Vertical" = "垂直翻转";
+"Outer" = "外框";
+"Inner" = "内框";
+"Rounding" = "圆角";
+"Script Matching" = "文稿匹配";
+"The corresponding script for the input audio source is automatically matched with the video" = "输入音频源对应的文稿,自动匹配画面";

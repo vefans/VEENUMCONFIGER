@@ -575,7 +575,6 @@
     CGPoint point = [gesture translationInView:self];
     if (gesture.state == UIGestureRecognizerStateBegan) {
         _beganCenter = gesture.view.center;
-        _maxLabel.hidden = NO;
         [self bringSubviewToFront:_middleLeftThumbImageView];
     }
     gesture.view.center = CGPointMake(_beganCenter.x + point.x, _minThumbImageView.center.y);
@@ -588,15 +587,24 @@
     else if (gesture.view.center.x > _middleRightThumbImageView.frame.origin.x) {
         gesture.view.center = CGPointMake(_middleRightThumbImageView.frame.origin.x, gesture.view.center.y);
     }
+    float x = gesture.view.center.x;
+    x = MIN(x, _middleRightThumbImageView.center.x - _middelMinTimeDuration * (_mainTrack.frame.size.width/(_maxValue - _minValue)));
+    gesture.view.center = CGPointMake(x, gesture.view.center.y);
     
-    float leftValue = _minValue + _total * (gesture.view.center.x - _mainTrack.frame.origin.x);;
-    [self refreshMiddelTimeRange:leftValue isLeft:YES];
+    float leftValue = _minValue + _total * (gesture.view.center.x - _mainTrack.frame.origin.x);
     
 //    if (gesture.state != UIGestureRecognizerStateBegan && gesture.state != UIGestureRecognizerStateChanged && _delayTime >= 0) {
 //        [self performSelector:@selector(hiddenLabel) withObject:nil afterDelay:_delayTime];
 //    }
-    if (_delegate && [_delegate respondsToSelector:@selector(customDoubleSliderChangeMiddleTimeRange:state:)]) {
-        [_delegate customDoubleSliderChangeMiddleTimeRange:_currentMiddelTimeRange state:gesture.state];
+    if (_delegate && [_delegate respondsToSelector:@selector(customDoubleSliderChangeMiddleTimeRange:state:isMinValue:)]) {
+        [self refreshMiddelTimeRange:leftValue isLeft:YES isMaxLabelRefresh:false];
+        [_delegate customDoubleSliderChangeMiddleTimeRange:_currentMiddelTimeRange state:gesture.state isMinValue:true];
+    }
+    else{
+        [self refreshMiddelTimeRange:leftValue isLeft:YES isMaxLabelRefresh:true];
+        if (_delegate && [_delegate respondsToSelector:@selector(customDoubleSliderChangeMiddleTimeRange:state:)]) {
+            [_delegate customDoubleSliderChangeMiddleTimeRange:_currentMiddelTimeRange state:gesture.state];
+        }
     }
 }
 
@@ -605,7 +613,6 @@
     CGPoint point = [gesture translationInView:self];
     if (gesture.state == UIGestureRecognizerStateBegan) {
         _beganCenter = gesture.view.center;
-        _maxLabel.hidden = NO;
         [self bringSubviewToFront:_middleRightThumbImageView];
     }
     gesture.view.center = CGPointMake(_beganCenter.x + point.x, _minThumbImageView.center.y);
@@ -620,18 +627,24 @@
         frame.origin.x = _maxThumbImageView.frame.origin.x;
         gesture.view.frame = frame;
     }
-    float duration = _total * (gesture.view.center.x - _middleLeftThumbImageView.center.x);
-    [self refreshMiddelTimeRange:duration isLeft:NO];
+    float x = gesture.view.center.x;
+    x = MAX(x, _middleLeftThumbImageView.center.x + _middelMinTimeDuration * (_mainTrack.frame.size.width/(_maxValue - _minValue)));
+    gesture.view.center = CGPointMake(x, gesture.view.center.y);
     
-//    if (gesture.state != UIGestureRecognizerStateBegan && gesture.state != UIGestureRecognizerStateChanged && _delayTime >= 0) {
-//        [self performSelector:@selector(hiddenLabel) withObject:nil afterDelay:_delayTime];
-//    }
-    if (_delegate && [_delegate respondsToSelector:@selector(customDoubleSliderChangeMiddleTimeRange:state:)]) {
-        [_delegate customDoubleSliderChangeMiddleTimeRange:_currentMiddelTimeRange state:gesture.state];
+    float duration = _total * (gesture.view.center.x - _middleLeftThumbImageView.center.x);
+    if (_delegate && [_delegate respondsToSelector:@selector(customDoubleSliderChangeMiddleTimeRange:state:isMinValue:)]) {
+        [self refreshMiddelTimeRange:duration isLeft:NO isMaxLabelRefresh:false];
+        [_delegate customDoubleSliderChangeMiddleTimeRange:_currentMiddelTimeRange state:gesture.state isMinValue:false];
+    }
+    else{
+        [self refreshMiddelTimeRange:duration isLeft:NO isMaxLabelRefresh:true];
+        if (_delegate && [_delegate respondsToSelector:@selector(customDoubleSliderChangeMiddleTimeRange:state:)]) {
+            [_delegate customDoubleSliderChangeMiddleTimeRange:_currentMiddelTimeRange state:gesture.state];
+        }
     }
 }
 
-- (void)refreshMiddelTimeRange:(float)value isLeft:(BOOL)isLeft {
+- (void)refreshMiddelTimeRange:(float)value isLeft:(BOOL)isLeft isMaxLabelRefresh:(BOOL)isMaxLabelRefresh{
     if (isLeft) {
         _currentMiddelTimeRange = CMTimeRangeMake(CMTimeMakeWithSeconds(value, TIMESCALE), CMTimeMakeWithSeconds(_total * (_middleRightThumbImageView.center.x - _middleLeftThumbImageView.center.x), TIMESCALE));
     }else {
@@ -641,8 +654,9 @@
     frame.origin.x = _middleLeftThumbImageView.center.x;
     frame.size.width = _middleRightThumbImageView.center.x - _middleLeftThumbImageView.center.x;
     _middleTrack.frame = frame;
-    
-    _maxLabel.text = [NSString stringWithFormat:@"%.1f%@", CMTimeGetSeconds(_currentMiddelTimeRange.duration), _unit];
+    if(isMaxLabelRefresh){
+        _maxLabel.text = [NSString stringWithFormat:@"%.1f%@", CMTimeGetSeconds(_currentMiddelTimeRange.duration), _unit];
+    }
 }
 
 - (void)hiddenLabel {

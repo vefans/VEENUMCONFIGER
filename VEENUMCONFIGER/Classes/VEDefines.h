@@ -10,6 +10,7 @@
 #define EnableSDWebImage
 #define  Enable_Config_VE
 #define EnableVESpecialCamera
+#define EnableMNNFaceDetection //需要使用抠图和五官调整就要启用这个宏
 
 #define HEXCOLOR(c) [UIColor colorWithRed:((c>>24)&0xFF)/255.0 green:((c>>16)&0xFF)/255.0 blue:((c>>8)&0xFF)/255.0  alpha:((c)&0xFF)/255.0]
 #define ANDROID_COLOR(c) [UIColor colorWithRed:((c>>16)&0xFF)/255.0 green:((c>>8)&0xFF)/255.0 blue:((c)&0xFF)/255.0  alpha:((c>>24)&0xFF)/255.0]

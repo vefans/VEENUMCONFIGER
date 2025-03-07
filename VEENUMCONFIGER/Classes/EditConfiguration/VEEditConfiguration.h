@@ -214,6 +214,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) bool isDisableEdit;
 @property (nonatomic, assign) bool isDefaultCrop;
+@property (nonatomic, assign) bool isTrimShowClipView;
 /** 选取素材进入GIF制作
  */
 @property (nonatomic, assign) bool isGIFAlbum;

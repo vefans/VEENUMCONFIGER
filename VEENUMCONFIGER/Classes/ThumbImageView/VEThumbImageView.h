@@ -45,7 +45,7 @@
 
 @property (nonatomic,strong)UIImageView     *thumbIconView;
 
-@property (nonatomic,strong)UIView          *maskView;
+@property (nonatomic,strong)UIView          *customMaskView;
 
 @property (strong, nonatomic)UILabel        *thumbIdlabel;
 

@@ -882,4 +882,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (CGFloat)customFontSizeWithCaptionItem:(CaptionItem *)item
                                 showSize:(CGSize)showSize
                             templateSize:(CGSize)templateSize;
+
+// 获取原视频的文件类型
++ (NSString *)outputFileTypeForAsset:(AVURLAsset *)asset;
 @end

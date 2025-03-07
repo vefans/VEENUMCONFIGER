@@ -23,7 +23,7 @@
 #ifdef EnableSDWebImage
 @property(nonatomic,weak)SDAnimatedImageView *animatedImageView;
 #endif
-@property(nonatomic,strong)UIView *maskView;
+@property(nonatomic,strong)UIView *customMaskView;
 @property(nonatomic,strong)UIView *editView;
 @property(nonatomic,weak)UILabel *label;
 @property(nonatomic,weak)UILabel *moveTitleLabel;

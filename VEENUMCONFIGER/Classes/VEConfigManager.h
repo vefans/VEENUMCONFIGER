@@ -111,6 +111,13 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
               trimDuration_OneSpecifyTime:(double)trimDuration_OneSpecifyTime
                         completionHandler:(void (^)(VEMediaInfo *trimFile, CMTimeRange trimTimeRange))completionHandler;
 
+- (void)veShowTrimControllerWithSuperView:(UIViewController *)superViewController
+                                     file:(VEMediaInfo *)file
+                           isRotateEnable:(BOOL)isRotateEnable
+                                 trimType:(TRIMMODE)trimType
+              trimDuration_OneSpecifyTime:(double)trimDuration_OneSpecifyTime
+                        completionHandler:(void (^)(VEMediaInfo *trimFile, CMTimeRange trimTimeRange))completionHandler
+                              cancelBlock:(void(^)(UIViewController *))cancelBlock;
 /** 显示裁剪图片界面
  *  Display Cropping Picture Interface.
  */
@@ -118,6 +125,13 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
                                      file:(VEMediaInfo *)file
                              isOnlyRotate:(BOOL)isOnlyRotate
                                isOnlyCrop:(BOOL)isOnlyCrop
+                                videoSize:(CGSize)videoSize
+                        completionHandler:(void (^)(VEMediaInfo *cropedFile))completionHandler;
+- (void)veShowCropControllerWithSuperView:(UIViewController *)superViewController
+                                     file:(VEMediaInfo *)file
+                             isOnlyRotate:(BOOL)isOnlyRotate
+                               isOnlyCrop:(BOOL)isOnlyCrop
+                       isSelectBackground:(BOOL)isSelectBackground
                                 videoSize:(CGSize)videoSize
                         completionHandler:(void (^)(VEMediaInfo *cropedFile))completionHandler;
 

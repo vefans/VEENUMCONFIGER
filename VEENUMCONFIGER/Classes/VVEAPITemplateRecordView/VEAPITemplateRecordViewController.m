@@ -14,14 +14,13 @@
 #ifdef EnableMNNFaceDetection
 #import <MNNFaceDetection/MNNFaceDetection.h>
 #import <MNNFaceDetection/MNNFaceDetector.h>
+#endif
 
 #ifdef  AECHITECTURES_ARM64
 #import <MLKitSegmentationCommon/MLKSegmenter.h>
 #import <MLKitSegmentationCommon/MLKSegmentationMask.h>
 #import <MLKitVision/MLKVisionImage.h>
 #import <MLKitSegmentationSelfie/MLKSelfieSegmenterOptions.h>
-#endif
-
 #endif
 
 #import <Vision/Vision.h>

@@ -173,6 +173,7 @@
         _enableMotionflow = true;
         _isDisableSelectGif = false;
         _defaultErasePenType = DefaultErasePenType_Manual;
+        _isTrimShowClipView = false;
     }
     
     return self;
@@ -351,6 +352,7 @@
     copy.isDisableSelectGif = _isDisableSelectGif;
     copy.defaultErasePenType = _defaultErasePenType;
     copy.aiChatPath = _aiChatPath;
+    copy.isTrimShowClipView = _isTrimShowClipView;
     return copy;
 }
 

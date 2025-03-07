@@ -5579,7 +5579,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         editSize = CGSizeMake(image.size.width*file.crop.size.width, image.size.height*file.crop.size.height);
         image = nil;
     }else {
-        if(file.isReverse){
+        if(file.isReverse && file.reverseVideoURL){
             editSize = [VEHelp trackSize:file.reverseVideoURL rotate:file.rotate crop:file.crop];
         }else{
             editSize = [VEHelp trackSize:file.contentURL rotate:file.rotate crop:file.crop];
@@ -5651,7 +5651,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         editSize = newSize;
         image = nil;
     }else {
-        if(file.isReverse){
+        if(file.isReverse && file.reverseVideoURL){
             editSize = [VEHelp trackSize:file.reverseVideoURL rotate:file.rotate crop:file.crop];
         }else{
             editSize = [VEHelp trackSize:file.contentURL rotate:file.rotate crop:file.crop];
@@ -5701,7 +5701,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         editSize = CGSizeMake(image.size.width, image.size.height);
         image = nil;
     }else {
-        if(file.isReverse){
+        if(file.isReverse && file.reverseVideoURL){
             editSize = [VEHelp trackSize:file.reverseVideoURL rotate:file.rotate crop:CGRectMake(0, 0, 1, 1)];
         }else{
             editSize = [VEHelp trackSize:file.contentURL rotate:file.rotate crop:CGRectMake(0, 0, 1, 1)];
@@ -8396,6 +8396,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         filter.networkCategoryId = multipleFilter.networkCategoryId;
                         filter.networkResourceId = multipleFilter.networkResourceId;
                         filter.overlayType = CustomFilterOverlayTypePIP;
+                        filter.level = multipleFilter.level;
                         for (ShaderParams *param in multipleFilter.filterArray.firstObject.uniformParams) {
                             for (CustomFilter *filterItem in filter.filterArray) {
                                 for (ShaderParams *paramItem in filterItem.uniformParams) {
@@ -17404,6 +17405,7 @@ static OSType help_inputPixelFormat(){
         {
             NSMutableDictionary *param = [NSMutableDictionary dictionary];
             [param setValue:@"asr" forKey:@"guid"];
+            
             [param setObject:uploadFileURLs forKey:@"pics"];
             {
                 NSMutableDictionary *param1 = [NSMutableDictionary dictionary];
@@ -19751,5 +19753,38 @@ static OSType help_inputPixelFormat(){
     
     return currentFont.pointSize;
 }
+
+// 获取原视频的文件类型
++ (NSString *)outputFileTypeForAsset:(AVURLAsset *)asset {
+    NSString *fileType = nil;
+    // 获取视频轨道
+    NSArray<AVAssetTrack *> *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+    if (videoTracks.count > 0) {
+        AVAssetTrack *videoTrack = videoTracks.firstObject;
+        // 获取原视频的文件类型
+        NSString *mediaType = videoTrack.mediaType;
+        if ([mediaType isEqualToString:AVMediaTypeVideo]) {
+            // 检查原视频的文件类型
+            NSArray<AVMetadataItem *> *metadata = [asset commonMetadata];
+            for (AVMetadataItem *item in metadata) {
+                if ([item.commonKey isEqualToString:AVMetadataCommonKeyType]) {
+                    fileType = item.stringValue;
+                    break;
+                }
+            }
+        }
+    }
+    // 如果无法获取原视频的文件类型，尝试根据资产的 URL 推断
+    if (!fileType && asset.URL) {
+        NSString *fileExtension = asset.URL.pathExtension.lowercaseString;
+        if ([fileExtension isEqualToString:@"mp4"]) {
+            fileType = AVFileTypeMPEG4;
+        } else if ([fileExtension isEqualToString:@"mov"]) {
+            fileType = AVFileTypeQuickTimeMovie;
+        }
+    }
+    return fileType;
+}
+
 
 @end
