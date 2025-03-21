@@ -12,6 +12,7 @@
 + (UIImage *)ve_animatedGIFNamed:(NSString *)name;
 
 + (UIImage *)ve_animatedGIFWithData:(NSData *)data;
++ (UIImage *)ve_animatedGIFWithData:(NSData *)data timeArray:(NSMutableArray *)timeArray;
 
 - (UIImage *)ve_animatedImageByScalingAndCroppingToSize:(CGSize)size;
 

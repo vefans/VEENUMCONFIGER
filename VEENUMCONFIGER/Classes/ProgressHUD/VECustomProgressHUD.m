@@ -40,7 +40,7 @@
 + (void)showCustomHUD:(NSString *)status cancel:(void(^)(BOOL isCancel))cancel{
     NSString *displayStatus = status ? status : @"加载中，请稍后...";  // 默认状态
     if([VECustomProgressHUD sharedHUD].customView){
-        [[VECustomProgressHUD sharedHUD] showWithStatus:displayStatus];
+        [[VECustomProgressHUD sharedHUD] showWithStatus:displayStatus cancel:cancel];
     }
     else{
         [[VECustomProgressHUD sharedHUD] showCustomHUD:displayStatus cancel:cancel];

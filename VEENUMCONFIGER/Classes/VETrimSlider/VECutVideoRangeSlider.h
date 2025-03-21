@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VECutVideoRangeSlider : UIView
 
-@property (nonatomic, strong) VECore *corePlayer;
+@property (nonatomic, strong) VECore  * __nullable corePlayer;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIHitView *leftThumbView;
 @property (nonatomic, strong) UIHitView *rightThumbView;

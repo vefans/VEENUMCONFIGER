@@ -222,12 +222,18 @@
     }
     
     __block NSInteger index = 0;
+    __block typeof(self) bself = self;
     [self.corePlayer generateCGImagesAsynchronouslyForTimes:items maximumSize:CGSizeMake(200, 200) completionHandler:^(CMTime requestedTime, CGImageRef  _Nullable image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError * _Nullable error) {
         index ++;
         UIImage *newImage = [UIImage imageWithCGImage:image];
         dispatch_async(dispatch_get_main_queue(), ^{
             if(newImage){
                 ((UIImageView *)[self.scrollView viewWithTag:index]).image = newImage;
+            }
+            if(index >= items.count){
+                bself.corePlayer.delegate = nil;
+                [bself.corePlayer stop];
+                bself.corePlayer = nil;
             }
         });
     }];

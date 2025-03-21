@@ -39,27 +39,28 @@ typedef NS_ENUM(NSInteger, AUDIO_SPEECH_Type){
     AUDIO_SPEECH_Type_OfflineModel,            //离线模型
 };
 
-typedef BOOL (^VEEnterAdvancedEditHandler) (UIViewController *viewController,int type/*1：无水印导出，2：移除界面水印*/);
+typedef BOOL (^VEVipJoinBlockHandler) (UIViewController * _Nullable viewController,Boolean isChangeBackground,Boolean isCutout,Boolean isErasePen);
+typedef BOOL (^VEEnterAdvancedEditHandler) (UIViewController * _Nullable viewController,int type/*1：无水印导出，2：移除界面水印*/);
 //导出前回调
-typedef void(^VEPrepareExportHandler) (UIViewController *viewController);
+typedef void(^VEPrepareExportHandler) (UIViewController * _Nullable viewController);
 
 //编辑完成导出结束回调
-typedef void(^VECompletionHandler) (NSString * videoPath);
+typedef void(^VECompletionHandler) (NSString * _Nullable  videoPath);
 //编辑取消回调
 typedef void(^VECancelHandler) (void);
 //编辑取消回调
-typedef void(^VEFailedHandler) (NSError * error);
+typedef void(^VEFailedHandler) (NSError * _Nullable  error);
 //云备份中回调
 typedef void(^VECloudBackingUpHandler) (int completionCount, int totalCount);
 //云备份结束回调
 typedef void(^VECloudBackupCompletionHandler) (int completionCount);
 
-typedef void(^VEExporTemplate) (UIViewController * view);
+typedef void(^VEExporTemplate) (UIViewController * _Nullable  view);
 
 
 
-UIKIT_EXTERN NSString * const VEStartExportNotification;
-UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
+UIKIT_EXTERN NSString * const _Nullable  VEStartExportNotification;
+UIKIT_EXTERN NSString * const _Nullable  VERemoveDefaultWatermarkNotification;
 
 @protocol VESDKDelegate <NSObject>
 
@@ -67,11 +68,11 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 
 /** 设置faceU普通道具
  */
-- (void)faceUItemChanged:(NSString *)itemPath;
+- (void)faceUItemChanged:(NSString * _Nullable )itemPath;
 
 /** 设置faceU美颜参数
  */
-- (void)faceUBeautyParamChanged:(VEFaceUBeautyParams *)beautyParams;
+- (void)faceUBeautyParamChanged:(VEFaceUBeautyParams * _Nullable )beautyParams;
 
 /** 销毁faceU全部道具
  */
@@ -80,26 +81,26 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 /*
  *录制时，摄像头捕获帧回调，可对帧进行处理
  */
-- (void)willOutputCameraSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+- (void)willOutputCameraSampleBuffer:(CMSampleBufferRef _Nullable )sampleBuffer;
 
 /*
  *如果需要自定义相册则需要实现此函数
  */
-- (void)selectVideoAndImageResult:(UINavigationController *)nav callbackBlock:(void (^)(NSMutableArray *lists))callbackBlock;
+- (void)selectVideoAndImageResult:(UINavigationController * _Nullable )nav callbackBlock:(void (^ _Nullable )(NSMutableArray * _Nullable lists))callbackBlock;
 
 /*
  *如果需要自定义相册则需要实现此函数（添加视频）
  */
-- (void)selectVideosResult:(UINavigationController *)nav callbackBlock:(void (^)(NSMutableArray *lists))callbackBlock;
+- (void)selectVideosResult:(UINavigationController * _Nullable )nav callbackBlock:(void (^ _Nullable )(NSMutableArray * _Nullable lists))callbackBlock;
 
 /*
  *如果需要自定义相册则需要实现此函数（添加图片）
  */
-- (void)selectImagesResult:(UINavigationController *)nav callbackBlock:(void (^)(NSMutableArray *lists))callbackBlock;
+- (void)selectImagesResult:(UINavigationController * _Nullable )nav callbackBlock:(void (^ _Nullable )(NSMutableArray * _Nullable lists))callbackBlock;
 
 /** 保存草稿
  */
-- (void)saveDraftResult:(NSError *)error;
+- (void)saveDraftResult:(NSError * _Nullable )error;
 
 /** 显示截取视频界面
  *  Display video capture interface.
@@ -290,40 +291,41 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 @property (nonatomic, assign) BOOL       isSelectFaces;
 
 @property (nonatomic, assign) BOOL  isOutputAudioPath;
-@property (nonatomic, copy) VECompletionHandler   callbackBlock;
-@property (nonatomic, copy) void(^newCallImagebackBlock)(NSString *path,UIViewController *vc);
-@property (nonatomic, copy) VECompletionHandler   editLiteVideoCompletionHandler;
-@property(nonatomic, copy) void(^completioHandler) (NSString * videoPath, UIViewController *controller);
-@property(nonatomic,copy) VECancelHandler cancelHandler;
-@property(nonatomic,copy) VEFailedHandler failedHandler;
-@property(nonatomic,copy) VECloudBackingUpHandler cloudBackingUpHandler;
-@property(nonatomic,copy) VECloudBackupCompletionHandler cloudBackupCompletionHandler;
-@property(nonatomic, copy) void(^cloudDraftIDHandler) ( BOOL success,  NSString * cloudDraftID );
-@property(nonatomic, copy) void(^cloudDraftProgressHandler) (float  progress );
-@property(nonatomic,copy) VEPrepareExportHandler prepareExportHandler;
-@property(nonatomic,copy) VEEnterAdvancedEditHandler canEnterAdvancedEditHandler;
-@property(nonatomic,copy) VEExporTemplate  exporTemplate;   //导出模版
-@property (nonatomic, copy) VECompletionHandler downloadedVideoCompletionHandler;
+@property (nonatomic, copy) VECompletionHandler   _Nullable  callbackBlock;
+@property (nonatomic, copy) void(^ _Nullable newCallImagebackBlock)(NSString * _Nullable path,UIViewController * _Nullable vc);
+@property (nonatomic, copy) VECompletionHandler  _Nullable   editLiteVideoCompletionHandler;
+@property(nonatomic, copy) void(^ _Nullable completioHandler) (NSString *  _Nullable videoPath, UIViewController * _Nullable controller);
+@property(nonatomic,copy) VECancelHandler  _Nullable  cancelHandler;
+@property(nonatomic,copy) VEFailedHandler  _Nullable  failedHandler;
+@property(nonatomic,copy) VECloudBackingUpHandler  _Nullable  cloudBackingUpHandler;
+@property(nonatomic,copy) VECloudBackupCompletionHandler  _Nullable  cloudBackupCompletionHandler;
+@property(nonatomic, copy) void(^ _Nullable cloudDraftIDHandler) ( BOOL success,  NSString * _Nullable  cloudDraftID );
+@property(nonatomic, copy) void(^ _Nullable cloudDraftProgressHandler) (float  progress );
+@property(nonatomic,copy) VEPrepareExportHandler _Nullable  prepareExportHandler;
+@property(nonatomic,copy) VEEnterAdvancedEditHandler  _Nullable canEnterAdvancedEditHandler;
+@property(nonatomic,copy) VEVipJoinBlockHandler  _Nullable  canVipJoinBlockHandler;
+@property(nonatomic,copy) VEExporTemplate  _Nullable  exporTemplate;   //导出模版
+@property (nonatomic, copy) VECompletionHandler _Nullable  downloadedVideoCompletionHandler;
 
-@property(nonatomic, copy) void(^enterMusicAlbumTempCompletionHandler) (NSString *categoryId,NSDictionary * itemDic,NSInteger selectTypeIndex,NSInteger index, UIViewController *controller);
+@property(nonatomic, copy) void(^ _Nullable enterMusicAlbumTempCompletionHandler) (NSString * _Nullable categoryId,NSDictionary * _Nullable  itemDic,NSInteger selectTypeIndex,NSInteger index, UIViewController * _Nullable controller);
 
 //草稿增删 刷新
-@property (nonatomic, copy) void (^refreshDraftView)(void);
+@property (nonatomic, copy) void (^ _Nullable refreshDraftView)(void);
 
 /** 显示相机界面回调
  *  Display camera interface callback.
  *  isTakePhoto: Whether to take photos by default.
  */
-@property(nonatomic, copy) void(^showCameraControllerHandler) (UIViewController *superViewController, BOOL isTakePhoto);
+@property(nonatomic, copy) void(^ _Nullable showCameraControllerHandler) (UIViewController * _Nullable superViewController, BOOL isTakePhoto);
 
 /** 显示音乐界面回调
  *  Display music interface callback.
  *  defaultType: 0(cloud) 1(iTunes)  2(local)
  */
-@property(nonatomic, copy) void(^showMusicControllerHandler) (UIViewController *superViewController, NSInteger defaultType);
+@property(nonatomic, copy) void(^ _Nullable showMusicControllerHandler) (UIViewController * _Nullable superViewController, NSInteger defaultType);
 
 @property (nonatomic, assign) BOOL  isFilmCamera;//是否为方弗相机
-@property (nonatomic, copy) void (^filmCameraBlock)(UIViewController *viewController);
+@property (nonatomic, copy) void (^ _Nullable filmCameraBlock)(UIViewController * _Nullable viewController);
 
 @property (nonatomic, weak) id<VESDKDelegate> veSDKDelegate;
 
@@ -335,69 +337,69 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 @property (nonatomic, assign) BOOL isLanguage;
 
 @property (nonatomic, assign) AUDIO_SPEECH_Type audioSpeechType;
-@property (nonatomic, strong) NSString *  model;
+@property (nonatomic, strong) NSString *  _Nullable  model;
 
 /** APP的主色调
  *  默认为：0xffd500
  */
-@property (nonatomic, strong) UIColor *mainColor;
+@property (nonatomic, strong) UIColor * _Nullable mainColor;
 
 /** APP中导出按钮的文字颜色
  *  默认为：0x27262c
  */
-@property (nonatomic, strong) UIColor *exportButtonTitleColor;
+@property (nonatomic, strong) UIColor * _Nullable exportButtonTitleColor;
 
 /** APP中导出按钮的背景颜色
  *  默认为：[UIColor whiteColor]
  */
-@property (nonatomic, strong) UIColor *exportButtonBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nullable exportButtonBackgroundColor;
 
 /** APP中界面的背景色
  *  默认为：[UIColor blackColor]
  */
-@property (nonatomic, strong) UIColor *viewBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nullable viewBackgroundColor;
 
 /** APP中的导航栏背景色
  *  默认为：[UIColor blackColor]
  */
-@property (nonatomic, strong) UIColor *navigationBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nullable navigationBackgroundColor;
 
 /** APP中的导航栏文字颜色
  *  默认为：[UIColor whiteColor]
  */
-@property (nonatomic, strong) UIColor *navigationBarTitleColor;
+@property (nonatomic, strong) UIColor * _Nullable navigationBarTitleColor;
 
 /** APP中的导航栏文字字体
  *  默认为：[UIFont boldSystemFontOfSize:20]
  */
-@property (nonatomic, strong) UIFont *navigationBarTitleFont;
+@property (nonatomic, strong) UIFont * _Nullable navigationBarTitleFont;
 
 /** APP中工具栏文字颜色
  *  默认为：[UIFont boldSystemFontOfSize:20]
  */
-@property (nonatomic, strong) UIColor *toolsTitleColor;
+@property (nonatomic, strong) UIColor * _Nullable toolsTitleColor;
 
 /** 素材显示控件的背景色
  */
-@property (nonatomic, strong) UIColor *timelineItemColor;
+@property (nonatomic, strong) UIColor * _Nullable timelineItemColor;
 /** 素材显示控件的背景色
  */
-@property (nonatomic, strong) UIColor *timelineItemTitleColor;
+@property (nonatomic, strong) UIColor * _Nullable timelineItemTitleColor;
 
 /** 工具栏的分割线颜色
  */
-@property (nonatomic, strong) UIColor * toolLineColor;
+@property (nonatomic, strong) UIColor *  _Nullable toolLineColor;
 
 /** APP中工具栏文字字体
  *  默认为：[UIFont boldSystemFontOfSize:12]
  */
-@property (nonatomic, strong) UIFont *toolsTitleFont;
+@property (nonatomic, strong) UIFont * _Nullable toolsTitleFont;
 /** APP中自定义Tool图标位置
  */
-@property (nonatomic, strong) NSString *customToolImageFolder;
+@property (nonatomic, strong) NSString * _Nullable customToolImageFolder;
 /** APP中自定义导出按钮
  */
-@property (nonatomic, strong) NSArray *exportBtnBgColors;
+@property (nonatomic, strong) NSArray * _Nullable exportBtnBgColors;
 
 /** 后台返回的“定格”特效分类id
  *  默认为：57685258
@@ -412,19 +414,19 @@ UIKIT_EXTERN NSString * const VERemoveDefaultWatermarkNotification;
 - (void)removeDefaultWatermark;
 @property (nonatomic, assign) BOOL       iPad_HD;
 @property (nonatomic, assign) BOOL       enableBtnLikeTemp;
-@property (nonatomic, copy) void (^likeNoLoginBlock)(UIViewController *viewController);
+@property (nonatomic, copy) void (^ _Nullable likeNoLoginBlock)(UIViewController * _Nullable viewController);
 
 
-@property (nonatomic, strong) NSArray *selectedTypeColors;
-@property (nonatomic, strong) NSArray *selectedLineColors;
-@property (nonatomic, strong) UIColor *textColorOnGradientView; //渐变背景色上面的文字颜色
+@property (nonatomic, strong) NSArray * _Nullable selectedTypeColors;
+@property (nonatomic, strong) NSArray * _Nullable selectedLineColors;
+@property (nonatomic, strong) UIColor * _Nullable textColorOnGradientView; //渐变背景色上面的文字颜色
 /** 音乐界面布局样式 (default 0)
  */
 @property (nonatomic, assign) int musicViewLayoutStyle;
-@property (nonatomic, strong) id exportDraft;
+@property (nonatomic, strong) id  _Nullable exportDraft;
 
--(void)htmlSegmentation:( UIViewController * ) viewController;
+-(void)htmlSegmentation:( UIViewController *  _Nullable ) viewController;
 
-@property(nonatomic,copy, nullable) void (^cancelBtnBlock)(UIButton * btn);
+@property(nonatomic,copy) void (^ _Nullable cancelBtnBlock)(UIButton *  _Nullable btn);
 
 @end
