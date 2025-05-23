@@ -1354,7 +1354,7 @@
             NSData* imagedata = UIImageJPEGRepresentation(image, 1.0);
             
             [[NSFileManager defaultManager] createFileAtPath:photoPath contents:imagedata attributes:nil];
-            [strongSelf deleteItems];
+            [strongSelf.cameraManager stopCamera];
             [strongSelf showPlayerViewWithMediaUrl:[NSURL fileURLWithPath:photoPath]];
         }];
     }

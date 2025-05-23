@@ -37,6 +37,9 @@
     }
     return self;
 }
++ (void)showCustomHUD:(NSString *)status{
+    [self showCustomHUD:status cancel:nil];
+}
 + (void)showCustomHUD:(NSString *)status cancel:(void(^)(BOOL isCancel))cancel{
     NSString *displayStatus = status ? status : @"加载中，请稍后...";  // 默认状态
     if([VECustomProgressHUD sharedHUD].customView){
@@ -124,6 +127,7 @@
         bself->_statusLabel.center = CGPointMake(self.customView.frame.size.width/2.0, bself->_statusLabel.center.y);
         if(bself->_cancelBtn){
             bself->_cancelBtn.frame = CGRectMake((CGRectGetWidth(customView.frame) - 120)/2.0, CGRectGetMaxY(bself->_statusLabel.frame) + 11, 120, 40);
+            bself->_cancelBtn.backgroundColor = [VEHelp colorWithColors:[VEConfigManager sharedManager].selectedTypeColors bounds:bself->_cancelBtn.frame];
         }
         [bself.customView addSubview:iconIV];
         [view addSubview:bself.customView];
@@ -187,6 +191,7 @@
             
             if(bself->_cancelBtn){
                 bself->_cancelBtn.frame = CGRectMake((CGRectGetWidth(bself.customView.frame) - 120)/2.0, CGRectGetMaxY(bself->_statusLabel.frame) + 11, 120, 40);
+                bself->_cancelBtn.backgroundColor = [VEHelp colorWithColors:[VEConfigManager sharedManager].selectedTypeColors bounds:bself->_cancelBtn.frame];
             }
         }
         else{

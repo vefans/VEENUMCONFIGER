@@ -885,4 +885,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 // 获取原视频的文件类型
 + (NSString *)outputFileTypeForAsset:(AVURLAsset *)asset;
+
++ (int)getNetworkResourceVersion;
+
 @end

@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface VECustomProgressHUD : UIView
 @property(nonatomic,strong)UIButton *cancelBtn;
 + (instancetype)sharedHUD;
++ (void)showCustomHUD:(NSString *)status;
 + (void)showCustomHUD:(NSString *)status cancel:(void(^)(BOOL isCancel))cancel;
 + (void)showWithStatus:(NSString *)status;
 + (void)showWithStatus:(NSString *)status  cancel:(void(^)(BOOL))cancel;

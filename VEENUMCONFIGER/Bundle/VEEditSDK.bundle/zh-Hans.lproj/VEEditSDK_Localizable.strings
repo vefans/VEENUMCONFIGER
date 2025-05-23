@@ -1404,10 +1404,9 @@
 "Color2" = "蓝色";
 "Color3" = "透明度";
 "line" = "大小";
-//"offsetX" = "水平位移";
-//"offsetY" = "垂直位移";
-"offsetX" = "垂直位移";
-"offsetY" = "水平位移";
+"offsetX" = "水平位移";
+"offsetY" = "垂直位移";
+"Speed" = "速度";
 
 "FromColorR" = "源红色";
 "FromColorG" = "源绿色";

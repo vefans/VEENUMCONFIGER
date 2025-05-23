@@ -118,7 +118,7 @@
     if(_TrimmerView){
         _TrimmerView.minThumbWidth = _currentHandle.frame.size.width;
         [_TrimmerView setVideoCore:_thumbnailCoreSDK];
-        [_TrimmerView setClipTimeRange:CMTimeRangeMake(CMTimeMakeWithSeconds(0, TIMESCALE), _thumbnailCoreSDK.composition.duration)];
+        [_TrimmerView setClipTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(_thumbnailCoreSDK.duration, TIMESCALE))];
         _TrimmerView.thumbTimes = thumbnailCount;
         [_TrimmerView resetSubviews:image picWidth:(self.frame.size.width/6)];
         [_TrimmerView setProgress:0 animated:NO];

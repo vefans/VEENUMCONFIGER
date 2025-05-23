@@ -526,6 +526,7 @@
     }
     else{
         CGContextSetStrokeColorWithColor(context, [_lineColor CGColor]);
+        CGContextSetLineCap(context, kCGLineCapRound);
         CGContextSetLineWidth(context, _strokeWidth);
         CGContextSetBlendMode(context, _blendMode);
         CGContextBeginPath(context);

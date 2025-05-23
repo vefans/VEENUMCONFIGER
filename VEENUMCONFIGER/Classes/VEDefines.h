@@ -623,6 +623,7 @@ isPhoneX;\
 #define kVIDEOWIDTH ([VEHelp isLowDevice] ? 852 : 1280)
 #define kSQUAREVIDEOWIDTH 720
 
+#define kVIDEOPREWWIDTH ([VEHelp isLowDevice] ? 852 : 1920)
 #define IMAGE_MAX_SIZE_WIDTH 1080
 #define IMAGE_MAX_SIZE_HEIGHT 1080
 //设备屏幕宽高

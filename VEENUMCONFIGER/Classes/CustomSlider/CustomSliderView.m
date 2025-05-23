@@ -717,6 +717,9 @@
     _minLabel.text = [NSString stringWithFormat:@"%.1f%@", _currentMinValue, _unit];
     CGRect frame = _minThumbImageView.frame;
     frame.origin.x = (_currentMinValue - _minValue) / _total + _mainTrack.frame.origin.x - frame.size.width / 2.0;
+    if(isnan(frame.origin.x)){
+        frame.origin.x = 0;
+    }
     _minThumbImageView.frame = frame;
     
     frame = _minTrack.frame;

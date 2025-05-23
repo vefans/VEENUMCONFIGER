@@ -928,7 +928,7 @@
                 startTime  = 0;
             }
             CMTime duration = [AVURLAsset assetWithURL:_currentCaptionView.file.collage.media.url].duration  ;
-            if( [_currentCaptionView.file.collage.media.url.path containsString:@".webm"] )
+            if( [_currentCaptionView.file.collage.media.url.path.pathExtension.lowercaseString isEqualToString:@"webm"] )
             {
                 WebmMediaInfo *mediaInfo = [VECore getWebmInfo:_currentCaptionView.file.collage.media.url.path];
                 duration = CMTimeMakeWithSeconds(mediaInfo.duration, TIMESCALE);

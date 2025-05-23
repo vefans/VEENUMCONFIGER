@@ -270,7 +270,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"In order to achieve material introduction/export, providing video editing functions,we must obtain album permissions.Otherwise, we will not be able to provide corresponding services",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings",nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
                             [VEHelp enterSystemSetting];
-                        } atOtherBlock:nil];
+                        } atOtherBlock:^{
+                            if (handler) {
+                                handler(false);
+                            }
+                        }];
                     });
                 }
                     break;
@@ -314,7 +318,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             else if (videoAuthStatus == AVAuthorizationStatusRestricted || videoAuthStatus == AVAuthorizationStatusDenied) {
                 [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"Need to visit your camera to take photos or videos",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings",nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
                     [VEHelp enterSystemSetting];
-                } atOtherBlock:nil];
+                } atOtherBlock:^{
+                    if (handler) {
+                        handler(false);
+                    }
+                }];
                 return;
             }
             else if (videoAuthStatus == AVAuthorizationStatusAuthorized) {
@@ -342,7 +350,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             else if (audioAuthStatus == AVAuthorizationStatusRestricted || audioAuthStatus == AVAuthorizationStatusDenied) {
                 [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"Need to visit your microphone to recording",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings",nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
                     [VEHelp enterSystemSetting];
-                } atOtherBlock:nil];
+                } atOtherBlock:^{
+                    if (handler) {
+                        handler(false);
+                    }
+                }];
             }else if (audioAuthStatus == AVAuthorizationStatusAuthorized) {
                 if (handler) {
                     handler(true);
@@ -393,13 +405,21 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             else if (videoAuthStatus == AVAuthorizationStatusRestricted || videoAuthStatus == AVAuthorizationStatusDenied) {
                 [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"Need to visit your camera to take photos or videos",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings",nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
                     [VEHelp enterSystemSetting];
-                } atOtherBlock:nil];
+                } atOtherBlock:^{
+                    if (handler) {
+                        handler(false);
+                    }
+                }];
                 return;
             }
             else if (audioAuthStatus == AVAuthorizationStatusRestricted || audioAuthStatus == AVAuthorizationStatusDenied) {
                 [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"Need to visit your microphone to recording",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings",nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
                     [VEHelp enterSystemSetting];
-                } atOtherBlock:nil];
+                } atOtherBlock:^{
+                    if (handler) {
+                        handler(false);
+                    }
+                }];
             }else if (audioAuthStatus == AVAuthorizationStatusAuthorized && videoAuthStatus == AVAuthorizationStatusAuthorized) {
                 if (handler) {
                     handler(true);
@@ -430,7 +450,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 else if (speechRecogStatus == SFSpeechRecognizerAuthorizationStatusRestricted || speechRecogStatus == SFSpeechRecognizerAuthorizationStatusDenied) {
                     [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"In order to achieve the voice to text function, need to call your voice recognition permission.Otherwise, we will not be able to provide corresponding services",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings", nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
                         [VEHelp enterSystemSetting];
-                    } atOtherBlock:nil];
+                    } atOtherBlock:^{
+                        if (handler) {
+                            handler(false);
+                        }
+                    }];
                 }
                 else if (handler) {
                     handler(true);
@@ -490,12 +514,20 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 else if (audioAuthStatus == AVAuthorizationStatusRestricted || audioAuthStatus == AVAuthorizationStatusDenied) {
                     [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"Need to visit your microphone to recording",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings",nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
                         [VEHelp enterSystemSetting];
-                    } atOtherBlock:nil];
+                    } atOtherBlock:^{
+                        if (handler) {
+                            handler(false);
+                        }
+                    }];
                 }
                 else if (speechRecogStatus == SFSpeechRecognizerAuthorizationStatusRestricted || speechRecogStatus == SFSpeechRecognizerAuthorizationStatusDenied) {
                     [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"In order to achieve the voice to text function, need to call your voice recognition permission.Otherwise, we will not be able to provide corresponding services",nil) message:VELocalizedString(@"Click \"Confirm\" to set the jump system page for settings", nil) cancelButtonTitle:VELocalizedString(@"Confirm",nil) otherButtonTitles:VELocalizedString(@"Cancel",nil) atViewController:viewController atCancelBlock:^{
                         [VEHelp enterSystemSetting];
-                    } atOtherBlock:nil];
+                    } atOtherBlock:^{
+                        if (handler) {
+                            handler(false);
+                        }
+                    }];
                 }
                 else if (handler) {
                     handler(true);
@@ -526,7 +558,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         }
                     }];
                 }else {
-                    [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"暂未开启媒体库权限",nil) message:VELocalizedString(@"请更改设置，开启媒体库权限",nil) cancelButtonTitle:VELocalizedString(@"取消",nil) otherButtonTitles:VELocalizedString(@"设置",nil) atViewController:viewController atCancelBlock:nil atOtherBlock:^{
+                    [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"暂未开启媒体库权限",nil) message:VELocalizedString(@"请更改设置，开启媒体库权限",nil) cancelButtonTitle:VELocalizedString(@"取消",nil) otherButtonTitles:VELocalizedString(@"设置",nil) atViewController:viewController atCancelBlock:^{
+                        if (handler) {
+                            handler(false);
+                        }
+                    } atOtherBlock:^{
                         [VEHelp enterSystemSetting];
                     }];
                 }
@@ -548,7 +584,11 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         }
                     }];
                 }else {
-                    [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"暂未开启媒体库权限",nil) message:VELocalizedString(@"请更改设置，开启媒体库权限",nil) cancelButtonTitle:VELocalizedString(@"取消",nil) otherButtonTitles:VELocalizedString(@"设置",nil) atViewController:viewController atCancelBlock:nil atOtherBlock:^{
+                    [VEHelp initCommonAlertViewWithTitle:VELocalizedString(@"暂未开启媒体库权限",nil) message:VELocalizedString(@"请更改设置，开启媒体库权限",nil) cancelButtonTitle:VELocalizedString(@"取消",nil) otherButtonTitles:VELocalizedString(@"设置",nil) atViewController:viewController atCancelBlock:^{
+                        if (handler) {
+                            handler(false);
+                        }
+                    } atOtherBlock:^{
                         [VEHelp enterSystemSetting];
                     }];
                 }
@@ -1347,7 +1387,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     __block int currentFileIndex = progressIndex;
     __block int index = currentIndex;
     CGFloat width = 150;
-    if( [url.path containsString:@".webm"] )
+    if( [url.path.pathExtension.lowercaseString isEqualToString:@"webm"] )
     {
         WebmMediaInfo *mediaInfo  = [VECore getWebmInfo:url.path];
         [VECore getWebmDataFromFilePath:url.path timeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(mediaInfo.duration/1000.0, TIMESCALE)) completion:^(NSMutableArray<WebmDecodeData *> * array) {
@@ -2619,6 +2659,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         return nil;
     }
+    
     @autoreleasepool {
         CFStringRef fontPath = CFStringCreateWithCString(NULL, [path UTF8String], kCFStringEncodingUTF8);
         CFURLRef fontUrl = CFURLCreateWithFileSystemPath(NULL, fontPath, kCFURLPOSIXPathStyle, 0);
@@ -2627,18 +2668,40 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
             return nil;
         }
         CFRelease(fontPath);
+        
         NSMutableArray *customFontArray = [NSMutableArray array];
         CFArrayRef fontArray = CTFontManagerCreateFontDescriptorsFromURL(fontUrl);
         if(!fontArray){
             return nil;
         }
-        //注册
-        CTFontManagerRegisterFontsForURL(fontUrl, kCTFontManagerScopeNone, NULL);
-        if(fontUrl)
-            CFRelease(fontUrl);
+        
+        // 检查字体是否已注册
+        BOOL needsRegistration = NO;
+        for (CFIndex i = 0; i < CFArrayGetCount(fontArray); i++) {
+            CTFontDescriptorRef descriptor = CFArrayGetValueAtIndex(fontArray, i);
+            CTFontRef fontRef = CTFontCreateWithFontDescriptor(descriptor, 10, NULL);
+            CFStringRef postScriptName = CTFontCopyPostScriptName(fontRef);
+            
+            // 尝试用字体名称创建字体，如果能创建成功说明已注册
+            UIFont *existingFont = [UIFont fontWithName:(__bridge NSString *)postScriptName size:10.0];
+            if (!existingFont) {
+                needsRegistration = YES;
+            }
+            
+            if(postScriptName) CFRelease(postScriptName);
+            if(fontRef) CFRelease(fontRef);
+            
+            if (needsRegistration) break;
+        }
+        
+        // 如果需要注册，才进行注册
+        if (needsRegistration) {
+            CTFontManagerRegisterFontsForURL(fontUrl, kCTFontManagerScopeNone, NULL);
+        }
+        
+        if(fontUrl) CFRelease(fontUrl);
         
         for (CFIndex i = 0 ; i < CFArrayGetCount(fontArray); i++){
-            
             CTFontDescriptorRef  descriptor = CFArrayGetValueAtIndex(fontArray, i);
             CTFontRef fontRef = CTFontCreateWithFontDescriptor(descriptor, 10, NULL);
             NSString *fontName = CFBridgingRelease(CTFontCopyName(fontRef, kCTFontPostScriptNameKey));
@@ -2646,12 +2709,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 [customFontArray addObject:fontName];
             if(fontRef)
                 CFRelease(fontRef);
-            // if(descriptor)
-            //    CFRelease(descriptor);
         }
+        
         CFRelease(fontArray);
         return customFontArray;
-        
     }
 }
 
@@ -6932,11 +6993,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         if ([type isEqualToString:VENetworkResourceType_Sticker]) {
             [params setValue:[NSNumber numberWithInt:[VEConfigManager sharedManager].editConfiguration.stickerResourceMinVersion] forKey:@"ver_min"];//用于控制最小版本号,只对素材生效
         }
-        int veCoreVersion = [VECore getSDKVersion];
-        if(![[params allKeys] containsObject:@"ver"]){
-            [params setObject:[NSNumber numberWithInt:[VECore getSDKVersion]] forKey:@"ver"];
-        }
-        if (veCoreVersion > 154) {
+        int networkResourceVersion = [VEHelp getNetworkResourceVersion];
+        [params setObject:[NSNumber numberWithInt:networkResourceVersion] forKey:@"ver"];
+        
+        if (networkResourceVersion > 154) {
             NSString *disabledName;
             if ([type isEqualToString:VENetworkResourceType_StickerAnimation]
                 || [type isEqualToString:VENetworkResourceType_MediaAnimation])
@@ -6954,10 +7014,6 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         if (isEnglish) {
             [params setObject:@"en" forKey:@"lang"];
         }
-        if(![[params allKeys] containsObject:@"ver"]){
-            [params setObject:@(veCoreVersion) forKey:@"ver"];
-        }
-        //        uploadUrl=[NSString stringWithString:[uploadUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         uploadUrl=[NSString stringWithString:[uploadUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
         NSURL *url=[NSURL URLWithString:uploadUrl];
         NSString *postURL= [VEHelp createPostURL:params];
@@ -9141,6 +9197,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                             item.isBold = wordItem.isBold;
                             item.isItalic = wordItem.isItalic;
                             item.isUnderline = wordItem.isUnderline;
+                            item.textAlignment = wordItem.textAlignment;
                             if (wordItem.animate) {
                                 NSString *animateFolderPath = wordItem.animate.folderPath;
                                 if (!folderPath) {
@@ -10636,7 +10693,10 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 //MARK: 文字模版 花字
                 {
                     NSString *flowerWordPath = obj[@"color_text"];
-                    [self getTextTemplateFlowerWord:captionItem atPath:configPath atFlowerWordName:flowerWordPath];
+                    [self getTextTemplateFlowerWord:captionItem atPath:configPath atFlowerWordName:flowerWordPath];                    
+                    if (captionItem.effectCfg && captionItem.effectCfg.normal.colors.count > 0) {
+                        captionItem.textColor = captionItem.effectCfg.normal.colors.firstObject.color;
+                    }
                 }
                 
                 //KTV
@@ -16375,7 +16435,7 @@ static OSType help_inputPixelFormat(){
         NSError *error = nil;
         // 根据时间，获得第N帧的图片
         // CMTimeMake(a, b)可以理解为获得第a/b秒的frame
-        CGImageRef img = [generator copyCGImageAtTime:CMTimeMake(0, frameRate>0 ? frameRate : 30) actualTime:NULL error:&error];
+        CGImageRef img = [generator copyCGImageAtTime:CMTimeMakeWithSeconds(0, frameRate>0 ? frameRate : 30) actualTime:NULL error:&error];
         // 构造图片
         UIImage *image = [UIImage imageWithCGImage: img];
         CGImageRelease(img);
@@ -19886,5 +19946,8 @@ static OSType help_inputPixelFormat(){
     return fileType;
 }
 
++ (int)getNetworkResourceVersion {
+    return 174;
+}
 
 @end
