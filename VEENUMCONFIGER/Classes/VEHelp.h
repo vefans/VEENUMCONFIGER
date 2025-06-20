@@ -381,6 +381,11 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (UIImage *)getFullImageWithUrl:(NSURL *)url maxWidth:(float)maxWidth;
 #pragma mark- 居中处理，计算对应的Crop
 + (CGRect)getFixedRatioCropWithMediaSize:(CGSize)mediaSize newSize:(CGSize)newSize;
++ (CGRect)getFixedCropWithNewMediaSize:(CGSize)newMediaSize
+                          oldMediaSize:(CGSize)oldMediaSize
+                          oldMediaCrop:(CGRect)oldMediaCrop
+                          oldMediaRect:(CGRect)oldMediaRect
+                             videoSize:(CGSize)videoSize;
 
 + (CGSize)getEditOrginSizeWithFile:(VEMediaInfo *)file ;
 + (CGSize)getEditSizeWithFile:(VEMediaInfo *)file;
@@ -881,7 +886,9 @@ extern float const VEAdjust_DefaultValue_Exposure;
 
 + (CGFloat)customFontSizeWithCaptionItem:(CaptionItem *)item
                                 showSize:(CGSize)showSize
-                            templateSize:(CGSize)templateSize;
+                                textRect:(CGRect)textRect
+                            templateSize:(CGSize)templateSize
+                            isOldCaption:(BOOL)isOldCaption;
 
 // 获取原视频的文件类型
 + (NSString *)outputFileTypeForAsset:(AVURLAsset *)asset;

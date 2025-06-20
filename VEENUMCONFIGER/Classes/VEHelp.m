@@ -5646,6 +5646,63 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return crop;
 }
 
++ (CGRect)getFixedCropWithNewMediaSize:(CGSize)newMediaSize
+                          oldMediaSize:(CGSize)oldMediaSize
+                          oldMediaCrop:(CGRect)oldMediaCrop
+                          oldMediaRect:(CGRect)oldMediaRect
+                             videoSize:(CGSize)videoSize
+{
+    CGRect crop = CGRectMake(0, 0, 1, 1);
+    
+    if (!CGRectEqualToRect(oldMediaCrop, CGRectMake(0, 0, 1, 1))) {
+        oldMediaSize = CGSizeMake(oldMediaCrop.size.width * oldMediaSize.width, oldMediaCrop.size.height * oldMediaSize.height);
+    }
+    else if (!CGRectEqualToRect(oldMediaRect, CGRectMake(0, 0, 1, 1))) {
+        oldMediaSize = CGSizeMake(oldMediaRect.size.width * videoSize.width, oldMediaRect.size.height * videoSize.height);
+    }
+    float oldMediaRatio = oldMediaSize.width / oldMediaSize.height;
+    float newMediaRatio = newMediaSize.width / newMediaSize.height;
+    float videoRatio = videoSize.width / videoSize.height;
+    
+    if (CGRectEqualToRect(oldMediaCrop, CGRectMake(0, 0, 1, 1))
+        && CGRectEqualToRect(oldMediaRect, CGRectMake(0, 0, 1, 1))
+        && oldMediaRatio != videoRatio)
+    {
+        oldMediaRatio = videoRatio;
+    }
+    
+    if (newMediaRatio != oldMediaRatio) {
+        float x,y,w,h;
+        if (oldMediaRatio == 1.0) {
+            w = MIN(newMediaSize.width, newMediaSize.height);
+            h = w;
+        }else if (oldMediaRatio > 1.0) {
+            w = newMediaSize.width;
+            h = w / oldMediaRatio;
+            if (h > newMediaSize.height) {
+                h = newMediaSize.height;
+                w = h*oldMediaRatio;
+            }
+        }else {
+            h = newMediaSize.height;
+            w = h * oldMediaRatio;
+            if (w > newMediaSize.width) {
+                w = newMediaSize.width;
+                h = w / oldMediaRatio;
+            }
+        }
+        x = fabs(newMediaSize.width - w)/2.0;
+        y = fabs(newMediaSize.height - h)/2.0;
+        
+        CGRect clipRect = CGRectMake(x, y, w, h);
+        crop.origin.x = clipRect.origin.x/newMediaSize.width;
+        crop.origin.y = clipRect.origin.y/newMediaSize.height;
+        crop.size.width = clipRect.size.width/newMediaSize.width;
+        crop.size.height = clipRect.size.height/newMediaSize.height;
+    }
+    return crop;
+}
+
 + (CGSize)getEditSizeWithFile:(VEMediaInfo *)file {
     CGSize editSize;
     if (file.fileType == kFILEIMAGE || file.fileType == kFILETEXT) {
@@ -7591,11 +7648,19 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 + (UIImage *)scaleToSize:(UIImage *)img size:(CGSize)size{
     CGImageRef inImage = img.CGImage;
-    if(!inImage)
+    if (!inImage) {
+        // 如果 img.CGImage 为 nil，则用 CIImage 生成 CGImage
         inImage = [[CIContext new] createCGImage:img.CIImage fromRect:[img.CIImage extent]];
-    CIImage *originalImage = [[CIImage imageWithCGImage:inImage] imageByApplyingTransform:CGAffineTransformScale(CGAffineTransformIdentity, size.width/img.size.width, size.height/img.size.height)];
-    UIImage * image =  [UIImage imageWithCIImage:originalImage];
-    return image;
+    }
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef ctx = CGBitmapContextCreate (NULL, (int)size.width, (int)size.height, 8, 0, colorSpace, (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
+    CGColorSpaceRelease (colorSpace);
+    CGContextDrawImage (ctx, CGRectMake (0, 0, size.width, size.height), inImage);
+    CGImageRef cgImage = CGBitmapContextCreateImage (ctx);
+    CGContextRelease (ctx);
+    UIImage * image = [UIImage imageWithCGImage: cgImage];
+    CGImageRelease (cgImage);
+    return (image);
 }
 
 + (UIImage *)drawImage:(UIImage *)image bgImage:(UIImage *)bgImage
@@ -9948,11 +10013,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                     item.fontName = [VEHelp customFontArrayWithPath:item.fontPath].firstObject;
                 }else {
                     item.fontPath = nil;
+                }
+            }
+            if (item.fontPath.length == 0) {
+                if ([[NSFileManager defaultManager] fileExistsAtPath:kDefaultFontPath]) {
+                    item.fontPath = kDefaultFontPath;
+                    item.fontName = [VEHelp customFontArrayWithPath:kDefaultFontPath].firstObject;
+                }else {
+                    item.fontPath = nil;
                     item.fontName = [UIFont systemFontOfSize:10].fontName;
                 }
-            }else if ([[NSFileManager defaultManager] fileExistsAtPath:kDefaultFontPath]) {
-                item.fontPath = kDefaultFontPath;
-                item.fontName = [VEHelp customFontArrayWithPath:kDefaultFontPath].firstObject;
             }
             if (item.flowerResourceId.length > 0 && item.flowerPath.length > 0) {
                 item.flowerPath = [VEHelp getFileURLFromAbsolutePath_str:item.flowerPath];
@@ -10008,6 +10078,20 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 animate.animateType = item.animateOut.animateType;
                 
                 item.animateOut = animate;
+            }
+            if (item.animateLoop) {
+                NSString *folderPath = item.animateLoop.folderPath;
+                if (!folderPath) {
+                    folderPath = [VEHelp getFileURLFromAbsolutePath_str:folderPath];
+                }
+                CustomFilter *animate = [VEHelp getSubtitleAnimation:nil categoryId:nil atAnimationPath:folderPath  atCaptionItem:item];
+                animate.timeRange = item.animateLoop.timeRange;
+                animate.cycleDuration = item.animateLoop.cycleDuration;
+                animate.networkCategoryId = item.animateLoop.networkCategoryId;
+                animate.networkResourceId = item.animateLoop.networkResourceId;
+                animate.animateType = item.animateLoop.animateType;
+                
+                item.animateLoop = animate;
             }
             [item.textStyleLists enumerateObjectsUsingBlock:^(CaptionTextStyle * _Nonnull label, NSUInteger idx, BOOL * _Nonnull stop) {
                 label.isEnableCenterPosition = YES;
@@ -10130,7 +10214,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                         }
                     }
                     if (item.fontSize == 0) {
-                        CGFloat fontSize = [VEHelp customFontSizeWithCaptionItem:item showSize:obj.showRectF.size templateSize:videoSize];
+                        CGFloat fontSize = [VEHelp customFontSizeWithCaptionItem:item showSize:obj.showRectF.size textRect:item.padding templateSize:videoSize isOldCaption:NO];
                         fontSize /= caption.scale;
                         item.fontSize = fontSize;
                     }
@@ -19830,11 +19914,12 @@ static OSType help_inputPixelFormat(){
 
 + (CGFloat)customFontSizeWithCaptionItem:(CaptionItem *)item
                                 showSize:(CGSize)showSize
+                                textRect:(CGRect)textRect
                             templateSize:(CGSize)templateSize
+                            isOldCaption:(BOOL)isOldCaption
 {
     CGFloat outputWidth = showSize.width * templateSize.width;
     CGFloat outputHeight = showSize.height * templateSize.height;
-    CGRect textRect = item.padding;
     NSString *text = item.text;
     NSString *fontName = item.fontName;
     float wordSpacing = item.wordSpacing;
@@ -19887,30 +19972,43 @@ static OSType help_inputPixelFormat(){
             NSLog(@"Font creation error: %@", exception);
         }
     }
+    if (item.isVertical && isOldCaption) {
+        NSMutableString *verticalText = [[NSMutableString alloc] init];
+        NSString *text = [dstText stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+        [text enumerateSubstringsInRange:NSMakeRange(0, text.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:
+        ^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+            if (substringRange.location + substringRange.length == text.length) {
+                [verticalText insertString:substring atIndex:verticalText.length];
+            }else {
+                [verticalText insertString:[substring stringByAppendingString:@"\n"] atIndex:verticalText.length];
+            }
+        }];
+        item.text = [verticalText stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+        dstText = verticalText;
+    }
     
     // 获取最佳尺寸
     CGFloat dstSize = [self getBestSizeWithFont:font
                                            text:dstText
                                         maxWidth:tmpW
-                                         maxSize:textSize];
+                                         maxSize:textSize
+                                     isVertical:item.isVertical];
     
     return dstSize;
 }
 
-+ (CGFloat)getBestSizeWithFont:(UIFont *)font text:(NSString *)text maxWidth:(CGFloat)maxWidth maxSize:(CGFloat)maxSize {
++ (CGFloat)getBestSizeWithFont:(UIFont *)font text:(NSString *)text maxWidth:(CGFloat)maxWidth maxSize:(CGFloat)maxSize isVertical:(BOOL)isVertical {
     BOOL result = YES;
     UIFont *currentFont = [font fontWithSize:maxSize];
-    
     while (result) {
-        CGFloat tmp = [text sizeWithAttributes:@{NSFontAttributeName: currentFont}].width;
-        if (tmp <= maxWidth) {
+        CGSize size = [text sizeWithAttributes:@{NSFontAttributeName: currentFont}];
+        if ((isVertical && size.height <= maxWidth) || (!isVertical && size.width <= maxWidth)) {
             result = NO;
-        } else {
+        }else {
             maxSize -= maxSize * 0.1;
             currentFont = [font fontWithSize:maxSize];
         }
     }
-    
     return currentFont.pointSize;
 }
 
