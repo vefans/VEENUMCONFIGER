@@ -33,6 +33,7 @@
         _backgroundAlpha = 1.0;
         _videoVolume = 1.0;
         _speed = 1.0;
+        _speedHoldPitch = YES;
         _crop = CGRectMake(0, 0, 1, 1);
         _imageTimeRange = kCMTimeRangeZero;
         _animationTimeRange  = kCMTimeRangeZero;
@@ -318,6 +319,12 @@
                         }
                     }
                     [objArray addObject:adjustArray];
+                }
+                else if ([obj1 conformsToProtocol:@protocol(NSCopying)]) {
+                    [objArray addObject:[obj1 copy]];
+                }
+                else {
+                    [objArray addObject:obj1];
                 }
             }];
             [copy.keyFrameRectRotateArray addObject:objArray];

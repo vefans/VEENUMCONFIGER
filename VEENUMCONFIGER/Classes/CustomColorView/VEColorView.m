@@ -205,9 +205,36 @@
 
 - (void)eyedropperBtnAction:(UIButton *)sender {
     sender.selected = !sender.selected;
+//    self.eyedropperBgView.hidden = !sender.selected;
+//    if (!_eyedropperBgView.hidden && _delegate && [_delegate respondsToSelector:@selector(showEyedropperView:)]) {
+//        [_delegate showEyedropperView:_eyedropperBgView];
+//    }
+    CGPoint center = CGPointMake(0.5, 0.5);
+    if(_eyedropperImageView){
+        center = CGPointMake(_eyedropperImageView.center.x/_eyedropperBgView.frame.size.width, CGRectGetMidY(_eyedropperImageView.frame)/_eyedropperBgView.frame.size.height);
+    }
     self.eyedropperBgView.hidden = !sender.selected;
     if (!_eyedropperBgView.hidden && _delegate && [_delegate respondsToSelector:@selector(showEyedropperView:)]) {
         [_delegate showEyedropperView:_eyedropperBgView];
+    }
+    if( self.eyedropperBgView.hidden == NO )
+    {
+        if(CGPointEqualToPoint(center,CGPointMake(0.5, 0.5))){
+            center = CGPointMake(_eyedropperImageView.center.x/_eyedropperBgView.frame.size.width, CGRectGetMidY(_eyedropperImageView.frame)/_eyedropperBgView.frame.size.height);
+        }
+        _eyedropperImageView.center = CGPointMake(center.x * _eyedropperBgView.frame.size.width, center.y * _eyedropperBgView.frame.size.height);
+        CGPoint colorPoint = CGPointMake(_eyedropperImageView.center.x/_eyedropperBgView.frame.size.width, CGRectGetMaxY(_eyedropperImageView.frame)/_eyedropperBgView.frame.size.height);
+        
+        _currentImage = [_delegate getCurrentImage];
+        _currentCustomColor = [VEHelp colorAtPixel:CGPointMake(colorPoint.x * _currentImage.size.width, colorPoint.y * _currentImage.size.height) source:_currentImage];
+        if(_currentCustomColor != [UIColor clearColor] && _currentCustomColor != nil){
+            _eyedropperImageView.backgroundColor = _currentCustomColor;
+            [self refreshSelectedColorBtn];
+            if (_delegate && [_delegate respondsToSelector:@selector(changeColor:)]) {
+                [_delegate changeColor:_currentCustomColor];
+            }
+        }
+        
     }
 }
 

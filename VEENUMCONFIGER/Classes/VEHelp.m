@@ -5652,6 +5652,14 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                           oldMediaRect:(CGRect)oldMediaRect
                              videoSize:(CGSize)videoSize
 {
+    return [self getFixedCropWithNewMediaSize:newMediaSize oldMediaSize:oldMediaSize oldMediaCrop:oldMediaCrop oldMediaRect:oldMediaRect videoSize:videoSize rotate:0];
+}
++ (CGRect)getFixedCropWithNewMediaSize:(CGSize)newMediaSize
+                          oldMediaSize:(CGSize)oldMediaSize
+                          oldMediaCrop:(CGRect)oldMediaCrop
+                          oldMediaRect:(CGRect)oldMediaRect
+                             videoSize:(CGSize)videoSize
+                                rotate:(float) rotate{
     CGRect crop = CGRectMake(0, 0, 1, 1);
     
     if (!CGRectEqualToRect(oldMediaCrop, CGRectMake(0, 0, 1, 1))) {
@@ -8066,16 +8074,16 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         }];
     }
     
-    if( !faceAttribute && ( faceRect.size.width > 0 ) && ( faceRect.size.height > 0 )  )
+    if( !faceAttribute && !CGSizeEqualToSize(faceRect.size, CGSizeZero) )
     {
         faceAttribute = [FaceAttribute new];
         faceAttribute.faceRect = faceRect;
         [asset.multipleFaceAttribute addObject:faceAttribute];
     }
     
-    if( faceAttribute == nil )
+    if (!faceAttribute && type != KBeauty_BlurIntensity && type != KBeauty_ToneIntensity && type != KBeauty_BrightIntensity && type != KBeauty_beauty) {
         return;
-    
+    }
     switch (type) {
         case KBeauty_FaceWidth://MARK: 脸的宽度
         {
@@ -8440,6 +8448,9 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 }
                 if (!folderPath && ![VEHelp isSystemPhotoUrl:overlay.media.url]) {
                     overlay.media.url = [VEHelp getFileURLFromAbsolutePath:overlay.media.url.path];
+                }
+                if (folderPath.length == 0 && overlay.media.filterUrl) {
+                    overlay.media.filterUrl = [VEHelp getFileURLFromAbsolutePath:overlay.media.filterUrl.path];
                 }
                 if ([VEHelp isSystemPhotoUrl:overlay.media.url]) {
                     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];

@@ -386,6 +386,12 @@ extern float const VEAdjust_DefaultValue_Exposure;
                           oldMediaCrop:(CGRect)oldMediaCrop
                           oldMediaRect:(CGRect)oldMediaRect
                              videoSize:(CGSize)videoSize;
++ (CGRect)getFixedCropWithNewMediaSize:(CGSize)newMediaSize
+                          oldMediaSize:(CGSize)oldMediaSize
+                          oldMediaCrop:(CGRect)oldMediaCrop
+                          oldMediaRect:(CGRect)oldMediaRect
+                             videoSize:(CGSize)videoSize
+                                rotate:(float) rotate;
 
 + (CGSize)getEditOrginSizeWithFile:(VEMediaInfo *)file ;
 + (CGSize)getEditSizeWithFile:(VEMediaInfo *)file;
