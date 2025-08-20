@@ -3718,6 +3718,56 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return [NSString stringWithFormat:@"subtitle_%@",identifier];
 }
 
++ (float)getYPositionWithIdentifier:(NSString *)identifier {
+    NSString *yPositionStr = @"_YPosition: ";
+    
+    // 1. 查找关键子串的位置
+    NSRange range = [identifier rangeOfString:yPositionStr];
+    if (range.location == NSNotFound) {
+        NSLog(@"未找到 %@", yPositionStr);
+        return 0.0;
+    }
+    
+    // 2. 计算数值子串的起始位置
+    NSUInteger valueStartIndex = range.location + range.length;
+    if (valueStartIndex >= identifier.length) {
+        NSLog(@"数值子串超出范围");
+        return 0.0;
+    }
+    
+    // 3. 提取数值子串
+    NSString *valueSubstring = [identifier substringFromIndex:valueStartIndex];
+    
+    // 4. 解析浮点数值
+    NSScanner *scanner = [NSScanner scannerWithString:valueSubstring];
+    float yPosition = 0.0;
+    if (![scanner scanFloat:&yPosition]) {
+        NSLog(@"解析浮点数失败");
+        return 0.0;
+    }
+    
+    return yPosition;
+}
+
++ (NSString *)setYPosition:(float)yPosition inIdentifier:(NSString *)identifier {
+    // 1. 将浮点数转为字符串（使用自动格式）
+    NSString *yPositionStr = [NSString stringWithFormat:@"_YPosition: %g", yPosition];
+    
+    // 2. 检查是否已有旧值
+    NSRange range = [identifier rangeOfString:@"_YPosition: "];
+    
+    // 3. 更新或追加值
+    if (range.location != NSNotFound) {
+        // 找到旧值：替换整个字段（含前缀和值）
+        return [identifier stringByReplacingCharactersInRange:NSMakeRange(range.location, identifier.length - range.location)
+                                                  withString:yPositionStr];
+    } else {
+        // 无旧值：追加到末尾
+        return [identifier stringByAppendingString:yPositionStr];
+    }
+}
+
+
 + (NSMutableArray *)getMaskArray {
     NSMutableArray *maskArray = [NSMutableArray new];
     [maskArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"None",@"title",@(VEMaskType_NONE),@"id", nil]];
@@ -3857,7 +3907,8 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     else if ([name isEqualToString:@"maskM"]) {
         maskType = VEMaskType_MIRRORSURFACE;
     }
-    else if ([name isEqualToString:@"maskC"]) {
+    else if ([name isEqualToString:@"maskC"] ||
+             [name isEqualToString:@"mask"]) {
         maskType = VEMaskType_ROUNDNESS;
     }
     else if ([name isEqualToString:@"maskR"]) {
@@ -18676,6 +18727,36 @@ static OSType help_inputPixelFormat(){
     
 }
 
++ (UIColor *)color2WithColors:(NSArray *)colors bounds:(CGRect)bounds colorLocations:(NSArray *)locations {
+    if(bounds.size.width > 0.0 && bounds.size.height > 0.0){
+        CALayer *layer = [CALayer layer];
+        layer.bounds = bounds;
+        
+        CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+        gradientLayer.frame = bounds;
+        gradientLayer.colors = colors;
+        gradientLayer.startPoint = CGPointMake(0.0, 0.0);
+        gradientLayer.endPoint = CGPointMake(0.0, 1.0);
+        gradientLayer.locations = locations;
+        UIGraphicsBeginImageContext(bounds.size);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        if (context == NULL) {
+            return [UIColor whiteColor];
+        }
+        
+        [gradientLayer renderInContext:context];
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        UIColor *color = [UIColor colorWithPatternImage:image];
+        return color;
+    }
+    else{
+        return [UIColor clearColor];
+    }
+    
+}
+
 + (NSString *)getMagnifyingGlassCachedFilePath:(NSString *)urlPath updatetime:(NSString *)updatetime {
     NSString *cachedFilePath = [kMagnifyingGlassEffectFolder stringByAppendingPathComponent:[VEHelp cachedFileNameForKey:urlPath]];
     cachedFilePath = [cachedFilePath stringByAppendingString:updatetime];
@@ -20057,6 +20138,33 @@ static OSType help_inputPixelFormat(){
 
 + (int)getNetworkResourceVersion {
     return 174;
+}
+
++ (BOOL)timeRangesOverlapWithEpsilon:(CMTimeRange)range1
+                            range2:(CMTimeRange)range2
+                           epsilon:(NSTimeInterval)eps {
+    // 边界时间转换（秒单位）
+    if(CMTimeGetSeconds(range1.duration) <= 0 || CMTimeGetSeconds(range2.duration) <= 0){
+        return false;
+    }
+    NSTimeInterval start1 = CMTimeGetSeconds(range1.start);
+    NSTimeInterval end1 = start1 + CMTimeGetSeconds(range1.duration);
+    NSTimeInterval start2 = CMTimeGetSeconds(range2.start);
+    NSTimeInterval end2 = start2 + CMTimeGetSeconds(range2.duration);
+    
+    // 时间有效性校验
+    if (end1 < start1 || end2 < start2) {
+        [NSException raise:@"InvalidTimeRange"
+                    format:@"End time must not be earlier than start time"];
+    }
+    
+    // 核心判断逻辑（含误差修正）
+    BOOL isSeparated = (end1 < (start2+eps)) || (end2 < (start1+eps) );
+    if( !isSeparated )
+    {
+        int b = 0;
+    }
+    return !isSeparated; // 非分离即重叠
 }
 
 @end

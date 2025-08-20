@@ -32,6 +32,7 @@
         _rectInScale = 1.0;
         _backgroundAlpha = 1.0;
         _videoVolume = 1.0;
+        _yuanValue = 1.0;
         _speed = 1.0;
         _speedHoldPitch = YES;
         _crop = CGRectMake(0, 0, 1, 1);
@@ -92,9 +93,6 @@
     return self;
 }
 
-- (void)setSpeed:(double)speed{
-    _speed = speed;
-}
 - (id)mutableCopyWithZone:(NSZone *)zone{
     VEMediaInfo *copy = [[[self class] allocWithZone:zone] init];
     copy.addTextList = _addTextList;

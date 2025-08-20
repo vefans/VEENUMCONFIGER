@@ -5,6 +5,8 @@
 #import <VEENUMCONFIGER/UIImage+VEGIF.h>
 #import <VEENUMCONFIGER/VEDefines.h>
 
+//#define kJYResources
+
 typedef NSString *VENetworkResourceType NS_STRING_ENUM;
 
 FOUNDATION_EXPORT VENetworkResourceType const VENetworkResourceType_CardMusic;//卡点音乐
@@ -137,7 +139,8 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (CGFloat)getAnglesWithThreePoint:(CGPoint)pointA pointB:(CGPoint)pointB pointC:(CGPoint)pointC;
 
 + (NSString *)geCaptionExSubtitleIdentifier;
-
++ (NSString *)setYPosition:(float)yPosition inIdentifier:(NSString *)identifier;
++ (float)getYPositionWithIdentifier:(NSString *)identifier;
 + (NSMutableArray *)getCategoryMaterialWithAppkey:(NSString *)appKey
                                       typeUrlPath:(NSString *)typeUrlPath
                                   materialUrlPath:(NSString *)materialUrlPath
@@ -822,6 +825,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (UIColor *)colorWithColors:(NSArray *)colors bounds:(CGRect)bounds;
 + (UIColor *)color1WithColors:(NSArray *)colors bounds:(CGRect)bounds;
 + (UIColor *)color2WithColors:(NSArray *)colors bounds:(CGRect)bounds;
++ (UIColor *)color2WithColors:(NSArray *)colors bounds:(CGRect)bounds colorLocations:(NSArray *)locations;
 + (NSString *)likePlayscriptAPITemplatePlistPath;
 + (NSMutableDictionary *)likePlayscriptAPITemplateList;
 
@@ -900,5 +904,7 @@ extern float const VEAdjust_DefaultValue_Exposure;
 + (NSString *)outputFileTypeForAsset:(AVURLAsset *)asset;
 
 + (int)getNetworkResourceVersion;
-
++ (BOOL)timeRangesOverlapWithEpsilon:(CMTimeRange)range1
+                            range2:(CMTimeRange)range2
+                             epsilon:(NSTimeInterval)eps;
 @end

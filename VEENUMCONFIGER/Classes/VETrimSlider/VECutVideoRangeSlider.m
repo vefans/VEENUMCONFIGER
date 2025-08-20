@@ -60,18 +60,30 @@
     [self.corePlayer build];
     
 }
+- (instancetype)initWithFrame:(CGRect)frame videoAsset:(AVURLAsset *)videoAsset minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration  thumbImage:(UIImage *)thumbImage{
+    return [self initWithFrame:frame player:nil videoAsset:videoAsset minRangeDuration:minRangeDuration maxRangeDuration:maxRangeDuration thumbImage:thumbImage];
+}
+
 - (instancetype)initWithFrame:(CGRect)frame player:(VECore *)player minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration {
     return [self initWithFrame:frame player:player minRangeDuration:minRangeDuration maxRangeDuration:maxRangeDuration thumbImage:nil];
 }
-- (instancetype)initWithFrame:(CGRect)frame player:(VECore *)player minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration thumbImage:(UIImage *)thumbImage{
+
+- (instancetype)initWithFrame:(CGRect)frame player:(VECore *)player minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration thumbImage:(UIImage *)thumbImage {
+    return [self initWithFrame:frame player:player videoAsset:nil minRangeDuration:minRangeDuration maxRangeDuration:maxRangeDuration thumbImage:thumbImage];
+}
+
+- (instancetype)initWithFrame:(CGRect)frame player:(VECore *)player  videoAsset:(AVURLAsset *)videoAsset minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration thumbImage:(UIImage *)thumbImage{
     self = [super initWithFrame:frame];
     if (self) {
-//        self.corePlayer = [[VECore alloc] initWithAPPKey:[VEConfigManager sharedManager].appKey APPSecret:[VEConfigManager sharedManager].appSecret videoSize:[player getEditorVideoSize] fps:24 resultFail:^(NSError *error) {
-//            
-//        }];
+        if(player){
+            [self initThumbCore:player];
+            self.videoDuration = player.duration;
+        }
+        else{
+            _videoAsset = videoAsset;
+            self.videoDuration = CMTimeGetSeconds(videoAsset.duration);
+        }
         _thumbImage = thumbImage;
-        [self initThumbCore:player];
-        self.videoDuration = player.duration;
         self.minRangeDuration = minRangeDuration;
         self.maxRangeDuration = maxRangeDuration;
         self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
@@ -163,7 +175,7 @@
         
         UIPanGestureRecognizer *rightPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleRightThumbPan:)];
         [self.rightHandle addGestureRecognizer:rightPanGesture];
-        if(_thumbImage){
+        if(_videoAsset){
             [self loadThumbView];
         }
         
@@ -185,9 +197,23 @@
         firstImage = _thumbImage;
     }
     else{
-        CGImageRef imageRef = [self.corePlayer copyCGImageAtTime:kCMTimeZero actualTime:&actualTime maximumSize:CGSizeMake(200, 200) error:nil];
-        if(imageRef){
-            firstImage = [UIImage imageWithCGImage:imageRef];
+        if(self.corePlayer == nil){
+            _imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:_videoAsset];
+            _imageGenerator.appliesPreferredTrackTransform = YES;
+            
+            CGSize siz = CGSizeMake(200, 200);
+            _imageGenerator.maximumSize = siz;
+            NSError *error = nil;
+            CGImageRef imageRef = [_imageGenerator copyCGImageAtTime:kCMTimeZero actualTime:&actualTime error:&error];
+            if(imageRef){
+                firstImage = [UIImage imageWithCGImage:imageRef];
+            }
+        }
+        else{
+            CGImageRef imageRef = [self.corePlayer copyCGImageAtTime:kCMTimeZero actualTime:&actualTime maximumSize:CGSizeMake(200, 200) error:nil];
+            if(imageRef){
+                firstImage = [UIImage imageWithCGImage:imageRef];
+            }
         }
     }
     
@@ -223,20 +249,33 @@
     
     __block NSInteger index = 0;
     __block typeof(self) bself = self;
-    [self.corePlayer generateCGImagesAsynchronouslyForTimes:items maximumSize:CGSizeMake(200, 200) completionHandler:^(CMTime requestedTime, CGImageRef  _Nullable image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError * _Nullable error) {
-        index ++;
-        UIImage *newImage = [UIImage imageWithCGImage:image];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if(newImage){
-                ((UIImageView *)[self.scrollView viewWithTag:index]).image = newImage;
-            }
-            if(index >= items.count){
-                bself.corePlayer.delegate = nil;
-                [bself.corePlayer stop];
-                bself.corePlayer = nil;
-            }
-        });
-    }];
+    if(self.corePlayer == nil){
+        [self.imageGenerator generateCGImagesAsynchronouslyForTimes:items completionHandler:^(CMTime requestedTime, CGImageRef  _Nullable image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError * _Nullable error) {
+                index ++;
+                UIImage *newImage = [UIImage imageWithCGImage:image];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if(newImage){
+                        ((UIImageView *)[self.scrollView viewWithTag:index]).image = newImage;
+                    }
+                });
+        }];
+    }
+    else{
+        [self.corePlayer generateCGImagesAsynchronouslyForTimes:items maximumSize:CGSizeMake(200, 200) completionHandler:^(CMTime requestedTime, CGImageRef  _Nullable image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError * _Nullable error) {
+            index ++;
+            UIImage *newImage = [UIImage imageWithCGImage:image];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(newImage){
+                    ((UIImageView *)[self.scrollView viewWithTag:index]).image = newImage;
+                }
+                if(index >= items.count){
+                    bself.corePlayer.delegate = nil;
+                    [bself.corePlayer stop];
+                    bself.corePlayer = nil;
+                }
+            });
+        }];
+    }
     self.scrollView.contentSize = CGSizeMake(contentWidth, self.scrollView.frame.size.height);
 }
 
@@ -359,5 +398,6 @@
     self.trimTimeLabel.text = [VEHelp timeFormat:_durationTime];
 }
 @end
+
 
 

@@ -37,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIView *thumbMaskHandle;
 @property (nonatomic, strong) UILabel *trimTimeLabel;
 
+- (instancetype)initWithFrame:(CGRect)frame videoAsset:(AVURLAsset *)videoAsset minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration  thumbImage:(UIImage *)thumbImage;
 - (instancetype)initWithFrame:(CGRect)frame player:(VECore *)player minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration;
 - (instancetype)initWithFrame:(CGRect)frame player:(VECore *)player minRangeDuration:(float)minRangeDuration maxRangeDuration:(float)maxRangeDuration thumbImage:(UIImage *)thumbImage;
 @property (nonatomic,weak) id <VECutVideoRangeSliderDelegate> delegate;
@@ -44,7 +45,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGFloat startTime;
 @property (nonatomic, assign) CGFloat durationTime;
 @property (nonatomic, strong) UIImage *thumbImage;
+@property (nonatomic, strong) AVAssetImageGenerator *imageGenerator;
+@property (nonatomic, strong) AVURLAsset * __nullable videoAsset;
 - (void)updateRangeView;
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 @end
 
 NS_ASSUME_NONNULL_END
