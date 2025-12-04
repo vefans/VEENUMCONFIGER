@@ -449,10 +449,14 @@ extern float const VEAdjust_DefaultValue_Exposure;
 +(NSArray *)classificationParams:( NSString * ) type atAppkey:( NSString * ) appkey atURl:( NSString * ) netMaterialTypeURL;
 +(NSString *)createPostURL:(NSMutableDictionary *)params;
 + (id)updateInfomation:(NSMutableDictionary *)params andUploadUrl:(NSString *)uploadUrl;
++ (id)updateInfomation:(NSMutableDictionary *)params andUploadUrl:(NSString *)uploadUrl completed:(void(^)(id result,NSError *error))completed;
 + (id)getNetworkMaterialWithParams:(NSMutableDictionary *)params
                             appkey:(NSString *)appkey
                            urlPath:(NSString *)urlPath;
-
++ (id)getNetworkMaterialWithParams:(NSMutableDictionary *)params
+                            appkey:(NSString *)appkey
+                           urlPath:(NSString *)urlPath
+                         completed:(void(^)(id result,NSError *error))completed;
 +(UILabel *)loadProgressView:(CGRect) rect;
 
 #pragma mark- 压缩
@@ -598,10 +602,6 @@ extern float const VEAdjust_DefaultValue_Exposure;
            progressBlock:(void(^)(float progress))progressBlock
                 callBack:(void(^)(NSError *error))callBack
              cancelBlock:(void(^)(void))cancelBlock;
-+ (void)getNetworkMaterialWithParams:(NSMutableDictionary *)params
-                              appkey:(NSString *)appkey
-                             urlPath:(NSString *)urlPath
-                           completed:(void(^)(id result,NSError *))completed;
 
 + (CustomFilter *)getAnimationCustomFilter:(NSMutableDictionary *) itemDic categoryId:(NSString *)categoryId;
 + (CustomFilter *)getAnimationCustomFilterWithPath:(NSString *) path;

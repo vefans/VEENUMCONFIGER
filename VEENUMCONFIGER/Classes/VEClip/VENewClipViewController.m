@@ -1564,36 +1564,45 @@
     self.idleTimerDisabled = [UIApplication sharedApplication].idleTimerDisabled;
     [[UIApplication sharedApplication] setIdleTimerDisabled: YES];
     
+    NSMutableArray *metadatas = [NSMutableArray new];
+    // 标题（使用通用命名空间，兼容性更好）
     AVMutableMetadataItem *titleMetadata = [[AVMutableMetadataItem alloc] init];
     titleMetadata.key = AVMetadataCommonKeyTitle;
-    titleMetadata.keySpace = AVMetadataKeySpaceQuickTimeMetadata;
-    titleMetadata.locale =[NSLocale currentLocale];
-    titleMetadata.value = @"titile";
+    titleMetadata.keySpace = AVMetadataKeySpaceCommon; // 通用命名空间
+    titleMetadata.value = @"Title";
+    [metadatas addObject:titleMetadata];
     
-    AVMutableMetadataItem *locationMetadata = [[AVMutableMetadataItem alloc] init];
-    locationMetadata.key = AVMetadataCommonKeyLocation;
-    locationMetadata.keySpace = AVMetadataKeySpaceQuickTimeMetadata;
-    locationMetadata.locale = [NSLocale currentLocale];
-    locationMetadata.value = @"location";
-    
-    AVMutableMetadataItem *creationDateMetadata = [[AVMutableMetadataItem alloc] init];
-    creationDateMetadata.key = AVMetadataCommonKeyCopyrights;
-    creationDateMetadata.keySpace = AVMetadataKeySpaceQuickTimeMetadata;
-    creationDateMetadata.locale = [NSLocale currentLocale];
-    creationDateMetadata.value = @"copyrights";
-    
+    // 描述（同样使用通用命名空间）
     AVMutableMetadataItem *descriptionMetadata = [[AVMutableMetadataItem alloc] init];
     descriptionMetadata.key = AVMetadataCommonKeyDescription;
-    descriptionMetadata.keySpace = AVMetadataKeySpaceQuickTimeMetadata;
-    descriptionMetadata.locale = [NSLocale currentLocale];
-    descriptionMetadata.value = @"descriptionMetadata";
+    descriptionMetadata.keySpace = AVMetadataKeySpaceCommon; // 通用命名空间
+    descriptionMetadata.value = @"Description";
+    descriptionMetadata.locale = nil; // 关键：设置为nil确保通用识别
+    [metadatas addObject:descriptionMetadata];
+    
+    AVMutableMetadataItem *authorMetadata = [[AVMutableMetadataItem alloc] init];
+    authorMetadata.key = AVMetadataCommonKeyAuthor;
+    authorMetadata.keySpace = AVMetadataKeySpaceCommon; // 通用命名空间
+    authorMetadata.value = @"Author";
+    authorMetadata.locale = nil; // 关键：设置为nil确保通用识别
+    [metadatas addObject:authorMetadata];
+    
+
+    // 1. 版权信息：使用自定义键（兼容所有SDK版本）
+    AVMutableMetadataItem *isoCopyright = [[AVMutableMetadataItem alloc] init];
+    isoCopyright.key = @"Copyright"; // 明确使用自定义字符串键，避免依赖系统预定义键
+    isoCopyright.keySpace = AVMetadataKeySpaceISOUserData; // 仍使用uiso键空间
+    isoCopyright.value = @"Copyright © 2025";
+    isoCopyright.locale = nil;
+    isoCopyright.dataType = (__bridge NSString *)kCMMetadataBaseDataType_UTF8; // 强制字符串类型
+    [metadatas addObject:isoCopyright];
     
     WeakSelf(self);
     [_videoCoreSDK exportMovieURL:[NSURL fileURLWithPath:export]
                         size:size
                      bitrate:[VEConfigManager sharedManager].videoAverageBitRate
                          fps:kEXPORTFPS
-                    metadata:@[titleMetadata, locationMetadata, creationDateMetadata, descriptionMetadata]
+                    metadata:metadatas
                 audioBitRate:0
          audioChannelNumbers:[VEConfigManager sharedManager].peExportConfiguration.audioChannelNumbers
       maxExportVideoDuration:[VEConfigManager sharedManager].peExportConfiguration.outputVideoMaxDuration

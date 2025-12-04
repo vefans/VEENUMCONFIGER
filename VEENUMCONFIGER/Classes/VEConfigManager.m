@@ -21,6 +21,7 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
 //判断是否可以使用 html 抠图
 -(void)htmlSegmentation:( UIViewController * ) viewController
 {
+    [VEConfigManager sharedManager].isNoHtmlAutoSegmentImage = true;
     if (@available(iOS 16.0, *))
     {
         @autoreleasepool {
@@ -41,7 +42,8 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [imageCoreSDK segmentation_ImageWithImageData:UIImagePNGRepresentation(image) atView:viewController.view atCancelBtn:nil atIsDebug:true atCompletionHandler:^(NSString *message, id messageBody) {
                             if( [message isEqualToString:@"SegmentationImage"] )
-                            {;
+                            {
+                                [VEConfigManager sharedManager].isNoHtmlAutoSegmentImage = false;
                                 dispatch_async(dispatch_get_main_queue(), ^{
                                     segmentCoreSDK = nil;
                                 });
@@ -65,9 +67,10 @@ NSString *const VERemoveDefaultWatermarkNotification = @"VERemoveDefaultWatermar
                 }
             });
         }
-    }else{
-        [VEConfigManager sharedManager].isNoHtmlAutoSegmentImage = true;
     }
+//    else{
+//        [VEConfigManager sharedManager].isNoHtmlAutoSegmentImage = true;
+//    }
 }
 
 - (void)setAppKey:(NSString *)appKey{
