@@ -7086,19 +7086,15 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
     else
         return nil;
 }
+
 + (id)updateInfomation:(NSMutableDictionary *)params andUploadUrl:(NSString *)uploadUrl{
-    return [self updateInfomation:params andUploadUrl:uploadUrl completed:nil];
-}
-+ (id)updateInfomation:(NSMutableDictionary *)params andUploadUrl:(NSString *)uploadUrl completed:(void(^)(id result,NSError *error))completed{
     if(!uploadUrl){
-        if(completed){
-            completed([NSMutableDictionary new],nil);
-        }
         return [NSMutableDictionary new];
     }
     @autoreleasepool {
         if(!params){
             params  = [[NSMutableDictionary alloc] init];
+            
         }
         if(![params.allKeys containsObject:@"use_init"]){
             [params setObject:[VEConfigManager sharedManager].hasInit ? @(1) : @(0) forKey:@"use_init"];
@@ -7148,77 +7144,42 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [request setHTTPBody:postData];
         
         //        NSString *str = [[NSString alloc] initWithData:postData encoding:NSUTF8StringEncoding];
-        if(completed){
-            __block NSHTTPURLResponse* urlResponse = nil;
-            __block NSError *error;
-            __block NSData *responseData = nil;
-            NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error1) {
-                //处理model
-                urlResponse = (NSHTTPURLResponse*)response;
-                responseData = data;
-                error = error1;
-                if(error){
-                    NSLog(@"error:%@",[error description]);
-                }
-                if(!responseData){
-                    completed([NSMutableDictionary new],nil);
-                }
-                id obj = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
-                responseData = nil;
-                urlResponse = nil;
-                if(error || !obj){
-                    error = nil;
-                    completed([NSMutableDictionary new],nil);
-                }else{
-                    completed(obj,nil);
-                }
-            }];
-            [dataTask resume];
-            return nil;
+        
+        __block NSHTTPURLResponse* urlResponse = nil;
+        __block NSError *error;
+        __block NSData *responseData = nil;
+        dispatch_semaphore_t disp = dispatch_semaphore_create(0);
+        NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error1) {
+            //处理model
+            urlResponse = (NSHTTPURLResponse*)response;
+            responseData = data;
+            error = error1;
+            dispatch_semaphore_signal(disp);
+        }];
+        [dataTask resume];
+        dispatch_semaphore_wait(disp, DISPATCH_TIME_FOREVER);
+        
+        if(error){
+            NSLog(@"error:%@",[error description]);
         }
-        else{
-            __block NSHTTPURLResponse* urlResponse = nil;
-            __block NSError *error;
-            __block NSData *responseData = nil;
-            dispatch_semaphore_t disp = dispatch_semaphore_create(0);
-            NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error1) {
-                //处理model
-                urlResponse = (NSHTTPURLResponse*)response;
-                responseData = data;
-                error = error1;
-                dispatch_semaphore_signal(disp);
-            }];
-            [dataTask resume];
-            dispatch_semaphore_wait(disp, DISPATCH_TIME_FOREVER);
-            
-            if(error){
-                NSLog(@"error:%@",[error description]);
-            }
-            if(!responseData){
-                return [NSMutableDictionary new];
-            }
-            id obj = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
-            responseData = nil;
-            urlResponse = nil;
-            if(error || !obj){
-                error = nil;
-                return [NSMutableDictionary new];
-            }else{
-                return obj;
-            }
+        if(!responseData){
+            return [NSMutableDictionary new];
         }
+        id obj = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
+        responseData = nil;
+        urlResponse = nil;
+        if(error || !obj){
+            error = nil;
+            return [NSMutableDictionary new];
+        }else{
+            return obj;
+        }
+        
     }
 }
 + (id)getNetworkMaterialWithParams:(NSMutableDictionary *)params
                             appkey:(NSString *)appkey
                            urlPath:(NSString *)urlPath
-{
-    return [self getNetworkMaterialWithParams:params appkey:appkey urlPath:urlPath completed:nil];
-}
-+ (id)getNetworkMaterialWithParams:(NSMutableDictionary *)params
-                            appkey:(NSString *)appkey
-                           urlPath:(NSString *)urlPath
-                         completed:(void(^)(id result,NSError *error))completed
 {
     if (!params) {
         params = [NSMutableDictionary dictionary];
@@ -7227,12 +7188,7 @@ static CGFloat veVESDKedgeSizeFromCornerRadius(CGFloat cornerRadius) {
         [params setObject:appkey forKey:@"appkey"];
     }
     [params setObject:@"ios" forKey:@"os"];
-    if(completed){
-        return [self updateInfomation:params andUploadUrl:urlPath completed:completed];
-    }
-    else{
-        return [self updateInfomation:params andUploadUrl:urlPath];
-    }
+    return [self updateInfomation:params andUploadUrl:urlPath];
 }
 
 +(UILabel *)loadProgressView:(CGRect) rect
